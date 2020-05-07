@@ -278,3 +278,38 @@ export function ruleInfo(params) {
     params: params
   })
 }
+
+// -------------日志管理---------------------------
+/**
+ * 用户列表
+ * @param {array} params 参数
+ */
+export function logList(params) {
+  return request({
+    url: '/admin/AdminLog/logList',
+    method: 'get',
+    params: params
+  })
+}
+/**
+ * 用户删除
+ * @param {array} data 参数
+ */
+export function logDele(data) {
+  return request({
+    url: '/admin/AdminLog/logDele',
+    method: 'post',
+    data
+  })
+}
+/**
+ * 用户信息
+ * @param {array} params 参数
+ */
+export function logInfo(params) {
+  return request({
+    url: '/admin/AdminLog/logInfo',
+    method: 'get',
+    params: params
+  })
+}

@@ -90,7 +90,7 @@ export const asyncRoutes = [
     meta: {
       title: '系统设置',
       icon: 'setting',
-      roles: ['admin/AdminMenu/menuList', 'admin/AdminUser/userList', 'admin/AdminRule/ruleList', 'admin/AdminUser/userCenter']
+      roles: ['admin/AdminMenu/menuList', 'admin/AdminUser/userList', 'admin/AdminRule/ruleList', 'admin/AdminLog/logList', 'admin/AdminUser/userCenter']
     },
     children: [
       {
@@ -121,6 +121,16 @@ export const asyncRoutes = [
           title: '权限管理',
           icon: 'rule',
           roles: ['admin/AdminRule/ruleList']
+        }
+      },
+      {
+        path: 'log',
+        component: () => import('@/views/admin/log'),
+        name: 'log',
+        meta: {
+          title: '日志管理',
+          icon: 'log',
+          roles: ['admin/AdminLog/logList']
         }
       },
       {
