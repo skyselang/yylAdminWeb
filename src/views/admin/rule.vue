@@ -1,6 +1,7 @@
 <template>
   <div class="app-container">
     <div>
+      <!-- search -->
       <div class="filter-container">
         <el-input
           v-model="tableQuery.rule_name"
@@ -36,7 +37,7 @@
           刷新
         </el-button>
       </div>
-
+      <!-- table -->
       <el-table
         v-loading="loading"
         :data="tableData"
@@ -47,34 +48,36 @@
         <el-table-column
           prop="admin_rule_id"
           label="ID"
-          width="80"
+          min-width="100"
           sortable="custom"
+          fixed="left"
         />
         <el-table-column prop="rule_name" label="权限" min-width="120" />
-        <el-table-column prop="rule_desc" label="描述" min-width="120" />
+        <el-table-column prop="rule_desc" label="描述" min-width="130" />
         <el-table-column
           prop="rule_sort"
           label="排序"
-          width="80"
+          min-width="100"
           sortable="custom"
         />
         <el-table-column
           prop="insert_time"
           label="添加时间"
-          width="160"
+          min-width="160"
           sortable="custom"
         />
         <el-table-column
           prop="update_time"
           label="修改时间"
-          width="160"
+          min-width="160"
           sortable="custom"
         />
         <el-table-column
           prop="is_prohibit"
           label="是否禁用"
-          width="80"
+          min-width="110"
           align="center"
+          sortable="custom"
         >
           <template slot-scope="scope">
             <el-switch
@@ -87,8 +90,10 @@
         </el-table-column>
         <el-table-column
           label="操作"
-          width="150"
+          min-width="150"
+          align="right"
           class-name="small-padding fixed-width"
+          fixed="right"
         >
           <template slot-scope="{ row }">
             <el-button size="mini" type="primary" @click="tableEdit(row)">
@@ -100,7 +105,7 @@
           </template>
         </el-table-column>
       </el-table>
-
+      <!-- page -->
       <pagination
         v-show="tableCount > 0"
         :total="tableCount"
@@ -108,7 +113,7 @@
         :limit.sync="tableQuery.limit"
         @pagination="tableList"
       />
-
+      <!-- edit、add、 -->
       <el-dialog
         :title="formData.admin_rule_id ? '修改' : '添加'"
         :visible.sync="formVisible"

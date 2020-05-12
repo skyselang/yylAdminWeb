@@ -1,6 +1,7 @@
 <template>
   <div class="app-container">
     <div>
+      <!-- search -->
       <div class="filter-container">
         <el-button
           class="filter-item"
@@ -19,7 +20,7 @@
           刷新
         </el-button>
       </div>
-
+      <!-- table -->
       <el-table
         v-loading="loading"
         :data="tableData"
@@ -27,17 +28,22 @@
         border
         style="width: 100%"
       >
-        <el-table-column prop="menu_name" label="菜单名称" min-width="180" />
+        <el-table-column
+          prop="menu_name"
+          label="菜单名称"
+          min-width="180"
+          fixed="left"
+        />
         <el-table-column prop="menu_url" label="菜单链接" min-width="180" />
-        <el-table-column prop="menu_sort" label="菜单排序" width="80" />
-        <el-table-column prop="admin_menu_id" label="ID" width="80" />
-        <el-table-column prop="menu_pid" label="PID" width="80" />
-        <el-table-column prop="insert_time" label="添加时间" width="160" />
-        <el-table-column prop="update_time" label="修改时间" width="160" />
+        <el-table-column prop="menu_sort" label="菜单排序" min-width="100" />
+        <el-table-column prop="admin_menu_id" label="ID" min-width="100" />
+        <el-table-column prop="menu_pid" label="PID" min-width="100" />
+        <el-table-column prop="insert_time" label="添加时间" min-width="160" />
+        <el-table-column prop="update_time" label="修改时间" min-width="160" />
         <el-table-column
           prop="is_prohibit"
           label="是否禁用"
-          width="80"
+          min-width="100"
           align="center"
         >
           <template slot-scope="scope">
@@ -52,7 +58,7 @@
         <el-table-column
           prop="is_unauth"
           label="无需权限"
-          width="80"
+          min-width="100"
           align="center"
         >
           <template slot-scope="scope">
@@ -66,7 +72,7 @@
         </el-table-column>
         <el-table-column
           label="操作"
-          width="150"
+          min-width="150"
           fixed="right"
           align="right"
           class-name="small-padding fixed-width"
@@ -81,7 +87,7 @@
           </template>
         </el-table-column>
       </el-table>
-
+      <!-- edit、add -->
       <el-dialog
         :title="formData.admin_menu_id ? '修改' : '添加'"
         :visible.sync="formVisible"

@@ -1,6 +1,7 @@
 <template>
   <div class="app-container">
     <div>
+      <!-- search -->
       <div class="filter-container">
         <el-input
           v-model="tableQuery.username"
@@ -36,7 +37,7 @@
           刷新
         </el-button>
       </div>
-
+      <!-- table -->
       <el-table
         v-loading="loading"
         :data="tableData"
@@ -47,17 +48,18 @@
         <el-table-column
           prop="admin_user_id"
           label="ID"
-          width="80"
+          min-width="80"
           sortable="custom"
+          fixed="left"
         />
         <el-table-column
           prop="username"
           label="账号"
-          min-width="110"
+          min-width="200"
           sortable="custom"
         />
         <el-table-column prop="nickname" label="昵称" min-width="110" />
-        <el-table-column prop="remark" label="备注" min-width="110" />
+        <el-table-column prop="remark" label="备注" min-width="100" show-overflow-tooltip />
         <el-table-column
           prop="sort"
           label="排序"
@@ -67,26 +69,26 @@
         <el-table-column
           prop="login_num"
           label="登录次数"
-          width="110"
+          min-width="110"
           sortable="custom"
         />
-        <el-table-column prop="login_ip" label="登录IP" width="130" />
+        <el-table-column prop="login_ip" label="登录IP" min-width="130" />
         <el-table-column
           prop="login_time"
           label="登录时间"
-          width="160"
+          min-width="160"
           sortable="custom"
         />
         <el-table-column
           prop="insert_time"
           label="添加时间"
-          width="160"
+          min-width="160"
           sortable="custom"
         />
         <el-table-column
           prop="is_super_admin"
           label="是否超管"
-          width="80"
+          min-width="80"
           align="center"
         >
           <template slot-scope="scope">
@@ -101,7 +103,7 @@
         <el-table-column
           prop="is_prohibit"
           label="是否禁用"
-          width="80"
+          min-width="80"
           align="center"
         >
           <template slot-scope="scope">
@@ -116,7 +118,7 @@
         <el-table-column
           prop="is_prohibit"
           label="权限"
-          width="80"
+          min-width="80"
           align="center"
         >
           <template slot-scope="{ row }">
@@ -134,8 +136,9 @@
         </el-table-column>
         <el-table-column
           label="操作"
-          width="150"
+          min-width="150"
           align="right"
+          fixed="right"
           class-name="small-padding fixed-width"
         >
           <template slot-scope="{ row }">
@@ -148,7 +151,7 @@
           </template>
         </el-table-column>
       </el-table>
-
+      <!-- page -->
       <pagination
         v-show="tableCount > 0"
         :total="tableCount"
@@ -156,7 +159,7 @@
         :limit.sync="tableQuery.limit"
         @pagination="tableList"
       />
-
+      <!-- 权限分配 -->
       <el-dialog title="权限分配" :visible.sync="formVisibleRule">
         <el-form
           ref="formRuleRef"
@@ -187,7 +190,7 @@
           </el-button>
         </div>
       </el-dialog>
-
+      <!-- 密码重置 -->
       <el-dialog title="密码重置" :visible.sync="formVisiblePwd">
         <el-form
           ref="formPwdRef"
@@ -215,7 +218,7 @@
           </el-button>
         </div>
       </el-dialog>
-
+      <!-- edit、add -->
       <el-dialog
         :title="formData.admin_user_id ? '修改' : '添加'"
         :visible.sync="formVisible"

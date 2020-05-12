@@ -1,6 +1,7 @@
 <template>
   <div class="app-container">
     <div>
+      <!-- search -->
       <div class="filter-container">
         <el-input
           v-model="tableQuery.admin_user_id"
@@ -20,7 +21,7 @@
           v-model="tableQuery.insert_time"
           type="daterange"
           style="width: 240px;top: -4px;"
-          range-separator="至"
+          range-separator="-"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
           value-format="yyyy-MM-dd"
@@ -37,7 +38,7 @@
           刷新
         </el-button>
       </div>
-
+      <!-- table -->
       <el-table
         v-loading="loading"
         :data="tableData"
@@ -48,23 +49,24 @@
         <el-table-column
           prop="admin_log_id"
           label="ID"
-          width="100"
+          min-width="100"
           sortable="custom"
+          fixed="left"
         />
         <el-table-column
           prop="admin_user_id"
           label="用户ID"
-          min-width="90"
+          min-width="80"
           sortable="custom"
         />
-        <el-table-column prop="username" label="用户账号" min-width="100" />
-        <el-table-column prop="nickname" label="用户昵称" min-width="100" />
+        <el-table-column prop="username" label="用户账号" min-width="200" />
+        <el-table-column prop="nickname" label="用户昵称" min-width="120" />
         <el-table-column prop="menu_url" label="菜单链接" min-width="220" />
         <el-table-column prop="menu_name" label="菜单名称" min-width="120" />
         <el-table-column
           prop="request_method"
           label="请求方式 "
-          min-width="120"
+          min-width="110"
           sortable="custom"
         />
         <el-table-column
@@ -76,13 +78,14 @@
         <el-table-column
           prop="insert_time"
           label="请求时间"
-          width="160"
+          min-width="160"
           sortable="custom"
         />
         <el-table-column
           label="操作"
-          width="150"
+          min-width="150"
           align="right"
+          fixed="right"
           class-name="small-padding fixed-width"
         >
           <template slot-scope="{ row }">
@@ -95,7 +98,7 @@
           </template>
         </el-table-column>
       </el-table>
-
+      <!-- page -->
       <pagination
         v-show="tableCount > 0"
         :total="tableCount"
@@ -103,7 +106,7 @@
         :limit.sync="tableQuery.limit"
         @pagination="tableList"
       />
-
+      <!-- edit、add -->
       <el-dialog
         :title="'日志ID：' + formData.admin_log_id"
         :visible.sync="formVisible"
