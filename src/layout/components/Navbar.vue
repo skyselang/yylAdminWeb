@@ -30,7 +30,7 @@
         </div>
         <el-dropdown-menu slot="dropdown" style="text-align:center">
           <router-link to="/">
-            <el-dropdown-item>首页</el-dropdown-item>
+            <el-dropdown-item>控制台</el-dropdown-item>
           </router-link>
           <el-dropdown-item divided @click.native="logout">
             <span style="display:block;">退出</span>
