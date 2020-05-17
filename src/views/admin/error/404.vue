@@ -20,7 +20,7 @@
 <script>
 
 export default {
-  name: 'Page404',
+  name: 'Error404',
   computed: {
     message() {
       return '该页面不存在！'

@@ -35,28 +35,29 @@ import Layout from '@/layout'
  * all roles can be accessed
  */
 export const constantRoutes = [
-  {
-    path: '/redirect',
-    component: Layout,
-    hidden: true,
-    children: [{
-      path: '/redirect/:path(.*)',
-      component: () => import('@/views/admin/redirect')
-    }]
-  },
+  // 点击侧边栏 刷新当前路由
+  // {
+  //   path: '/redirect',
+  //   component: Layout,
+  //   hidden: false,
+  //   children: [{
+  //     path: '/redirect/:path(.*)',
+  //     component: () => import('@/views/admin/redirect/redirect')
+  //   }]
+  // },
   {
     path: '/login',
-    component: () => import('@/views/admin/login'),
+    component: () => import('@/views/admin/login/login'),
     hidden: true
   },
   {
     path: '/404',
-    component: () => import('@/views/admin/404'),
+    component: () => import('@/views/admin/error/404'),
     hidden: true
   },
   {
     path: '/401',
-    component: () => import('@/views/admin/401'),
+    component: () => import('@/views/admin/error/401'),
     hidden: true
   },
   {
@@ -65,7 +66,7 @@ export const constantRoutes = [
     redirect: '/dashboard',
     children: [{
       path: 'dashboard',
-      component: () => import('@/views/admin/index'),
+      component: () => import('@/views/admin/index/index'),
       name: 'Dashboard',
       meta: {
         title: '控制台',
@@ -86,17 +87,17 @@ export const asyncRoutes = [
     component: Layout,
     redirect: 'noRedirect',
     alwaysShow: true,
-    name: 'admin',
+    name: 'Admin',
     meta: {
-      title: '系统设置',
-      icon: 'setting',
-      roles: ['admin/AdminMenu/menuList', 'admin/AdminUser/userList', 'admin/AdminRule/ruleList', 'admin/AdminLog/logList', 'admin/AdminUser/userCenter']
+      title: '系统管理',
+      icon: 'admin',
+      roles: ['admin/AdminUsers/users']
     },
     children: [
       {
         path: 'menu',
-        component: () => import('@/views/admin/menu'),
-        name: 'menu',
+        component: () => import('@/views/admin/menu/menu'),
+        name: 'Menu',
         meta: {
           title: '菜单管理',
           icon: 'menu',
@@ -105,18 +106,18 @@ export const asyncRoutes = [
       },
       {
         path: 'user',
-        component: () => import('@/views/admin/user'),
-        name: 'user',
+        component: () => import('@/views/admin/user/user'),
+        name: 'User',
         meta: {
           title: '用户管理',
-          icon: 'users',
+          icon: 'user',
           roles: ['admin/AdminUser/userList']
         }
       },
       {
         path: 'rule',
-        component: () => import('@/views/admin/rule'),
-        name: 'rule',
+        component: () => import('@/views/admin/rule/rule'),
+        name: 'Rule',
         meta: {
           title: '权限管理',
           icon: 'rule',
@@ -125,8 +126,8 @@ export const asyncRoutes = [
       },
       {
         path: 'log',
-        component: () => import('@/views/admin/log'),
-        name: 'log',
+        component: () => import('@/views/admin/log/log'),
+        name: 'Log',
         meta: {
           title: '日志管理',
           icon: 'log',
@@ -134,41 +135,73 @@ export const asyncRoutes = [
         }
       },
       {
-        path: 'user-center',
-        component: () => import('@/views/admin/user-center'),
-        name: 'user-center',
+        path: 'users',
+        component: () => import('@/views/admin/user/users'),
+        name: 'Users',
         meta: {
           title: '个人中心',
-          icon: 'user-center',
-          roles: ['admin/AdminUser/userCenter']
+          icon: 'users',
+          roles: ['admin/AdminUsers/users']
+        }
+      },
+      {
+        path: 'setting',
+        component: () => import('@/views/admin/setting/setting'),
+        name: 'Setting',
+        meta: {
+          title: '系统设置',
+          icon: 'setting',
+          roles: ['admin/AdminSetting/setting']
         }
       }
     ]
   },
 
   {
-    path: '/admin-tool',
+    path: '/tool',
     component: Layout,
     redirect: 'noRedirect',
-    alwaysShow: false,
-    name: 'admin-tool',
+    alwaysShow: true,
+    name: 'Tool',
     meta: {
       title: '实用工具',
       icon: 'tool',
-      roles: ['admin/AdminTool/randomStr']
+      roles: ['admin/AdminTool/tools', 'admin/AdminTool/mapPoint']
     },
     children: [
       {
-        path: 'tool',
-        component: () => import('@/views/admin-tool/tool'),
-        name: 'tool',
+        path: 'tools',
+        component: () => import('@/views/admin/tool/tools'),
+        name: 'Tools',
         meta: {
-          title: '实用工具',
-          icon: 'tool',
-          roles: ['admin/AdminTool/randomStr']
+          title: '实用工具合集',
+          icon: 'tools',
+          roles: ['admin/AdminTool/tools']
+        }
+      },
+      {
+        path: 'mapPoint',
+        component: () => import('@/views/admin/tool/mapPoint'),
+        name: 'MapPoint',
+        meta: {
+          title: '地图坐标拾取',
+          icon: 'mapPoint',
+          roles: ['admin/AdminTool/mapPoint']
         }
       }
     ]
+  },
+
+  {
+    path: '/logout',
+    component: () => import('@/views/admin/login/logout'),
+    alwaysShow: false,
+    name: 'Logout',
+    meta: {
+      title: '退出',
+      icon: 'logout',
+      roles: ['admin/AdminLogin/logout']
+    }
   },
 
   // 404 page must be placed at the end !!!

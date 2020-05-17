@@ -6,14 +6,14 @@
         <el-input
           v-model="tableQuery.admin_user_id"
           placeholder="用户ID"
-          style="width: 200px;"
+          style="width: 120px;"
           class="filter-item"
           clearable
         />
         <el-input
           v-model="tableQuery.menu_url"
           placeholder="菜单链接"
-          style="width: 200px;"
+          style="width: 300px;"
           class="filter-item"
           clearable
         />
@@ -170,7 +170,7 @@ export default {
   data() {
     return {
       loading: false,
-      loadingTime: 250,
+      loadingTime: 0,
       tableData: [],
       tableCount: 0,
       tableQuery: {

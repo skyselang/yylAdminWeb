@@ -1,31 +1,58 @@
 <template>
   <div class="navbar">
-
-    <hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
+    <hamburger
+      id="hamburger-container"
+      :is-active="sidebar.opened"
+      class="hamburger-container"
+      @toggleClick="toggleSideBar"
+    />
 
     <breadcrumb id="breadcrumb-container" class="breadcrumb-container" />
 
     <div class="right-menu">
-      <template v-if="device!=='mobile'">
-        <span style="display:inline-block;float:left;margin-right:10px">
-          {{ nickname }}
+      <template v-if="device !== 'mobile'">
+        <span
+          style="display:inline-block;float:left;margin-right:10px;color:#409eff"
+          :title="username"
+        >
+          <router-link to="/admin/users">
+            {{ nickname }}
+          </router-link>
         </span>
         <search id="header-search" class="right-menu-item" />
 
         <error-log class="errLog-container right-menu-item hover-effect" />
 
-        <screenfull id="screenfull" class="right-menu-item hover-effect" title="全屏" />
+        <screenfull
+          id="screenfull"
+          class="right-menu-item hover-effect"
+          title="全屏"
+        />
 
         <el-tooltip content="字体大小" effect="dark" placement="bottom">
           <size-select id="size-select" class="right-menu-item hover-effect" />
         </el-tooltip>
-
       </template>
 
-      <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
+      <el-dropdown
+        class="avatar-container right-menu-item hover-effect"
+        trigger="click"
+      >
         <div class="avatar-wrapper">
-          <img v-if="avatar" :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
-          <img v-else src="/favicon.ico?imageView2/1/w/80/h/80" class="user-avatar">
+          <el-avatar
+            v-if="avatar"
+            shape="circle"
+            fit="contain"
+            :size="48"
+            :src="avatar"
+          />
+          <el-avatar
+            v-else
+            shape="circle"
+            fit="contain"
+            :size="48"
+            src="/favicon.ico"
+          />
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown" style="text-align:center">
@@ -49,7 +76,7 @@ import ErrorLog from '@/components/ErrorLog'
 import Screenfull from '@/components/Screenfull'
 import SizeSelect from '@/components/SizeSelect'
 import Search from '@/components/HeaderSearch'
-import { getNickname, getUsername } from '@/utils/auth'
+import {} from '@/utils/auth'
 
 export default {
   components: {
@@ -61,17 +88,10 @@ export default {
     Search
   },
   data() {
-    return {
-      nickname: getNickname(),
-      username: getUsername()
-    }
+    return {}
   },
   computed: {
-    ...mapGetters([
-      'sidebar',
-      'avatar',
-      'device'
-    ])
+    ...mapGetters(['sidebar', 'device', 'username', 'nickname', 'avatar'])
   },
   methods: {
     toggleSideBar() {
@@ -92,18 +112,18 @@ export default {
   overflow: hidden;
   position: relative;
   background: #fff;
-  box-shadow: 0 1px 4px rgba(0,21,41,.08);
+  box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
 
   .hamburger-container {
     line-height: 46px;
     height: 100%;
     float: left;
     cursor: pointer;
-    transition: background .3s;
-    -webkit-tap-highlight-color:transparent;
+    transition: background 0.3s;
+    -webkit-tap-highlight-color: transparent;
 
     &:hover {
-      background: rgba(0, 0, 0, .025)
+      background: rgba(0, 0, 0, 0.025);
     }
   }
 
@@ -136,10 +156,10 @@ export default {
 
       &.hover-effect {
         cursor: pointer;
-        transition: background .3s;
+        transition: background 0.3s;
 
         &:hover {
-          background: rgba(0, 0, 0, .025)
+          background: rgba(0, 0, 0, 0.025);
         }
       }
     }

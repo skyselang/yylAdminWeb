@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie'
 
-const TokenKey = 'Admin-Token'
+const TokenKey = 'AdminToken'
 export function getToken() {
   return Cookies.get(TokenKey)
 }
@@ -11,7 +11,7 @@ export function delToken() {
   return Cookies.remove(TokenKey)
 }
 
-const AdminUserIdKey = 'Admin-User-Id'
+const AdminUserIdKey = 'AdminUserId'
 export function getAdminUserId() {
   return Cookies.get(AdminUserIdKey)
 }
@@ -22,7 +22,7 @@ export function delAdminUserId() {
   return Cookies.remove(AdminUserIdKey)
 }
 
-const NicknameKey = 'Admin-Nickname'
+const NicknameKey = 'AdminNickname'
 export function getNickname() {
   return Cookies.get(NicknameKey)
 }
@@ -33,7 +33,7 @@ export function delNickname() {
   return Cookies.remove(NicknameKey)
 }
 
-const UsernameKey = 'Admin-Username'
+const UsernameKey = 'AdminUsername'
 export function getUsername() {
   return Cookies.get(UsernameKey)
 }
@@ -42,4 +42,15 @@ export function setUsername(username) {
 }
 export function delUsername() {
   return Cookies.remove(UsernameKey)
+}
+
+const AvatarKey = 'AdminAvatar'
+export function getAvatar() {
+  return Cookies.get(AvatarKey)
+}
+export function setAvatar(username) {
+  return Cookies.set(AvatarKey, username)
+}
+export function delAvatar() {
+  return Cookies.remove(AvatarKey)
 }

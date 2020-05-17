@@ -3,23 +3,6 @@
     <div>
       <!-- search -->
       <div class="filter-container">
-        <el-input
-          v-model="tableQuery.rule_name"
-          placeholder="权限"
-          style="width: 200px;"
-          class="filter-item"
-          clearable
-        />
-        <el-input
-          v-model="tableQuery.rule_desc"
-          placeholder="描述"
-          style="width: 200px;"
-          class="filter-item"
-          clearable
-        />
-        <el-button class="filter-item" type="primary" @click="tableSearch">
-          查询
-        </el-button>
         <el-button
           class="filter-item"
           style="float:right;margin-left:10px"
@@ -41,46 +24,31 @@
       <el-table
         v-loading="loading"
         :data="tableData"
+        row-key="admin_menu_id"
         border
         style="width: 100%"
-        @sort-change="tableSort"
       >
         <el-table-column
-          prop="admin_rule_id"
-          label="ID"
-          min-width="100"
-          sortable="custom"
+          prop="menu_name"
+          label="菜单名称"
+          min-width="180"
           fixed="left"
         />
-        <el-table-column prop="rule_name" label="权限" min-width="120" />
-        <el-table-column prop="rule_desc" label="描述" min-width="130" />
-        <el-table-column
-          prop="rule_sort"
-          label="排序"
-          min-width="100"
-          sortable="custom"
-        />
-        <el-table-column
-          prop="insert_time"
-          label="添加时间"
-          min-width="160"
-          sortable="custom"
-        />
-        <el-table-column
-          prop="update_time"
-          label="修改时间"
-          min-width="160"
-          sortable="custom"
-        />
+        <el-table-column prop="menu_url" label="菜单链接" min-width="250" />
+        <el-table-column prop="menu_sort" label="菜单排序" min-width="100" />
+        <el-table-column prop="admin_menu_id" label="ID" min-width="100" />
+        <el-table-column prop="menu_pid" label="PID" min-width="100" />
+        <el-table-column prop="insert_time" label="添加时间" min-width="160" />
+        <el-table-column prop="update_time" label="修改时间" min-width="160" />
         <el-table-column
           prop="is_prohibit"
           label="是否禁用"
-          min-width="110"
+          min-width="100"
           align="center"
-          sortable="custom"
         >
           <template slot-scope="scope">
             <el-switch
+              v-if="scope.row.menu_url"
               v-model="scope.row.is_prohibit"
               active-value="1"
               inactive-value="0"
@@ -89,11 +57,27 @@
           </template>
         </el-table-column>
         <el-table-column
+          prop="is_unauth"
+          label="无需权限"
+          min-width="100"
+          align="center"
+        >
+          <template slot-scope="scope">
+            <el-switch
+              v-if="scope.row.menu_url"
+              v-model="scope.row.is_unauth"
+              active-value="1"
+              inactive-value="0"
+              @change="tableUnauth(scope.row)"
+            />
+          </template>
+        </el-table-column>
+        <el-table-column
           label="操作"
           min-width="150"
+          fixed="right"
           align="right"
           class-name="small-padding fixed-width"
-          fixed="right"
         >
           <template slot-scope="{ row }">
             <el-button size="mini" type="primary" @click="tableEdit(row)">
@@ -105,17 +89,9 @@
           </template>
         </el-table-column>
       </el-table>
-      <!-- page -->
-      <pagination
-        v-show="tableCount > 0"
-        :total="tableCount"
-        :page.sync="tableQuery.page"
-        :limit.sync="tableQuery.limit"
-        @pagination="tableList"
-      />
-      <!-- edit、add、 -->
+      <!-- edit、add -->
       <el-dialog
-        :title="formData.admin_rule_id ? '修改' : '添加'"
+        :title="formData.admin_menu_id ? '修改' : '添加'"
         :visible.sync="formVisible"
       >
         <el-form
@@ -126,30 +102,34 @@
           label-width="120px"
           style="width: 80%; margin-left:50px;"
         >
-          <el-form-item label="权限" prop="rule_name">
-            <el-input v-model="formData.rule_name" clearable />
-          </el-form-item>
-          <el-form-item label="描述" prop="rule_desc">
-            <el-input v-model="formData.rule_desc" clearable />
-          </el-form-item>
-          <el-form-item label="排序" prop="rule_sort">
-            <el-input v-model="formData.rule_sort" type="number" />
-          </el-form-item>
-          <el-form-item label="菜单">
-            <el-tree
-              ref="formMenuRef"
-              :data="formMenu"
-              :default-checked-keys="formData.admin_menu_ids"
-              default-expand-all
-              show-checkbox
-              node-key="admin_menu_id"
-              highlight-current
+          <el-form-item label="菜单父级" prop="menu_pid">
+            <el-cascader
+              v-model="formData.menu_pid"
+              placeholder="一级菜单"
+              :options="tableData"
               :props="{
-                children: 'children',
+                checkStrictly: true,
+                value: 'admin_menu_id',
                 label: 'menu_name'
               }"
-              @check="formMenuCheck"
+              style="width:100%"
+              clearable
+              filterable
+              @change="formMenuChange"
             />
+          </el-form-item>
+          <el-form-item label="菜单名称" prop="menu_name">
+            <el-input
+              v-model="formData.menu_name"
+              clearable
+              placeholder="请输入菜单名称"
+            />
+          </el-form-item>
+          <el-form-item label="菜单链接" prop="menu_url">
+            <el-input v-model="formData.menu_url" clearable />
+          </el-form-item>
+          <el-form-item label="菜单排序" prop="menu_sort">
+            <el-input v-model="formData.menu_sort" type="number" />
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -167,40 +147,33 @@
 
 <script>
 import {
-  ruleList,
-  ruleProhibit,
-  ruleAdd,
-  ruleEdit,
-  ruleDele,
-  menuList
+  menuList,
+  menuAdd,
+  menuEdit,
+  menuDele,
+  menuProhibit,
+  menuUnauth
 } from '@/api/admin'
-import Pagination from '@/components/Pagination'
 
 export default {
-  name: 'Rule',
-  components: { Pagination },
+  name: 'Menu',
   data() {
     return {
       loading: false,
-      loadingTime: 250,
+      loadingTime: 0,
       tableData: [],
       tableCount: 0,
-      tableQuery: {
-        page: 1,
-        limit: 10
-      },
+      tableQuery: {},
       formVisible: false,
-      formMenu: [],
       formData: {
-        admin_rule_id: '',
-        admin_menu_ids: [],
-        rule_name: '',
-        rule_desc: '',
-        rule_sort: '',
-        is_prohibit: '0'
+        admin_menu_id: '',
+        menu_pid: 0,
+        menu_name: '',
+        menu_url: '',
+        menu_sort: 200
       },
       formRules: {
-        rule_name: [{ required: true, message: '必填', trigger: 'blur' }]
+        menu_name: [{ required: true, message: '必填', trigger: 'blur' }]
       }
     }
   },
@@ -225,7 +198,7 @@ export default {
     },
     tableList() {
       this.loadingOpen()
-      ruleList(this.tableQuery)
+      menuList(this.tableQuery)
         .then(res => {
           this.tableData = res.data.list
           this.tableCount = res.data.count
@@ -235,59 +208,50 @@ export default {
           this.loadingClose()
         })
     },
-    tableSort(sort) {
-      this.tableQuery.order_field = sort.prop
-      this.tableQuery.order_type = ''
-      if (sort.order === 'ascending') {
-        this.tableQuery.order_type = 'asc'
-        this.tableList()
-      }
-      if (sort.order === 'descending') {
-        this.tableQuery.order_type = 'desc'
-        this.tableList()
-      }
-    },
     tableProhibit(row) {
       this.loadingOpen()
-      ruleProhibit(row)
+      menuProhibit(row)
         .then(res => {
           this.message(res.msg)
           this.tableList()
         })
         .catch(() => {
-          this.loadingOpen()
+          this.loadingClose()
         })
     },
-    tableSearch() {
-      this.tableQuery.page = 1
-      this.tableList()
+    tableUnauth(row) {
+      this.loadingOpen()
+      menuUnauth(row)
+        .then(res => {
+          this.message(res.msg)
+          this.tableList()
+        })
+        .catch(() => {
+          this.loadingClose()
+        })
     },
     tableReset() {
-      this.tableQuery = { page: 1, limit: 10 }
       this.tableList()
     },
     tableAdd() {
       this.formVisible = true
-      this.formMenuList()
       this.formReset()
     },
     tableEdit(row) {
       this.formVisible = true
-      this.formMenuList()
       this.formReset(row)
     },
     tableDele(row) {
-      this.$confirm('确定要删除吗？', '提示', {
+      this.$confirm('确定删除吗（它所有子菜单也将删除）？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       })
         .then(() => {
           this.loadingOpen()
-          this.formData.admin_rule_id = row.admin_rule_id
-          ruleDele(this.formData)
+          menuDele({ admin_menu_id: row.admin_menu_id })
             .then(res => {
-              this.message(res.msg)
+              this.$message(res.msg)
               this.formReset()
               this.tableList()
             })
@@ -297,27 +261,22 @@ export default {
         })
         .catch(() => {})
     },
-    formMenuList() {
-      menuList().then(res => {
-        this.formMenu = res.data.list
-      })
-    },
-    formMenuCheck(data, node) {
-      this.formData.admin_menu_ids = node.checkedKeys
+    formMenuChange(value) {
+      this.formData.menu_pid = value[value.length - 1]
     },
     formReset(row) {
       if (row) {
-        this.formData.admin_rule_id = row.admin_rule_id
-        this.formData.admin_menu_ids = row.admin_menu_ids
-        this.formData.rule_name = row.rule_name
-        this.formData.rule_desc = row.rule_desc
-        this.formData.rule_sort = row.rule_sort
+        this.formData.admin_menu_id = row.admin_menu_id
+        this.formData.menu_pid = row.menu_pid
+        this.formData.menu_name = row.menu_name
+        this.formData.menu_url = row.menu_url
+        this.formData.menu_sort = row.menu_sort
       } else {
-        this.formData.admin_rule_id = ''
-        this.formData.admin_menu_ids = []
-        this.formData.rule_name = ''
-        this.formData.rule_desc = ''
-        this.formData.rule_sort = 200
+        this.formData.admin_menu_id = ''
+        this.formData.menu_pid = 0
+        this.formData.menu_name = ''
+        this.formData.menu_url = ''
+        this.formData.menu_sort = 200
       }
     },
     formCancel() {
@@ -328,8 +287,8 @@ export default {
       this.$refs['formRef'].validate(valid => {
         if (valid) {
           this.loadingOpen()
-          if (this.formData.admin_rule_id) {
-            ruleEdit(this.formData)
+          if (this.formData.admin_menu_id) {
+            menuEdit(this.formData)
               .then(res => {
                 this.formVisible = false
                 this.message(res.msg)
@@ -340,7 +299,7 @@ export default {
                 this.loadingClose()
               })
           } else {
-            ruleAdd(this.formData)
+            menuAdd(this.formData)
               .then(res => {
                 this.formVisible = false
                 this.message(res.msg)

@@ -1,10 +1,10 @@
 import request from '@/utils/request'
 // 系统设置
 
-// ---------------登录|退出----------------
+// ----------------登录|退出----------------
 /**
  * 登录
- * @param {array} data
+ * @param {array} data 请求数据
  */
 export function login(data) {
   return request({
@@ -24,10 +24,10 @@ export function logout(data) {
   })
 }
 
-// ---------------菜单管理------------------
+// ----------------菜单管理----------------
 /**
  * 菜单列表
- * @param {array} params 参数
+ * @param {array} params 请求参数
  */
 export function menuList(params) {
   return request({
@@ -38,7 +38,7 @@ export function menuList(params) {
 }
 /**
  * 菜单添加
- * @param {array} data 参数
+ * @param {array} data 请求数据
  */
 export function menuAdd(data) {
   return request({
@@ -49,7 +49,7 @@ export function menuAdd(data) {
 }
 /**
  * 菜单修改
- * @param {array} data 参数
+ * @param {array} data 请求数据
  */
 export function menuEdit(data) {
   return request({
@@ -60,7 +60,7 @@ export function menuEdit(data) {
 }
 /**
  * 菜单删除
- * @param {array} data 参数
+ * @param {array} data 请求数据
  */
 export function menuDele(data) {
   return request({
@@ -71,7 +71,7 @@ export function menuDele(data) {
 }
 /**
  * 菜单是否禁用
- * @param {array} data 参数
+ * @param {array} data 请求数据
  */
 export function menuProhibit(data) {
   return request({
@@ -82,7 +82,7 @@ export function menuProhibit(data) {
 }
 /**
  * 菜单是否无需权限
- * @param {array} data 参数
+ * @param {array} data 请求数据
  */
 export function menuUnauth(data) {
   return request({
@@ -92,10 +92,10 @@ export function menuUnauth(data) {
   })
 }
 
-// ---------------用户管理-----------------
+// ----------------用户管理----------------
 /**
  * 用户列表
- * @param {array} params 参数
+ * @param {array} params 请求参数
  */
 export function userList(params) {
   return request({
@@ -106,7 +106,7 @@ export function userList(params) {
 }
 /**
  * 用户添加
- * @param {array} data 参数
+ * @param {array} data 请求数据
  */
 export function userAdd(data) {
   return request({
@@ -117,7 +117,7 @@ export function userAdd(data) {
 }
 /**
  * 用户修改
- * @param {array} data 参数
+ * @param {array} data 请求数据
  */
 export function userEdit(data) {
   return request({
@@ -128,7 +128,7 @@ export function userEdit(data) {
 }
 /**
  * 用户删除
- * @param {array} data 参数
+ * @param {array} data 请求数据
  */
 export function userDele(data) {
   return request({
@@ -139,7 +139,7 @@ export function userDele(data) {
 }
 /**
  * 用户信息
- * @param {array} params 参数
+ * @param {array} params 请求参数
  */
 export function userInfo(params) {
   return request({
@@ -149,37 +149,19 @@ export function userInfo(params) {
   })
 }
 /**
- * 用户个人中心
- * @param {array} params 参数
- */
-export function userCenterGet(params) {
-  return request({
-    url: '/admin/AdminUser/userCenter',
-    method: 'get',
-    params: params
-  })
-}
-export function userCenterPost(data) {
-  return request({
-    url: '/admin/AdminUser/userCenter',
-    method: 'post',
-    data
-  })
-}
-/**
  * 用户重置密码
- * @param {array} data 参数
+ * @param {array} data 请求数据
  */
-export function userRepwd(data) {
+export function userPwd(data) {
   return request({
-    url: '/admin/AdminUser/userRepwd',
+    url: '/admin/AdminUser/userPwd',
     method: 'post',
     data
   })
 }
 /**
  * 用户权限分配
- * @param {array} data 参数
+ * @param {array} data 请求数据
  */
 export function userRule(data) {
   return request({
@@ -190,7 +172,7 @@ export function userRule(data) {
 }
 /**
  * 用户是否禁用
- * @param {array} data 参数
+ * @param {array} data 请求数据
  */
 export function userProhibit(data) {
   return request({
@@ -201,7 +183,7 @@ export function userProhibit(data) {
 }
 /**
  * 用户是否超管
- * @param {array} data 参数
+ * @param {array} data 请求数据
  */
 export function userSuperAdmin(data) {
   return request({
@@ -211,10 +193,10 @@ export function userSuperAdmin(data) {
   })
 }
 
-// ---------------权限管理----------------
+// ----------------权限管理----------------
 /**
  * 权限列表
- * @param {array} params 参数
+ * @param {array} params 请求参数
  */
 export function ruleList(params) {
   return request({
@@ -224,19 +206,8 @@ export function ruleList(params) {
   })
 }
 /**
- * 权限是否禁用
- * @param {array} data 参数
- */
-export function ruleProhibit(data) {
-  return request({
-    url: '/admin/AdminRule/ruleProhibit',
-    method: 'post',
-    data
-  })
-}
-/**
  * 权限添加
- * @param {array} data 参数
+ * @param {array} data 请求数据
  */
 export function ruleAdd(data) {
   return request({
@@ -247,7 +218,7 @@ export function ruleAdd(data) {
 }
 /**
  * 权限修改
- * @param {array} data 参数
+ * @param {array} data 请求数据
  */
 export function ruleEdit(data) {
   return request({
@@ -258,7 +229,7 @@ export function ruleEdit(data) {
 }
 /**
  * 权限删除
- * @param {array} data 参数
+ * @param {array} data 请求数据
  */
 export function ruleDele(data) {
   return request({
@@ -269,7 +240,7 @@ export function ruleDele(data) {
 }
 /**
  * 权限信息
- * @param {array} params 参数
+ * @param {array} params 请求参数
  */
 export function ruleInfo(params) {
   return request({
@@ -278,11 +249,22 @@ export function ruleInfo(params) {
     params: params
   })
 }
-
-// -------------日志管理---------------------------
 /**
- * 用户列表
- * @param {array} params 参数
+ * 权限是否禁用
+ * @param {array} data 请求数据
+ */
+export function ruleProhibit(data) {
+  return request({
+    url: '/admin/AdminRule/ruleProhibit',
+    method: 'post',
+    data
+  })
+}
+
+// ----------------日志管理----------------
+/**
+ * 日志列表
+ * @param {array} params 请求参数
  */
 export function logList(params) {
   return request({
@@ -292,8 +274,8 @@ export function logList(params) {
   })
 }
 /**
- * 用户删除
- * @param {array} data 参数
+ * 日志删除
+ * @param {array} data 请求数据
  */
 export function logDele(data) {
   return request({
@@ -303,13 +285,118 @@ export function logDele(data) {
   })
 }
 /**
- * 用户信息
- * @param {array} params 参数
+ * 日志信息
+ * @param {array} params 请求参数
  */
 export function logInfo(params) {
   return request({
     url: '/admin/AdminLog/logInfo',
     method: 'get',
     params: params
+  })
+}
+
+// ----------------个人中心----------------
+/**
+ * 个人信息
+ * @param {array} params 请求参数
+ */
+export function usersInfo(params) {
+  return request({
+    url: '/admin/AdminUsers/usersInfo',
+    method: 'get',
+    params: params
+  })
+}
+/**
+ * 修改信息
+ * @param {array} data 请求数据
+ */
+export function usersEdit(data) {
+  return request({
+    url: '/admin/AdminUsers/usersEdit',
+    method: 'post',
+    data
+  })
+}
+/**
+ * 修改密码
+ * @param {array} data 请求数据
+ */
+export function usersPwd(data) {
+  return request({
+    url: '/admin/AdminUsers/usersPwd',
+    method: 'post',
+    data
+  })
+}
+/**
+ * 更换头像
+ * @param {array} data 请求数据
+ */
+export function usersAvatar(data) {
+  return request({
+    url: '/admin/AdminUsers/usersAvatar',
+    method: 'post',
+    data
+  })
+}
+/**
+ * 日志列表
+ * @param {array} params 请求参数
+ */
+export function usersLog(params) {
+  return request({
+    url: '/admin/AdminUsers/usersLog',
+    method: 'get',
+    params: params
+  })
+}
+
+// 实用工具
+
+// ----------------实用工具----------------
+/**
+ * 生成随机字符
+ * @param {array} data 请求数据
+ */
+export function randomStr(data) {
+  return request({
+    url: '/admin/AdminTool/randomStr',
+    method: 'post',
+    data
+  })
+}
+/**
+ * 时间戳转换
+ * @param {array} data 请求数据
+ */
+export function timestamp(data) {
+  return request({
+    url: '/admin/AdminTool/timestamp',
+    method: 'post',
+    data
+  })
+}
+/**
+ * md5加密
+ * @param {array} data 请求数据
+ */
+export function md5Enc(data) {
+  return request({
+    url: '/admin/AdminTool/md5Enc',
+    method: 'post',
+    data
+  })
+}
+/**
+ * 生成二维码
+ * @param {array} data 请求数据
+ */
+export function Qrcode(data) {
+  return request({
+    url: '/admin/AdminTool/qrcode',
+    method: 'post',
+    data
   })
 }

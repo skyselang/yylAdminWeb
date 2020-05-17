@@ -34,7 +34,7 @@ import Md5Enc from './components/Md5Enc'
 import Qrcode from './components/Qrcode'
 
 export default {
-  name: 'Tool',
+  name: 'Tools',
   components: { RandomStr, Timestamp, Md5Enc, Qrcode },
   data() {
     return {}

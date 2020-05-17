@@ -59,7 +59,12 @@
           sortable="custom"
         />
         <el-table-column prop="nickname" label="昵称" min-width="110" />
-        <el-table-column prop="remark" label="备注" min-width="100" show-overflow-tooltip />
+        <el-table-column
+          prop="email"
+          label="邮箱"
+          min-width="100"
+          show-overflow-tooltip
+        />
         <el-table-column
           prop="sort"
           label="排序"
@@ -159,6 +164,89 @@
         :limit.sync="tableQuery.limit"
         @pagination="tableList"
       />
+      <!-- edit、add -->
+      <el-dialog
+        :title="formData.admin_user_id ? '修改' : '添加'"
+        :visible.sync="formVisible"
+      >
+        <el-form
+          ref="formRef"
+          :rules="formRules"
+          :model="formData"
+          label-position="right"
+          label-width="120px"
+          style="width: 80%; margin-left:50px;"
+        >
+          <el-form-item
+            v-if="formData.admin_user_id && formData.avatar"
+            label="头像"
+          >
+            <el-avatar
+              shape="circle"
+              fit="contain"
+              :size="100"
+              :src="formData.avatar"
+            />
+          </el-form-item>
+          <el-form-item label="账号" prop="username">
+            <el-input
+              v-model="formData.username"
+              placeholder="请输入账号"
+              clearable
+            />
+          </el-form-item>
+          <el-form-item label="昵称" prop="nickname">
+            <el-input
+              v-model="formData.nickname"
+              placeholder="请输入昵称"
+              clearable
+            />
+          </el-form-item>
+          <el-form-item
+            v-if="formData.admin_user_id == ''"
+            label="密码"
+            prop="password"
+          >
+            <el-input
+              v-model="formData.password"
+              placeholder="请输入密码"
+              clearable
+              show-password
+            />
+          </el-form-item>
+          <el-form-item label="邮箱" prop="email">
+            <el-input v-model="formData.email" clearable />
+          </el-form-item>
+          <el-form-item label="备注" prop="remark">
+            <el-input v-model="formData.remark" clearable />
+          </el-form-item>
+          <el-form-item label="排序" prop="sort">
+            <el-input v-model="formData.sort" type="number" />
+          </el-form-item>
+          <el-form-item
+            v-if="formData.admin_user_id"
+            label="更新时间"
+            prop="update_time"
+          >
+            <el-input v-model="formData.update_time" placeholder="" disabled />
+          </el-form-item>
+          <el-form-item
+            v-if="formData.admin_user_id"
+            label="退出时间"
+            prop="logout_time"
+          >
+            <el-input v-model="formData.logout_time" placeholder="" disabled />
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="formCancel">
+            取消
+          </el-button>
+          <el-button type="primary" @click="formSubmit">
+            提交
+          </el-button>
+        </div>
+      </el-dialog>
       <!-- 权限分配 -->
       <el-dialog title="权限分配" :visible.sync="formVisibleRule">
         <el-form
@@ -170,6 +258,9 @@
         >
           <el-form-item label="账号">
             <el-input v-model="formData.username" clearable disabled />
+          </el-form-item>
+          <el-form-item label="昵称">
+            <el-input v-model="formData.nickname" clearable disabled />
           </el-form-item>
           <el-form-item label="权限">
             <el-checkbox-group v-model="formData.admin_rule_ids">
@@ -205,8 +296,16 @@
           <el-form-item label="账号">
             <el-input v-model="formData.username" clearable disabled />
           </el-form-item>
+          <el-form-item label="昵称">
+            <el-input v-model="formData.nickname" clearable disabled />
+          </el-form-item>
           <el-form-item label="新密码" prop="password">
-            <el-input v-model="formData.password" clearable show-password />
+            <el-input
+              v-model="formData.password"
+              placeholder="请输入新密码"
+              clearable
+              show-password
+            />
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -218,48 +317,6 @@
           </el-button>
         </div>
       </el-dialog>
-      <!-- edit、add -->
-      <el-dialog
-        :title="formData.admin_user_id ? '修改' : '添加'"
-        :visible.sync="formVisible"
-      >
-        <el-form
-          ref="formRef"
-          :rules="formRules"
-          :model="formData"
-          label-position="right"
-          label-width="120px"
-          style="width: 80%; margin-left:50px;"
-        >
-          <el-form-item label="账号" prop="username">
-            <el-input v-model="formData.username" clearable />
-          </el-form-item>
-          <el-form-item label="昵称" prop="nickname">
-            <el-input v-model="formData.nickname" clearable />
-          </el-form-item>
-          <el-form-item
-            v-if="formData.admin_user_id == ''"
-            label="密码"
-            prop="password"
-          >
-            <el-input v-model="formData.password" clearable show-password />
-          </el-form-item>
-          <el-form-item label="排序" prop="sort">
-            <el-input v-model="formData.sort" type="number" />
-          </el-form-item>
-          <el-form-item label="备注" prop="remark">
-            <el-input v-model="formData.remark" clearable />
-          </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="formCancel">
-            取消
-          </el-button>
-          <el-button type="primary" @click="formSubmit">
-            提交
-          </el-button>
-        </div>
-      </el-dialog>
     </div>
   </div>
 </template>
@@ -267,13 +324,14 @@
 <script>
 import {
   userList,
-  userSuperAdmin,
-  userProhibit,
-  userRule,
-  userRepwd,
   userAdd,
   userEdit,
   userDele,
+  userInfo,
+  userSuperAdmin,
+  userProhibit,
+  userRule,
+  userPwd,
   ruleList
 } from '@/api/admin'
 import Pagination from '@/components/Pagination'
@@ -284,7 +342,7 @@ export default {
   data() {
     return {
       loading: false,
-      loadingTime: 250,
+      loadingTime: 0,
       tableData: [],
       tableCount: 0,
       tableQuery: {
@@ -301,6 +359,7 @@ export default {
         username: '',
         nickname: '',
         password: '',
+        email: '',
         remark: '',
         sort: '',
         is_prohibit: '0',
@@ -392,7 +451,9 @@ export default {
     },
     tableEdit(row) {
       this.formVisible = true
-      this.formReset(row)
+      userInfo({ admin_user_id: row.admin_user_id }).then(res => {
+        this.formReset(res.data)
+      })
     },
     tableEditRule(row) {
       this.formVisibleRule = true
@@ -411,8 +472,7 @@ export default {
       })
         .then(() => {
           this.loadingOpen()
-          this.formData.admin_user_id = row.admin_user_id
-          userDele(this.formData)
+          userDele({ admin_user_id: row.admin_user_id })
             .then(res => {
               this.message(res.msg)
               this.formReset()
@@ -425,27 +485,33 @@ export default {
         .catch(() => {})
     },
     formRuleList() {
-      ruleList().then(res => {
+      ruleList({ page: 1, limit: 9999 }).then(res => {
         this.formRule = res.data.list
       })
     },
     formReset(row) {
+      const data = this.formData
       if (row) {
-        this.formData.admin_user_id = row.admin_user_id
-        this.formData.admin_rule_ids = row.admin_rule_ids
-        this.formData.username = row.username
-        this.formData.nickname = row.nickname
-        this.formData.password = ''
-        this.formData.remark = row.remark
-        this.formData.sort = row.sort
+        data.admin_user_id = row.admin_user_id
+        data.admin_rule_ids = row.admin_rule_ids ? row.admin_rule_ids : []
+        data.username = row.username
+        data.nickname = row.nickname
+        data.password = ''
+        data.email = row.email ? row.email : ''
+        data.remark = row.remark ? row.remark : ''
+        data.sort = row.sort
+        data.update_time = row.update_time ? row.update_time : ''
+        data.logout_time = row.logout_time ? row.logout_time : ''
+        data.avatar = row.avatar ? row.avatar : ''
       } else {
-        this.formData.admin_user_id = ''
-        this.formData.admin_rule_ids = []
-        this.formData.username = ''
-        this.formData.nickname = ''
-        this.formData.password = ''
-        this.formData.remark = ''
-        this.formData.sort = 200
+        data.admin_user_id = ''
+        data.admin_rule_ids = []
+        data.username = ''
+        data.nickname = ''
+        data.password = ''
+        data.email = ''
+        data.remark = ''
+        data.sort = 200
       }
     },
     formCancelRule() {
@@ -477,7 +543,7 @@ export default {
       this.$refs['formPwdRef'].validate(valid => {
         if (valid) {
           this.loadingOpen()
-          userRepwd(this.formData)
+          userPwd(this.formData)
             .then(res => {
               this.formVisiblePwd = false
               this.message(res.msg)

@@ -4,23 +4,25 @@ import {
   userInfo
 } from '@/api/admin'
 import {
-  getToken,
   setToken,
+  getToken,
   delToken,
-  getAdminUserId,
   setAdminUserId,
+  getAdminUserId,
   delAdminUserId,
-  delUsername,
-  delNickname,
   setUsername,
-  setNickname
+  delUsername,
+  setNickname,
+  delNickname,
+  setAvatar,
+  delAvatar
 } from '@/utils/auth'
 import router, {
   resetRouter
 } from '@/router'
 
 const state = {
-  AdminUserId: '',
+  adminUserId: '',
   username: '',
   nickname: '',
   avatar: '',
@@ -30,8 +32,8 @@ const state = {
 }
 
 const mutations = {
-  SET_ADMINUSERID: (state, AdminUserId) => {
-    state.AdminUserId = AdminUserId
+  SET_ADMINUSERID: (state, adminUserId) => {
+    state.adminUserId = adminUserId
   },
   SET_USERNAME: (state, username) => {
     state.username = username
@@ -99,6 +101,7 @@ const actions = {
         }
 
         const {
+          admin_user_id,
           username,
           nickname,
           avatar,
@@ -111,13 +114,15 @@ const actions = {
           reject('获取权限失败, 请重新登录！')
         }
 
-        commit('SET_ROLES', roles)
+        commit('SET_ADMINUSERID', admin_user_id)
         commit('SET_NICKNAME', nickname)
         commit('SET_USERNAME', username)
         commit('SET_AVATAR', avatar)
         commit('SET_REMARK', remark)
+        commit('SET_ROLES', roles)
         setUsername(data.username)
         setNickname(data.nickname)
+        setAvatar(data.avatar)
         resolve(data)
       }).catch(error => {
         reject(error)
@@ -140,6 +145,7 @@ const actions = {
         delAdminUserId()
         delUsername()
         delNickname()
+        delAvatar()
         delToken()
         resetRouter()
 
