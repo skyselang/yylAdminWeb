@@ -45,6 +45,7 @@
         border
         style="width: 100%"
         @sort-change="tableSort"
+        @cell-click="tableClick"
       >
         <el-table-column
           prop="admin_log_id"
@@ -56,7 +57,7 @@
         <el-table-column
           prop="admin_user_id"
           label="用户ID"
-          min-width="80"
+          min-width="90"
           sortable="custom"
         />
         <el-table-column prop="username" label="用户账号" min-width="200" />
@@ -106,6 +107,14 @@
         :limit.sync="tableQuery.limit"
         @pagination="tableList"
       />
+      <!-- ip地址 -->
+      <el-dialog
+        :title="ipTitle"
+        :visible.sync="ipVisible"
+        width="50%"
+      >
+        <iframe :src="ipUrl" frameborder="0" width="100%" height="600" />
+      </el-dialog>
       <!-- edit、add -->
       <el-dialog
         :title="'日志ID：' + formData.admin_log_id"
@@ -177,6 +186,9 @@ export default {
         page: 1,
         limit: 10
       },
+      ipTitle: '',
+      ipUrl: '',
+      ipVisible: false,
       formVisible: false,
       formData: {},
       formRules: {}
@@ -223,6 +235,13 @@ export default {
       if (sort.order === 'descending') {
         this.tableQuery.order_type = 'desc'
         this.tableList()
+      }
+    },
+    tableClick(row, column, cell, event) {
+      if (column.label === '请求IP') {
+        this.ipTitle = row.request_ip
+        this.ipUrl = 'https://www.ip.cn/?ip=' + row.request_ip
+        this.ipVisible = true
       }
     },
     tableSearch() {
