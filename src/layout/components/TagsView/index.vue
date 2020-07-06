@@ -1,34 +1,24 @@
 <template>
   <div id="tags-view-container" class="tags-view-container">
-    <scroll-pane ref="scrollPane" class="tags-view-wrapper">
+    <scroll-pane ref="scrollPane" class="tags-view-wrapper" @scroll="handleScroll">
       <router-link
         v-for="tag in visitedViews"
         ref="tag"
         :key="tag.path"
-        :class="isActive(tag) ? 'active' : ''"
+        :class="isActive(tag)?'active':''"
         :to="{ path: tag.path, query: tag.query, fullPath: tag.fullPath }"
         tag="span"
         class="tags-view-item"
-        @click.middle.native="!isAffix(tag) ? closeSelectedTag(tag) : ''"
-        @contextmenu.prevent.native="openMenu(tag, $event)"
+        @click.middle.native="!isAffix(tag)?closeSelectedTag(tag):''"
+        @contextmenu.prevent.native="openMenu(tag,$event)"
       >
         {{ tag.title }}
-        <span
-          v-if="!isAffix(tag)"
-          class="el-icon-close"
-          @click.prevent.stop="closeSelectedTag(tag)"
-        />
+        <span v-if="!isAffix(tag)" class="el-icon-close" @click.prevent.stop="closeSelectedTag(tag)" />
       </router-link>
     </scroll-pane>
-    <ul
-      v-show="visible"
-      :style="{ left: left + 'px', top: top + 'px' }"
-      class="contextmenu"
-    >
+    <ul v-show="visible" :style="{left:left+'px',top:top+'px'}" class="contextmenu">
       <!-- <li @click="refreshSelectedTag(selectedTag)">刷新</li> -->
-      <li v-if="!isAffix(selectedTag)" @click="closeSelectedTag(selectedTag)">
-        关闭当前
-      </li>
+      <li v-if="!isAffix(selectedTag)" @click="closeSelectedTag(selectedTag)">关闭</li>
       <li @click="closeOthersTags">关闭其它</li>
       <li @click="closeAllTags(selectedTag)">关闭所有</li>
     </ul>
@@ -104,7 +94,7 @@ export default {
       return tags
     },
     initTags() {
-      const affixTags = (this.affixTags = this.filterAffixTags(this.routes))
+      const affixTags = this.affixTags = this.filterAffixTags(this.routes)
       for (const tag of affixTags) {
         // Must have tag name
         if (tag.name) {
@@ -145,21 +135,17 @@ export default {
       })
     },
     closeSelectedTag(view) {
-      this.$store
-        .dispatch('tagsView/delView', view)
-        .then(({ visitedViews }) => {
-          if (this.isActive(view)) {
-            this.toLastView(visitedViews, view)
-          }
-        })
+      this.$store.dispatch('tagsView/delView', view).then(({ visitedViews }) => {
+        if (this.isActive(view)) {
+          this.toLastView(visitedViews, view)
+        }
+      })
     },
     closeOthersTags() {
       this.$router.push(this.selectedTag)
-      this.$store
-        .dispatch('tagsView/delOthersViews', this.selectedTag)
-        .then(() => {
-          this.moveToCurrentTag()
-        })
+      this.$store.dispatch('tagsView/delOthersViews', this.selectedTag).then(() => {
+        this.moveToCurrentTag()
+      })
     },
     closeAllTags(view) {
       this.$store.dispatch('tagsView/delAllViews').then(({ visitedViews }) => {
@@ -203,6 +189,9 @@ export default {
     },
     closeMenu() {
       this.visible = false
+    },
+    handleScroll() {
+      this.closeMenu()
     }
   }
 }

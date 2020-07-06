@@ -7,7 +7,10 @@
       @toggleClick="toggleSideBar"
     />
 
-    <breadcrumb id="breadcrumb-container" class="breadcrumb-container" />
+    <breadcrumb
+      id="breadcrumb-container"
+      class="breadcrumb-container"
+    />
 
     <div class="right-menu">
       <template v-if="device !== 'mobile'">
@@ -19,7 +22,10 @@
             {{ nickname }}
           </router-link>
         </span>
-        <search id="header-search" class="right-menu-item" />
+        <search
+          id="header-search"
+          class="right-menu-item"
+        />
 
         <error-log class="errLog-container right-menu-item hover-effect" />
 
@@ -29,8 +35,15 @@
           title="全屏"
         />
 
-        <el-tooltip content="字体大小" effect="dark" placement="bottom">
-          <size-select id="size-select" class="right-menu-item hover-effect" />
+        <el-tooltip
+          content="字体大小"
+          effect="dark"
+          placement="bottom"
+        >
+          <size-select
+            id="size-select"
+            class="right-menu-item hover-effect"
+          />
         </el-tooltip>
       </template>
 
@@ -55,11 +68,17 @@
           />
           <i class="el-icon-caret-bottom" />
         </div>
-        <el-dropdown-menu slot="dropdown" style="text-align:center">
+        <el-dropdown-menu
+          slot="dropdown"
+          style="text-align:center"
+        >
           <router-link to="/">
             <el-dropdown-item>控制台</el-dropdown-item>
           </router-link>
-          <el-dropdown-item divided @click.native="logout">
+          <el-dropdown-item
+            divided
+            @click.native="logout"
+          >
             <span style="display:block;">退出</span>
           </el-dropdown-item>
         </el-dropdown-menu>
