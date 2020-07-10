@@ -2,7 +2,7 @@
   <div class="login-container">
     <el-form
       ref="fromRef"
-      :model="formData"
+      :model="formModel"
       :rules="formRules"
       class="login-form"
       autocomplete="on"
@@ -14,8 +14,8 @@
 
       <el-form-item prop="username">
         <el-input
-          v-model="formData.username"
-          placeholder="账号"
+          v-model="formModel.username"
+          placeholder="请输入账号"
           name="username"
           type="text"
           prefix-icon="el-icon-user"
@@ -25,8 +25,8 @@
       </el-form-item>
       <el-form-item prop="password">
         <el-input
-          v-model="formData.password"
-          placeholder="密码"
+          v-model="formModel.password"
+          placeholder="请输入密码"
           name="password"
           type="password"
           prefix-icon="el-icon-lock"
@@ -35,6 +35,34 @@
           show-password
         />
       </el-form-item>
+      <el-form-item
+        v-if="verifyShow"
+        prop="verify_code"
+      >
+        <el-col span="13">
+          <el-input
+            v-model="formModel.verify_code"
+            style="height:50px;line-height:50px;"
+            placeholder="请输入验证码"
+            name="verify_code"
+            type="text"
+            prefix-icon="el-icon-picture"
+            autocomplete="off"
+            clearable
+          />
+        </el-col>
+        <el-col span="11">
+          <el-image
+            style="width:200px;height:50px;float:right"
+            :src="verifySrc"
+            fit="fill"
+            alt="验证码"
+            title="点击刷新验证码"
+            @click="verifyRefresh"
+          />
+        </el-col>
+      </el-form-item>
+
       <el-button
         :loading="loading"
         type="primary"
@@ -46,6 +74,7 @@
 </template>
 
 <script>
+import { verify } from '@/api/admin'
 import getPageTitle from '@/utils/get-page-title'
 
 export default {
@@ -57,13 +86,20 @@ export default {
       loading: false,
       redirect: undefined,
       otherQuery: {},
-      formData: {
+      verifyShow: false,
+      verifySrc: '',
+      formModel: {
         username: '',
-        password: ''
+        password: '',
+        verify_id: '',
+        verify_code: ''
       },
       formRules: {
         username: [{ required: true, message: '请输入账号', trigger: 'blur' }],
-        password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
+        password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
+        verify_code: [
+          { required: true, message: '请输入验证码', trigger: 'blur' }
+        ]
       }
     }
   },
@@ -79,16 +115,29 @@ export default {
       immediate: true
     }
   },
-  created() {},
+  created() {
+    this.getVerify()
+  },
   mounted() {},
   destroyed() {},
   methods: {
+    getVerify() {
+      verify()
+        .then(res => {
+          this.verifyShow = res.data.is_verify
+          if (res.data.is_verify) {
+            this.verifySrc = res.data.verify_src
+            this.formModel.verify_id = res.data.verify_id
+          }
+        })
+        .catch(() => {})
+    },
     handleLogin() {
       this.$refs.fromRef.validate(valid => {
         if (valid) {
           this.loading = true
           this.$store
-            .dispatch('user/login', this.formData)
+            .dispatch('user/login', this.formModel)
             .then(() => {
               this.$router.push({
                 path: this.redirect || '/',
@@ -111,6 +160,9 @@ export default {
         }
         return acc
       }, {})
+    },
+    verifyRefresh() {
+      this.getVerify()
     }
   }
 }

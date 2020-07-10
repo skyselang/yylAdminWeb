@@ -23,6 +23,16 @@ export function logout(data) {
     data
   })
 }
+/**
+ * 验证码
+ * @param {array} data 请求数据
+ */
+export function verify() {
+  return request({
+    url: '/admin/AdminLogin/verify',
+    method: 'get'
+  })
+}
 
 // ----------------菜单管理----------------
 /**
