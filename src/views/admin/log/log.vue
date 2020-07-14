@@ -3,92 +3,30 @@
     <div>
       <!-- search -->
       <div class="filter-container">
-        <el-input
-          v-model="tableQuery.admin_user_id"
-          placeholder="用户ID"
-          style="width: 120px;"
-          class="filter-item"
-          clearable
-        />
-        <el-input
-          v-model="tableQuery.menu_url"
-          placeholder="菜单链接"
-          style="width: 300px;"
-          class="filter-item"
-          clearable
-        />
-        <el-date-picker
-          v-model="tableQuery.insert_time"
-          type="daterange"
-          style="width: 240px;top: -4px;"
-          range-separator="-"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          value-format="yyyy-MM-dd"
-        />
+        <el-input v-model="tableQuery.admin_user_id" placeholder="用户ID" style="width: 120px;" class="filter-item" clearable />
+        <el-input v-model="tableQuery.menu_url" placeholder="菜单链接" style="width: 280px;" class="filter-item" clearable />
+        <el-date-picker v-model="tableQuery.insert_time" type="daterange" style="width: 240px;top: -4px;" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd" />
         <el-button class="filter-item" type="primary" @click="tableSearch">
           查询
         </el-button>
-        <el-button
-          class="filter-item"
-          style="float:right;"
-          type="primary"
-          @click="tableReset"
-        >
+        <el-button class="filter-item" style="float:right;" type="primary" @click="tableReset">
           刷新
         </el-button>
       </div>
       <!-- table -->
-      <el-table
-        v-loading="loading"
-        :data="tableData"
-        border
-        style="width: 100%"
-        @sort-change="tableSort"
-        @cell-click="tableClick"
-      >
-        <el-table-column
-          prop="admin_log_id"
-          label="ID"
-          min-width="100"
-          sortable="custom"
-          fixed="left"
-        />
-        <el-table-column
-          prop="admin_user_id"
-          label="用户ID"
-          min-width="90"
-          sortable="custom"
-        />
-        <el-table-column prop="username" label="用户账号" min-width="200" />
-        <el-table-column prop="nickname" label="用户昵称" min-width="120" />
+      <el-table v-loading="loading" :data="tableData" border style="width: 100%" @sort-change="tableSort" @cell-click="tableClick">
+        <el-table-column prop="admin_log_id" label="ID" min-width="100" sortable="custom" fixed="left" />
+        <el-table-column prop="admin_user_id" label="用户ID" min-width="90" sortable="custom" />
+        <el-table-column prop="username" label="用户账号" min-width="110" />
+        <el-table-column prop="nickname" label="用户昵称" min-width="110" />
         <el-table-column prop="menu_url" label="菜单链接" min-width="220" />
         <el-table-column prop="menu_name" label="菜单名称" min-width="120" />
-        <el-table-column
-          prop="request_method"
-          label="请求方式 "
-          min-width="110"
-          sortable="custom"
-        />
-        <el-table-column
-          prop="request_ip"
-          label="请求IP"
-          min-width="130"
-          sortable="custom"
-        />
-        <el-table-column
-          prop="insert_time"
-          label="请求时间"
-          min-width="160"
-          sortable="custom"
-        />
-        <el-table-column
-          label="操作"
-          min-width="150"
-          align="right"
-          fixed="right"
-          class-name="small-padding fixed-width"
-        >
+        <el-table-column prop="request_method" label="请求方式 " min-width="110" sortable="custom" />
+        <el-table-column prop="request_ip" label="请求IP" min-width="130" sortable="custom" />
+        <el-table-column prop="request_region" label="请求地区" min-width="150" />
+        <el-table-column prop="request_isp" label="请求ISP" min-width="110" />
+        <el-table-column prop="insert_time" label="请求时间" min-width="160" sortable="custom" />
+        <el-table-column label="操作" min-width="150" align="right" fixed="right" class-name="small-padding fixed-width">
           <template slot-scope="{ row }">
             <el-button size="mini" type="primary" @click="tableInfo(row)">
               信息
@@ -100,60 +38,46 @@
         </el-table-column>
       </el-table>
       <!-- page -->
-      <pagination
-        v-show="tableCount > 0"
-        :total="tableCount"
-        :page.sync="tableQuery.page"
-        :limit.sync="tableQuery.limit"
-        @pagination="tableList"
-      />
-      <!-- ip地址 -->
-      <el-dialog
-        :title="ipTitle"
-        :visible.sync="ipVisible"
-        width="50%"
-      >
+      <pagination v-show="tableCount > 0" :total="tableCount" :page.sync="tableQuery.page" :limit.sync="tableQuery.limit" @pagination="tableList" />
+      <!-- ip info -->
+      <el-dialog :title="ipTitle" :visible.sync="ipVisible" width="50%">
         <iframe :src="ipUrl" frameborder="0" width="100%" height="600" />
       </el-dialog>
       <!-- edit、add -->
-      <el-dialog
-        :title="'日志ID：' + formData.admin_log_id"
-        :visible.sync="formVisible"
-      >
-        <el-form
-          ref="formRef"
-          :rules="formRules"
-          :model="formData"
-          label-position="right"
-          label-width="120px"
-          style="width: 80%; margin-left:50px;"
-        >
+      <el-dialog :title="'日志信息 ID：' + formModel.admin_log_id" :visible.sync="formVisible" top="6vh">
+        <el-form ref="formRef" :rules="formRules" :model="formModel" label-position="right" label-width="120px" style="width: 80%; margin-left:50px;">
           <el-form-item label="用户ID" prop="admin_user_id">
-            <el-input v-model="formData.admin_user_id" />
+            <el-input v-model="formModel.admin_user_id" />
           </el-form-item>
           <el-form-item label="用户账号" prop="username">
-            <el-input v-model="formData.username" />
+            <el-input v-model="formModel.username" />
           </el-form-item>
           <el-form-item label="用户昵称" prop="nickname">
-            <el-input v-model="formData.nickname" />
+            <el-input v-model="formModel.nickname" />
           </el-form-item>
           <el-form-item label="菜单链接" prop="menu_url">
-            <el-input v-model="formData.menu_url" />
+            <el-input v-model="formModel.menu_url" />
           </el-form-item>
           <el-form-item label="菜单名称" prop="menu_name">
-            <el-input v-model="formData.menu_name" />
+            <el-input v-model="formModel.menu_name" />
           </el-form-item>
           <el-form-item label="请求方式" prop="request_method">
-            <el-input v-model="formData.request_method" />
+            <el-input v-model="formModel.request_method" />
           </el-form-item>
           <el-form-item label="请求IP" prop="request_ip">
-            <el-input v-model="formData.request_ip" />
+            <el-input v-model="formModel.request_ip" />
+          </el-form-item>
+          <el-form-item label="请求地区" prop="request_region">
+            <el-input v-model="formModel.request_region" />
+          </el-form-item>
+          <el-form-item label="请求ISP" prop="request_isp">
+            <el-input v-model="formModel.request_isp" />
           </el-form-item>
           <el-form-item label="请求时间" prop="insert_time">
-            <el-input v-model="formData.insert_time" />
+            <el-input v-model="formModel.insert_time" />
           </el-form-item>
           <el-form-item label="请求参数" prop="request_param">
-            <pre>{{ formData.request_param }}</pre>
+            <pre>{{ formModel.request_param }}</pre>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -190,7 +114,7 @@ export default {
       ipUrl: '',
       ipVisible: false,
       formVisible: false,
-      formData: {},
+      formModel: {},
       formRules: {}
     }
   },
@@ -286,27 +210,9 @@ export default {
     },
     formReset(row) {
       if (row) {
-        this.formData.admin_log_id = row.admin_log_id
-        this.formData.admin_user_id = row.admin_user_id
-        this.formData.username = row.username
-        this.formData.nickname = row.nickname
-        this.formData.menu_url = row.menu_url
-        this.formData.menu_name = row.menu_name
-        this.formData.request_method = row.request_method
-        this.formData.request_ip = row.request_ip
-        this.formData.request_param = row.request_param
-        this.formData.insert_time = row.insert_time
+        this.formModel = row
       } else {
-        this.formData.admin_log_id = ''
-        this.formData.admin_user_id = ''
-        this.formData.username = ''
-        this.formData.nickname = ''
-        this.formData.menu_url = ''
-        this.formData.menu_name = ''
-        this.formData.request_method = ''
-        this.formData.request_ip = ''
-        this.formData.request_param = ''
-        this.formData.insert_time = ''
+        this.formModel = {}
       }
     },
     formCancel() {
