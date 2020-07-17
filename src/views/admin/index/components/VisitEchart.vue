@@ -124,7 +124,7 @@
 
     <el-card class="box-card">
       <el-row :gutter="0">
-        <div id="visitIspEchart" style="width:100%;height:400px" />
+        <div id="visitIspEchart" style="width:100%;height:500px" />
       </el-row>
     </el-card>
   </div>
@@ -281,7 +281,7 @@ export default {
         },
         legend: {
           orient: 'vertical',
-          left: 'left',
+          left: '3%',
           data: this.visitData.isp.isp
         },
         series: [
