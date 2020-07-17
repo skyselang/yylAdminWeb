@@ -1,5 +1,17 @@
 import request from '@/utils/request'
-// 系统设置
+
+// ----------------控制台-------------------
+/**
+ * 访问量
+ *  @param {array} params 请求参数
+ */
+export function visit(params) {
+  return request({
+    url: '/admin/AdminIndex/visit',
+    method: 'get',
+    params: params
+  })
+}
 
 // ----------------登录|退出----------------
 /**
@@ -15,6 +27,7 @@ export function login(data) {
 }
 /**
  * 退出
+ * @param {array} data 请求数据
  */
 export function logout(data) {
   return request({
@@ -25,12 +38,13 @@ export function logout(data) {
 }
 /**
  * 验证码
- * @param {array} data 请求数据
+ *  @param {array} params 请求参数
  */
-export function verify() {
+export function verify(params) {
   return request({
     url: '/admin/AdminLogin/verify',
-    method: 'get'
+    method: 'get',
+    params: params
   })
 }
 
