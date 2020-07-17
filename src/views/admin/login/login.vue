@@ -1,74 +1,26 @@
 <template>
   <div class="login-container">
-    <el-form
-      ref="fromRef"
-      :model="formModel"
-      :rules="formRules"
-      class="login-form"
-      autocomplete="on"
-      label-position="left"
-    >
+    <el-form ref="fromRef" :model="formModel" :rules="formRules" class="login-form" autocomplete="on" label-position="left">
       <div class="title-container">
         <h3 class="title">{{ title }}</h3>
       </div>
 
       <el-form-item prop="username">
-        <el-input
-          v-model="formModel.username"
-          placeholder="请输入账号"
-          name="username"
-          type="text"
-          prefix-icon="el-icon-user"
-          autocomplete="on"
-          clearable
-        />
+        <el-input v-model="formModel.username" placeholder="请输入账号" name="username" type="text" prefix-icon="el-icon-user" autocomplete="on" clearable />
       </el-form-item>
       <el-form-item prop="password">
-        <el-input
-          v-model="formModel.password"
-          placeholder="请输入密码"
-          name="password"
-          type="password"
-          prefix-icon="el-icon-lock"
-          autocomplete="on"
-          clearable
-          show-password
-        />
+        <el-input v-model="formModel.password" placeholder="请输入密码" name="password" type="password" prefix-icon="el-icon-lock" autocomplete="on" clearable show-password />
       </el-form-item>
-      <el-form-item
-        v-if="verifyShow"
-        prop="verify_code"
-      >
-        <el-col span="13">
-          <el-input
-            v-model="formModel.verify_code"
-            style="height:50px;line-height:50px;"
-            placeholder="请输入验证码"
-            name="verify_code"
-            type="text"
-            prefix-icon="el-icon-picture"
-            autocomplete="off"
-            clearable
-          />
+      <el-form-item v-if="verifyShow" prop="verify_code">
+        <el-col :span="13">
+          <el-input v-model="formModel.verify_code" style="height:50px;line-height:50px;" placeholder="请输入验证码" name="verify_code" type="text" prefix-icon="el-icon-picture" autocomplete="off" clearable />
         </el-col>
-        <el-col span="11">
-          <el-image
-            style="width:200px;height:50px;float:right"
-            :src="verifySrc"
-            fit="fill"
-            alt="验证码"
-            title="点击刷新验证码"
-            @click="verifyRefresh"
-          />
+        <el-col :span="11">
+          <el-image style="width:200px;height:50px;float:right" :src="verifySrc" fit="fill" alt="验证码" title="点击刷新验证码" @click="verifyRefresh" />
         </el-col>
       </el-form-item>
 
-      <el-button
-        :loading="loading"
-        type="primary"
-        style="width:100%;margin-bottom:30px;"
-        @click.native.prevent="handleLogin"
-      >登录</el-button>
+      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
     </el-form>
   </div>
 </template>
@@ -139,10 +91,12 @@ export default {
           this.$store
             .dispatch('user/login', this.formModel)
             .then(() => {
-              this.$router.push({
-                path: this.redirect || '/',
-                query: this.otherQuery
-              })
+              this.$router
+                .push({
+                  path: this.redirect || '/',
+                  query: this.otherQuery
+                })
+                .catch(() => {})
               this.loading = false
             })
             .catch(() => {

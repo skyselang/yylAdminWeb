@@ -1,11 +1,25 @@
 <template>
   <div>
     <el-card class="box-card">
-      <div slot="header" class="clearfix">
-        <span style="display:block;text-align:center;color:#666;font-size:20px;font-weight:700">yylAdmin：{{ visitData.count.total }}</span>
-      </div>
       <el-row :gutter="10">
-        <el-col :span="4">
+        <el-col :span="6">
+          <el-card class="box-card">
+            <div slot="header" class="clearfix">
+              <span>总计</span>
+            </div>
+            <div class="text item">
+              <el-row :gutter="0">
+                <el-col :span="12">
+                  <svg-icon icon-class="visitDays" class-name="card-panel-icon" style="font-size:48px" />
+                </el-col>
+                <el-col :span="12">
+                  {{ visitData.count.total }}
+                </el-col>
+              </el-row>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="3">
           <el-card class="box-card">
             <div slot="header" class="clearfix">
               <span>今天</span>
@@ -22,7 +36,7 @@
             </div>
           </el-card>
         </el-col>
-        <el-col :span="4">
+        <el-col :span="3">
           <el-card class="box-card">
             <div slot="header" class="clearfix">
               <span>昨天</span>
@@ -39,7 +53,7 @@
             </div>
           </el-card>
         </el-col>
-        <el-col :span="4">
+        <el-col :span="3">
           <el-card class="box-card">
             <div slot="header" class="clearfix">
               <span>本周</span>
@@ -56,7 +70,7 @@
             </div>
           </el-card>
         </el-col>
-        <el-col :span="4">
+        <el-col :span="3">
           <el-card class="box-card">
             <div slot="header" class="clearfix">
               <span>上周</span>
@@ -73,7 +87,7 @@
             </div>
           </el-card>
         </el-col>
-        <el-col :span="4">
+        <el-col :span="3">
           <el-card class="box-card">
             <div slot="header" class="clearfix">
               <span>本月</span>
@@ -90,7 +104,7 @@
             </div>
           </el-card>
         </el-col>
-        <el-col :span="4">
+        <el-col :span="3">
           <el-card class="box-card">
             <div slot="header" class="clearfix">
               <span>上月</span>
