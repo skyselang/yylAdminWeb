@@ -1,10 +1,5 @@
 <template>
-  <iframe
-    src="http://api.map.baidu.com/lbsapi/getpoint/index.html"
-    frameborder="0"
-    width="100%"
-    :height="curHeight"
-  />
+  <iframe src="https://api.map.baidu.com/lbsapi/getpoint/index.html" frameborder="0" width="100%" :height="curHeight" />
 </template>
 
 <script>

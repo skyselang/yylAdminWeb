@@ -1,10 +1,5 @@
 <template>
-  <iframe
-    src="http://lbs.qq.com/tool/getpoint/index.html"
-    frameborder="0"
-    width="100%"
-    :height="curHeight"
-  />
+  <iframe src="https://lbs.qq.com/tool/getpoint/index.html" frameborder="0" width="100%" :height="curHeight" />
 </template>
 
 <script>

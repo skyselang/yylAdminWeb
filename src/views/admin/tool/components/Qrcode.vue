@@ -4,29 +4,12 @@
       <span>生成二维码</span>
     </div>
     <div class="text item" style="height:280px">
-      <el-form
-        ref="formRef"
-        :rules="formRules"
-        :model="formModel"
-        label-position="right"
-        label-width="80px"
-        style="width: 80%; margin-left:50px;"
-      >
+      <el-form ref="formRef" :rules="formRules" :model="formModel" label-position="right" label-width="80px" style="width: 80%; margin-left:50px;">
         <el-form-item label="文本" prop="qrcode_str">
-          <el-input
-            v-model="formModel.qrcode_str"
-            placeholder="请输入文本内容"
-            clearable
-          />
+          <el-input v-model="formModel.qrcode_str" placeholder="请输入文本内容" clearable />
         </el-form-item>
         <el-form-item label="二维码" prop="qrcode_url">
-          <el-image
-            v-if="formModel.qrcode_url"
-            style="width: 150px; height: 150px"
-            :src="formModel.qrcode_url"
-            fit="fill"
-            title="右击图片另存为"
-          />
+          <el-image v-if="formModel.qrcode_url" style="width: 150px; height: 150px" :src="formModel.qrcode_url" fit="fill" title="右击图片另存为" />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="download()">

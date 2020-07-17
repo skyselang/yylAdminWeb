@@ -4,40 +4,21 @@
       <span>时间戳转换</span>
     </div>
     <div class="text item" style="height:280px">
-      <el-form
-        ref="formRef"
-        :rules="formRules"
-        :model="formModel"
-        label-position="right"
-        label-width="80px"
-        style="width: 80%; margin-left:50px;"
-      >
+      <el-form ref="formRef" :rules="formRules" :model="formModel" label-position="right" label-width="80px" style="width: 80%; margin-left:50px;">
         <el-row>
           <el-col :span="11">
             <el-form-item label="时间">
-              <el-date-picker
-                v-model="formModel.from_datetime"
-                type="datetime"
-                value-format="yyyy-MM-dd HH:mm:ss"
-                placeholder="2020-02-02 02:02:02"
-              />
+              <el-date-picker v-model="formModel.from_datetime" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" placeholder="2020-02-02 02:02:02" />
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item label="时间戳">
-              <el-input
-                v-model="formModel.to_timestamp"
-                placeholder="1580580122"
-                clearable
-              />
+              <el-input v-model="formModel.to_timestamp" placeholder="1580580122" clearable />
             </el-form-item>
           </el-col>
         </el-row>
         <el-form-item>
-          <el-button
-            type="primary"
-            @click="handleCopy(formModel.to_timestamp, $event)"
-          >
+          <el-button type="primary" @click="handleCopy(formModel.to_timestamp, $event)">
             复制
           </el-button>
           <el-button type="primary" @click="datetimeSubmit()">
@@ -48,28 +29,17 @@
         <el-row>
           <el-col :span="11">
             <el-form-item label="时间戳">
-              <el-input
-                v-model="formModel.from_timestamp"
-                placeholder="1580580122"
-                clearable
-              />
+              <el-input v-model="formModel.from_timestamp" placeholder="1580580122" clearable />
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item label="时间">
-              <el-input
-                v-model="formModel.to_datetime"
-                placeholder="2020-02-02 02:02:02"
-                clearable
-              />
+              <el-input v-model="formModel.to_datetime" placeholder="2020-02-02 02:02:02" clearable />
             </el-form-item>
           </el-col>
         </el-row>
         <el-form-item>
-          <el-button
-            type="primary"
-            @click="handleCopy(formModel.to_datetime, $event)"
-          >
+          <el-button type="primary" @click="handleCopy(formModel.to_datetime, $event)">
             复制
           </el-button>
           <el-button type="primary" @click="timestampSubmit()">

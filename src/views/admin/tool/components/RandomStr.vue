@@ -4,33 +4,17 @@
       <span>生成随机字符</span>
     </div>
     <div class="text item" style="height:280px">
-      <el-form
-        ref="formRef"
-        :rules="formRules"
-        :model="formModel"
-        label-position="right"
-        label-width="80px"
-        style="width: 80%; margin-left:50px;"
-      >
+      <el-form ref="formRef" :rules="formRules" :model="formModel" label-position="right" label-width="80px" style="width: 80%; margin-left:50px;">
         <el-form-item label="所用字符" prop="random_ids">
           <el-checkbox-group v-model="formModel.random_ids">
-            <el-checkbox
-              v-for="item in formModel.randomArr"
-              :key="item.random_id"
-              :label="item.random_id"
-            >
+            <el-checkbox v-for="item in formModel.randomArr" :key="item.random_id" :label="item.random_id">
               {{ item.random_label }}
             </el-checkbox>
           </el-checkbox-group>
         </el-form-item>
         <el-form-item label="字符长度">
           <el-select v-model="formModel.random_len" placeholder="请选择">
-            <el-option
-              v-for="item in formModel.random_lens"
-              :key="item"
-              :label="item"
-              :value="item"
-            >
+            <el-option v-for="item in formModel.random_lens" :key="item" :label="item" :value="item">
               {{ item }}
             </el-option>
           </el-select>
@@ -39,10 +23,7 @@
           <el-input v-model="formModel.random_str" clearable />
         </el-form-item>
         <el-form-item>
-          <el-button
-            type="primary"
-            @click="handleCopy(formModel.random_str, $event)"
-          >
+          <el-button type="primary" @click="handleCopy(formModel.random_str, $event)">
             复制
           </el-button>
           <el-button type="primary" @click="randomSubmit(formModel.random_len)">

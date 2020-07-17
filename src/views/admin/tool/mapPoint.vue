@@ -22,6 +22,7 @@ import MapPointAmap from './components/MapPointAmap'
 import MapPointBaidu from './components/MapPointBaidu'
 import MapPointGoogle from './components/MapPointGoogle'
 import MapPointQq from './components/MapPointQq'
+
 export default {
   name: 'MapPoint',
   components: { MapPointAmap, MapPointBaidu, MapPointGoogle, MapPointQq },

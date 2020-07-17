@@ -1,10 +1,5 @@
 <template>
-  <iframe
-    src="https://www.google.com/maps/"
-    frameborder="0"
-    width="100%"
-    :height="curHeight"
-  />
+  <iframe src="https://www.google.com/maps/" frameborder="0" width="100%" :height="curHeight" />
 </template>
 
 <script>

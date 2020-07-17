@@ -1,10 +1,5 @@
 <template>
-  <iframe
-    src="https://lbs.amap.com/console/show/picker"
-    frameborder="0"
-    width="100%"
-    :height="curHeight"
-  />
+  <iframe src="https://lbs.amap.com/console/show/picker" frameborder="0" width="100%" :height="curHeight" />
 </template>
 
 <script>

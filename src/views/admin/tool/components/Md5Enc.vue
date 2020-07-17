@@ -4,20 +4,9 @@
       <span>MD5加密</span>
     </div>
     <div class="text item" style="height:280px">
-      <el-form
-        ref="formRef"
-        :rules="formRules"
-        :model="formModel"
-        label-position="right"
-        label-width="80px"
-        style="width: 80%; margin-left:50px;"
-      >
+      <el-form ref="formRef" :rules="formRules" :model="formModel" label-position="right" label-width="80px" style="width: 80%; margin-left:50px;">
         <el-form-item label="文本内容" prop="str">
-          <el-input
-            v-model="formModel.str"
-            placeholder="请输入文本内容"
-            clearable
-          />
+          <el-input v-model="formModel.str" placeholder="请输入文本内容" clearable />
         </el-form-item>
         <el-form-item label="MD5 16位">
           <el-input v-model="formModel.md5_16" clearable />
@@ -26,16 +15,10 @@
           <el-input v-model="formModel.md5_32" clearable />
         </el-form-item>
         <el-form-item>
-          <el-button
-            type="primary"
-            @click="handleCopy(formModel.md5_16, $event)"
-          >
+          <el-button type="primary" @click="handleCopy(formModel.md5_16, $event)">
             复制16
           </el-button>
-          <el-button
-            type="primary"
-            @click="handleCopy(formModel.md5_32, $event)"
-          >
+          <el-button type="primary" @click="handleCopy(formModel.md5_32, $event)">
             复制32
           </el-button>
           <el-button type="primary" @click="md5encSubmit(formModel.raw)">
