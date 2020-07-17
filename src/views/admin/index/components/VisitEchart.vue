@@ -2,7 +2,7 @@
   <div>
     <el-card class="box-card">
       <div slot="header" class="clearfix">
-        <span style="display:block;text-align:center;color:#666;font-size:20px;font-weight:700">{{ visitData.count.total }}</span>
+        <span style="display:block;text-align:center;color:#666;font-size:20px;font-weight:700">yylAdmin：{{ visitData.count.total }}</span>
       </div>
       <el-row :gutter="10">
         <el-col :span="4">
@@ -112,13 +112,19 @@
 
     <el-card class="box-card">
       <el-row :gutter="0">
-        <div id="visitCountEchart" style="width:100%;height:400px" />
+        <div id="visitDateEchart" style="width:100%;height:400px" />
       </el-row>
     </el-card>
 
     <el-card class="box-card">
       <el-row :gutter="0">
         <div id="visitCityEchart" style="width:100%;height:400px" />
+      </el-row>
+    </el-card>
+
+    <el-card class="box-card">
+      <el-row :gutter="0">
+        <div id="visitIspEchart" style="width:100%;height:400px" />
       </el-row>
     </el-card>
   </div>
@@ -143,11 +149,18 @@ export default {
           thismonth: '--',
           lastmonth: '--'
         },
-        line: {
+        date: {
           date: [],
-          data: []
+          num: []
         },
-        city: {}
+        city: {
+          city: [],
+          num: []
+        },
+        isp: {
+          isp: [],
+          num: []
+        }
       }
     }
   },
@@ -160,16 +173,21 @@ export default {
       visit()
         .then(res => {
           this.visitData = res.data
-          this.visitCount()
+          this.visitDate()
           this.visitCity()
+          this.visitIsp()
         })
         .catch(() => {})
     },
-    visitCount() {
-      var visitCountEchart = echarts.init(
-        document.getElementById('visitCountEchart')
+    visitDate() {
+      var visitDateEchart = echarts.init(
+        document.getElementById('visitDateEchart')
       )
       var option = {
+        title: {
+          text: 'DATE',
+          left: 'center'
+        },
         color: ['#3398DB'],
         tooltip: {
           trigger: 'axis',
@@ -186,26 +204,30 @@ export default {
         xAxis: {
           type: 'category',
           boundaryGap: false,
-          data: this.visitData.line.date
+          data: this.visitData.date.date
         },
         yAxis: {
           type: 'value'
         },
         series: [
           {
-            data: this.visitData.line.data,
+            data: this.visitData.date.num,
             type: 'line',
             areaStyle: {}
           }
         ]
       }
-      visitCountEchart.setOption(option)
+      visitDateEchart.setOption(option)
     },
     visitCity() {
       var visitCityEchart = echarts.init(
         document.getElementById('visitCityEchart')
       )
       var option = {
+        title: {
+          text: 'CITY',
+          left: 'center'
+        },
         color: ['#3398DB'],
         tooltip: {
           trigger: 'axis',
@@ -243,6 +265,43 @@ export default {
         ]
       }
       visitCityEchart.setOption(option)
+    },
+    visitIsp() {
+      var visitIspEchart = echarts.init(
+        document.getElementById('visitIspEchart')
+      )
+      var option = {
+        title: {
+          text: 'ISP',
+          left: 'center'
+        },
+        tooltip: {
+          trigger: 'item',
+          formatter: '{a} <br/>{b} : {c} ({d}%)'
+        },
+        legend: {
+          orient: 'vertical',
+          left: 'left',
+          data: this.visitData.isp.isp
+        },
+        series: [
+          {
+            name: 'ISP',
+            type: 'pie',
+            radius: '55%',
+            center: ['50%', '60%'],
+            data: this.visitData.isp.num,
+            emphasis: {
+              itemStyle: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: 'rgba(0, 0, 0, 0.5)'
+              }
+            }
+          }
+        ]
+      }
+      visitIspEchart.setOption(option)
     }
   }
 }
