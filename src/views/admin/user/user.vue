@@ -3,129 +3,40 @@
     <div>
       <!-- search -->
       <div class="filter-container">
-        <el-input
-          v-model="tableQuery.username"
-          placeholder="账号"
-          style="width: 200px;"
-          class="filter-item"
-          clearable
-        />
-        <el-input
-          v-model="tableQuery.nickname"
-          placeholder="昵称"
-          style="width: 200px;"
-          class="filter-item"
-          clearable
-        />
+        <el-input v-model="tableQuery.username" placeholder="账号" style="width: 200px;" class="filter-item" clearable />
+        <el-input v-model="tableQuery.nickname" placeholder="昵称" style="width: 200px;" class="filter-item" clearable />
         <el-button class="filter-item" type="primary" @click="tableSearch">
           查询
         </el-button>
-        <el-button
-          class="filter-item"
-          style="float:right;margin-left:10px"
-          type="primary"
-          @click="tableAdd"
-        >
+        <el-button class="filter-item" style="float:right;margin-left:10px" type="primary" @click="tableAdd">
           添加
         </el-button>
-        <el-button
-          class="filter-item"
-          style="float:right;"
-          type="primary"
-          @click="tableReset"
-        >
+        <el-button class="filter-item" style="float:right;" type="primary" @click="tableReset">
           刷新
         </el-button>
       </div>
       <!-- table -->
-      <el-table
-        v-loading="loading"
-        :data="tableData"
-        border
-        style="width: 100%"
-        @sort-change="tableSort"
-      >
-        <el-table-column
-          prop="admin_user_id"
-          label="ID"
-          min-width="80"
-          sortable="custom"
-          fixed="left"
-        />
-        <el-table-column
-          prop="username"
-          label="账号"
-          min-width="200"
-          sortable="custom"
-        />
+      <el-table v-loading="loading" :data="tableData" border style="width: 100%" @sort-change="tableSort">
+        <el-table-column prop="admin_user_id" label="ID" min-width="80" sortable="custom" fixed="left" />
+        <el-table-column prop="username" label="账号" min-width="200" sortable="custom" />
         <el-table-column prop="nickname" label="昵称" min-width="110" />
-        <el-table-column
-          prop="email"
-          label="邮箱"
-          min-width="100"
-          show-overflow-tooltip
-        />
-        <el-table-column
-          prop="sort"
-          label="排序"
-          width="80"
-          sortable="custom"
-        />
-        <el-table-column
-          prop="login_num"
-          label="登录次数"
-          min-width="110"
-          sortable="custom"
-        />
+        <el-table-column prop="email" label="邮箱" min-width="100" show-overflow-tooltip />
+        <el-table-column prop="sort" label="排序" width="80" sortable="custom" />
+        <el-table-column prop="login_num" label="登录次数" min-width="110" sortable="custom" />
         <el-table-column prop="login_ip" label="登录IP" min-width="130" />
-        <el-table-column
-          prop="login_time"
-          label="登录时间"
-          min-width="160"
-          sortable="custom"
-        />
-        <el-table-column
-          prop="insert_time"
-          label="添加时间"
-          min-width="160"
-          sortable="custom"
-        />
-        <el-table-column
-          prop="is_super_admin"
-          label="是否超管"
-          min-width="80"
-          align="center"
-        >
+        <el-table-column prop="login_time" label="登录时间" min-width="160" sortable="custom" />
+        <el-table-column prop="insert_time" label="添加时间" min-width="160" sortable="custom" />
+        <el-table-column prop="is_super_admin" label="是否超管" min-width="80" align="center">
           <template slot-scope="scope">
-            <el-switch
-              v-model="scope.row.is_super_admin"
-              active-value="1"
-              inactive-value="0"
-              @change="tableSuperAdmin(scope.row)"
-            />
+            <el-switch v-model="scope.row.is_super_admin" active-value="1" inactive-value="0" @change="tableSuperAdmin(scope.row)" />
           </template>
         </el-table-column>
-        <el-table-column
-          prop="is_prohibit"
-          label="是否禁用"
-          min-width="80"
-          align="center"
-        >
+        <el-table-column prop="is_prohibit" label="是否禁用" min-width="80" align="center">
           <template slot-scope="scope">
-            <el-switch
-              v-model="scope.row.is_prohibit"
-              active-value="1"
-              inactive-value="0"
-              @change="tableProhibit(scope.row)"
-            />
+            <el-switch v-model="scope.row.is_prohibit" active-value="1" inactive-value="0" @change="tableProhibit(scope.row)" />
           </template>
         </el-table-column>
-        <el-table-column
-          prop="is_prohibit"
-          label="权限"
-          min-width="80"
-          align="center"
-        >
+        <el-table-column prop="is_prohibit" label="权限" min-width="80" align="center">
           <template slot-scope="{ row }">
             <el-button size="mini" type="primary" @click="tableEditRule(row)">
               权限
@@ -139,13 +50,7 @@
             </el-button>
           </template>
         </el-table-column>
-        <el-table-column
-          label="操作"
-          min-width="150"
-          align="right"
-          fixed="right"
-          class-name="small-padding fixed-width"
-        >
+        <el-table-column label="操作" min-width="150" align="right" fixed="right" class-name="small-padding fixed-width">
           <template slot-scope="{ row }">
             <el-button size="mini" type="primary" @click="tableEdit(row)">
               修改
@@ -157,62 +62,21 @@
         </el-table-column>
       </el-table>
       <!-- page -->
-      <pagination
-        v-show="tableCount > 0"
-        :total="tableCount"
-        :page.sync="tableQuery.page"
-        :limit.sync="tableQuery.limit"
-        @pagination="tableList"
-      />
+      <pagination v-show="tableCount > 0" :total="tableCount" :page.sync="tableQuery.page" :limit.sync="tableQuery.limit" @pagination="tableList" />
       <!-- edit、add -->
-      <el-dialog
-        :title="formData.admin_user_id ? '修改' : '添加'"
-        :visible.sync="formVisible"
-      >
-        <el-form
-          ref="formRef"
-          :rules="formRules"
-          :model="formData"
-          label-position="right"
-          label-width="120px"
-          style="width: 80%; margin-left:50px;"
-        >
-          <el-form-item
-            v-if="formData.admin_user_id && formData.avatar"
-            label="头像"
-          >
-            <el-avatar
-              shape="circle"
-              fit="contain"
-              :size="100"
-              :src="formData.avatar"
-            />
+      <el-dialog :title="formData.admin_user_id ? '修改' : '添加'" :visible.sync="formVisible">
+        <el-form ref="formRef" :rules="formRules" :model="formData" label-position="right" label-width="120px" style="width: 80%; margin-left:50px;">
+          <el-form-item v-if="formData.admin_user_id && formData.avatar" label="头像">
+            <el-avatar shape="circle" fit="contain" :size="100" :src="formData.avatar" />
           </el-form-item>
           <el-form-item label="账号" prop="username">
-            <el-input
-              v-model="formData.username"
-              placeholder="请输入账号"
-              clearable
-            />
+            <el-input v-model="formData.username" placeholder="请输入账号" clearable />
           </el-form-item>
           <el-form-item label="昵称" prop="nickname">
-            <el-input
-              v-model="formData.nickname"
-              placeholder="请输入昵称"
-              clearable
-            />
+            <el-input v-model="formData.nickname" placeholder="请输入昵称" clearable />
           </el-form-item>
-          <el-form-item
-            v-if="formData.admin_user_id == ''"
-            label="密码"
-            prop="password"
-          >
-            <el-input
-              v-model="formData.password"
-              placeholder="请输入密码"
-              clearable
-              show-password
-            />
+          <el-form-item v-if="formData.admin_user_id == ''" label="密码" prop="password">
+            <el-input v-model="formData.password" placeholder="请输入密码" clearable show-password />
           </el-form-item>
           <el-form-item label="邮箱" prop="email">
             <el-input v-model="formData.email" clearable />
@@ -223,18 +87,10 @@
           <el-form-item label="排序" prop="sort">
             <el-input v-model="formData.sort" type="number" />
           </el-form-item>
-          <el-form-item
-            v-if="formData.admin_user_id"
-            label="更新时间"
-            prop="update_time"
-          >
+          <el-form-item v-if="formData.admin_user_id" label="更新时间" prop="update_time">
             <el-input v-model="formData.update_time" placeholder="" disabled />
           </el-form-item>
-          <el-form-item
-            v-if="formData.admin_user_id"
-            label="退出时间"
-            prop="logout_time"
-          >
+          <el-form-item v-if="formData.admin_user_id" label="退出时间" prop="logout_time">
             <el-input v-model="formData.logout_time" placeholder="" disabled />
           </el-form-item>
         </el-form>
@@ -249,13 +105,7 @@
       </el-dialog>
       <!-- 权限分配 -->
       <el-dialog title="权限分配" :visible.sync="formVisibleRule">
-        <el-form
-          ref="formRuleRef"
-          :model="formData"
-          label-position="right"
-          label-width="120px"
-          style="width: 80%; margin-left:50px;"
-        >
+        <el-form ref="formRuleRef" :model="formData" label-position="right" label-width="120px" style="width: 80%; margin-left:50px;">
           <el-form-item label="账号">
             <el-input v-model="formData.username" clearable disabled />
           </el-form-item>
@@ -264,11 +114,7 @@
           </el-form-item>
           <el-form-item label="权限">
             <el-checkbox-group v-model="formData.admin_rule_ids">
-              <el-checkbox
-                v-for="item in formRule"
-                :key="item.admin_rule_id"
-                :label="item.admin_rule_id"
-              >{{ item.rule_name }}</el-checkbox>
+              <el-checkbox v-for="item in formRule" :key="item.admin_rule_id" :label="item.admin_rule_id">{{ item.rule_name }}</el-checkbox>
             </el-checkbox-group>
           </el-form-item>
         </el-form>
@@ -283,16 +129,7 @@
       </el-dialog>
       <!-- 密码重置 -->
       <el-dialog title="密码重置" :visible.sync="formVisiblePwd">
-        <el-form
-          ref="formPwdRef"
-          :rules="{
-            password: [{ required: true, message: '必填', trigger: 'blur' }]
-          }"
-          :model="formData"
-          label-position="right"
-          label-width="120px"
-          style="width: 80%; margin-left:50px;"
-        >
+        <el-form ref="formPwdRef" :rules="rePwdRules" :model="formData" label-position="right" label-width="120px" style="width: 80%; margin-left:50px;">
           <el-form-item label="账号">
             <el-input v-model="formData.username" clearable disabled />
           </el-form-item>
@@ -300,12 +137,7 @@
             <el-input v-model="formData.nickname" clearable disabled />
           </el-form-item>
           <el-form-item label="新密码" prop="password">
-            <el-input
-              v-model="formData.password"
-              placeholder="请输入新密码"
-              clearable
-              show-password
-            />
+            <el-input v-model="formData.password" placeholder="请输入新密码" clearable show-password />
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -368,6 +200,9 @@ export default {
       formRules: {
         username: [{ required: true, message: '必填', trigger: 'blur' }],
         nickname: [{ required: true, message: '必填', trigger: 'blur' }],
+        password: [{ required: true, message: '必填', trigger: 'blur' }]
+      },
+      rePwdRules: {
         password: [{ required: true, message: '必填', trigger: 'blur' }]
       }
     }

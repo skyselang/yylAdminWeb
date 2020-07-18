@@ -5,14 +5,7 @@
         <el-tabs v-model="tabActName">
           <el-tab-pane label="系统设置" name="setting">
             <el-card class="box-card">
-              <el-form
-                ref="formRef"
-                :rules="formRules"
-                :model="formData"
-                label-position="right"
-                label-width="120px"
-                style="width: 60%; margin-left:50px;"
-              >
+              <el-form ref="formRef" :rules="formRules" :model="formData" label-position="right" label-width="120px" style="width: 60%; margin-left:50px;">
                 <el-form-item label="主题">
                   <theme-picker @change="themeChange" />
                 </el-form-item>
@@ -92,29 +85,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-// .drawer-container {
-//   padding: 24px;
-//   font-size: 14px;
-//   line-height: 1.5;
-//   word-wrap: break-word;
-
-//   .drawer-title {
-//     margin-bottom: 12px;
-//     color: rgba(0, 0, 0, .85);
-//     font-size: 14px;
-//     line-height: 22px;
-//   }
-
-//   .drawer-item {
-//     color: rgba(0, 0, 0, .65);
-//     font-size: 14px;
-//     padding: 12px 0;
-//   }
-
-//   .drawer-switch {
-//     float: right
-//   }
-// }
-</style>

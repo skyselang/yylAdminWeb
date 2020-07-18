@@ -1,84 +1,37 @@
 <template>
   <div class="navbar">
-    <hamburger
-      id="hamburger-container"
-      :is-active="sidebar.opened"
-      class="hamburger-container"
-      @toggleClick="toggleSideBar"
-    />
+    <hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
 
-    <breadcrumb
-      id="breadcrumb-container"
-      class="breadcrumb-container"
-    />
+    <breadcrumb id="breadcrumb-container" class="breadcrumb-container" />
 
     <div class="right-menu">
       <template v-if="device !== 'mobile'">
-        <span
-          style="display:inline-block;float:left;margin-right:10px;color:#409eff"
-          :title="username"
-        >
+        <span style="display:inline-block;float:left;margin-right:10px;color:#409eff" :title="username">
           <router-link to="/admin/users">
             {{ nickname }}
           </router-link>
         </span>
-        <search
-          id="header-search"
-          class="right-menu-item"
-        />
 
-        <error-log class="errLog-container right-menu-item hover-effect" />
+        <search id="header-search" class="right-menu-item" />
 
-        <screenfull
-          id="screenfull"
-          class="right-menu-item hover-effect"
-          title="全屏"
-        />
+        <screenfull id="screenfull" class="right-menu-item hover-effect" title="全屏" />
 
-        <el-tooltip
-          content="字体大小"
-          effect="dark"
-          placement="bottom"
-        >
-          <size-select
-            id="size-select"
-            class="right-menu-item hover-effect"
-          />
+        <el-tooltip content="字体大小" effect="dark" placement="bottom">
+          <size-select id="size-select" class="right-menu-item hover-effect" />
         </el-tooltip>
       </template>
 
-      <el-dropdown
-        class="avatar-container right-menu-item hover-effect"
-        trigger="click"
-      >
+      <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
-          <el-avatar
-            v-if="avatar"
-            shape="circle"
-            fit="contain"
-            :size="48"
-            :src="avatar"
-          />
-          <el-avatar
-            v-else
-            shape="circle"
-            fit="contain"
-            :size="48"
-            src="/favicon.ico"
-          />
+          <el-avatar v-if="avatar" shape="circle" fit="contain" :size="48" :src="avatar" />
+          <el-avatar v-else shape="circle" fit="contain" :size="48" src="/favicon.ico" />
           <i class="el-icon-caret-bottom" />
         </div>
-        <el-dropdown-menu
-          slot="dropdown"
-          style="text-align:center"
-        >
+        <el-dropdown-menu slot="dropdown" style="text-align:center">
           <router-link to="/">
             <el-dropdown-item>控制台</el-dropdown-item>
           </router-link>
-          <el-dropdown-item
-            divided
-            @click.native="logout"
-          >
+          <el-dropdown-item divided @click.native="logout">
             <span style="display:block;">退出</span>
           </el-dropdown-item>
         </el-dropdown-menu>
@@ -91,7 +44,6 @@
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
-import ErrorLog from '@/components/ErrorLog'
 import Screenfull from '@/components/Screenfull'
 import SizeSelect from '@/components/SizeSelect'
 import Search from '@/components/HeaderSearch'
@@ -101,7 +53,6 @@ export default {
   components: {
     Breadcrumb,
     Hamburger,
-    ErrorLog,
     Screenfull,
     SizeSelect,
     Search
@@ -148,11 +99,6 @@ export default {
 
   .breadcrumb-container {
     float: left;
-  }
-
-  .errLog-container {
-    display: inline-block;
-    vertical-align: top;
   }
 
   .right-menu {

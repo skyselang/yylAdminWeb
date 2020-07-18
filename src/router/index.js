@@ -35,16 +35,15 @@ import Layout from '@/layout'
  * all roles can be accessed
  */
 export const constantRoutes = [
-  // 点击侧边栏 刷新当前路由
-  // {
-  //   path: '/redirect',
-  //   component: Layout,
-  //   hidden: false,
-  //   children: [{
-  //     path: '/redirect/:path(.*)',
-  //     component: () => import('@/views/admin/redirect/redirect')
-  //   }]
-  // },
+  {
+    path: '/redirect',
+    component: Layout,
+    hidden: false,
+    children: [{
+      path: '/redirect/:path(.*)',
+      component: () => import('@/views/admin/redirect/redirect')
+    }]
+  },
   {
     path: '/login',
     component: () => import('@/views/admin/login/login'),
