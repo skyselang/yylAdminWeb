@@ -195,6 +195,17 @@ export function userRule(data) {
   })
 }
 /**
+ * 用户权限明细
+ * @param {array} params 请求数据
+ */
+export function userRuleInfo(params) {
+  return request({
+    url: '/admin/AdminUser/userRuleInfo',
+    method: 'get',
+    params: params
+  })
+}
+/**
  * 用户是否禁用
  * @param {array} data 请求数据
  */

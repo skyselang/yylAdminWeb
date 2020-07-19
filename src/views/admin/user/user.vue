@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div>
-      <!-- search -->
+      <!-- user search -->
       <div class="filter-container">
         <el-input v-model="tableQuery.username" placeholder="账号" style="width: 200px;" class="filter-item" clearable />
         <el-input v-model="tableQuery.nickname" placeholder="昵称" style="width: 200px;" class="filter-item" clearable />
@@ -15,7 +15,7 @@
           刷新
         </el-button>
       </div>
-      <!-- table -->
+      <!-- user table -->
       <el-table v-loading="loading" :data="tableData" border style="width: 100%" @sort-change="tableSort">
         <el-table-column prop="admin_user_id" label="ID" min-width="80" sortable="custom" fixed="left" />
         <el-table-column prop="username" label="账号" min-width="200" sortable="custom" />
@@ -25,7 +25,6 @@
         <el-table-column prop="login_num" label="登录次数" min-width="110" sortable="custom" />
         <el-table-column prop="login_ip" label="登录IP" min-width="130" />
         <el-table-column prop="login_time" label="登录时间" min-width="160" sortable="custom" />
-        <el-table-column prop="insert_time" label="添加时间" min-width="160" sortable="custom" />
         <el-table-column prop="is_super_admin" label="是否超管" min-width="80" align="center">
           <template slot-scope="scope">
             <el-switch v-model="scope.row.is_super_admin" active-value="1" inactive-value="0" @change="tableSuperAdmin(scope.row)" />
@@ -36,10 +35,13 @@
             <el-switch v-model="scope.row.is_prohibit" active-value="1" inactive-value="0" @change="tableProhibit(scope.row)" />
           </template>
         </el-table-column>
-        <el-table-column prop="is_prohibit" label="权限" min-width="80" align="center">
+        <el-table-column prop="is_prohibit" label="权限" min-width="150" align="center">
           <template slot-scope="{ row }">
             <el-button size="mini" type="primary" @click="tableEditRule(row)">
-              权限
+              分配
+            </el-button>
+            <el-button size="mini" type="primary" @click="tableEditRuleInfo(row)">
+              明细
             </el-button>
           </template>
         </el-table-column>
@@ -61,10 +63,10 @@
           </template>
         </el-table-column>
       </el-table>
-      <!-- page -->
+      <!-- user page -->
       <pagination v-show="tableCount > 0" :total="tableCount" :page.sync="tableQuery.page" :limit.sync="tableQuery.limit" @pagination="tableList" />
-      <!-- edit、add -->
-      <el-dialog :title="formData.admin_user_id ? '修改' : '添加'" :visible.sync="formVisible">
+      <!-- user edit、add -->
+      <el-dialog :title="formData.admin_user_id ? '修改' : '添加'" :visible.sync="formVisible" :before-close="handleClose">
         <el-form ref="formRef" :rules="formRules" :model="formData" label-position="right" label-width="120px" style="width: 80%; margin-left:50px;">
           <el-form-item v-if="formData.admin_user_id && formData.avatar" label="头像">
             <el-avatar shape="circle" fit="contain" :size="100" :src="formData.avatar" />
@@ -87,6 +89,9 @@
           <el-form-item label="排序" prop="sort">
             <el-input v-model="formData.sort" type="number" />
           </el-form-item>
+          <el-form-item v-if="formData.admin_user_id" label="添加时间" prop="insert_time">
+            <el-input v-model="formData.insert_time" placeholder="" disabled />
+          </el-form-item>
           <el-form-item v-if="formData.admin_user_id" label="更新时间" prop="update_time">
             <el-input v-model="formData.update_time" placeholder="" disabled />
           </el-form-item>
@@ -104,7 +109,7 @@
         </div>
       </el-dialog>
       <!-- 权限分配 -->
-      <el-dialog title="权限分配" :visible.sync="formVisibleRule">
+      <el-dialog title="权限分配" :visible.sync="formVisibleRule" top="1vh" :before-close="handleClose">
         <el-form ref="formRuleRef" :model="formData" label-position="right" label-width="120px" style="width: 80%; margin-left:50px;">
           <el-form-item label="账号">
             <el-input v-model="formData.username" clearable disabled />
@@ -112,10 +117,32 @@
           <el-form-item label="昵称">
             <el-input v-model="formData.nickname" clearable disabled />
           </el-form-item>
-          <el-form-item label="权限">
+          <el-form-item label="按权限">
             <el-checkbox-group v-model="formData.admin_rule_ids">
               <el-checkbox v-for="item in formRule" :key="item.admin_rule_id" :label="item.admin_rule_id">{{ item.rule_name }}</el-checkbox>
             </el-checkbox-group>
+          </el-form-item>
+          <el-form-item label="按菜单">
+            <el-tree
+              ref="formMenuRef"
+              :data="formMenu"
+              :default-checked-keys="formData.admin_menu_id"
+              :props="menuProps"
+              :expand-on-click-node="false"
+              node-key="admin_menu_id"
+              default-expand-all
+              show-checkbox
+              check-strictly
+              highlight-current
+              @check="formMenuCheck"
+            >
+              <span slot-scope="{ node, data }" class="custom-tree-node">
+                <span>{{ node.label }}</span>
+                <span v-if="formData.admin_menu_ids.includes(data.admin_menu_id)">
+                  <i class="el-icon-check" />
+                </span>
+              </span>
+            </el-tree>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -127,8 +154,26 @@
           </el-button>
         </div>
       </el-dialog>
+      <!-- 权限明细 -->
+      <el-dialog title="权限明细" :visible.sync="formVisibleRuleInfo" top="1vh" :before-close="handleClose">
+        <el-form ref="formRuleInfoRef" :model="formData" label-position="right" label-width="120px" style="width: 80%; margin-left:50px;">
+          <el-form-item label="账号">
+            <el-input v-model="formData.username" clearable disabled />
+          </el-form-item>
+          <el-form-item label="昵称">
+            <el-input v-model="formData.nickname" clearable disabled />
+          </el-form-item>
+          <el-form-item label="菜单">
+            <el-tree ref="formMenuRef" :data="formMenu" :default-checked-keys="formData.admin_menu_ids" :props="menuProps" :expand-on-click-node="false" node-key="admin_menu_id" default-expand-all show-checkbox check-strictly highlight-current>
+              <span slot-scope="{ node }" class="custom-tree-node">
+                <span>{{ node.label }}</span>
+              </span>
+            </el-tree>
+          </el-form-item>
+        </el-form>
+      </el-dialog>
       <!-- 密码重置 -->
-      <el-dialog title="密码重置" :visible.sync="formVisiblePwd">
+      <el-dialog title="密码重置" :visible.sync="formVisiblePwd" :before-close="handleClose">
         <el-form ref="formPwdRef" :rules="rePwdRules" :model="formData" label-position="right" label-width="120px" style="width: 80%; margin-left:50px;">
           <el-form-item label="账号">
             <el-input v-model="formData.username" clearable disabled />
@@ -163,8 +208,10 @@ import {
   userSuperAdmin,
   userProhibit,
   userRule,
+  userRuleInfo,
   userPwd,
-  ruleList
+  ruleList,
+  menuList
 } from '@/api/admin'
 import Pagination from '@/components/Pagination'
 
@@ -204,7 +251,13 @@ export default {
       },
       rePwdRules: {
         password: [{ required: true, message: '必填', trigger: 'blur' }]
-      }
+      },
+      formVisibleRuleInfo: false,
+      menuProps: {
+        children: 'children',
+        label: 'menu_name'
+      },
+      formMenu: []
     }
   },
   created() {
@@ -225,6 +278,10 @@ export default {
         message: msg,
         type: type
       })
+    },
+    handleClose(done) {
+      this.formReset()
+      done()
     },
     tableList() {
       this.loadingOpen()
@@ -292,8 +349,28 @@ export default {
     },
     tableEditRule(row) {
       this.formVisibleRule = true
+      this.formMenuList()
       this.formReset(row)
       this.formRuleList()
+      this.userRuleInfo(row)
+    },
+    formMenuCheck(data, node) {
+      this.formData.admin_menu_id = node.checkedKeys
+    },
+    formMenuList() {
+      menuList().then(res => {
+        this.formMenu = res.data.list
+      })
+    },
+    tableEditRuleInfo(row) {
+      this.formVisibleRuleInfo = true
+      this.formMenuList()
+      this.userRuleInfo(row)
+    },
+    userRuleInfo(row) {
+      userRuleInfo({ admin_user_id: row.admin_user_id }).then(res => {
+        this.formReset(res.data)
+      })
     },
     tableEditPwd(row) {
       this.formVisiblePwd = true
@@ -326,21 +403,29 @@ export default {
     },
     formReset(row) {
       const data = this.formData
+      data.admin_rule_ids = []
+      data.admin_menu_ids = []
+      data.admin_menu_id = []
       if (row) {
         data.admin_user_id = row.admin_user_id
         data.admin_rule_ids = row.admin_rule_ids ? row.admin_rule_ids : []
+        data.admin_menu_ids = row.admin_menu_ids ? row.admin_menu_ids : []
+        data.admin_menu_id = row.admin_menu_id ? row.admin_menu_id : []
         data.username = row.username
         data.nickname = row.nickname
         data.password = ''
         data.email = row.email ? row.email : ''
         data.remark = row.remark ? row.remark : ''
         data.sort = row.sort
+        data.insert_time = row.insert_time ? row.insert_time : ''
         data.update_time = row.update_time ? row.update_time : ''
         data.logout_time = row.logout_time ? row.logout_time : ''
         data.avatar = row.avatar ? row.avatar : ''
       } else {
         data.admin_user_id = ''
         data.admin_rule_ids = []
+        data.admin_menu_ids = []
+        data.admin_menu_id = []
         data.username = ''
         data.nickname = ''
         data.password = ''

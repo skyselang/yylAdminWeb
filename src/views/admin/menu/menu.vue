@@ -156,13 +156,19 @@ export default {
       ruleLoad: false,
       ruleData: [],
       ruleCount: 0,
-      ruleQuery: {},
+      ruleQuery: {
+        page: 1,
+        limit: 10
+      },
       ruleVisible: false,
       ruleTitle: '',
       userLoad: false,
       userData: [],
       userCount: 0,
-      userQuery: {},
+      userQuery: {
+        page: 1,
+        limit: 10
+      },
       userVisible: false,
       userTitle: ''
     }
