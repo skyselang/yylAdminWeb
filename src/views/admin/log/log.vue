@@ -5,7 +5,7 @@
       <div class="filter-container">
         <el-input v-model="tableQuery.admin_user_id" placeholder="用户ID" style="width: 120px;" class="filter-item" clearable />
         <el-input v-model="tableQuery.menu_url" placeholder="菜单链接" style="width: 280px;" class="filter-item" clearable />
-        <el-date-picker v-model="tableQuery.insert_time" type="daterange" style="width: 240px;top: -4px;" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd" />
+        <el-date-picker v-model="tableQuery.create_time" type="daterange" style="width: 240px;top: -4px;" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd" />
         <el-button class="filter-item" type="primary" @click="tableSearch">
           查询
         </el-button>
@@ -25,7 +25,7 @@
         <el-table-column prop="request_ip" label="请求IP" min-width="130" sortable="custom" />
         <el-table-column prop="request_region" label="请求地区" min-width="150" />
         <el-table-column prop="request_isp" label="请求ISP" min-width="110" />
-        <el-table-column prop="insert_time" label="请求时间" min-width="160" sortable="custom" />
+        <el-table-column prop="create_time" label="请求时间" min-width="160" sortable="custom" />
         <el-table-column label="操作" min-width="150" align="right" fixed="right" class-name="small-padding fixed-width">
           <template slot-scope="{ row }">
             <el-button size="mini" type="primary" @click="tableInfo(row)">
@@ -73,8 +73,8 @@
           <el-form-item label="请求ISP" prop="request_isp">
             <el-input v-model="formModel.request_isp" />
           </el-form-item>
-          <el-form-item label="请求时间" prop="insert_time">
-            <el-input v-model="formModel.insert_time" />
+          <el-form-item label="请求时间" prop="create_time">
+            <el-input v-model="formModel.create_time" />
           </el-form-item>
           <el-form-item label="请求参数" prop="request_param">
             <pre>{{ formModel.request_param }}</pre>

@@ -21,7 +21,7 @@
         <el-table-column prop="rule_name" label="权限" min-width="120" />
         <el-table-column prop="rule_desc" label="描述" min-width="130" />
         <el-table-column prop="rule_sort" label="排序" min-width="100" sortable="custom" />
-        <el-table-column prop="insert_time" label="添加时间" min-width="160" sortable="custom" />
+        <el-table-column prop="create_time" label="添加时间" min-width="160" sortable="custom" />
         <el-table-column prop="update_time" label="修改时间" min-width="160" sortable="custom" />
         <el-table-column prop="is_prohibit" label="是否禁用" min-width="110" align="center" sortable="custom">
           <template slot-scope="scope">

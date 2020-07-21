@@ -89,8 +89,8 @@
           <el-form-item label="排序" prop="sort">
             <el-input v-model="formData.sort" type="number" />
           </el-form-item>
-          <el-form-item v-if="formData.admin_user_id" label="添加时间" prop="insert_time">
-            <el-input v-model="formData.insert_time" placeholder="" disabled />
+          <el-form-item v-if="formData.admin_user_id" label="添加时间" prop="create_time">
+            <el-input v-model="formData.create_time" placeholder="" disabled />
           </el-form-item>
           <el-form-item v-if="formData.admin_user_id" label="更新时间" prop="update_time">
             <el-input v-model="formData.update_time" placeholder="" disabled />
@@ -417,7 +417,7 @@ export default {
         data.email = row.email ? row.email : ''
         data.remark = row.remark ? row.remark : ''
         data.sort = row.sort
-        data.insert_time = row.insert_time ? row.insert_time : ''
+        data.create_time = row.create_time ? row.create_time : ''
         data.update_time = row.update_time ? row.update_time : ''
         data.logout_time = row.logout_time ? row.logout_time : ''
         data.avatar = row.avatar ? row.avatar : ''

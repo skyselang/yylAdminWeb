@@ -3,7 +3,7 @@
     <!-- search -->
     <div class="filter-container">
       <el-input v-model="tableQuery.menu_url" placeholder="菜单链接" style="width: 280px;" class="filter-item" clearable />
-      <el-date-picker v-model="tableQuery.insert_time" type="daterange" style="width: 240px;top: -4px;" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd" />
+      <el-date-picker v-model="tableQuery.create_time" type="daterange" style="width: 240px;top: -4px;" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd" />
       <el-button class="filter-item" type="primary" @click="tableSearch">
         查询
       </el-button>
@@ -23,7 +23,7 @@
       <el-table-column prop="request_ip" label="请求IP" min-width="130" sortable="custom" />
       <el-table-column prop="request_region" label="请求地区" min-width="150" />
       <el-table-column prop="request_isp" label="请求ISP" min-width="110" />
-      <el-table-column prop="insert_time" label="请求时间" min-width="160" sortable="custom" />
+      <el-table-column prop="create_time" label="请求时间" min-width="160" sortable="custom" />
     </el-table>
     <!-- page -->
     <pagination v-show="tableCount > 0" :total="tableCount" :page.sync="tableQuery.page" :limit.sync="tableQuery.limit" @pagination="tableList" />

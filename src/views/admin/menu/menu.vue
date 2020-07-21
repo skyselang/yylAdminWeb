@@ -17,7 +17,7 @@
         <el-table-column prop="menu_sort" label="菜单排序" min-width="100" />
         <el-table-column prop="admin_menu_id" label="ID" min-width="100" />
         <el-table-column prop="menu_pid" label="PID" min-width="100" />
-        <el-table-column prop="insert_time" label="添加时间" min-width="160" />
+        <el-table-column prop="create_time" label="添加时间" min-width="160" />
         <el-table-column prop="update_time" label="修改时间" min-width="160" />
         <el-table-column prop="is_prohibit" label="是否禁用" min-width="100" align="center">
           <template slot-scope="scope">

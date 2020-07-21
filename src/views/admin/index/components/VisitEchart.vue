@@ -10,7 +10,7 @@
             <div class="text item">
               <el-row :gutter="0">
                 <el-col :span="12">
-                  <svg-icon icon-class="visitDays" class-name="card-panel-icon" style="font-size:48px" />
+                  <svg-icon icon-class="visitDays" class-name="card-panel-icon" style="font-size:32px" />
                 </el-col>
                 <el-col :span="12">
                   {{ visitData.count.total }}
@@ -27,7 +27,7 @@
             <div class="text item">
               <el-row :gutter="0">
                 <el-col :span="12">
-                  <svg-icon icon-class="visitDays" class-name="card-panel-icon" style="font-size:48px" />
+                  <svg-icon icon-class="visitDays" class-name="card-panel-icon" style="font-size:32px" />
                 </el-col>
                 <el-col :span="12">
                   {{ visitData.count.today }}
@@ -44,7 +44,7 @@
             <div class="text item">
               <el-row :gutter="0">
                 <el-col :span="12">
-                  <svg-icon icon-class="visitDays" class-name="card-panel-icon" style="font-size:48px" />
+                  <svg-icon icon-class="visitDays" class-name="card-panel-icon" style="font-size:32px" />
                 </el-col>
                 <el-col :span="12">
                   {{ visitData.count.yesterday }}
@@ -61,7 +61,7 @@
             <div class="text item">
               <el-row :gutter="0">
                 <el-col :span="12">
-                  <svg-icon icon-class="visitDays" class-name="card-panel-icon" style="font-size:48px" />
+                  <svg-icon icon-class="visitDays" class-name="card-panel-icon" style="font-size:32px" />
                 </el-col>
                 <el-col :span="12">
                   {{ visitData.count.thisweek }}
@@ -78,7 +78,7 @@
             <div class="text item">
               <el-row :gutter="0">
                 <el-col :span="12">
-                  <svg-icon icon-class="visitDays" class-name="card-panel-icon" style="font-size:48px" />
+                  <svg-icon icon-class="visitDays" class-name="card-panel-icon" style="font-size:32px" />
                 </el-col>
                 <el-col :span="12">
                   {{ visitData.count.lastweek }}
@@ -95,7 +95,7 @@
             <div class="text item">
               <el-row :gutter="0">
                 <el-col :span="12">
-                  <svg-icon icon-class="visitDays" class-name="card-panel-icon" style="font-size:48px" />
+                  <svg-icon icon-class="visitDays" class-name="card-panel-icon" style="font-size:32px" />
                 </el-col>
                 <el-col :span="12">
                   {{ visitData.count.thismonth }}
@@ -112,7 +112,7 @@
             <div class="text item">
               <el-row :gutter="0">
                 <el-col :span="12">
-                  <svg-icon icon-class="visitDays" class-name="card-panel-icon" style="font-size:48px" />
+                  <svg-icon icon-class="visitDays" class-name="card-panel-icon" style="font-size:32px" />
                 </el-col>
                 <el-col :span="12">
                   {{ visitData.count.lastmonth }}
@@ -325,7 +325,7 @@ export default {
 .box-card .text {
   color: #666;
   font-size: 20px;
-  line-height: 48px;
+  line-height: 32px;
   font-weight: 700;
 }
 </style>
