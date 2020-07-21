@@ -6,7 +6,7 @@
 
     <div class="right-menu">
       <template v-if="device !== 'mobile'">
-        <span style="display:inline-block;float:left;margin-right:10px;color:#409eff" :title="username">
+        <span style="display:inline-block;float:left;margin-right:10px;color:#409eff" title="个人中心">
           <router-link to="/admin/users">
             {{ nickname }}
           </router-link>
