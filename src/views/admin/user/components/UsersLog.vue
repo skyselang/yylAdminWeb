@@ -14,9 +14,6 @@
     <!-- table -->
     <el-table v-loading="loading" :data="tableData" border style="width: 100%" @sort-change="tableSort">
       <el-table-column prop="admin_log_id" label="ID" min-width="100" sortable="custom" fixed="left" />
-      <el-table-column prop="admin_user_id" label="用户ID" min-width="80" />
-      <el-table-column prop="username" label="用户账号" min-width="110" />
-      <el-table-column prop="nickname" label="用户昵称" min-width="110" />
       <el-table-column prop="menu_url" label="菜单链接" min-width="220" />
       <el-table-column prop="menu_name" label="菜单名称" min-width="120" />
       <el-table-column prop="request_method" label="请求方式 " min-width="110" sortable="custom" />

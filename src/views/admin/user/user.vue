@@ -163,6 +163,11 @@
           <el-form-item label="昵称">
             <el-input v-model="formData.nickname" clearable disabled />
           </el-form-item>
+          <el-form-item label="权限">
+            <el-checkbox-group v-model="formData.admin_rule_ids">
+              <el-checkbox v-for="item in formRule" :key="item.admin_rule_id" :label="item.admin_rule_id" disabled>{{ item.rule_name }}</el-checkbox>
+            </el-checkbox-group>
+          </el-form-item>
           <el-form-item label="菜单">
             <el-tree ref="formMenuRef" :data="formMenu" :default-checked-keys="formData.admin_menu_ids" :props="menuProps" :expand-on-click-node="false" node-key="admin_menu_id" default-expand-all show-checkbox check-strictly highlight-current>
               <span slot-scope="{ node }" class="custom-tree-node">
@@ -365,6 +370,7 @@ export default {
     tableEditRuleInfo(row) {
       this.formVisibleRuleInfo = true
       this.formMenuList()
+      this.formRuleList()
       this.userRuleInfo(row)
     },
     userRuleInfo(row) {
