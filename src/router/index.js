@@ -195,7 +195,7 @@ export const asyncRoutes = [{
   alwaysShow: false,
   name: 'Logout',
   meta: {
-    title: '退出',
+    title: '退出系统',
     icon: 'logout',
     roles: ['admin/AdminLogin/logout']
   }
