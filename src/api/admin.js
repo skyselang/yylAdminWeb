@@ -35,19 +35,6 @@ export function verify(params) {
   })
 }
 
-// ----------------控制台-------------------
-/**
- * 访问量
- *  @param {array} params 请求参数
- */
-export function visit(params) {
-  return request({
-    url: '/admin/AdminIndex/visit',
-    method: 'get',
-    params: params
-  })
-}
-
 // ----------------菜单管理----------------
 /**
  * 菜单列表
@@ -388,7 +375,18 @@ export function usersLog(params) {
   })
 }
 
-// 实用工具
+// ----------------访问统计-----------------
+/**
+ * 访问统计
+ *  @param {array} params 请求参数
+ */
+export function visit(params) {
+  return request({
+    url: '/admin/AdminVisit/visit',
+    method: 'get',
+    params: params
+  })
+}
 
 // ----------------实用工具----------------
 /**

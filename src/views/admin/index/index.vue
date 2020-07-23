@@ -3,13 +3,7 @@
     <div class="filter-container">
       <el-row :gutter="0">
         <el-col :span="24">
-          <GithubGitee />
-        </el-col>
-      </el-row>
-
-      <el-row :gutter="0">
-        <el-col :span="24">
-          <VisitEchart />
+          <Visit />
         </el-col>
       </el-row>
     </div>
@@ -17,12 +11,11 @@
 </template>
 
 <script>
-import VisitEchart from './components/VisitEchart'
-import GithubGitee from './components/GithubGitee'
+import Visit from '../visit/visit' // 访问统计
 
 export default {
   name: 'Dashboard',
-  components: { GithubGitee, VisitEchart },
+  components: { Visit },
   data() {
     return {}
   },
