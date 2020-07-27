@@ -25,7 +25,7 @@ export default {
   data() {
     return {
       title: 'yylAdmin',
-      logo: '/favicon.ico'
+      logo: '/logo.png'
     }
   }
 }
