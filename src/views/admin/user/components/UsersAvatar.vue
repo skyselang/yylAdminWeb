@@ -1,32 +1,13 @@
 <template>
   <el-card class="box-card">
-    <el-form
-      ref="formRef"
-      label-position="right"
-      label-width="120px"
-      style="width: 60%; margin-left:50px;"
-    >
+    <el-form ref="formRef" label-position="right" label-width="120px" style="width: 60%; margin-left:50px;">
       <el-form-item label="头像">
-        <el-avatar
-          v-if="avatar"
-          shape="circle"
-          fit="contain"
-          :size="100"
-          :src="avatar"
-        />
+        <el-avatar v-if="avatar" shape="circle" fit="contain" :size="100" :src="avatar" />
       </el-form-item>
       <el-form-item>
-        <el-upload
-          class="upload-demo"
-          name="avatar_file"
-          :show-file-list="false"
-          :action="uploadAction"
-          :headers="uploadHeaders"
-          :data="uploadData"
-          :on-success="uploadSuccess"
-        >
+        <el-upload class="upload-demo" name="avatar_file" :show-file-list="false" :action="uploadAction" :headers="uploadHeaders" :data="uploadData" :on-success="uploadSuccess">
           <div slot="tip">
-            只能上传jpg、png图片，且大小不超过100kb
+            只能上传jpg、png图片，且大小不超过50kb
           </div>
           <el-button type="primary">更换头像</el-button>
         </el-upload>
@@ -67,7 +48,7 @@ export default {
     uploadSuccess(res, file) {
       if (res.code === 200) {
         this.message(res.msg)
-        store.commit('user/SET_AVATAR', res.data.avatar)
+        store.commit('user/SET_AVATAR', res.data.avatar_url)
       } else {
         this.message(res.msg, 'error')
       }
