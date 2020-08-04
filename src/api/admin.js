@@ -433,3 +433,16 @@ export function Qrcode(data) {
     data
   })
 }
+
+// ----------------系统设置----------------
+/**
+ * 清除缓存
+ * @param {array} data 请求数据
+ */
+export function cacheClear(data) {
+  return request({
+    url: '/admin/AdminSetting/cacheClear',
+    method: 'post',
+    data
+  })
+}
