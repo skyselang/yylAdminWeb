@@ -2,7 +2,7 @@
   <div>
     <el-card class="box-card">
       <el-row :gutter="10">
-        <el-col :span="6">
+        <el-col :sm="6">
           <el-card class="box-card">
             <div slot="header" class="clearfix">
               <span>总计</span>
@@ -19,7 +19,7 @@
             </div>
           </el-card>
         </el-col>
-        <el-col :span="3">
+        <el-col :sm="3">
           <el-card class="box-card">
             <div slot="header" class="clearfix">
               <span>今天</span>
@@ -36,7 +36,7 @@
             </div>
           </el-card>
         </el-col>
-        <el-col :span="3">
+        <el-col :sm="3">
           <el-card class="box-card">
             <div slot="header" class="clearfix">
               <span>昨天</span>
@@ -53,7 +53,7 @@
             </div>
           </el-card>
         </el-col>
-        <el-col :span="3">
+        <el-col :sm="3">
           <el-card class="box-card">
             <div slot="header" class="clearfix">
               <span>本周</span>
@@ -70,7 +70,7 @@
             </div>
           </el-card>
         </el-col>
-        <el-col :span="3">
+        <el-col :sm="3">
           <el-card class="box-card">
             <div slot="header" class="clearfix">
               <span>上周</span>
@@ -87,7 +87,7 @@
             </div>
           </el-card>
         </el-col>
-        <el-col :span="3">
+        <el-col :sm="3">
           <el-card class="box-card">
             <div slot="header" class="clearfix">
               <span>本月</span>
@@ -104,7 +104,7 @@
             </div>
           </el-card>
         </el-col>
-        <el-col :span="3">
+        <el-col :sm="3">
           <el-card class="box-card">
             <div slot="header" class="clearfix">
               <span>上月</span>
@@ -126,19 +126,40 @@
 
     <el-card class="box-card">
       <el-row :gutter="0">
-        <div id="visitDateEchart" style="width:100%;height:400px" />
+        <el-col :sm="{span:23,offset:0}" :md="{span:23,offset:1}">
+          <el-date-picker v-model="visitData.date.dates" type="daterange" range-separator="-" value-format="yyyy-MM-dd" start-placeholder="开始日期" end-placeholder="结束日期" style="max-width:280px" @change="visitDateChange" />
+        </el-col>
+      </el-row>
+      <el-row :gutter="0">
+        <el-col :sm="24">
+          <div id="visitDateEchart" style="width:100%;height:400px" />
+        </el-col>
       </el-row>
     </el-card>
 
     <el-card class="box-card">
       <el-row :gutter="0">
-        <div id="visitCityEchart" style="width:100%;height:400px" />
+        <el-col :sm="{span:23,offset:0}" :md="{span:23,offset:1}">
+          <el-date-picker v-model="visitData.city.dates" type="daterange" range-separator="-" value-format="yyyy-MM-dd" start-placeholder="开始日期" end-placeholder="结束日期" style="max-width:280px" @change="visitCityChange" />
+        </el-col>
+      </el-row>
+      <el-row :gutter="0">
+        <el-col :sm="24">
+          <div id="visitCityEchart" style="width:100%;height:400px" />
+        </el-col>
       </el-row>
     </el-card>
 
     <el-card class="box-card">
       <el-row :gutter="0">
-        <div id="visitIspEchart" style="width:100%;height:500px" />
+        <el-col :sm="{span:23,offset:0}" :md="{span:23,offset:1}">
+          <el-date-picker v-model="visitData.isp.dates" type="daterange" range-separator="-" value-format="yyyy-MM-dd" start-placeholder="开始日期" end-placeholder="结束日期" style="max-width:280px" @change="visitIspChange" />
+        </el-col>
+      </el-row>
+      <el-row :gutter="0">
+        <el-col :sm="24">
+          <div id="visitIspEchart" style="width:100%;height:500px" />
+        </el-col>
       </el-row>
     </el-card>
   </div>
@@ -165,15 +186,18 @@ export default {
         },
         date: {
           date: [],
-          num: []
+          num: [],
+          dates: []
         },
         city: {
           city: [],
-          num: []
+          num: [],
+          dates: []
         },
         isp: {
           isp: [],
-          num: []
+          num: [],
+          dates: []
         }
       }
     }
@@ -184,7 +208,11 @@ export default {
   mounted() {},
   methods: {
     visit() {
-      visit()
+      visit({
+        date_date: this.visitData.date.dates,
+        city_date: this.visitData.city.dates,
+        isp_date: this.visitData.isp.dates
+      })
         .then(res => {
           this.visitData = res.data
           this.visitDate()
@@ -192,6 +220,15 @@ export default {
           this.visitIsp()
         })
         .catch(() => {})
+    },
+    visitDateChange() {
+      this.visit()
+    },
+    visitCityChange() {
+      this.visit()
+    },
+    visitIspChange() {
+      this.visit()
     },
     visitDate() {
       var visitDateEchart = echarts.init(
@@ -296,6 +333,7 @@ export default {
         legend: {
           orient: 'vertical',
           left: '3%',
+          top: '20px',
           data: this.visitData.isp.isp
         },
         series: [

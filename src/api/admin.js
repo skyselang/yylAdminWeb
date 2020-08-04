@@ -378,13 +378,13 @@ export function usersLog(params) {
 // ----------------访问统计-----------------
 /**
  * 访问统计
- *  @param {array} params 请求参数
+ *  @param {array} data 请求数据
  */
-export function visit(params) {
+export function visit(data) {
   return request({
     url: '/admin/AdminVisit/visit',
-    method: 'get',
-    params: params
+    method: 'post',
+    data
   })
 }
 
