@@ -3,8 +3,8 @@
     <div slot="header" class="clearfix">
       <span>MD5加密</span>
     </div>
-    <div class="text item" style="height:280px">
-      <el-form ref="formRef" :rules="formRules" :model="formModel" label-position="right" label-width="80px" style="width: 80%; margin-left:50px;">
+    <div class="text item" style="min-height:280px">
+      <el-form ref="formRef" :rules="formRules" :model="formModel" label-width="80px" style="width: 80%; margin-left:50px;">
         <el-form-item label="文本内容" prop="str">
           <el-input v-model="formModel.str" placeholder="请输入文本内容" clearable />
         </el-form-item>

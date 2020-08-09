@@ -1,24 +1,24 @@
 <template>
   <div class="app-container">
-    <el-row :gutter="15">
-      <el-col :span="12">
-        <div class="filter-container">
+    <el-row :gutter="8">
+      <el-col :sm="{span:24}" :md="{span:12}">
+        <div class=" filter-container">
           <RandomStr />
         </div>
       </el-col>
-      <el-col :span="12">
+      <el-col :sm="{span:24}" :md="{span:12}">
         <div class="filter-container">
           <Timestamp />
         </div>
       </el-col>
     </el-row>
-    <el-row :gutter="15">
-      <el-col :span="12">
+    <el-row :gutter="8">
+      <el-col :sm="{span:24}" :md="{span:12}">
         <div class="filter-container">
           <Md5Enc />
         </div>
       </el-col>
-      <el-col :span="12">
+      <el-col :sm="{span:24}" :md="{span:12}">
         <div class="filter-container">
           <Qrcode />
         </div>

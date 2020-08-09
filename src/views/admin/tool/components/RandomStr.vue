@@ -3,7 +3,7 @@
     <div slot="header" class="clearfix">
       <span>生成随机字符</span>
     </div>
-    <div class="text item" style="height:280px">
+    <div class="text item" style="min-height:280px">
       <el-form ref="formRef" :rules="formRules" :model="formModel" label-position="right" label-width="80px" style="width: 80%; margin-left:50px;">
         <el-form-item label="所用字符" prop="random_ids">
           <el-checkbox-group v-model="formModel.random_ids">

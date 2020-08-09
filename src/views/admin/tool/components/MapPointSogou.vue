@@ -1,10 +1,10 @@
 <template>
-  <iframe src="https://lbs.qq.com/tool/getpoint/index.html" frameborder="0" width="100%" :height="curHeight" />
+  <iframe src="http://map.sogou.com/api/documentation/javascript/api2.5/examples_doc/event-arguments.html" frameborder="0" width="100%" :height="curHeight" />
 </template>
 
 <script>
 export default {
-  name: 'MapPointQq',
+  name: 'MapPointSogou',
   components: {},
   data() {
     return {

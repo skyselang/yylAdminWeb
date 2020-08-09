@@ -3,47 +3,29 @@
     <div slot="header" class="clearfix">
       <span>时间戳转换</span>
     </div>
-    <div class="text item" style="height:280px">
-      <el-form ref="formRef" :rules="formRules" :model="formModel" label-position="right" label-width="80px" style="width: 80%; margin-left:50px;">
+    <div class="text item" style="min-height:280px">
+      <el-form ref="formRef" :rules="formRules" :model="formModel" label-width="80px" style="width: 80%; margin-left:50px;">
         <el-row>
-          <el-col :span="11">
+          <el-col :sm="{span:24}" :md="{span:24}">
             <el-form-item label="时间">
-              <el-date-picker v-model="formModel.from_datetime" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" placeholder="2020-02-02 02:02:02" />
+              <el-date-picker v-model="formModel.datetime" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" clearable />
             </el-form-item>
           </el-col>
-          <el-col :span="11">
+          <el-col :sm="{span:24}" :md="{span:24}">
             <el-form-item label="时间戳">
-              <el-input v-model="formModel.to_timestamp" placeholder="1580580122" clearable />
+              <el-input v-model="formModel.timestamp" clearable />
             </el-form-item>
           </el-col>
         </el-row>
         <el-form-item>
-          <el-button type="primary" @click="handleCopy(formModel.to_timestamp, $event)">
+          <el-button type="primary" @click="handleCopy(formModel.timestamp, $event)">
             复制
           </el-button>
           <el-button type="primary" @click="datetimeSubmit()">
-            转换
-          </el-button>
-        </el-form-item>
-
-        <el-row>
-          <el-col :span="11">
-            <el-form-item label="时间戳">
-              <el-input v-model="formModel.from_timestamp" placeholder="1580580122" clearable />
-            </el-form-item>
-          </el-col>
-          <el-col :span="11">
-            <el-form-item label="时间">
-              <el-input v-model="formModel.to_datetime" placeholder="2020-02-02 02:02:02" clearable />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-form-item>
-          <el-button type="primary" @click="handleCopy(formModel.to_datetime, $event)">
-            复制
+            转时间戳
           </el-button>
           <el-button type="primary" @click="timestampSubmit()">
-            转换
+            转时间
           </el-button>
         </el-form-item>
       </el-form>
@@ -61,10 +43,9 @@ export default {
   data() {
     return {
       formModel: {
-        from_datetime: '',
-        to_timestamp: '',
-        from_timestamp: '',
-        to_datetime: ''
+        type: 'time',
+        datetime: '',
+        timestamp: ''
       },
       formRules: {}
     }
@@ -76,22 +57,38 @@ export default {
         clip(text, event)
       } else {
         this.$message({
-          message: '请点击转换',
+          message: '请点击转时间戳',
           type: 'error'
         })
       }
     },
     datetimeSubmit() {
-      timestamp(this.formModel).then(res => {
-        this.formModel.from_datetime = res.data.from_datetime
-        this.formModel.to_timestamp = res.data.to_timestamp
-      })
+      if (!this.formModel.datetime) {
+        this.$message({
+          message: '请选择时间',
+          type: 'error'
+        })
+      } else {
+        this.formModel.type = 'time'
+        timestamp(this.formModel).then(res => {
+          this.formModel.datetime = res.data.datetime
+          this.formModel.timestamp = res.data.timestamp
+        })
+      }
     },
     timestampSubmit() {
-      timestamp(this.formModel).then(res => {
-        this.formModel.from_timestamp = res.data.from_timestamp
-        this.formModel.to_datetime = res.data.to_datetime
-      })
+      if (!this.formModel.timestamp) {
+        this.$message({
+          message: '请输入时间戳',
+          type: 'error'
+        })
+      } else {
+        this.formModel.type = 'date'
+        timestamp(this.formModel).then(res => {
+          this.formModel.datetime = res.data.datetime
+          this.formModel.timestamp = res.data.timestamp
+        })
+      }
     }
   }
 }

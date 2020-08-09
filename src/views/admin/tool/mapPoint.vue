@@ -7,11 +7,14 @@
       <el-tab-pane name="MapPointBaidu" label="百度地图坐标拾取">
         <MapPointBaidu />
       </el-tab-pane>
-      <el-tab-pane name="MapPointGoogle" label="谷歌地图坐标拾取">
-        <MapPointGoogle />
+      <el-tab-pane name="MapPointSogou" label="搜狗地图坐标拾取">
+        <MapPointSogou />
       </el-tab-pane>
-      <el-tab-pane name="MapPointQq" label="腾讯地图坐标拾取">
-        <MapPointQq />
+      <el-tab-pane name="MapPointTencent" label="腾讯地图坐标拾取">
+        <MapPointTencent />
+      </el-tab-pane>
+      <el-tab-pane name="MapPointBeidou" label="北斗卫星导航系统">
+        <MapPointBeidou />
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -20,12 +23,19 @@
 <script>
 import MapPointAmap from './components/MapPointAmap'
 import MapPointBaidu from './components/MapPointBaidu'
-import MapPointGoogle from './components/MapPointGoogle'
-import MapPointQq from './components/MapPointQq'
+import MapPointSogou from './components/MapPointSogou'
+import MapPointTencent from './components/MapPointTencent'
+import MapPointBeidou from './components/MapPointBeidou'
 
 export default {
   name: 'MapPoint',
-  components: { MapPointAmap, MapPointBaidu, MapPointGoogle, MapPointQq },
+  components: {
+    MapPointAmap,
+    MapPointBaidu,
+    MapPointSogou,
+    MapPointTencent,
+    MapPointBeidou
+  },
   data() {
     return {
       tabsActiveName: 'MapPointBaidu'

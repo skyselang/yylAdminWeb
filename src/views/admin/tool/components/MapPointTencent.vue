@@ -1,10 +1,10 @@
 <template>
-  <iframe src="https://www.google.com/maps/" frameborder="0" width="100%" :height="curHeight" />
+  <iframe src="https://lbs.qq.com/tool/getpoint/index.html" frameborder="0" width="100%" :height="curHeight" />
 </template>
 
 <script>
 export default {
-  name: 'MapPointGoogle',
+  name: 'MapPointTencent',
   components: {},
   data() {
     return {
@@ -12,7 +12,7 @@ export default {
     }
   },
   created() {
-    this.beforeMount(200)
+    this.beforeMount(190)
   },
   methods: {
     // 获取屏幕高度
