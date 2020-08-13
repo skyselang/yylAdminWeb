@@ -5,7 +5,7 @@
         <el-tabs v-model="tabActName">
           <el-tab-pane label="系统设置" name="setting">
             <el-card class="box-card">
-              <el-form ref="formRef" label-position="right" label-width="120px" style="width: 60%; margin-left:50px;">
+              <el-form ref="formRef" label-width="100px">
                 <el-form-item label="设置主题">
                   <theme-picker @change="themeChange" />
                 </el-form-item>

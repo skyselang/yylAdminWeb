@@ -26,6 +26,7 @@ import UsersAvatar from './components/UsersAvatar'
 import UsersEdit from './components/UsersEdit'
 import UsersPwd from './components/UsersPwd'
 import UsersLog from './components/UsersLog'
+
 export default {
   name: 'Users',
   components: { UsersAvatar, UsersEdit, UsersPwd, UsersLog },

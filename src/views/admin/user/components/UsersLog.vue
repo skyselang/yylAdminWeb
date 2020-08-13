@@ -38,7 +38,6 @@ export default {
   data() {
     return {
       loading: true,
-      loadingTime: 0,
       tableData: [],
       tableCount: 0,
       tableQuery: {
@@ -52,31 +51,16 @@ export default {
     this.tableList()
   },
   methods: {
-    loadingOpen() {
-      this.loading = true
-    },
-    loadingClose() {
-      const that = this
-      setTimeout(function() {
-        that.loading = false
-      }, that.loadingTime)
-    },
-    message(msg, type = 'success') {
-      this.$message({
-        message: msg,
-        type: type
-      })
-    },
     tableList() {
-      this.loadingOpen()
+      this.loading = true
       usersLog(this.tableQuery)
         .then(res => {
           this.tableData = res.data.list
           this.tableCount = res.data.count
-          this.loadingClose()
+          this.loading = false
         })
         .catch(() => {
-          this.loadingClose()
+          this.loading = false
         })
     },
     tableSort(sort) {

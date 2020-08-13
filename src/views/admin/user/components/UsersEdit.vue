@@ -1,29 +1,14 @@
 <template>
   <el-card class="box-card">
-    <el-form
-      ref="formRef"
-      :rules="formRules"
-      :model="formData"
-      label-position="right"
-      label-width="120px"
-      style="width: 60%; margin-left:50px;"
-    >
+    <el-form ref="formRef" :rules="formRules" :model="formModel" label-width="80px">
       <el-form-item label="账号" prop="username">
-        <el-input
-          v-model="formData.username"
-          placeholder="请输入账号"
-          clearable
-        />
+        <el-input v-model="formModel.username" placeholder="请输入账号" clearable />
       </el-form-item>
       <el-form-item label="昵称" prop="nickname">
-        <el-input
-          v-model="formData.nickname"
-          placeholder="请输入昵称"
-          clearable
-        />
+        <el-input v-model="formModel.nickname" placeholder="请输入昵称" clearable />
       </el-form-item>
       <el-form-item label="邮箱" prop="email">
-        <el-input v-model="formData.email" placeholder="" clearable />
+        <el-input v-model="formModel.email" placeholder="" clearable />
       </el-form-item>
       <el-form-item>
         <el-button @click="formReset">重置</el-button>
@@ -37,20 +22,21 @@
 import store from '@/store'
 import { usersInfo, usersEdit } from '@/api/admin'
 import { getAdminUserId } from '@/utils/auth'
+
 export default {
   name: 'UsersEdit',
   components: {},
   data() {
     return {
-      formData: {
+      formModel: {
         admin_user_id: getAdminUserId(),
         username: '',
         nickname: '',
         email: ''
       },
       formRules: {
-        username: [{ required: true, message: '必填', trigger: 'blur' }],
-        nickname: [{ required: true, message: '必填', trigger: 'blur' }]
+        username: [{ required: true, message: '请输入账号', trigger: 'blur' }],
+        nickname: [{ required: true, message: '请输入昵称', trigger: 'blur' }]
       }
     }
   },
@@ -58,15 +44,9 @@ export default {
     this.usersInfo()
   },
   methods: {
-    message(msg, type = 'success') {
-      this.$message({
-        message: msg,
-        type: type
-      })
-    },
     usersInfo() {
-      usersInfo({ admin_user_id: this.formData.admin_user_id }).then(res => {
-        this.formData = res.data
+      usersInfo({ admin_user_id: this.formModel.admin_user_id }).then(res => {
+        this.formModel = res.data
       })
     },
     formReset() {
@@ -76,8 +56,8 @@ export default {
     formSubmit() {
       this.$refs['formRef'].validate(valid => {
         if (valid) {
-          usersEdit(this.formData).then(res => {
-            this.message(res.msg)
+          usersEdit(this.formModel).then(res => {
+            this.$message({ message: res.msg, type: 'success' })
             this.formReset()
             store.commit('user/SET_NICKNAME', res.data.nickname)
             store.commit('user/SET_USERNAME', res.data.username)
