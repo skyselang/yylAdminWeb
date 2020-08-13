@@ -3,8 +3,8 @@
     <div slot="header" class="clearfix">
       <span>时间戳转换</span>
     </div>
-    <div class="text item" style="min-height:280px">
-      <el-form ref="formRef" :rules="formRules" :model="formModel" label-width="80px" style="width: 80%; margin-left:50px;">
+    <div class="text item">
+      <el-form ref="formRef" :rules="formRules" :model="formModel" label-width="80px">
         <el-row>
           <el-col :sm="{span:24}" :md="{span:24}">
             <el-form-item label="时间">
@@ -18,9 +18,6 @@
           </el-col>
         </el-row>
         <el-form-item>
-          <el-button type="primary" @click="handleCopy(formModel.timestamp, $event)">
-            复制
-          </el-button>
           <el-button type="primary" @click="datetimeSubmit()">
             转时间戳
           </el-button>
@@ -34,11 +31,10 @@
 </template>
 
 <script>
-import clip from '@/utils/clipboard'
 import { timestamp } from '@/api/admin'
 
 export default {
-  name: 'Timestamp',
+  name: 'ToolsTimestamp',
   components: {},
   data() {
     return {
@@ -52,16 +48,6 @@ export default {
   },
   created() {},
   methods: {
-    handleCopy(text, event) {
-      if (text) {
-        clip(text, event)
-      } else {
-        this.$message({
-          message: '请点击转时间戳',
-          type: 'error'
-        })
-      }
-    },
     datetimeSubmit() {
       if (!this.formModel.datetime) {
         this.$message({
@@ -93,3 +79,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.item {
+  height: 280px;
+}
+</style>

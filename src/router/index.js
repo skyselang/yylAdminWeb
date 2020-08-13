@@ -193,8 +193,8 @@ export const asyncRoutes = [
         }
       },
       {
-        path: 'mapPoint',
-        component: () => import('@/views/admin/tool/mapPoint'),
+        path: 'map-point',
+        component: () => import('@/views/admin/tool/map-point'),
         name: 'MapPoint',
         meta: {
           title: '地图坐标拾取',
@@ -211,7 +211,7 @@ export const asyncRoutes = [
     alwaysShow: false,
     name: 'Logout',
     meta: {
-      title: '退出系统',
+      title: '退出',
       icon: 'logout',
       roles: ['admin/AdminLogin/logout']
     }

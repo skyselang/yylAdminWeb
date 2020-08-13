@@ -390,12 +390,23 @@ export function visit(data) {
 
 // ----------------实用工具----------------
 /**
- * 生成随机字符
+ * 字符串
  * @param {array} data 请求数据
  */
-export function randomStr(data) {
+export function string(data) {
   return request({
-    url: '/admin/AdminTool/randomStr',
+    url: '/admin/AdminTool/string',
+    method: 'post',
+    data
+  })
+}
+/**
+ * 随机字符串
+ * @param {array} data 请求数据
+ */
+export function strran(data) {
+  return request({
+    url: '/admin/AdminTool/strran',
     method: 'post',
     data
   })
@@ -412,21 +423,10 @@ export function timestamp(data) {
   })
 }
 /**
- * md5加密
- * @param {array} data 请求数据
- */
-export function md5Enc(data) {
-  return request({
-    url: '/admin/AdminTool/md5Enc',
-    method: 'post',
-    data
-  })
-}
-/**
  * 生成二维码
  * @param {array} data 请求数据
  */
-export function Qrcode(data) {
+export function qrcode(data) {
   return request({
     url: '/admin/AdminTool/qrcode',
     method: 'post',

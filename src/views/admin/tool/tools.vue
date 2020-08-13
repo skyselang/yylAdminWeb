@@ -2,25 +2,23 @@
   <div class="app-container">
     <el-row :gutter="8">
       <el-col :sm="{span:24}" :md="{span:12}">
+        <div class="filter-container">
+          <ToolsString />
+        </div>
+      </el-col>
+      <el-col :sm="{span:24}" :md="{span:12}">
         <div class=" filter-container">
-          <RandomStr />
+          <ToolsStrRan />
         </div>
       </el-col>
       <el-col :sm="{span:24}" :md="{span:12}">
         <div class="filter-container">
-          <Timestamp />
-        </div>
-      </el-col>
-    </el-row>
-    <el-row :gutter="8">
-      <el-col :sm="{span:24}" :md="{span:12}">
-        <div class="filter-container">
-          <Md5Enc />
+          <ToolsTimestamp />
         </div>
       </el-col>
       <el-col :sm="{span:24}" :md="{span:12}">
         <div class="filter-container">
-          <Qrcode />
+          <ToolsQrcode />
         </div>
       </el-col>
     </el-row>
@@ -28,14 +26,14 @@
 </template>
 
 <script>
-import RandomStr from './components/RandomStr'
-import Timestamp from './components/Timestamp'
-import Md5Enc from './components/Md5Enc'
-import Qrcode from './components/Qrcode'
+import ToolsString from './components/ToolsString'
+import ToolsStrRan from './components/ToolsStrRan'
+import ToolsTimestamp from './components/ToolsTimestamp'
+import ToolsQrcode from './components/ToolsQrcode'
 
 export default {
   name: 'Tools',
-  components: { RandomStr, Timestamp, Md5Enc, Qrcode },
+  components: { ToolsString, ToolsStrRan, ToolsTimestamp, ToolsQrcode },
   data() {
     return {}
   },

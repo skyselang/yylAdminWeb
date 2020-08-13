@@ -3,8 +3,8 @@
     <div slot="header" class="clearfix">
       <span>生成二维码</span>
     </div>
-    <div class="text item" style="min-height:280px">
-      <el-form ref="formRef" :rules="formRules" :model="formModel" label-width="80px" style="width: 80%; margin-left:50px;">
+    <div class="text item">
+      <el-form ref="formRef" :rules="formRules" :model="formModel" label-width="80px">
         <el-form-item label="文本内容" prop="str">
           <el-input v-model="formModel.str" placeholder="请输入文本内容" clearable />
         </el-form-item>
@@ -25,10 +25,10 @@
 </template>
 
 <script>
-import { Qrcode } from '@/api/admin'
+import { qrcode } from '@/api/admin'
 
 export default {
-  name: 'Qrcode',
+  name: 'ToolsQrcode',
   components: {},
   data() {
     return {
@@ -56,7 +56,7 @@ export default {
     qrcodeSubmit() {
       this.$refs['formRef'].validate(valid => {
         if (valid) {
-          Qrcode({ str: this.formModel.str }).then(res => {
+          qrcode({ str: this.formModel.str }).then(res => {
             this.formModel.url = res.data.url
           })
         }
@@ -65,3 +65,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.item {
+  height: 280px;
+}
+</style>
