@@ -1,7 +1,7 @@
 {
   "name": "yyladmin",
   "version": "4.4.2",
-  "description": "A magical vue admin. An out-of-box UI solution for enterprise applications. Newest development stack of vue. Lots of awesome features",
+  "description": "A minimalist background management system, only login and exit, permission management, log management and other basic functions, easy to expand; front and back end separation, thinkphp6 is used in the back end, and Element2 is used in the front end.",
   "author": "https://github.com/skyselang/",
   "scripts": {
     "dev": "vue-cli-service serve",
