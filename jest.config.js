@@ -1,3 +1,4 @@
+// https://jestjs.io/
 module.exports = {
   moduleFileExtensions: ['js', 'jsx', 'json', 'vue'],
   transform: {
