@@ -1,12 +1,10 @@
 <template>
-  <div class="app-container">
-    <div class="filter-container">
-      <el-row :gutter="0">
-        <el-col :span="24">
-          <Visit />
-        </el-col>
-      </el-row>
-    </div>
+  <div class="filter-container">
+    <el-row :gutter="0">
+      <el-col :span="24">
+        <Visit />
+      </el-col>
+    </el-row>
   </div>
 </template>
 

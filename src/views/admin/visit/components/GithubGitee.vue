@@ -1,23 +1,21 @@
 <template>
-  <div>
-    <el-card>
-      <el-row :gutter="0">
-        <el-col :xs="24" :sm="3">
-          yylAdmin：
-        </el-col>
-        <el-col :xs="24" :sm="3">
-          <el-link :underline="false" type="primary" href="https://github.com/skyselang/yylAdmin" target="_blank" style="font-size:18px;font-weight:500">
-            Github
-          </el-link>
-        </el-col>
-        <el-col :xs="24" :sm="3">
-          <el-link :underline="false" type="primary" href="https://gitee.com/skyselang/yylAdmin" target="_blank" style="font-size:18px;font-weight:500">
-            Gitee
-          </el-link>
-        </el-col>
-      </el-row>
-    </el-card>
-  </div>
+  <el-card>
+    <el-row :gutter="0">
+      <el-col :xs="24" :sm="3">
+        yylAdmin：
+      </el-col>
+      <el-col :xs="24" :sm="3">
+        <el-link href="https://github.com/skyselang/yylAdmin" target="_blank" title="Github" :underline="false" type="primary">
+          Github
+        </el-link>
+      </el-col>
+      <el-col :xs="24" :sm="3">
+        <a href="https://gitee.com/skyselang/yylAdmin" target="_blank" title="Gitee">
+          <img src="https://gitee.com/skyselang/yylAdmin/badge/star.svg?theme=white" alt="star">
+        </a>
+      </el-col>
+    </el-row>
+  </el-card>
 </template>
 
 <script>

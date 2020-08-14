@@ -380,9 +380,42 @@ export function usersLog(params) {
  * 访问统计
  *  @param {array} data 请求数据
  */
-export function visit(data) {
+export function visitCount(data) {
   return request({
-    url: '/admin/AdminVisit/visit',
+    url: '/admin/AdminVisit/visitCount',
+    method: 'post',
+    data
+  })
+}
+/**
+ * 日期统计
+ *  @param {array} data 请求数据
+ */
+export function visitDate(data) {
+  return request({
+    url: '/admin/AdminVisit/visitDate',
+    method: 'post',
+    data
+  })
+}
+/**
+ * 城市统计
+ *  @param {array} data 请求数据
+ */
+export function visitCity(data) {
+  return request({
+    url: '/admin/AdminVisit/visitCity',
+    method: 'post',
+    data
+  })
+}
+/**
+ * ISP统计
+ *  @param {array} data 请求数据
+ */
+export function visitIsp(data) {
+  return request({
+    url: '/admin/AdminVisit/visitIsp',
     method: 'post',
     data
   })
