@@ -1,6 +1,6 @@
 {
   "name": "yyladmin",
-  "version": "4.4.1",
+  "version": "4.4.2",
   "description": "A magical vue admin. An out-of-box UI solution for enterprise applications. Newest development stack of vue. Lots of awesome features",
   "author": "https://github.com/skyselang/",
   "scripts": {
@@ -73,15 +73,13 @@
     "npm": ">=5.6.0"
   },
   "keywords": [
-    "vue",
-    "admin",
-    "dashboard",
-    "element-ui",
-    "admin-template",
-    "management-system",
-    "skyselang",
     "yylAdmin",
-    "yylAdminWeb"
+    "yylAdminWeb",
+    "skyselang",
+    "php",
+    "thinkphp",
+    "vue",
+    "element-ui"
   ],
   "license": "MIT",
   "lint-staged": {
