@@ -38,27 +38,36 @@ export const constantRoutes = [
   {
     path: '/redirect',
     component: Layout,
-    hidden: false,
     children: [
       {
         path: '/redirect/:path(.*)',
         component: () => import('@/views/admin/redirect/redirect')
       }
-    ]
+    ],
+    hidden: false
   },
   {
     path: '/login',
     component: () => import('@/views/admin/login/login'),
+    meta: {
+      title: 'login'
+    },
     hidden: true
   },
   {
     path: '/404',
     component: () => import('@/views/admin/error/404'),
+    meta: {
+      title: '404'
+    },
     hidden: true
   },
   {
     path: '/401',
     component: () => import('@/views/admin/error/401'),
+    meta: {
+      title: '401'
+    },
     hidden: true
   },
   {
