@@ -1,3 +1,4 @@
+// https://code.visualstudio.com/docs/languages/javascript
 {
   "compilerOptions": {
     "baseUrl": "./",
