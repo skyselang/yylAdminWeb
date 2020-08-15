@@ -1,3 +1,4 @@
+// https://cli.vuejs.org/zh/guide/build-targets.html
 const { run } = require('tasksfile')
 const chalk = require('chalk')
 const config = require('../vue.config.js')
