@@ -1,5 +1,5 @@
 <template>
-  <iframe src="http://map.sogou.com/api/documentation/javascript/api2.5/examples_doc/event-arguments.html" frameborder="0" width="100%" :height="curHeight" />
+  <iframe src="https://map.sogou.com/api/documentation/javascript/api2.5/examples_doc/event-arguments.html" frameborder="0" width="100%" :height="curHeight" />
 </template>
 
 <script>

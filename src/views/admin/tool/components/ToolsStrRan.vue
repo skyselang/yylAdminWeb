@@ -12,7 +12,7 @@
             </el-checkbox>
           </el-checkbox-group>
         </el-form-item>
-        <el-form-item label="字符长度">
+        <el-form-item label="字符长度" prop="len">
           <el-select v-model="formModel.len" filterable placeholder="请选择">
             <el-option v-for="item in formModel.lens" :key="item" :label="item" :value="item">
               {{ item }}
@@ -57,7 +57,8 @@ export default {
         str: ''
       },
       formRules: {
-        ids: [{ required: true, message: '请选择所用字符', trigger: 'blur' }]
+        ids: [{ required: true, message: '请选择所用字符', trigger: 'blur' }],
+        len: [{ required: true, message: '请选择字符长度', trigger: 'blur' }]
       }
     }
   },

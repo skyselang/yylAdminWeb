@@ -39,7 +39,7 @@ export default {
   data() {
     return {
       formModel: {
-        type: 'time',
+        trantype: 'time',
         datetime: '',
         timestamp: ''
       },
@@ -55,7 +55,7 @@ export default {
           type: 'error'
         })
       } else {
-        this.formModel.type = 'time'
+        this.formModel.trantype = 'time'
         timestamp(this.formModel).then(res => {
           this.formModel.datetime = res.data.datetime
           this.formModel.timestamp = res.data.timestamp
@@ -69,7 +69,7 @@ export default {
           type: 'error'
         })
       } else {
-        this.formModel.type = 'date'
+        this.formModel.trantype = 'date'
         timestamp(this.formModel).then(res => {
           this.formModel.datetime = res.data.datetime
           this.formModel.timestamp = res.data.timestamp
@@ -82,6 +82,6 @@ export default {
 
 <style scoped>
 .item {
-  height: 280px;
+  height: 255px;
 }
 </style>

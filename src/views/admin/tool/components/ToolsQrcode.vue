@@ -8,7 +8,7 @@
         <el-form-item label="文本内容" prop="str">
           <el-input v-model="formModel.str" placeholder="请输入文本内容" clearable />
         </el-form-item>
-        <el-form-item label="二维码" prop="qrl">
+        <el-form-item label="二维码" style="margin-bottom: 0;">
           <el-image v-if="formModel.url" style="width: 150px; height: 150px" :src="formModel.url" fit="fill" title="右击图片另存为" />
         </el-form-item>
         <el-form-item>
@@ -68,6 +68,6 @@ export default {
 
 <style scoped>
 .item {
-  height: 280px;
+  height: 255px;
 }
 </style>
