@@ -1,131 +1,133 @@
 <template>
   <div class="app-container">
-    <div>
-      <!-- search -->
-      <div class="filter-container">
-        <el-input v-model="tableQuery.admin_user_id" placeholder="用户ID" style="width: 120px;" class="filter-item" clearable />
-        <el-input v-model="tableQuery.menu_url" placeholder="菜单链接" style="width: 280px;" class="filter-item" clearable />
-        <el-date-picker v-model="tableQuery.create_time" type="daterange" style="width: 240px;top: -4px;" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd" />
-        <el-button class="filter-item" type="primary" @click="tableSearch">
-          查询
+    <!-- 查询 -->
+    <div class="filter-container">
+      <el-input v-model="logQuery.admin_user_id" class="filter-item" style="width: 120px;" placeholder="用户ID" clearable />
+      <el-input v-model="logQuery.menu_url" class="filter-item" style="width: 280px;" placeholder="菜单链接" clearable />
+      <el-date-picker v-model="logQuery.create_time" type="daterange" style="width: 240px;top: -4px;" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd" />
+      <el-button class="filter-item" type="primary" @click="logSearch">
+        查询
+      </el-button>
+      <el-button class="filter-item" type="primary" style="float:right;" @click="logRefresh">
+        刷新
+      </el-button>
+    </div>
+    <!-- 日志 -->
+    <el-table v-loading="loading" :data="logData" :height="height" style="width: 100%" border @sort-change="logSort" @cell-click="logCellClick">
+      <el-table-column prop="admin_log_id" label="ID" min-width="100" sortable="custom" fixed="left" />
+      <el-table-column prop="admin_user_id" label="用户ID" min-width="90" sortable="custom" />
+      <el-table-column prop="username" label="用户账号" min-width="110" />
+      <el-table-column prop="nickname" label="用户昵称" min-width="110" />
+      <el-table-column prop="menu_url" label="菜单链接" min-width="220" />
+      <el-table-column prop="menu_name" label="菜单名称" min-width="120" />
+      <el-table-column prop="request_method" label="请求方式 " min-width="110" sortable="custom" />
+      <el-table-column prop="request_ip" label="请求IP" min-width="130" sortable="custom" />
+      <el-table-column prop="request_region" label="请求地区" min-width="150" />
+      <el-table-column prop="request_isp" label="请求ISP" min-width="110" />
+      <el-table-column prop="create_time" label="请求时间" min-width="160" sortable="custom" />
+      <el-table-column label="操作" min-width="150" align="right" fixed="right" class-name="small-padding fixed-width">
+        <template slot-scope="{ row }">
+          <el-button size="mini" type="primary" @click="logDetail(row)">
+            详情
+          </el-button>
+          <el-button size="mini" type="danger" @click="logDelete(row)">
+            删除
+          </el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <!-- 分页 -->
+    <pagination v-show="logCount > 0" :total="logCount" :page.sync="logQuery.page" :limit.sync="logQuery.limit" @pagination="logLists" />
+    <!-- IP信息 -->
+    <el-dialog :title="ipTitle" :visible.sync="ipDialog" width="65%" top="1vh">
+      <iframe :src="ipUrl" frameborder="0" width="100%" :height="height+100" />
+    </el-dialog>
+    <!-- 详情 -->
+    <el-dialog :title="'日志信息：' + logModel.admin_log_id" :visible.sync="logDialog" width="65%" top="1vh">
+      <el-form ref="formRef" :rules="logRules" :model="logModel" label-width="80px" class="dialog-body" :style="{height:height+100+'px'}">
+        <el-form-item label="用户ID" prop="admin_user_id">
+          <el-input v-model="logModel.admin_user_id" />
+        </el-form-item>
+        <el-form-item label="用户账号" prop="username">
+          <el-input v-model="logModel.username" />
+        </el-form-item>
+        <el-form-item label="用户昵称" prop="nickname">
+          <el-input v-model="logModel.nickname" />
+        </el-form-item>
+        <el-form-item label="菜单链接" prop="menu_url">
+          <el-input v-model="logModel.menu_url" />
+        </el-form-item>
+        <el-form-item label="菜单名称" prop="menu_name">
+          <el-input v-model="logModel.menu_name" />
+        </el-form-item>
+        <el-form-item label="请求方式" prop="request_method">
+          <el-input v-model="logModel.request_method" />
+        </el-form-item>
+        <el-form-item label="请求IP" prop="request_ip">
+          <el-input v-model="logModel.request_ip" />
+        </el-form-item>
+        <el-form-item label="请求地区" prop="request_region">
+          <el-input v-model="logModel.request_region" />
+        </el-form-item>
+        <el-form-item label="请求ISP" prop="request_isp">
+          <el-input v-model="logModel.request_isp" />
+        </el-form-item>
+        <el-form-item label="请求时间" prop="create_time">
+          <el-input v-model="logModel.create_time" />
+        </el-form-item>
+        <el-form-item label="请求参数" prop="request_param">
+          <pre>{{ logModel.request_param }}</pre>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="logCancel">
+          取消
         </el-button>
-        <el-button class="filter-item" style="float:right;" type="primary" @click="tableReset">
-          刷新
+        <el-button type="primary" @click="logSubmit">
+          确定
         </el-button>
       </div>
-      <!-- table -->
-      <el-table v-loading="loading" :data="tableData" border style="width: 100%" @sort-change="tableSort" @cell-click="tableClick">
-        <el-table-column prop="admin_log_id" label="ID" min-width="100" sortable="custom" fixed="left" />
-        <el-table-column prop="admin_user_id" label="用户ID" min-width="90" sortable="custom" />
-        <el-table-column prop="username" label="用户账号" min-width="110" />
-        <el-table-column prop="nickname" label="用户昵称" min-width="110" />
-        <el-table-column prop="menu_url" label="菜单链接" min-width="220" />
-        <el-table-column prop="menu_name" label="菜单名称" min-width="120" />
-        <el-table-column prop="request_method" label="请求方式 " min-width="110" sortable="custom" />
-        <el-table-column prop="request_ip" label="请求IP" min-width="130" sortable="custom" />
-        <el-table-column prop="request_region" label="请求地区" min-width="150" />
-        <el-table-column prop="request_isp" label="请求ISP" min-width="110" />
-        <el-table-column prop="create_time" label="请求时间" min-width="160" sortable="custom" />
-        <el-table-column label="操作" min-width="150" align="right" fixed="right" class-name="small-padding fixed-width">
-          <template slot-scope="{ row }">
-            <el-button size="mini" type="primary" @click="tableInfo(row)">
-              信息
-            </el-button>
-            <el-button size="mini" type="danger" @click="tableDele(row)">
-              删除
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      <!-- page -->
-      <pagination v-show="tableCount > 0" :total="tableCount" :page.sync="tableQuery.page" :limit.sync="tableQuery.limit" @pagination="tableList" />
-      <!-- ip info -->
-      <el-dialog :title="ipTitle" :visible.sync="ipVisible" width="50%">
-        <iframe :src="ipUrl" frameborder="0" width="100%" height="600" />
-      </el-dialog>
-      <!-- edit、add -->
-      <el-dialog :title="'日志信息 ID：' + formModel.admin_log_id" :visible.sync="formVisible" top="6vh">
-        <el-form ref="formRef" :rules="formRules" :model="formModel" label-position="right" label-width="120px" style="width: 80%; margin-left:50px;">
-          <el-form-item label="用户ID" prop="admin_user_id">
-            <el-input v-model="formModel.admin_user_id" />
-          </el-form-item>
-          <el-form-item label="用户账号" prop="username">
-            <el-input v-model="formModel.username" />
-          </el-form-item>
-          <el-form-item label="用户昵称" prop="nickname">
-            <el-input v-model="formModel.nickname" />
-          </el-form-item>
-          <el-form-item label="菜单链接" prop="menu_url">
-            <el-input v-model="formModel.menu_url" />
-          </el-form-item>
-          <el-form-item label="菜单名称" prop="menu_name">
-            <el-input v-model="formModel.menu_name" />
-          </el-form-item>
-          <el-form-item label="请求方式" prop="request_method">
-            <el-input v-model="formModel.request_method" />
-          </el-form-item>
-          <el-form-item label="请求IP" prop="request_ip">
-            <el-input v-model="formModel.request_ip" />
-          </el-form-item>
-          <el-form-item label="请求地区" prop="request_region">
-            <el-input v-model="formModel.request_region" />
-          </el-form-item>
-          <el-form-item label="请求ISP" prop="request_isp">
-            <el-input v-model="formModel.request_isp" />
-          </el-form-item>
-          <el-form-item label="请求时间" prop="create_time">
-            <el-input v-model="formModel.create_time" />
-          </el-form-item>
-          <el-form-item label="请求参数" prop="request_param">
-            <pre>{{ formModel.request_param }}</pre>
-          </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="formCancel">
-            取消
-          </el-button>
-          <el-button type="primary" @click="formSubmit">
-            确定
-          </el-button>
-        </div>
-      </el-dialog>
-    </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { logList, logInfo, logDele } from '@/api/admin'
+import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination'
+import { logList, logInfo, logDele } from '@/api/admin'
 
 export default {
   name: 'Log',
   components: { Pagination },
   data() {
     return {
+      height: 680,
       loading: false,
       loadingTime: 0,
-      tableData: [],
-      tableCount: 0,
-      tableQuery: {
+      logData: [],
+      logCount: 0,
+      logQuery: {
         page: 1,
         limit: 10
       },
+      ipNumber: 1,
       ipTitle: '',
       ipUrl: '',
-      ipVisible: false,
-      formVisible: false,
-      formModel: {},
-      formRules: {}
+      ipDialog: false,
+      logDialog: false,
+      logModel: {},
+      logRules: {}
     }
   },
   created() {
-    this.tableList()
+    this.height = screenHeight()
+    this.logLists()
   },
   methods: {
-    loadingOpen() {
+    loadOpen() {
       this.loading = true
     },
-    loadingClose() {
+    loadClose() {
       const that = this
       setTimeout(function() {
         that.loading = false
@@ -137,91 +139,105 @@ export default {
         type: type
       })
     },
-    tableList() {
-      this.loadingOpen()
-      logList(this.tableQuery)
+    logLists() {
+      this.loadOpen()
+      logList(this.logQuery)
         .then(res => {
-          this.tableData = res.data.list
-          this.tableCount = res.data.count
-          this.loadingClose()
+          this.logData = res.data.list
+          this.logCount = res.data.count
+          this.loadClose()
         })
         .catch(() => {
-          this.loadingClose()
+          this.loadClose()
         })
     },
-    tableSort(sort) {
-      this.tableQuery.order_field = sort.prop
-      this.tableQuery.order_type = ''
+    logSort(sort) {
+      this.logQuery.order_field = sort.prop
+      this.logQuery.order_type = ''
       if (sort.order === 'ascending') {
-        this.tableQuery.order_type = 'asc'
-        this.tableList()
+        this.logQuery.order_type = 'asc'
+        this.logLists()
       }
       if (sort.order === 'descending') {
-        this.tableQuery.order_type = 'desc'
-        this.tableList()
+        this.logQuery.order_type = 'desc'
+        this.logLists()
       }
     },
-    tableClick(row, column, cell, event) {
-      if (column.label === '请求IP') {
-        this.ipTitle = row.request_ip
-        this.ipUrl = 'https://www.ip.cn/?ip=' + row.request_ip
-        this.ipVisible = true
-      }
+    logSearch() {
+      this.logQuery.page = 1
+      this.logLists()
     },
-    tableSearch() {
-      this.tableQuery.page = 1
-      this.tableList()
+    logRefresh() {
+      this.logQuery = { page: 1, limit: 10 }
+      this.logLists()
     },
-    tableReset() {
-      this.tableQuery = { page: 1, limit: 10 }
-      this.tableList()
-    },
-    tableInfo(row) {
-      this.loadingOpen()
+    logDetail(row) {
+      this.loadOpen()
       logInfo({ admin_log_id: row.admin_log_id })
         .then(res => {
-          this.formVisible = true
-          this.formReset(res.data)
-          this.loadingClose()
+          this.logDialog = true
+          this.logReset(res.data)
+          this.loadClose()
         })
         .catch(() => {
-          this.loadingClose()
+          this.loadClose()
         })
     },
-    tableDele(row) {
+    logDelete(row) {
       this.$confirm('确定要删除吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       })
         .then(() => {
-          this.loadingOpen()
+          this.loadOpen()
           logDele({ admin_log_id: row.admin_log_id })
             .then(res => {
               this.message(res.msg)
-              this.formReset()
-              this.tableList()
+              this.logReset()
+              this.logLists()
             })
             .catch(() => {
-              this.loadingClose()
+              this.loadClose()
             })
         })
         .catch(() => {})
     },
-    formReset(row) {
-      if (row) {
-        this.formModel = row
-      } else {
-        this.formModel = {}
+    logCellClick(row, column, cell, event) {
+      if (column.property === 'request_ip') {
+        this.ipNumber = parseInt(Math.random() * 4)
+        if (this.ipNumber === 0) {
+          this.ipUrl = 'https://www.ip.cn/?ip=' + row.request_ip
+        } else if (this.ipNumber === 1) {
+          this.ipUrl =
+            'https://www.ip138.com/iplookup.asp?ip=' +
+            row.request_ip +
+            '&action=2'
+        } else if (this.ipNumber === 2) {
+          this.ipUrl = 'http://www.882667.com/ip_' + row.request_ip + '.html'
+        } else if (this.ipNumber === 3) {
+          this.ipUrl = 'https://www.ip38.com/ip.php?ip=' + row.request_ip
+        } else {
+          this.ipUrl = 'https://www.123cha.com/ip/?q=' + row.request_ip
+        }
+        this.ipTitle = row.request_ip
+        this.ipDialog = true
       }
     },
-    formCancel() {
-      this.formVisible = false
-      this.formReset()
+    logReset(row) {
+      if (row) {
+        this.logModel = row
+      } else {
+        this.logModel = {}
+      }
     },
-    formSubmit() {
-      this.formVisible = false
-      this.formReset()
+    logCancel() {
+      this.logDialog = false
+      this.logReset()
+    },
+    logSubmit() {
+      this.logDialog = false
+      this.logReset()
     }
   }
 }

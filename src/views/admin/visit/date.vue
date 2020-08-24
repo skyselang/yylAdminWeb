@@ -1,28 +1,31 @@
 <template>
-  <el-card class="box-card">
-    <el-row :gutter="0">
-      <el-col :sm="{span:23,offset:0}" :md="{span:23,offset:1}">
-        <el-date-picker v-model="data.dates" type="daterange" range-separator="-" value-format="yyyy-MM-dd" start-placeholder="开始日期" end-placeholder="结束日期" style="max-width:280px" @change="visitChange" />
-      </el-col>
-    </el-row>
-    <el-row :gutter="0">
-      <el-col :sm="24">
-        <div id="visitEchartDate" style="width:100%;height:400px" />
-      </el-col>
-    </el-row>
-  </el-card>
-
+  <div class="app-container">
+    <el-card class="box-card">
+      <el-row :gutter="0">
+        <el-col :sm="24">
+          <el-date-picker v-model="data.dates" type="daterange" range-separator="-" value-format="yyyy-MM-dd" start-placeholder="开始日期" end-placeholder="结束日期" style="max-width:280px" @change="dateChange" />
+        </el-col>
+      </el-row>
+      <el-row :gutter="0">
+        <el-col :sm="24">
+          <div id="echart" :style="{height:height+'px'}" />
+        </el-col>
+      </el-row>
+    </el-card>
+  </div>
 </template>
 
 <script>
+import screenHeight from '@/utils/screen-height'
 import { visitDate } from '@/api/admin'
 import echarts from 'echarts'
 
 export default {
-  name: 'VisitEchartDate',
+  name: 'Date',
   components: {},
   data() {
     return {
+      height: 680,
       data: {
         date: [],
         num: [],
@@ -41,17 +44,16 @@ export default {
       })
         .then(res => {
           this.data = res.data
-          this.visitEchartDate(res.data)
+          this.echart(res.data)
         })
         .catch(() => {})
     },
-    visitChange() {
+    dateChange() {
+      this.height = screenHeight()
       this.visit()
     },
-    visitEchartDate(data) {
-      var visitEchartDate = echarts.init(
-        document.getElementById('visitEchartDate')
-      )
+    echart(data) {
+      var echart = echarts.init(document.getElementById('echart'))
       var option = {
         title: {
           text: 'DATE',
@@ -86,7 +88,7 @@ export default {
           }
         ]
       }
-      visitEchartDate.setOption(option)
+      echart.setOption(option)
     }
   }
 }

@@ -102,8 +102,7 @@ export const asyncRoutes = [
     name: 'Admin',
     meta: {
       title: '系统管理',
-      icon: 'admin',
-      roles: ['admin/AdminUsers/users']
+      icon: 'admin'
     },
     children: [
       {
@@ -148,33 +147,152 @@ export const asyncRoutes = [
       },
       {
         path: 'users',
-        component: () => import('@/views/admin/user/users'),
+        component: () => import('@/views/admin/users/index'),
         name: 'Users',
         meta: {
           title: '个人中心',
-          icon: 'users',
-          roles: ['admin/AdminUsers/users']
-        }
+          icon: 'users'
+        },
+        alwaysShow: true,
+        redirect: 'noRedirect',
+        children: [
+          {
+            path: 'info',
+            component: () => import('@/views/admin/users/info'),
+            name: 'Info',
+            meta: {
+              title: '个人信息',
+              icon: 'users',
+              roles: ['admin/AdminUsers/usersInfo']
+            }
+          },
+          {
+            path: 'edit',
+            component: () => import('@/views/admin/users/edit'),
+            name: 'Edit',
+            meta: {
+              title: '修改信息',
+              icon: 'users',
+              roles: ['admin/AdminUsers/usersEdit']
+            }
+          },
+          {
+            path: 'pwd',
+            component: () => import('@/views/admin/users/pwd'),
+            name: 'Pwd',
+            meta: {
+              title: '修改密码',
+              icon: 'users',
+              roles: ['admin/AdminUsers/usersPwd']
+            }
+          },
+          {
+            path: 'avatar',
+            component: () => import('@/views/admin/users/avatar'),
+            name: 'Avatar',
+            meta: {
+              title: '修改头像',
+              icon: 'users',
+              roles: ['admin/AdminUsers/usersAvatar']
+            }
+          },
+          {
+            path: 'log',
+            component: () => import('@/views/admin/users/log'),
+            name: 'Log',
+            meta: {
+              title: '个人日志',
+              icon: 'users',
+              roles: ['admin/AdminUsers/usersLog']
+            }
+          }
+        ]
       },
       {
         path: 'visit',
-        component: () => import('@/views/admin/visit/visit'),
+        component: () => import('@/views/admin/visit/index'),
         name: 'Visit',
         meta: {
           title: '访问统计',
-          icon: 'eye-open',
-          roles: ['admin/AdminVisit/visit']
-        }
+          icon: 'eye-open'
+        },
+        alwaysShow: true,
+        redirect: 'noRedirect',
+        children: [
+          {
+            path: 'count',
+            component: () => import('@/views/admin/visit/count'),
+            name: 'Count',
+            meta: {
+              title: '数量统计',
+              icon: 'eye-open',
+              roles: ['admin/AdminVisit/visitCount']
+            }
+          },
+          {
+            path: 'date',
+            component: () => import('@/views/admin/visit/date'),
+            name: 'Date',
+            meta: {
+              title: '日期统计',
+              icon: 'eye-open',
+              roles: ['admin/AdminVisit/visitDate']
+            }
+          },
+          {
+            path: 'city',
+            component: () => import('@/views/admin/visit/city'),
+            name: 'City',
+            meta: {
+              title: '城市统计',
+              icon: 'eye-open',
+              roles: ['admin/AdminVisit/visitCity']
+            }
+          },
+          {
+            path: 'isp',
+            component: () => import('@/views/admin/visit/isp'),
+            name: 'Isp',
+            meta: {
+              title: 'ISP统计',
+              icon: 'eye-open',
+              roles: ['admin/AdminVisit/visitIsp']
+            }
+          }
+        ]
       },
       {
         path: 'setting',
-        component: () => import('@/views/admin/setting/setting'),
+        component: () => import('@/views/admin/setting/index'),
         name: 'Setting',
         meta: {
           title: '系统设置',
-          icon: 'setting',
-          roles: ['admin/AdminSetting/setting']
-        }
+          icon: 'setting'
+        },
+        alwaysShow: true,
+        redirect: 'noRedirect',
+        children: [
+          {
+            path: 'setting',
+            component: () => import('@/views/admin/setting/setting'),
+            name: 'Setting',
+            meta: {
+              title: '系统设置',
+              icon: 'setting',
+              roles: ['admin/AdminSetting/setting']
+            }
+          },
+          {
+            path: 'cache',
+            component: () => import('@/views/admin/setting/cache'),
+            name: 'Cache',
+            meta: {
+              title: '缓存设置',
+              icon: 'setting',
+              roles: ['admin/AdminSetting/settingCache']
+            }
+          }
+        ]
       }
     ]
   },
@@ -187,8 +305,7 @@ export const asyncRoutes = [
     name: 'Tool',
     meta: {
       title: '实用工具',
-      icon: 'tool',
-      roles: ['admin/AdminTool/tools', 'admin/AdminTool/mapPoint']
+      icon: 'tool'
     },
     children: [
       {

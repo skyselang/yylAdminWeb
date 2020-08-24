@@ -472,9 +472,9 @@ export function qrcode(data) {
  * 清除缓存
  * @param {array} data 请求数据
  */
-export function cacheClear(data) {
+export function settingCache(data) {
   return request({
-    url: '/admin/AdminSetting/cacheClear',
+    url: '/admin/AdminSetting/settingCache',
     method: 'post',
     data
   })

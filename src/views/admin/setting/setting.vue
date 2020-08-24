@@ -2,29 +2,20 @@
   <div class="app-container">
     <div class="filter-container">
       <el-card class="box-card">
-        <el-tabs v-model="tabActName">
-          <el-tab-pane label="系统设置" name="setting">
-            <el-card class="box-card">
-              <el-form ref="formRef" label-width="100px">
-                <el-form-item label="设置主题">
-                  <theme-picker @change="themeChange" />
-                </el-form-item>
-                <el-form-item label="便签导航">
-                  <el-switch v-model="tagsView" class="drawer-switch" />
-                </el-form-item>
-                <el-form-item label="固定头部">
-                  <el-switch v-model="fixedHeader" class="drawer-switch" />
-                </el-form-item>
-                <el-form-item label="Logo标题">
-                  <el-switch v-model="sidebarLogo" class="drawer-switch" />
-                </el-form-item>
-                <el-form-item label="清除缓存">
-                  <el-button :loading="cacheClearLoad" type="primary" @click="cacheClearClick()">清除</el-button>
-                </el-form-item>
-              </el-form>
-            </el-card>
-          </el-tab-pane>
-        </el-tabs>
+        <el-form ref="formRef" label-width="100px">
+          <el-form-item label="设置主题">
+            <theme-picker @change="themeChange" />
+          </el-form-item>
+          <el-form-item label="便签导航">
+            <el-switch v-model="tagsView" class="drawer-switch" />
+          </el-form-item>
+          <el-form-item label="固定头部">
+            <el-switch v-model="fixedHeader" class="drawer-switch" />
+          </el-form-item>
+          <el-form-item label="Logo标题">
+            <el-switch v-model="sidebarLogo" class="drawer-switch" />
+          </el-form-item>
+        </el-form>
       </el-card>
     </div>
   </div>
@@ -32,16 +23,12 @@
 
 <script>
 import ThemePicker from '@/components/ThemePicker'
-import { cacheClear } from '@/api/admin'
 
 export default {
   name: 'Setting',
   components: { ThemePicker },
   data() {
-    return {
-      tabActName: 'setting',
-      cacheClearLoad: false
-    }
+    return {}
   },
   computed: {
     // 便签导航
@@ -88,18 +75,6 @@ export default {
         key: 'theme',
         value: val
       })
-    },
-    // 清除缓存
-    cacheClearClick() {
-      this.cacheClearLoad = true
-      cacheClear()
-        .then(res => {
-          this.cacheClearLoad = false
-          this.$message({ message: res.msg, type: 'success' })
-        })
-        .catch(() => {
-          this.cacheClearLoad = false
-        })
     }
   }
 }

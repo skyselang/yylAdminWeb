@@ -1,16 +1,18 @@
 <template>
-  <el-card class="box-card">
-    <el-row :gutter="0">
-      <el-col :sm="{span:23,offset:0}" :md="{span:23,offset:1}">
-        <el-date-picker v-model="data.dates" type="daterange" range-separator="-" value-format="yyyy-MM-dd" start-placeholder="开始日期" end-placeholder="结束日期" style="max-width:280px" @change="visitChange" />
-      </el-col>
-    </el-row>
-    <el-row :gutter="0">
-      <el-col :sm="24">
-        <div id="visitEchartIsp" style="width:100%;height:500px" />
-      </el-col>
-    </el-row>
-  </el-card>
+  <div class="app-container">
+    <el-card class="box-card">
+      <el-row :gutter="0">
+        <el-col :sm="24">
+          <el-date-picker v-model="data.dates" type="daterange" range-separator="-" value-format="yyyy-MM-dd" start-placeholder="开始日期" end-placeholder="结束日期" style="max-width:280px" @change="dateChange" />
+        </el-col>
+      </el-row>
+      <el-row :gutter="0">
+        <el-col :sm="24">
+          <div id="echart" :style="{height:height+'px'}" />
+        </el-col>
+      </el-row>
+    </el-card>
+  </div>
 </template>
 
 <script>
@@ -18,10 +20,11 @@ import { visitIsp } from '@/api/admin'
 import echarts from 'echarts'
 
 export default {
-  name: 'VisitEchartIsp',
+  name: 'Isp',
   components: {},
   data() {
     return {
+      height: 680,
       data: {
         isp: [],
         num: [],
@@ -40,17 +43,15 @@ export default {
       })
         .then(res => {
           this.data = res.data
-          this.visitEchartIsp(res.data)
+          this.echart(res.data)
         })
         .catch(() => {})
     },
-    visitChange() {
+    dateChange() {
       this.visit()
     },
-    visitEchartIsp(data) {
-      var visitEchartIsp = echarts.init(
-        document.getElementById('visitEchartIsp')
-      )
+    echart(data) {
+      var echart = echarts.init(document.getElementById('echart'))
       var option = {
         title: {
           text: 'ISP',
@@ -83,17 +84,8 @@ export default {
           }
         ]
       }
-      visitEchartIsp.setOption(option)
+      echart.setOption(option)
     }
   }
 }
 </script>
-
-<style scoped>
-.box-card .text {
-  color: #666;
-  font-size: 20px;
-  line-height: 32px;
-  font-weight: 700;
-}
-</style>

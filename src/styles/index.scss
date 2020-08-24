@@ -189,3 +189,9 @@ aside {
 .multiselect--active {
   z-index: 1000 !important;
 }
+
+// dialog body
+.dialog-body {
+  overflow: hidden;
+  overflow-y: auto;
+}
