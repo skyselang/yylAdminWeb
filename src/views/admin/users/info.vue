@@ -29,7 +29,7 @@
               <el-input v-model="usersModel.logout_time" placeholder="" />
             </el-form-item>
             <el-form-item>
-              <el-button @click="usersReset">刷新</el-button>
+              <el-button :loading="loading" @click="usersReset">刷新</el-button>
             </el-form-item>
           </el-form>
         </el-col>
@@ -47,6 +47,7 @@ export default {
   components: {},
   data() {
     return {
+      loading: false,
       usersModel: {
         admin_user_id: getAdminUserId(),
         username: '',
@@ -61,10 +62,15 @@ export default {
   },
   methods: {
     usersInfo() {
-      usersInfo({ admin_user_id: this.usersModel.admin_user_id }).then(res => {
-        this.$message({ message: res.msg, type: 'success' })
-        this.usersModel = res.data
-      })
+      this.loading = true
+      usersInfo({ admin_user_id: this.usersModel.admin_user_id })
+        .then(res => {
+          this.loading = false
+          this.usersModel = res.data
+        })
+        .catch(() => {
+          this.loading = false
+        })
     },
     usersReset() {
       this.usersInfo()
