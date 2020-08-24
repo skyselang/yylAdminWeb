@@ -62,6 +62,7 @@ export default {
   methods: {
     usersInfo() {
       usersInfo({ admin_user_id: this.usersModel.admin_user_id }).then(res => {
+        this.$message({ message: res.msg, type: 'success' })
         this.usersModel = res.data
       })
     },
