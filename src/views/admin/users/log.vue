@@ -14,7 +14,7 @@
     <!-- 日志 -->
     <el-table v-loading="loading" :data="logData" :height="height" style="width: 100%" border @sort-change="logSort">
       <el-table-column prop="admin_log_id" label="ID" min-width="100" sortable="custom" fixed="left" />
-      <el-table-column prop="menu_url" label="菜单链接" min-width="220" />
+      <el-table-column prop="menu_url" label="菜单链接" min-width="225" />
       <el-table-column prop="menu_name" label="菜单名称" min-width="120" />
       <el-table-column prop="request_method" label="请求方式 " min-width="110" sortable="custom" />
       <el-table-column prop="request_ip" label="请求IP" min-width="130" sortable="custom" />
@@ -54,6 +54,7 @@ export default {
     this.usersLogList()
   },
   methods: {
+    // 列表
     usersLogList() {
       this.loading = true
       usersLog(this.logQuery)
@@ -66,6 +67,17 @@ export default {
           this.loading = false
         })
     },
+    // 搜索
+    logSearch() {
+      this.logQuery.page = 1
+      this.usersLogList()
+    },
+    // 刷新
+    logRefresh() {
+      this.logQuery = { admin_user_id: getAdminUserId(), page: 1, limit: 10 }
+      this.usersLogList()
+    },
+    // 排序
     logSort(sort) {
       this.logQuery.order_field = sort.prop
       this.logQuery.order_type = ''
@@ -77,14 +89,6 @@ export default {
         this.logQuery.order_type = 'desc'
         this.usersLogList()
       }
-    },
-    logSearch() {
-      this.logQuery.page = 1
-      this.usersLogList()
-    },
-    logRefresh() {
-      this.logQuery = { admin_user_id: getAdminUserId(), page: 1, limit: 10 }
-      this.usersLogList()
     }
   }
 }

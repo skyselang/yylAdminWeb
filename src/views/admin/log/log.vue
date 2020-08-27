@@ -18,7 +18,7 @@
       <el-table-column prop="admin_user_id" label="用户ID" min-width="90" sortable="custom" />
       <el-table-column prop="username" label="用户账号" min-width="110" />
       <el-table-column prop="nickname" label="用户昵称" min-width="110" />
-      <el-table-column prop="menu_url" label="菜单链接" min-width="220" />
+      <el-table-column prop="menu_url" label="菜单链接" min-width="225" />
       <el-table-column prop="menu_name" label="菜单名称" min-width="120" />
       <el-table-column prop="request_method" label="请求方式 " min-width="110" sortable="custom" />
       <el-table-column prop="request_ip" label="请求IP" min-width="130" sortable="custom" />
