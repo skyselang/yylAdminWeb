@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <!-- 添加 -->
+    <!-- 菜单添加 -->
     <div class="filter-container">
       <el-button class="filter-item" type="primary" style="float:right;margin-left:10px" @click="menuAddition">
         添加
@@ -9,7 +9,7 @@
         刷新
       </el-button>
     </div>
-    <!-- 菜单 -->
+    <!-- 菜单列表 -->
     <el-table v-loading="loading" :data="menuData" :height="height+100" style="width: 100%" row-key="admin_menu_id" border>
       <el-table-column prop="menu_name" label="菜单名称" min-width="180" fixed="left" />
       <el-table-column prop="menu_url" label="菜单链接" min-width="250" />
@@ -42,7 +42,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <!-- 编辑 -->
+    <!-- 菜单编辑 -->
     <el-dialog :title="menuModel.admin_menu_id ? '修改' : '添加'" :visible.sync="menuDialog" top="1vh">
       <el-form ref="formRef" :rules="menuRules" :model="menuModel" label-width="80px" class="dialog-body" :style="{height:height+50+'px'}">
         <el-form-item label="菜单父级" prop="menu_pid">
@@ -67,11 +67,11 @@
         </el-button>
       </div>
     </el-dialog>
-    <!-- 权限 -->
+    <!-- 菜单权限 -->
     <el-dialog :title="ruleTitle" :visible.sync="ruleDialog" width="65%" top="1vh">
       <el-table v-loading="ruleLoad" :data="ruleData" :height="height+30" style="width: 100%" border @sort-change="ruleSort">
         <el-table-column prop="admin_rule_id" label="ID" min-width="100" sortable="custom" fixed="left" />
-        <el-table-column prop="rule_name" label="权限" min-width="120" />
+        <el-table-column prop="rule_name" label="权限" min-width="120" sortable="custom" />
         <el-table-column prop="rule_desc" label="描述" min-width="130" />
         <el-table-column prop="is_prohibit" label="是否禁用" min-width="110" align="center" sortable="custom">
           <template slot-scope="scope">
@@ -88,7 +88,7 @@
       </el-table>
       <pagination v-show="ruleCount > 0" :total="ruleCount" :page.sync="ruleQuery.page" :limit.sync="ruleQuery.limit" @pagination="ruleData" />
     </el-dialog>
-    <!-- 用户 -->
+    <!-- 菜单用户 -->
     <el-dialog :title="userTitle" :visible.sync="userDialog" width="62%" top="1vh">
       <el-table v-loading="userLoad" :data="userData" :height="height+20" style="width: 100%" border @sort-change="userSort">
         <el-table-column prop="admin_user_id" label="ID" min-width="80" sortable="custom" fixed="left" />
@@ -330,14 +330,14 @@ export default {
         })
     },
     ruleSort(sort) {
-      this.ruleQuery.order_field = sort.prop
-      this.ruleQuery.order_type = ''
+      this.ruleQuery.sort_field = sort.prop
+      this.ruleQuery.sort_type = ''
       if (sort.order === 'ascending') {
-        this.ruleQuery.order_type = 'asc'
+        this.ruleQuery.sort_type = 'asc'
         this.ruleList()
       }
       if (sort.order === 'descending') {
-        this.ruleQuery.order_type = 'desc'
+        this.ruleQuery.sort_type = 'desc'
         this.ruleList()
       }
     },
@@ -361,14 +361,14 @@ export default {
         })
     },
     userSort(sort) {
-      this.userQuery.order_field = sort.prop
-      this.userQuery.order_type = ''
+      this.userQuery.sort_field = sort.prop
+      this.userQuery.sort_type = ''
       if (sort.order === 'ascending') {
-        this.userQuery.order_type = 'asc'
+        this.userQuery.sort_type = 'asc'
         this.userList()
       }
       if (sort.order === 'descending') {
-        this.userQuery.order_type = 'desc'
+        this.userQuery.sort_type = 'desc'
         this.userList()
       }
     }

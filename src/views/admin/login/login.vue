@@ -13,7 +13,7 @@
       </el-form-item>
       <el-form-item v-if="verifyShow" prop="verify_code">
         <el-col :span="13">
-          <el-input v-model="formModel.verify_code" placeholder="请输入验证码" name="verify_code" type="text" prefix-icon="el-icon-picture" autocomplete="off" clearable style="height:50px;line-height:50px;" />
+          <el-input ref="verify_code_ipt" v-model="formModel.verify_code" placeholder="请输入验证码" name="verify_code" type="text" prefix-icon="el-icon-picture" autocomplete="off" clearable style="height:50px;line-height:50px;" />
         </el-col>
         <el-col :span="11">
           <el-image style="width:200px;height:50px;float:right" :src="verifySrc" fit="fill" alt="验证码" title="点击刷新验证码" @click="verifyRefresh" />
@@ -122,6 +122,7 @@ export default {
       this.formModel.verify_id = ''
       this.formModel.verify_code = ''
       this.getVerify()
+      this.$refs.verify_code_ipt.focus()
     }
   }
 }

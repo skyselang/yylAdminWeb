@@ -3,7 +3,7 @@
     <el-card class="box-card">
       <el-row :gutter="0">
         <el-col :sm="24">
-          <el-date-picker v-model="data.dates" type="daterange" range-separator="-" value-format="yyyy-MM-dd" start-placeholder="开始日期" end-placeholder="结束日期" style="max-width:280px" @change="dateChange" />
+          <el-date-picker v-model="data.date" type="daterange" range-separator="-" value-format="yyyy-MM-dd" start-placeholder="开始日期" end-placeholder="结束日期" style="max-width:280px" @change="dateChange" />
         </el-col>
       </el-row>
       <el-row :gutter="0">
@@ -27,9 +27,9 @@ export default {
     return {
       height: 680,
       data: {
-        date: [],
-        num: [],
-        dates: []
+        x_data: [],
+        y_data: [],
+        date: []
       }
     }
   },
@@ -40,7 +40,7 @@ export default {
   methods: {
     visit() {
       visitDate({
-        date: this.data.dates
+        date: this.data.date
       })
         .then(res => {
           this.data = res.data
@@ -56,8 +56,12 @@ export default {
       var echart = echarts.init(document.getElementById('echart'))
       var option = {
         title: {
-          text: 'DATE',
-          left: 'center'
+          text: '',
+          left: 'center',
+          textStyle: {
+            color: '#666',
+            fontSize: 14
+          }
         },
         color: ['#3398DB'],
         tooltip: {
@@ -75,14 +79,14 @@ export default {
         xAxis: {
           type: 'category',
           boundaryGap: false,
-          data: data.date
+          data: data.x_data
         },
         yAxis: {
           type: 'value'
         },
         series: [
           {
-            data: data.num,
+            data: data.y_data,
             type: 'line',
             areaStyle: {}
           }

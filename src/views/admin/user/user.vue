@@ -1,9 +1,10 @@
 <template>
   <div class="app-container">
-    <!-- 查询 -->
+    <!-- 用户查询 -->
     <div class="filter-container">
       <el-input v-model="userQuery.username" class="filter-item" style="width: 200px;" placeholder="账号" clearable />
       <el-input v-model="userQuery.nickname" class="filter-item" style="width: 200px;" placeholder="昵称" clearable />
+      <el-input v-model="userQuery.email" class="filter-item" style="width: 200px;" placeholder="邮箱" clearable />
       <el-button class="filter-item" type="primary" @click="userSearch">
         查询
       </el-button>
@@ -14,7 +15,7 @@
         刷新
       </el-button>
     </div>
-    <!-- 用户 -->
+    <!-- 用户列表 -->
     <el-table v-loading="loading" :data="userData" :height="height" style="width: 100%" border @sort-change="userSort">
       <el-table-column prop="admin_user_id" label="ID" min-width="80" sortable="custom" fixed="left" />
       <el-table-column prop="username" label="账号" min-width="200" sortable="custom" />
@@ -62,9 +63,9 @@
         </template>
       </el-table-column>
     </el-table>
-    <!-- 分页 -->
+    <!-- 用户分页 -->
     <pagination v-show="userCount > 0" :total="userCount" :page.sync="userQuery.page" :limit.sync="userQuery.limit" @pagination="userList" />
-    <!-- 编辑 -->
+    <!-- 用户添加、 -->
     <el-dialog :title="userModel.admin_user_id ? '修改：'+userModel.username : '添加'" :visible.sync="userDialog" width="65%" top="1vh" :before-close="handleClose">
       <el-form ref="userRef" class="dialog-body" :rules="userRules" :model="userModel" label-width="80px" :style="{height:height+50+'px'}">
         <el-form-item v-if="userModel.admin_user_id && userModel.avatar" label="头像">
@@ -107,7 +108,7 @@
         </el-button>
       </div>
     </el-dialog>
-    <!-- 权限分配 -->
+    <!-- 用户权限分配 -->
     <el-dialog :title="'权限分配：'+userModel.username" :visible.sync="userDialogRule" width="65%" top="1vh" :before-close="handleClose">
       <el-form ref="formRuleRef" :model="userModel" label-width="80px" class="dialog-body" :style="{height:height+50+'px'}">
         <el-form-item label="账号">
@@ -153,7 +154,7 @@
         </el-button>
       </div>
     </el-dialog>
-    <!-- 权限明细 -->
+    <!-- 用户权限明细 -->
     <el-dialog :title="'权限明细：'+userModel.username" :visible.sync="userDialogRuleInfo" width="65%" top="1vh" :before-close="handleClose">
       <el-form ref="formRuleInfoRef" :model="userModel" label-width="80px" class="dialog-body" :style="{height:height+50+'px'}">
         <el-form-item label="账号">
@@ -176,7 +177,7 @@
         </el-form-item>
       </el-form>
     </el-dialog>
-    <!-- 密码重置 -->
+    <!-- 用户密码重置 -->
     <el-dialog :title="'密码重置：'+userModel.username" :visible.sync="userDialogPwd" width="65%" top="1vh" :before-close="handleClose">
       <el-form ref="formPwdRef" :rules="rePwdRules" :model="userModel" label-width="80px" class="dialog-body" :style="{height:height+50+'px'}">
         <el-form-item label="账号">
@@ -302,14 +303,14 @@ export default {
         })
     },
     userSort(sort) {
-      this.userQuery.order_field = sort.prop
-      this.userQuery.order_type = ''
+      this.userQuery.sort_field = sort.prop
+      this.userQuery.sort_type = ''
       if (sort.order === 'ascending') {
-        this.userQuery.order_type = 'asc'
+        this.userQuery.sort_type = 'asc'
         this.userList()
       }
       if (sort.order === 'descending') {
-        this.userQuery.order_type = 'desc'
+        this.userQuery.sort_type = 'desc'
         this.userList()
       }
     },

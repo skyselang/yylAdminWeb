@@ -240,23 +240,13 @@ export const asyncRoutes = [
             }
           },
           {
-            path: 'city',
-            component: () => import('@/views/admin/visit/city'),
-            name: 'City',
+            path: 'stats',
+            component: () => import('@/views/admin/visit/stats'),
+            name: 'Stats',
             meta: {
-              title: '城市统计',
+              title: '访问统计',
               icon: 'eye-open',
-              roles: ['admin/AdminVisit/visitCity']
-            }
-          },
-          {
-            path: 'isp',
-            component: () => import('@/views/admin/visit/isp'),
-            name: 'Isp',
-            meta: {
-              title: 'ISP统计',
-              icon: 'eye-open',
-              roles: ['admin/AdminVisit/visitIsp']
+              roles: ['admin/AdminVisit/visitStats']
             }
           }
         ]

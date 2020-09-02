@@ -399,23 +399,12 @@ export function visitDate(data) {
   })
 }
 /**
- * 城市统计
+ * 访问统计
  *  @param {array} data 请求数据
  */
-export function visitCity(data) {
+export function visitStats(data) {
   return request({
-    url: '/admin/AdminVisit/visitCity',
-    method: 'post',
-    data
-  })
-}
-/**
- * ISP统计
- *  @param {array} data 请求数据
- */
-export function visitIsp(data) {
-  return request({
-    url: '/admin/AdminVisit/visitIsp',
+    url: '/admin/AdminVisit/visitStats',
     method: 'post',
     data
   })

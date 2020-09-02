@@ -2,8 +2,9 @@
   <div class="app-container">
     <!-- 查询 -->
     <div class="filter-container">
-      <el-input v-model="logQuery.admin_user_id" class="filter-item" style="width: 120px;" placeholder="用户ID" clearable />
-      <el-input v-model="logQuery.menu_url" class="filter-item" style="width: 280px;" placeholder="菜单链接" clearable />
+      <el-input v-model="logQuery.user_keyword" class="filter-item" style="width: 135px;" placeholder="用户账号/昵称" clearable />
+      <el-input v-model="logQuery.request_keyword" class="filter-item" style="width: 155px;" placeholder="请求IP/地区/ISP" clearable />
+      <el-input v-model="logQuery.menu_keyword" class="filter-item" style="width: 280px;" placeholder="菜单链接/名称" clearable />
       <el-date-picker v-model="logQuery.create_time" type="daterange" style="width: 240px;top: -4px;" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd" />
       <el-button class="filter-item" type="primary" @click="logSearch">
         查询
@@ -12,10 +13,9 @@
         刷新
       </el-button>
     </div>
-    <!-- 日志 -->
+    <!-- 日志列表 -->
     <el-table v-loading="loading" :data="logData" :height="height" style="width: 100%" border @sort-change="logSort" @cell-click="logCellClick">
       <el-table-column prop="admin_log_id" label="ID" min-width="100" sortable="custom" fixed="left" />
-      <el-table-column prop="admin_user_id" label="用户ID" min-width="90" sortable="custom" />
       <el-table-column prop="username" label="用户账号" min-width="110" />
       <el-table-column prop="nickname" label="用户昵称" min-width="110" />
       <el-table-column prop="menu_url" label="菜单链接" min-width="225" />
@@ -36,13 +36,13 @@
         </template>
       </el-table-column>
     </el-table>
-    <!-- 分页 -->
+    <!-- 日志分页 -->
     <pagination v-show="logCount > 0" :total="logCount" :page.sync="logQuery.page" :limit.sync="logQuery.limit" @pagination="logLists" />
-    <!-- IP信息 -->
+    <!-- 日志IP信息 -->
     <el-dialog :title="ipTitle" :visible.sync="ipDialog" width="65%" top="1vh">
       <iframe :src="ipUrl" frameborder="0" width="100%" :height="height+100" />
     </el-dialog>
-    <!-- 详情 -->
+    <!--日志详情 -->
     <el-dialog :title="'日志信息：' + logModel.admin_log_id" :visible.sync="logDialog" width="65%" top="1vh">
       <el-form ref="formRef" :rules="logRules" :model="logModel" label-width="80px" class="dialog-body" :style="{height:height+100+'px'}">
         <el-form-item label="用户ID" prop="admin_user_id">
@@ -110,13 +110,13 @@ export default {
         page: 1,
         limit: 10
       },
-      ipNumber: 1,
-      ipTitle: '',
-      ipUrl: '',
-      ipDialog: false,
       logDialog: false,
       logModel: {},
-      logRules: {}
+      logRules: {},
+      ipDialog: false,
+      ipNumber: 1,
+      ipTitle: '',
+      ipUrl: ''
     }
   },
   created() {
@@ -152,14 +152,14 @@ export default {
         })
     },
     logSort(sort) {
-      this.logQuery.order_field = sort.prop
-      this.logQuery.order_type = ''
+      this.logQuery.sort_field = sort.prop
+      this.logQuery.sort_type = ''
       if (sort.order === 'ascending') {
-        this.logQuery.order_type = 'asc'
+        this.logQuery.sort_type = 'asc'
         this.logLists()
       }
       if (sort.order === 'descending') {
-        this.logQuery.order_type = 'desc'
+        this.logQuery.sort_type = 'desc'
         this.logLists()
       }
     },

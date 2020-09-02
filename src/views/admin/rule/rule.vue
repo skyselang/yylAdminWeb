@@ -238,14 +238,14 @@ export default {
         })
     },
     ruleSort(sort) {
-      this.ruleQuery.order_field = sort.prop
-      this.ruleQuery.order_type = ''
+      this.ruleQuery.sort_field = sort.prop
+      this.ruleQuery.sort_type = ''
       if (sort.order === 'ascending') {
-        this.ruleQuery.order_type = 'asc'
+        this.ruleQuery.sort_type = 'asc'
         this.ruleList()
       }
       if (sort.order === 'descending') {
-        this.ruleQuery.order_type = 'desc'
+        this.ruleQuery.sort_type = 'desc'
         this.ruleList()
       }
     },
@@ -367,14 +367,14 @@ export default {
         })
     },
     userSort(sort) {
-      this.userQuery.order_field = sort.prop
-      this.userQuery.order_type = ''
+      this.userQuery.sort_field = sort.prop
+      this.userQuery.sort_type = ''
       if (sort.order === 'ascending') {
-        this.userQuery.order_type = 'asc'
+        this.userQuery.sort_type = 'asc'
         this.userList()
       }
       if (sort.order === 'descending') {
-        this.userQuery.order_type = 'desc'
+        this.userQuery.sort_type = 'desc'
         this.userList()
       }
     }

@@ -18,11 +18,11 @@
           </el-col>
         </el-row>
         <el-form-item>
-          <el-button type="primary" @click="datetimeSubmit()">
-            转时间戳
-          </el-button>
           <el-button type="primary" @click="timestampSubmit()">
             转时间
+          </el-button>
+          <el-button type="primary" @click="datetimeSubmit()">
+            转时间戳
           </el-button>
         </el-form-item>
       </el-form>
