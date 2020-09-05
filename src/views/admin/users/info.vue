@@ -3,7 +3,7 @@
     <el-card class="box-card">
       <el-row :gutter="0">
         <el-col :sm="24" :md="12">
-          <el-form ref="usersRef" class="dialog-body" :rules="usersRules" :model="usersModel" label-width="80px">
+          <el-form ref="usersRef" class="dialog-body" :rules="usersRules" :model="usersModel" label-width="100px">
             <el-form-item v-if="usersModel.admin_user_id && usersModel.avatar" label="头像">
               <el-avatar shape="circle" fit="contain" :size="100" :src="usersModel.avatar" />
             </el-form-item>

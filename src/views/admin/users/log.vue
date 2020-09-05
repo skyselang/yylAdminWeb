@@ -5,18 +5,14 @@
       <el-input v-model="logQuery.request_keyword" class="filter-item" style="width: 155px;" placeholder="请求IP/地区/ISP" clearable />
       <el-input v-model="logQuery.menu_keyword" class="filter-item" style="width: 280px;" placeholder="菜单链接/名称" clearable />
       <el-date-picker v-model="logQuery.create_time" type="daterange" style="width: 240px;top: -4px;" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd" />
-      <el-button class="filter-item" type="primary" @click="logSearch">
-        查询
-      </el-button>
-      <el-button class="filter-item" type="primary" style="float:right;" @click="logRefresh">
-        刷新
-      </el-button>
+      <el-button class="filter-item" type="primary" @click="logSearch">查询</el-button>
+      <el-button class="filter-item" type="primary" style="float:right;" @click="logRefresh">刷新</el-button>
     </div>
     <!-- 日志列表 -->
     <el-table v-loading="loading" :data="logData" :height="height" style="width: 100%" border @sort-change="logSort">
       <el-table-column prop="admin_log_id" label="ID" min-width="100" sortable="custom" fixed="left" />
-      <el-table-column prop="menu_url" label="菜单链接" min-width="225" />
-      <el-table-column prop="menu_name" label="菜单名称" min-width="120" />
+      <el-table-column prop="menu_url" label="菜单链接" min-width="230" />
+      <el-table-column prop="menu_name" label="菜单名称" min-width="130" />
       <el-table-column prop="request_method" label="请求方式 " min-width="110" sortable="custom" />
       <el-table-column prop="request_ip" label="请求IP" min-width="130" sortable="custom" />
       <el-table-column prop="request_region" label="请求地区" min-width="150" />

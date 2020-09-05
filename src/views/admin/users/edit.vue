@@ -3,7 +3,7 @@
     <el-card class="box-card">
       <el-row :gutter="0">
         <el-col :sm="24" :md="12">
-          <el-form ref="usersRef" :rules="usersRules" :model="usersModel" label-width="80px">
+          <el-form ref="usersRef" :rules="usersRules" :model="usersModel" label-width="100px">
             <el-form-item label="账号" prop="username">
               <el-input v-model="usersModel.username" placeholder="请输入账号" clearable />
             </el-form-item>
@@ -14,7 +14,7 @@
               <el-input v-model="usersModel.email" placeholder="" clearable />
             </el-form-item>
             <el-form-item>
-              <el-button @click="usersReset">重置</el-button>
+              <el-button @click="usersReset">刷新</el-button>
               <el-button type="primary" @click="usersSubmit">提交</el-button>
             </el-form-item>
           </el-form>

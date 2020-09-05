@@ -458,7 +458,7 @@ export function qrcode(data) {
 
 // ----------------系统设置----------------
 /**
- * 清除缓存
+ * 缓存设置
  * @param {array} data 请求数据
  */
 export function settingCache(data) {
@@ -468,3 +468,22 @@ export function settingCache(data) {
     data
   })
 }
+/**
+ * 验证码设置
+ * @param {array} data 请求数据
+ */
+export function settingVerify(data) {
+  if (data) {
+    return request({
+      url: '/admin/AdminSetting/settingVerify',
+      method: 'post',
+      data
+    })
+  } else {
+    return request({
+      url: '/admin/AdminSetting/settingVerify',
+      method: 'get'
+    })
+  }
+}
+

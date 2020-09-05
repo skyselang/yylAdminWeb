@@ -281,6 +281,16 @@ export const asyncRoutes = [
               icon: 'setting',
               roles: ['admin/AdminSetting/settingCache']
             }
+          },
+          {
+            path: 'verify',
+            component: () => import('@/views/admin/setting/verify'),
+            name: 'Verify',
+            meta: {
+              title: '验证码设置',
+              icon: 'setting',
+              roles: ['admin/AdminSetting/settingVerify']
+            }
           }
         ]
       }

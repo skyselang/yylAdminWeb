@@ -2,72 +2,56 @@
   <div class="app-container">
     <!-- 用户查询 -->
     <div class="filter-container">
-      <el-input v-model="userQuery.username" class="filter-item" style="width: 200px;" placeholder="账号" clearable />
-      <el-input v-model="userQuery.nickname" class="filter-item" style="width: 200px;" placeholder="昵称" clearable />
-      <el-input v-model="userQuery.email" class="filter-item" style="width: 200px;" placeholder="邮箱" clearable />
-      <el-button class="filter-item" type="primary" @click="userSearch">
-        查询
-      </el-button>
-      <el-button class="filter-item" type="primary" style="float:right;margin-left:10px" @click="userAddition">
-        添加
-      </el-button>
-      <el-button class="filter-item" type="primary" style="float:right;" @click="userRefresh">
-        刷新
-      </el-button>
+      <el-input v-model="userQuery.username" class="filter-item" style="width: 150px;" placeholder="账号" clearable />
+      <el-input v-model="userQuery.nickname" class="filter-item" style="width: 150px;" placeholder="昵称" clearable />
+      <el-input v-model="userQuery.email" class="filter-item" style="width: 250px;" placeholder="邮箱" clearable />
+      <el-button class="filter-item" type="primary" @click="userSearch">查询</el-button>
+      <el-button class="filter-item" type="primary" style="float:right;margin-left:10px" @click="userAddition">添加</el-button>
+      <el-button class="filter-item" type="primary" style="float:right;" @click="userRefresh">刷新</el-button>
     </div>
     <!-- 用户列表 -->
     <el-table v-loading="loading" :data="userData" :height="height" style="width: 100%" border @sort-change="userSort">
-      <el-table-column prop="admin_user_id" label="ID" min-width="80" sortable="custom" fixed="left" />
-      <el-table-column prop="username" label="账号" min-width="200" sortable="custom" />
-      <el-table-column prop="nickname" label="昵称" min-width="110" />
-      <el-table-column prop="email" label="邮箱" min-width="100" show-overflow-tooltip />
-      <el-table-column prop="sort" label="排序" width="80" sortable="custom" />
+      <el-table-column prop="admin_user_id" label="ID" min-width="100" sortable="custom" fixed="left" />
+      <el-table-column prop="username" label="账号" min-width="120" sortable="custom" />
+      <el-table-column prop="nickname" label="昵称" min-width="120" sortable="custom" />
+      <el-table-column prop="email" label="邮箱" min-width="200" sortable="custom" show-overflow-tooltip />
       <el-table-column prop="login_num" label="登录次数" min-width="110" sortable="custom" />
-      <el-table-column prop="login_ip" label="登录IP" min-width="130" />
+      <el-table-column prop="login_ip" label="登录IP" min-width="130" sortable="custom" />
       <el-table-column prop="login_time" label="登录时间" min-width="160" sortable="custom" />
-      <el-table-column prop="is_super_admin" label="是否超管" min-width="80" align="center">
+      <el-table-column prop="is_super_admin" label="超管" min-width="80" sortable="custom" align="center">
         <template slot-scope="scope">
           <el-switch v-model="scope.row.is_super_admin" active-value="1" inactive-value="0" @change="userIsSuperAdmin(scope.row)" />
         </template>
       </el-table-column>
-      <el-table-column prop="is_prohibit" label="是否禁用" min-width="80" align="center">
+      <el-table-column prop="is_prohibit" label="禁用" min-width="80" sortable="custom" align="center">
         <template slot-scope="scope">
           <el-switch v-model="scope.row.is_prohibit" active-value="1" inactive-value="0" @change="userIsProhibit(scope.row)" />
         </template>
       </el-table-column>
+      <el-table-column prop="sort" label="排序" width="80" sortable="custom" />
       <el-table-column prop="is_prohibit" label="权限" min-width="150" align="center">
         <template slot-scope="{ row }">
-          <el-button size="mini" type="primary" @click="userEditRule(row)">
-            分配
-          </el-button>
-          <el-button size="mini" type="primary" @click="userEditRuleInfo(row)">
-            明细
-          </el-button>
+          <el-button size="mini" type="primary" @click="userEditRule(row)">分配</el-button>
+          <el-button size="mini" type="primary" @click="userEditRuleInfo(row)">明细</el-button>
         </template>
       </el-table-column>
       <el-table-column prop="password" label="密码" width="80" align="center">
         <template slot-scope="{ row }">
-          <el-button size="mini" type="primary" @click="userPassword(row)">
-            密码
-          </el-button>
+          <el-button size="mini" type="primary" @click="userPassword(row)">密码</el-button>
         </template>
       </el-table-column>
       <el-table-column label="操作" min-width="150" align="right" fixed="right" class-name="small-padding fixed-width">
         <template slot-scope="{ row }">
-          <el-button size="mini" type="primary" @click="userModify(row)">
-            修改
-          </el-button>
-          <el-button size="mini" type="danger" @click="userDelete(row)">
-            删除
-          </el-button>
+          <el-button size="mini" type="primary" @click="userModify(row)">修改</el-button>
+          <el-button size="mini" type="danger" @click="userDelete(row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
     <!-- 用户分页 -->
     <pagination v-show="userCount > 0" :total="userCount" :page.sync="userQuery.page" :limit.sync="userQuery.limit" @pagination="userList" />
-    <!-- 用户添加、 -->
-    <el-dialog :title="userModel.admin_user_id ? '修改：'+userModel.username : '添加'" :visible.sync="userDialog" width="65%" top="1vh" :before-close="handleClose">
-      <el-form ref="userRef" class="dialog-body" :rules="userRules" :model="userModel" label-width="80px" :style="{height:height+50+'px'}">
+    <!-- 用户添加、修改 -->
+    <el-dialog :title="userModel.dialog_title" :visible.sync="userDialog" width="65%" top="1vh" :before-close="handleClose">
+      <el-form ref="userRef" class="dialog-body" :rules="userRules" :model="userModel" label-width="100px" :style="{height:height+50+'px'}">
         <el-form-item v-if="userModel.admin_user_id && userModel.avatar" label="头像">
           <el-avatar shape="circle" fit="contain" :size="100" :src="userModel.avatar" />
         </el-form-item>
@@ -100,17 +84,13 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="userCancel">
-          取消
-        </el-button>
-        <el-button type="primary" @click="userSubmit">
-          提交
-        </el-button>
+        <el-button @click="userCancel">取消</el-button>
+        <el-button type="primary" @click="userSubmit">提交</el-button>
       </div>
     </el-dialog>
     <!-- 用户权限分配 -->
     <el-dialog :title="'权限分配：'+userModel.username" :visible.sync="userDialogRule" width="65%" top="1vh" :before-close="handleClose">
-      <el-form ref="formRuleRef" :model="userModel" label-width="80px" class="dialog-body" :style="{height:height+50+'px'}">
+      <el-form ref="ruleRef" :model="userModel" label-width="80px" class="dialog-body" :style="{height:height+50+'px'}">
         <el-form-item label="账号">
           <el-input v-model="userModel.username" clearable disabled />
         </el-form-item>
@@ -119,13 +99,13 @@
         </el-form-item>
         <el-form-item label="按权限">
           <el-checkbox-group v-model="userModel.admin_rule_ids">
-            <el-checkbox v-for="item in formRule" :key="item.admin_rule_id" :label="item.admin_rule_id">{{ item.rule_name }}</el-checkbox>
+            <el-checkbox v-for="item in ruleData" :key="item.admin_rule_id" :label="item.admin_rule_id">{{ item.rule_name }}</el-checkbox>
           </el-checkbox-group>
         </el-form-item>
         <el-form-item label="按菜单">
           <el-tree
-            ref="formMenuRef"
-            :data="formMenu"
+            ref="menuRef"
+            :data="menuData"
             :default-checked-keys="userModel.admin_menu_id"
             :props="menuProps"
             :expand-on-click-node="false"
@@ -146,17 +126,13 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="userCancelRule">
-          取消
-        </el-button>
-        <el-button type="primary" @click="userSubmitRule">
-          提交
-        </el-button>
+        <el-button @click="userCancelRule">取消</el-button>
+        <el-button type="primary" @click="userSubmitRule">提交</el-button>
       </div>
     </el-dialog>
     <!-- 用户权限明细 -->
     <el-dialog :title="'权限明细：'+userModel.username" :visible.sync="userDialogRuleInfo" width="65%" top="1vh" :before-close="handleClose">
-      <el-form ref="formRuleInfoRef" :model="userModel" label-width="80px" class="dialog-body" :style="{height:height+50+'px'}">
+      <el-form ref="ruleInfoRef" :model="userModel" label-width="80px" class="dialog-body" :style="{height:height+50+'px'}">
         <el-form-item label="账号">
           <el-input v-model="userModel.username" clearable disabled />
         </el-form-item>
@@ -165,11 +141,11 @@
         </el-form-item>
         <el-form-item label="权限">
           <el-checkbox-group v-model="userModel.admin_rule_ids">
-            <el-checkbox v-for="item in formRule" :key="item.admin_rule_id" :label="item.admin_rule_id" disabled>{{ item.rule_name }}</el-checkbox>
+            <el-checkbox v-for="item in ruleData" :key="item.admin_rule_id" :label="item.admin_rule_id" disabled>{{ item.rule_name }}</el-checkbox>
           </el-checkbox-group>
         </el-form-item>
         <el-form-item label="菜单">
-          <el-tree ref="formMenuRef" :data="formMenu" :default-checked-keys="userModel.admin_menu_ids" :props="menuProps" :expand-on-click-node="false" node-key="admin_menu_id" default-expand-all show-checkbox check-strictly highlight-current>
+          <el-tree ref="menuRef" :data="menuData" :default-checked-keys="userModel.admin_menu_ids" :props="menuProps" :expand-on-click-node="false" node-key="admin_menu_id" default-expand-all show-checkbox check-strictly highlight-current>
             <span slot-scope="{ node }" class="custom-tree-node">
               <span>{{ node.label }}</span>
             </span>
@@ -179,7 +155,7 @@
     </el-dialog>
     <!-- 用户密码重置 -->
     <el-dialog :title="'密码重置：'+userModel.username" :visible.sync="userDialogPwd" width="65%" top="1vh" :before-close="handleClose">
-      <el-form ref="formPwdRef" :rules="rePwdRules" :model="userModel" label-width="80px" class="dialog-body" :style="{height:height+50+'px'}">
+      <el-form ref="rePwdRef" :rules="rePwdRules" :model="userModel" label-width="80px" class="dialog-body" :style="{height:height+50+'px'}">
         <el-form-item label="账号">
           <el-input v-model="userModel.username" clearable disabled />
         </el-form-item>
@@ -191,12 +167,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="userCancelPwd">
-          取消
-        </el-button>
-        <el-button type="primary" @click="userSubmitPwd">
-          提交
-        </el-button>
+        <el-button @click="userCancelPwd">取消</el-button>
+        <el-button type="primary" @click="userSubmitPwd">提交</el-button>
       </div>
     </el-dialog>
   </div>
@@ -237,8 +209,8 @@ export default {
       userDialog: false,
       userDialogRule: false,
       userDialogPwd: false,
-      formRule: [],
       userModel: {
+        dialog_title: '',
         admin_user_id: '',
         admin_rule_ids: [],
         username: '',
@@ -250,6 +222,13 @@ export default {
         is_prohibit: '0',
         is_super_admin: '0'
       },
+      userDialogRuleInfo: false,
+      ruleData: [],
+      menuProps: {
+        children: 'children',
+        label: 'menu_name'
+      },
+      menuData: [],
       userRules: {
         username: [{ required: true, message: '必填', trigger: 'blur' }],
         nickname: [{ required: true, message: '必填', trigger: 'blur' }],
@@ -257,13 +236,7 @@ export default {
       },
       rePwdRules: {
         password: [{ required: true, message: '必填', trigger: 'blur' }]
-      },
-      userDialogRuleInfo: false,
-      menuProps: {
-        children: 'children',
-        label: 'menu_name'
-      },
-      formMenu: []
+      }
     }
   },
   created() {
@@ -290,6 +263,7 @@ export default {
       this.userReset()
       done()
     },
+    // 用户列表
     userList() {
       this.loadOpen()
       userList(this.userQuery)
@@ -302,6 +276,7 @@ export default {
           this.loadClose()
         })
     },
+    // 用户排序
     userSort(sort) {
       this.userQuery.sort_field = sort.prop
       this.userQuery.sort_type = ''
@@ -314,24 +289,29 @@ export default {
         this.userList()
       }
     },
+    // 用户查询
     userSearch() {
       this.userQuery.page = 1
       this.userList()
     },
+    // 用户刷新
     userRefresh() {
       this.userQuery = { page: 1, limit: 10 }
       this.userList()
     },
+    // 用户添加
     userAddition() {
       this.userDialog = true
       this.userReset()
     },
+    // 用户修改
     userModify(row) {
       this.userDialog = true
       userInfo({ admin_user_id: row.admin_user_id }).then(res => {
         this.userReset(res.data)
       })
     },
+    // 用户权限分配
     userEditRule(row) {
       this.userDialogRule = true
       this.menuList()
@@ -339,6 +319,7 @@ export default {
       this.ruleList()
       this.userRuleInfo(row)
     },
+    // 用户是否超管
     userIsSuperAdmin(row) {
       this.loadOpen()
       userSuperAdmin(row)
@@ -350,6 +331,7 @@ export default {
           this.loadClose()
         })
     },
+    // 用户是否禁用
     userIsProhibit(row) {
       this.loadOpen()
       userProhibit(row)
@@ -361,29 +343,35 @@ export default {
           this.loadClose()
         })
     },
+    // 用户权限分配菜单选择
     menuCheck(data, node) {
       this.userModel.admin_menu_id = node.checkedKeys
     },
+    // 菜单列表
     menuList() {
       menuList().then(res => {
-        this.formMenu = res.data.list
+        this.menuData = res.data.list
       })
     },
+    // 用户权限明细
     userEditRuleInfo(row) {
       this.userDialogRuleInfo = true
       this.menuList()
       this.ruleList()
       this.userRuleInfo(row)
     },
+    // 用户权限信息
     userRuleInfo(row) {
       userRuleInfo({ admin_user_id: row.admin_user_id }).then(res => {
         this.userReset(res.data)
       })
     },
+    // 用户密码重置
     userPassword(row) {
       this.userDialogPwd = true
       this.userReset(row)
     },
+    // 用户删除
     userDelete(row) {
       this.$confirm('确定要删除吗？', '提示', {
         confirmButtonText: '确定',
@@ -404,17 +392,20 @@ export default {
         })
         .catch(() => {})
     },
+    // 权限列表
     ruleList() {
       ruleList({ page: 1, limit: 9999 }).then(res => {
-        this.formRule = res.data.list
+        this.ruleData = res.data.list
       })
     },
+    // 用户添加、修改重置
     userReset(row) {
       const data = this.userModel
       data.admin_rule_ids = []
       data.admin_menu_ids = []
       data.admin_menu_id = []
       if (row) {
+        data.dialog_title = '用户修改：' + row.username
         data.admin_user_id = row.admin_user_id
         data.admin_rule_ids = row.admin_rule_ids ? row.admin_rule_ids : []
         data.admin_menu_ids = row.admin_menu_ids ? row.admin_menu_ids : []
@@ -430,6 +421,7 @@ export default {
         data.logout_time = row.logout_time ? row.logout_time : ''
         data.avatar = row.avatar ? row.avatar : ''
       } else {
+        data.dialog_title = '用户添加'
         data.admin_user_id = ''
         data.admin_rule_ids = []
         data.admin_menu_ids = []
@@ -442,12 +434,14 @@ export default {
         data.sort = 200
       }
     },
+    // 用户权限分配取消
     userCancelRule() {
       this.userDialogRule = false
       this.userReset()
     },
+    // 用户权限分配提交
     userSubmitRule() {
-      this.$refs['formRuleRef'].validate(valid => {
+      this.$refs['ruleRef'].validate(valid => {
         if (valid) {
           this.loadOpen()
           userRule(this.userModel)
@@ -463,12 +457,14 @@ export default {
         }
       })
     },
+    // 用户重置密码取消
     userCancelPwd() {
       this.userDialogPwd = false
       this.userReset()
     },
+    // 用户重置密码提交
     userSubmitPwd() {
-      this.$refs['formPwdRef'].validate(valid => {
+      this.$refs['rePwdRef'].validate(valid => {
         if (valid) {
           this.loadOpen()
           userPwd(this.userModel)
@@ -484,10 +480,12 @@ export default {
         }
       })
     },
+    // 用户添加、修改取消
     userCancel() {
       this.userDialog = false
       this.userReset()
     },
+    // 用户添加、修改提交
     userSubmit() {
       this.$refs['userRef'].validate(valid => {
         if (valid) {

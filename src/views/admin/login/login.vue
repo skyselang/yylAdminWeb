@@ -1,19 +1,19 @@
 <template>
   <div class="login-container">
-    <el-form ref="fromRef" :model="formModel" :rules="formRules" class="login-form" autocomplete="on" label-position="left">
+    <el-form ref="loginRef" :model="loginModel" :rules="loginRules" class="login-form" autocomplete="on" label-position="left">
       <div class="title-container">
         <h3 class="title">{{ title }}</h3>
       </div>
 
       <el-form-item prop="username">
-        <el-input v-model="formModel.username" placeholder="请输入账号" name="username" type="text" prefix-icon="el-icon-user" autocomplete="on" clearable />
+        <el-input v-model="loginModel.username" type="text" name="username" placeholder="请输入账号" prefix-icon="el-icon-user" autocomplete="on" clearable />
       </el-form-item>
       <el-form-item prop="password">
-        <el-input v-model="formModel.password" placeholder="请输入密码" name="password" type="password" prefix-icon="el-icon-lock" autocomplete="on" clearable show-password />
+        <el-input v-model="loginModel.password" type="password" name="password" placeholder="请输入密码" prefix-icon="el-icon-lock" autocomplete="on" clearable show-password />
       </el-form-item>
       <el-form-item v-if="verifyShow" prop="verify_code">
         <el-col :span="13">
-          <el-input ref="verify_code_ipt" v-model="formModel.verify_code" placeholder="请输入验证码" name="verify_code" type="text" prefix-icon="el-icon-picture" autocomplete="off" clearable style="height:50px;line-height:50px;" />
+          <el-input ref="verify_code_ipt" v-model="loginModel.verify_code" placeholder="请输入验证码" name="verify_code" type="text" prefix-icon="el-icon-picture" autocomplete="off" clearable style="height:50px;line-height:50px;" />
         </el-col>
         <el-col :span="11">
           <el-image style="width:200px;height:50px;float:right" :src="verifySrc" fit="fill" alt="验证码" title="点击刷新验证码" @click="verifyRefresh" />
@@ -40,13 +40,13 @@ export default {
       otherQuery: {},
       verifyShow: false,
       verifySrc: '',
-      formModel: {
+      loginModel: {
         username: '',
         password: '',
         verify_id: '',
         verify_code: ''
       },
-      formRules: {
+      loginRules: {
         username: [{ required: true, message: '请输入账号', trigger: 'blur' }],
         password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
         verify_code: [
@@ -77,21 +77,28 @@ export default {
     getVerify() {
       verify()
         .then(res => {
-          this.verifyShow = res.data.is_verify
-          if (res.data.is_verify) {
+          this.verifyShow = res.data.verify_switch
+          if (res.data.verify_switch) {
             this.verifySrc = res.data.verify_src
-            this.formModel.verify_id = res.data.verify_id
+            this.loginModel.verify_id = res.data.verify_id
           }
         })
         .catch(() => {})
     },
+    // 刷新验证码
+    verifyRefresh() {
+      this.loginModel.verify_id = ''
+      this.loginModel.verify_code = ''
+      this.getVerify()
+      // this.$refs.verify_code_ipt.focus()
+    },
     // 登录
     handleLogin() {
-      this.$refs.fromRef.validate(valid => {
+      this.$refs.loginRef.validate(valid => {
         if (valid) {
           this.loading = true
           this.$store
-            .dispatch('user/login', this.formModel)
+            .dispatch('user/login', this.loginModel)
             .then(() => {
               this.$router
                 .push({
@@ -116,13 +123,6 @@ export default {
         }
         return acc
       }, {})
-    },
-    // 刷新验证码
-    verifyRefresh() {
-      this.formModel.verify_id = ''
-      this.formModel.verify_code = ''
-      this.getVerify()
-      this.$refs.verify_code_ipt.focus()
     }
   }
 }

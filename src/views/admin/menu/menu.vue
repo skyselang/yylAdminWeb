@@ -2,12 +2,8 @@
   <div class="app-container">
     <!-- 菜单添加 -->
     <div class="filter-container">
-      <el-button class="filter-item" type="primary" style="float:right;margin-left:10px" @click="menuAddition">
-        添加
-      </el-button>
-      <el-button class="filter-item" type="primary" style="float:right;" @click="menuRefresh">
-        刷新
-      </el-button>
+      <el-button class="filter-item" type="primary" style="float:right;margin-left:10px" @click="menuAddition">添加</el-button>
+      <el-button class="filter-item" type="primary" style="float:right;" @click="menuRefresh">刷新</el-button>
     </div>
     <!-- 菜单列表 -->
     <el-table v-loading="loading" :data="menuData" :height="height+100" style="width: 100%" row-key="admin_menu_id" border>
@@ -28,23 +24,22 @@
           <el-switch v-if="scope.row.menu_url" v-model="scope.row.is_unauth" active-value="1" inactive-value="0" @change="menuIsUnauth(scope.row)" />
         </template>
       </el-table-column>
+      <el-table-column prop="" label="所属权限" min-width="100" align="center">
+        <template slot-scope="{ row }">
+          <el-button size="mini" type="primary" @click="ruleListShow(row)">权限</el-button>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" min-width="220" fixed="right" align="right" class-name="small-padding fixed-width">
         <template slot-scope="{ row }">
-          <el-button size="mini" type="primary" @click="ruleListShow(row)">
-            权限
-          </el-button>
-          <el-button size="mini" type="primary" @click="menuModify(row)">
-            修改
-          </el-button>
-          <el-button size="mini" type="danger" @click="menuDelete(row)">
-            删除
-          </el-button>
+          <el-button size="mini" type="primary" @click="menuAddition(row)">添加</el-button>
+          <el-button size="mini" type="primary" @click="menuModify(row)">修改</el-button>
+          <el-button size="mini" type="danger" @click="menuDelete(row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
-    <!-- 菜单编辑 -->
-    <el-dialog :title="menuModel.admin_menu_id ? '修改' : '添加'" :visible.sync="menuDialog" top="1vh">
-      <el-form ref="formRef" :rules="menuRules" :model="menuModel" label-width="80px" class="dialog-body" :style="{height:height+50+'px'}">
+    <!-- 菜单添加、修改 -->
+    <el-dialog :title="menuModel.dialog_title" :visible.sync="menuDialog" top="1vh">
+      <el-form ref="formRef" :rules="menuRules" :model="menuModel" class="dialog-body" label-width="100px" :style="{height:height+80+'px'}">
         <el-form-item label="菜单父级" prop="menu_pid">
           <el-cascader v-model="menuModel.menu_pid" :options="menuData" :props="menuProps" style="width:100%" clearable filterable placeholder="一级菜单" @change="menuPidChange" />
         </el-form-item>
@@ -59,12 +54,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="menuCancel">
-          取消
-        </el-button>
-        <el-button type="primary" @click="menuSubmit">
-          提交
-        </el-button>
+        <el-button @click="menuCancel">取消</el-button>
+        <el-button type="primary" @click="menuSubmit">提交</el-button>
       </div>
     </el-dialog>
     <!-- 菜单权限 -->
@@ -80,21 +71,19 @@
         </el-table-column>
         <el-table-column label="操作" min-width="100" align="right" class-name="small-padding fixed-width" fixed="right">
           <template slot-scope="{ row }">
-            <el-button size="mini" type="primary" @click="userListShow(row)">
-              用户
-            </el-button>
+            <el-button size="mini" type="primary" @click="userListShow(row)">用户</el-button>
           </template>
         </el-table-column>
       </el-table>
       <pagination v-show="ruleCount > 0" :total="ruleCount" :page.sync="ruleQuery.page" :limit.sync="ruleQuery.limit" @pagination="ruleData" />
     </el-dialog>
     <!-- 菜单用户 -->
-    <el-dialog :title="userTitle" :visible.sync="userDialog" width="62%" top="1vh">
-      <el-table v-loading="userLoad" :data="userData" :height="height+20" style="width: 100%" border @sort-change="userSort">
-        <el-table-column prop="admin_user_id" label="ID" min-width="80" sortable="custom" fixed="left" />
-        <el-table-column prop="username" label="账号" min-width="200" sortable="custom" />
-        <el-table-column prop="nickname" label="昵称" min-width="110" />
-        <el-table-column prop="email" label="邮箱" min-width="100" show-overflow-tooltip />
+    <el-dialog :title="userTitle" :visible.sync="userDialog" width="62%" top="2vh">
+      <el-table v-loading="userLoad" :data="userData" :height="height+10" style="width: 100%" border @sort-change="userSort">
+        <el-table-column prop="admin_user_id" label="ID" min-width="100" sortable="custom" fixed="left" />
+        <el-table-column prop="username" label="账号" min-width="120" sortable="custom" />
+        <el-table-column prop="nickname" label="昵称" min-width="120" />
+        <el-table-column prop="email" label="邮箱" min-width="200" show-overflow-tooltip />
         <el-table-column prop="remark" label="备注" width="100" />
         <el-table-column prop="is_super_admin" label="是否超管" min-width="80" align="center">
           <template slot-scope="scope">
@@ -144,6 +133,7 @@ export default {
         label: 'menu_name'
       },
       menuModel: {
+        dialog_title: '',
         admin_menu_id: '',
         menu_pid: 0,
         menu_name: '',
@@ -193,6 +183,7 @@ export default {
         type: type
       })
     },
+    // 菜单列表
     menuList() {
       this.loadOpen()
       menuList(this.menuQuery)
@@ -205,6 +196,7 @@ export default {
           this.loadClose()
         })
     },
+    // 菜单是否禁用
     menuIsProhibit(row) {
       this.loadOpen()
       menuProhibit(row)
@@ -216,6 +208,7 @@ export default {
           this.loadClose()
         })
     },
+    // 菜单是否无需权限
     menuIsUnauth(row) {
       this.loadOpen()
       menuUnauth(row)
@@ -227,17 +220,30 @@ export default {
           this.loadClose()
         })
     },
+    // 菜单刷新
     menuRefresh() {
       this.menuList()
     },
-    menuAddition() {
+    // 菜单添加
+    menuAddition(row) {
       this.menuDialog = true
-      this.menuReset()
+      if (row) {
+        this.menuModel.dialog_title = '菜单添加'
+        this.menuModel.admin_menu_id = ''
+        this.menuModel.menu_pid = row.admin_menu_id
+        this.menuModel.menu_name = ''
+        this.menuModel.menu_url = ''
+        this.menuModel.menu_sort = 200
+      } else {
+        this.menuReset()
+      }
     },
+    // 菜单修改
     menuModify(row) {
       this.menuDialog = true
       this.menuReset(row)
     },
+    // 菜单删除
     menuDelete(row) {
       this.$confirm('确定删除吗（它所有子菜单也将删除）？', '提示', {
         confirmButtonText: '确定',
@@ -258,17 +264,23 @@ export default {
         })
         .catch(() => {})
     },
+    // 菜单父级选择
     menuPidChange(value) {
-      this.menuModel.menu_pid = value[value.length - 1]
+      if (value) {
+        this.menuModel.menu_pid = value[value.length - 1]
+      }
     },
+    // 菜单添加、修改数据重置
     menuReset(row) {
       if (row) {
+        this.menuModel.dialog_title = '菜单修改：' + row.menu_name
         this.menuModel.admin_menu_id = row.admin_menu_id
         this.menuModel.menu_pid = row.menu_pid
         this.menuModel.menu_name = row.menu_name
         this.menuModel.menu_url = row.menu_url
         this.menuModel.menu_sort = row.menu_sort
       } else {
+        this.menuModel.dialog_title = '菜单添加'
         this.menuModel.admin_menu_id = ''
         this.menuModel.menu_pid = 0
         this.menuModel.menu_name = ''
@@ -276,10 +288,12 @@ export default {
         this.menuModel.menu_sort = 200
       }
     },
+    // 菜单添加、修改取消
     menuCancel() {
       this.menuDialog = false
       this.menuReset()
     },
+    // 菜单添加、修改提交
     menuSubmit() {
       this.$refs['formRef'].validate(valid => {
         if (valid) {
@@ -310,13 +324,14 @@ export default {
         }
       })
     },
-    // 权限
+    // 菜单所属权限显示
     ruleListShow(row) {
       this.ruleDialog = true
-      this.ruleTitle = row.menu_name
+      this.ruleTitle = '菜单权限：' + row.menu_name
       this.ruleQuery.admin_menu_id = row.admin_menu_id
       this.ruleList()
     },
+    // 菜单所属权限列表
     ruleList() {
       this.ruleLoad = true
       ruleList(this.ruleQuery)
@@ -329,6 +344,7 @@ export default {
           this.ruleLoad = false
         })
     },
+    // 菜单所属权限排序
     ruleSort(sort) {
       this.ruleQuery.sort_field = sort.prop
       this.ruleQuery.sort_type = ''
@@ -341,13 +357,14 @@ export default {
         this.ruleList()
       }
     },
-    // 用户
+    // 菜单所属菜单用户显示
     userListShow(row) {
       this.userDialog = true
       this.userTitle = row.rule_name
       this.userQuery.admin_rule_id = row.admin_rule_id
       this.userList()
     },
+    // 菜单所属菜单用户列表
     userList() {
       this.userLoad = true
       userList(this.userQuery)
@@ -360,6 +377,7 @@ export default {
           this.userLoad = false
         })
     },
+    // 菜单所属菜单用户排序
     userSort(sort) {
       this.userQuery.sort_field = sort.prop
       this.userQuery.sort_type = ''

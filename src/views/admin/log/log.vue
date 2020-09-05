@@ -1,25 +1,21 @@
 <template>
   <div class="app-container">
-    <!-- 查询 -->
+    <!-- 日志查询 -->
     <div class="filter-container">
       <el-input v-model="logQuery.user_keyword" class="filter-item" style="width: 135px;" placeholder="用户账号/昵称" clearable />
       <el-input v-model="logQuery.request_keyword" class="filter-item" style="width: 155px;" placeholder="请求IP/地区/ISP" clearable />
       <el-input v-model="logQuery.menu_keyword" class="filter-item" style="width: 280px;" placeholder="菜单链接/名称" clearable />
       <el-date-picker v-model="logQuery.create_time" type="daterange" style="width: 240px;top: -4px;" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd" />
-      <el-button class="filter-item" type="primary" @click="logSearch">
-        查询
-      </el-button>
-      <el-button class="filter-item" type="primary" style="float:right;" @click="logRefresh">
-        刷新
-      </el-button>
+      <el-button class="filter-item" type="primary" @click="logSearch">查询</el-button>
+      <el-button class="filter-item" type="primary" style="float:right;" @click="logRefresh">刷新</el-button>
     </div>
     <!-- 日志列表 -->
-    <el-table v-loading="loading" :data="logData" :height="height" style="width: 100%" border @sort-change="logSort" @cell-click="logCellClick">
+    <el-table v-loading="loading" :data="logData" :height="height" style="width: 100%" border @sort-change="logSort">
       <el-table-column prop="admin_log_id" label="ID" min-width="100" sortable="custom" fixed="left" />
       <el-table-column prop="username" label="用户账号" min-width="110" />
       <el-table-column prop="nickname" label="用户昵称" min-width="110" />
-      <el-table-column prop="menu_url" label="菜单链接" min-width="225" />
-      <el-table-column prop="menu_name" label="菜单名称" min-width="120" />
+      <el-table-column prop="menu_url" label="菜单链接" min-width="230" />
+      <el-table-column prop="menu_name" label="菜单名称" min-width="130" />
       <el-table-column prop="request_method" label="请求方式 " min-width="110" sortable="custom" />
       <el-table-column prop="request_ip" label="请求IP" min-width="130" sortable="custom" />
       <el-table-column prop="request_region" label="请求地区" min-width="150" />
@@ -27,24 +23,16 @@
       <el-table-column prop="create_time" label="请求时间" min-width="160" sortable="custom" />
       <el-table-column label="操作" min-width="150" align="right" fixed="right" class-name="small-padding fixed-width">
         <template slot-scope="{ row }">
-          <el-button size="mini" type="primary" @click="logDetail(row)">
-            详情
-          </el-button>
-          <el-button size="mini" type="danger" @click="logDelete(row)">
-            删除
-          </el-button>
+          <el-button size="mini" type="primary" @click="logDetail(row)">详情</el-button>
+          <el-button size="mini" type="danger" @click="logDelete(row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
     <!-- 日志分页 -->
     <pagination v-show="logCount > 0" :total="logCount" :page.sync="logQuery.page" :limit.sync="logQuery.limit" @pagination="logLists" />
-    <!-- 日志IP信息 -->
-    <el-dialog :title="ipTitle" :visible.sync="ipDialog" width="65%" top="1vh">
-      <iframe :src="ipUrl" frameborder="0" width="100%" :height="height+100" />
-    </el-dialog>
-    <!--日志详情 -->
+    <!-- 日志详情 -->
     <el-dialog :title="'日志信息：' + logModel.admin_log_id" :visible.sync="logDialog" width="65%" top="1vh">
-      <el-form ref="formRef" :rules="logRules" :model="logModel" label-width="80px" class="dialog-body" :style="{height:height+100+'px'}">
+      <el-form ref="formRef" :rules="logRules" :model="logModel" label-width="100px" class="dialog-body" :style="{height:height+80+'px'}">
         <el-form-item label="用户ID" prop="admin_user_id">
           <el-input v-model="logModel.admin_user_id" />
         </el-form-item>
@@ -80,12 +68,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="logCancel">
-          取消
-        </el-button>
-        <el-button type="primary" @click="logSubmit">
-          确定
-        </el-button>
+        <el-button @click="logCancel">取消</el-button>
+        <el-button type="primary" @click="logSubmit">确定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -112,11 +96,7 @@ export default {
       },
       logDialog: false,
       logModel: {},
-      logRules: {},
-      ipDialog: false,
-      ipNumber: 1,
-      ipTitle: '',
-      ipUrl: ''
+      logRules: {}
     }
   },
   created() {
@@ -202,27 +182,6 @@ export default {
             })
         })
         .catch(() => {})
-    },
-    logCellClick(row, column, cell, event) {
-      if (column.property === 'request_ip') {
-        this.ipNumber = parseInt(Math.random() * 4)
-        if (this.ipNumber === 0) {
-          this.ipUrl = 'https://www.ip.cn/?ip=' + row.request_ip
-        } else if (this.ipNumber === 1) {
-          this.ipUrl =
-            'https://www.ip138.com/iplookup.asp?ip=' +
-            row.request_ip +
-            '&action=2'
-        } else if (this.ipNumber === 2) {
-          this.ipUrl = 'http://www.882667.com/ip_' + row.request_ip + '.html'
-        } else if (this.ipNumber === 3) {
-          this.ipUrl = 'https://www.ip38.com/ip.php?ip=' + row.request_ip
-        } else {
-          this.ipUrl = 'https://www.123cha.com/ip/?q=' + row.request_ip
-        }
-        this.ipTitle = row.request_ip
-        this.ipDialog = true
-      }
     },
     logReset(row) {
       if (row) {

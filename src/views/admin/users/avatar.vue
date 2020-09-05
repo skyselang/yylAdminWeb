@@ -3,15 +3,13 @@
     <el-card class="box-card">
       <el-row :gutter="0">
         <el-col :sm="24" :md="12">
-          <el-form ref="usersRef" label-width="80px">
+          <el-form ref="usersRef" label-width="100px">
             <el-form-item label="头像">
               <el-avatar v-if="avatar" shape="circle" fit="contain" :size="100" :src="avatar" />
             </el-form-item>
             <el-form-item>
               <el-upload class="upload-demo" name="avatar_file" :show-file-list="false" :action="uploadAction" :headers="uploadHeaders" :data="uploadData" :on-success="uploadSuccess">
-                <div slot="tip">
-                  jpg、png格式，不超过50kb
-                </div>
+                <div slot="tip">jpg、png格式，小于50kb</div>
                 <el-button type="primary">更换头像</el-button>
               </el-upload>
             </el-form-item>

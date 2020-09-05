@@ -3,7 +3,7 @@
     <div class="filter-container">
       <el-card class="box-card">
         <el-form ref="formRef" label-width="100px">
-          <el-form-item label="清除缓存">
+          <el-form-item label="缓存清除">
             <el-button :loading="cacheClearLoad" type="primary" @click="cacheClear()">清除</el-button>
           </el-form-item>
         </el-form>
@@ -25,7 +25,7 @@ export default {
   },
   computed: {},
   methods: {
-    // 清除缓存
+    // 缓存清除
     cacheClear() {
       this.cacheClearLoad = true
       settingCache()
