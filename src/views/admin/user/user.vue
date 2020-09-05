@@ -73,14 +73,17 @@
         <el-form-item label="排序" prop="sort">
           <el-input v-model="userModel.sort" type="number" />
         </el-form-item>
+        <el-form-item v-if="userModel.admin_user_id" label="登录地区" prop="login_region">
+          <el-input v-model="userModel.login_region" disabled />
+        </el-form-item>
         <el-form-item v-if="userModel.admin_user_id" label="添加时间" prop="create_time">
-          <el-input v-model="userModel.create_time" placeholder="" disabled />
+          <el-input v-model="userModel.create_time" disabled />
         </el-form-item>
         <el-form-item v-if="userModel.admin_user_id" label="更新时间" prop="update_time">
-          <el-input v-model="userModel.update_time" placeholder="" disabled />
+          <el-input v-model="userModel.update_time" disabled />
         </el-form-item>
         <el-form-item v-if="userModel.admin_user_id" label="退出时间" prop="logout_time">
-          <el-input v-model="userModel.logout_time" placeholder="" disabled />
+          <el-input v-model="userModel.logout_time" disabled />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -219,6 +222,7 @@ export default {
         email: '',
         remark: '',
         sort: '',
+        login_region: '',
         is_prohibit: '0',
         is_super_admin: '0'
       },
@@ -416,6 +420,7 @@ export default {
         data.email = row.email ? row.email : ''
         data.remark = row.remark ? row.remark : ''
         data.sort = row.sort
+        data.login_region = row.login_region
         data.create_time = row.create_time ? row.create_time : ''
         data.update_time = row.update_time ? row.update_time : ''
         data.logout_time = row.logout_time ? row.logout_time : ''
@@ -432,6 +437,7 @@ export default {
         data.email = ''
         data.remark = ''
         data.sort = 200
+        data.login_region = ''
       }
     },
     // 用户权限分配取消
