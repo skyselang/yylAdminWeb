@@ -4,7 +4,6 @@
       <div class="title-container">
         <h3 class="title">{{ title }}</h3>
       </div>
-
       <el-form-item prop="username">
         <el-input v-model="loginModel.username" type="text" name="username" placeholder="请输入账号" prefix-icon="el-icon-user" autocomplete="on" clearable />
       </el-form-item>
@@ -19,7 +18,6 @@
           <el-image style="width:200px;height:50px;float:right" :src="verifySrc" fit="fill" alt="验证码" title="点击刷新验证码" @click="verifyRefresh" />
         </el-col>
       </el-form-item>
-
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
     </el-form>
   </div>

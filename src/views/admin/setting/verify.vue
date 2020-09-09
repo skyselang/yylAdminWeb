@@ -2,50 +2,45 @@
   <div class="app-container">
     <div class="filter-container">
       <el-card class="box-card">
-
-        <el-form ref="verifyRef" :rules="verifyRules" :model="verifyModel" label-width="120px">
+        <el-form ref="verifyRefs" :rules="verifyRules" :model="verifyModel" label-width="120px">
           <el-row>
             <el-col :xs="24" :sm="12">
-              <el-form-item label="验证码开关" prop="verify_switch">
-                <el-switch v-model="verifyModel.verify_switch" />
+              <el-form-item label="验证码开关" prop="switch">
+                <el-switch v-model="verifyModel.switch" />
               </el-form-item>
-              <el-form-item label="验证码曲线" prop="verify_curve">
-                <el-switch v-model="verifyModel.verify_curve" />
+              <el-form-item label="验证码曲线" prop="curve">
+                <el-switch v-model="verifyModel.curve" />
               </el-form-item>
-              <el-form-item label="验证码杂点" prop="verify_noise">
-                <el-switch v-model="verifyModel.verify_noise" />
+              <el-form-item label="验证码杂点" prop="noise">
+                <el-switch v-model="verifyModel.noise" />
               </el-form-item>
-              <el-form-item label="验证码背景图" prop="verify_bgimg">
-                <el-switch v-model="verifyModel.verify_bgimg" />
+              <el-form-item label="验证码背景图" prop="bgimg">
+                <el-switch v-model="verifyModel.bgimg" />
               </el-form-item>
-              <el-form-item label="验证码类型" prop="verify_type">
-                <el-select v-model="verifyModel.verify_type" filterable placeholder="请选择">
+              <el-form-item label="验证码类型" prop="type">
+                <el-select v-model="verifyModel.type" filterable placeholder="请选择">
                   <el-option v-for="item in verify_type_arr" :key="item.value" :label="item.label" :value="item.value">
                     {{ item.label }}
                   </el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="验证码位数" prop="verify_length">
-                <el-select v-model="verifyModel.verify_length" filterable placeholder="请选择">
+              <el-form-item label="验证码位数" prop="length">
+                <el-select v-model="verifyModel.length" filterable placeholder="请选择">
                   <el-option v-for="item in verify_length_arr" :key="item.value" :label="item.label" :value="item.value">
                     {{ item.label }}
                   </el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="验证码有效时间" prop="verify_expire">
+              <el-form-item label="验证码有效时间" prop="expire">
                 <el-col :xs="24" :sm="12">
-                  <el-input v-model="verifyModel.verify_expire" type="number">
+                  <el-input v-model="verifyModel.expire" type="number">
                     <template slot="append">秒</template>
                   </el-input>
                 </el-col>
               </el-form-item>
               <el-form-item>
-                <el-button :loading="verifyRefLoad" type="primary" @click="verifyRef()">
-                  刷新
-                </el-button>
-                <el-button :loading="verifySubLoad" type="primary" @click="verifySub()">
-                  提交
-                </el-button>
+                <el-button :loading="verifyRefLoad" @click="verifyRef()">刷新</el-button>
+                <el-button :loading="verifySubLoad" type="primary" @click="verifySub()">提交</el-button>
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12">
@@ -87,30 +82,30 @@ export default {
         { value: '6', label: '6位' }
       ],
       verifyModel: {
-        verify_switch: false,
-        verify_curve: false,
-        verify_noise: false,
-        verify_bgimg: false,
-        verify_type: 1,
-        verify_length: 4,
-        verify_expire: 180
+        switch: false,
+        curve: false,
+        noise: false,
+        bgimg: false,
+        type: 1,
+        length: 4,
+        expire: 180
       },
       verifyRules: {
-        verify_type: [
+        type: [
           {
             required: true,
             message: '请选择验证码类型',
             trigger: 'blur'
           }
         ],
-        verify_length: [
+        length: [
           {
             required: true,
             message: '请选择验证码位数',
             trigger: 'blur'
           }
         ],
-        verify_expire: [
+        expire: [
           {
             required: true,
             message: '请输入验证码有效时间',
@@ -147,7 +142,7 @@ export default {
     },
     // 提交
     verifySub() {
-      this.$refs['verifyRef'].validate(valid => {
+      this.$refs['verifyRefs'].validate(valid => {
         if (valid) {
           this.verifySubLoad = true
           settingVerify(this.verifyModel)

@@ -291,6 +291,16 @@ export const asyncRoutes = [
               icon: 'setting',
               roles: ['admin/AdminSetting/settingVerify']
             }
+          },
+          {
+            path: 'token',
+            component: () => import('@/views/admin/setting/token'),
+            name: 'Token',
+            meta: {
+              title: 'Token设置',
+              icon: 'setting',
+              roles: ['admin/AdminSetting/settingToken']
+            }
           }
         ]
       }

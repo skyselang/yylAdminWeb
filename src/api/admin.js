@@ -486,4 +486,21 @@ export function settingVerify(data) {
     })
   }
 }
-
+/**
+ * Token设置
+ * @param {array} data 请求数据
+ */
+export function settingToken(data) {
+  if (data) {
+    return request({
+      url: '/admin/AdminSetting/settingToken',
+      method: 'post',
+      data
+    })
+  } else {
+    return request({
+      url: '/admin/AdminSetting/settingToken',
+      method: 'get'
+    })
+  }
+}
