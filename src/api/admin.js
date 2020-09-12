@@ -412,12 +412,12 @@ export function visitStats(data) {
 
 // ----------------实用工具----------------
 /**
- * 字符串
+ * 字符串转换
  * @param {array} data 请求数据
  */
-export function string(data) {
+export function strTran(data) {
   return request({
-    url: '/admin/AdminTool/string',
+    url: '/admin/AdminTool/strTran',
     method: 'post',
     data
   })
@@ -426,9 +426,9 @@ export function string(data) {
  * 随机字符串
  * @param {array} data 请求数据
  */
-export function strran(data) {
+export function strRand(data) {
   return request({
-    url: '/admin/AdminTool/strran',
+    url: '/admin/AdminTool/strRand',
     method: 'post',
     data
   })
@@ -437,9 +437,9 @@ export function strran(data) {
  * 时间戳转换
  * @param {array} data 请求数据
  */
-export function timestamp(data) {
+export function timeTran(data) {
   return request({
-    url: '/admin/AdminTool/timestamp',
+    url: '/admin/AdminTool/timeTran',
     method: 'post',
     data
   })
@@ -451,6 +451,28 @@ export function timestamp(data) {
 export function qrcode(data) {
   return request({
     url: '/admin/AdminTool/qrcode',
+    method: 'post',
+    data
+  })
+}
+/**
+ * 字节转换
+ * @param {array} data 请求数据
+ */
+export function byteTran(data) {
+  return request({
+    url: '/admin/AdminTool/byteTran',
+    method: 'post',
+    data
+  })
+}
+/**
+ * IP查询
+ * @param {array} data 请求数据
+ */
+export function ipQuery(data) {
+  return request({
+    url: '/admin/AdminTool/ipQuery',
     method: 'post',
     data
   })

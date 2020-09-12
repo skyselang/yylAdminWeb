@@ -4,20 +4,20 @@
       <span>生成二维码</span>
     </div>
     <div class="text item">
-      <el-form ref="formRef" :rules="formRules" :model="formModel" label-width="80px">
+      <el-form ref="qrcodeRef" :rules="qrcodeRules" :model="qrcodeModel" label-width="80px">
         <el-form-item label="文本内容" prop="str">
-          <el-input v-model="formModel.str" placeholder="请输入文本内容" clearable />
+          <el-input v-model="qrcodeModel.str" placeholder="请输入文本内容" clearable />
         </el-form-item>
         <el-form-item label="二维码" style="margin-bottom: 0;">
-          <el-image v-if="formModel.url" style="width: 150px; height: 150px" :src="formModel.url" fit="fill" title="右击图片另存为" />
+          <el-image style="width: 150px; height: 150px" :src="qrcodeModel.url" fit="fill" title="右击图片另存为">
+            <div slot="error" class="image-slot">
+              <i class="el-icon-picture-outline" />
+            </div>
+          </el-image>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="download()">
-            下载
-          </el-button>
-          <el-button type="primary" @click="qrcodeSubmit(formModel.raw)">
-            生成
-          </el-button>
+          <el-button type="primary" @click="qrcodeDown()">下载</el-button>
+          <el-button type="primary" @click="qrcodeSubmit()">生成</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -32,20 +32,20 @@ export default {
   components: {},
   data() {
     return {
-      formModel: {
+      qrcodeModel: {
         str: '',
         url: ''
       },
-      formRules: {
+      qrcodeRules: {
         str: [{ required: true, message: '请输入文本内容', trigger: 'blur' }]
       }
     }
   },
   created() {},
   methods: {
-    download() {
-      if (this.formModel.url) {
-        window.open(this.formModel.url)
+    qrcodeDown() {
+      if (this.qrcodeModel.url) {
+        window.open(this.qrcodeModel.url)
       } else {
         this.$message({
           message: '请生成二维码',
@@ -54,10 +54,10 @@ export default {
       }
     },
     qrcodeSubmit() {
-      this.$refs['formRef'].validate(valid => {
+      this.$refs['qrcodeRef'].validate(valid => {
         if (valid) {
-          qrcode({ str: this.formModel.str }).then(res => {
-            this.formModel.url = res.data.url
+          qrcode({ str: this.qrcodeModel.str }).then(res => {
+            this.qrcodeModel.url = res.data.url
           })
         }
       })
