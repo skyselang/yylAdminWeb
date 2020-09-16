@@ -296,13 +296,13 @@ export const asyncRoutes = [
         redirect: 'noRedirect',
         children: [
           {
-            path: 'system',
-            component: () => import('@/views/admin/setting/system'),
-            name: 'System',
+            path: 'base',
+            component: () => import('@/views/admin/setting/base'),
+            name: 'Base',
             meta: {
-              title: '系统设置',
+              title: '基础设置',
               icon: 'setting',
-              roles: ['admin/AdminSetting/setting']
+              roles: ['admin/AdminSetting/settingBase']
             }
           },
           {
