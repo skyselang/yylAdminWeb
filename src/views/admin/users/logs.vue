@@ -2,6 +2,10 @@
   <div class="app-container">
     <!-- 日志查询 -->
     <div class="filter-container">
+      <el-select v-model="logQuery.type" placeholder="请选择" style="width:110px;" clearable>
+        <el-option key="1" label="登录日志" value="1" />
+        <el-option key="2" label="操作日志" value="2" />
+      </el-select>
       <el-input v-model="logQuery.request_keyword" class="filter-item" style="width: 155px;" placeholder="请求IP/地区/ISP" clearable />
       <el-input v-model="logQuery.menu_keyword" class="filter-item" style="width: 280px;" placeholder="菜单链接/名称" clearable />
       <el-date-picker v-model="logQuery.create_time" type="daterange" style="width: 240px;top: -4px;" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd" />
@@ -31,7 +35,7 @@ import { getAdminUserId } from '@/utils/auth'
 import { usersLog } from '@/api/admin'
 
 export default {
-  name: 'Log',
+  name: 'Logs',
   components: { Pagination },
   data() {
     return {
@@ -42,7 +46,8 @@ export default {
       logQuery: {
         admin_user_id: getAdminUserId(),
         page: 1,
-        limit: 10
+        limit: 10,
+        type: ''
       }
     }
   },

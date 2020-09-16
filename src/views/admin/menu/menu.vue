@@ -24,9 +24,9 @@
           <el-switch v-if="scope.row.menu_url" v-model="scope.row.is_unauth" active-value="1" inactive-value="0" @change="menuIsUnauth(scope.row)" />
         </template>
       </el-table-column>
-      <el-table-column prop="" label="所属权限" min-width="100" align="center">
+      <el-table-column prop="" label="所属角色" min-width="100" align="center">
         <template slot-scope="{ row }">
-          <el-button size="mini" type="primary" @click="ruleListShow(row)">权限</el-button>
+          <el-button size="mini" type="primary" @click="roleListShow(row)">角色</el-button>
         </template>
       </el-table-column>
       <el-table-column label="操作" min-width="220" fixed="right" align="right" class-name="small-padding fixed-width">
@@ -58,12 +58,12 @@
         <el-button type="primary" @click="menuSubmit">提交</el-button>
       </div>
     </el-dialog>
-    <!-- 菜单权限 -->
-    <el-dialog :title="ruleTitle" :visible.sync="ruleDialog" width="65%" top="1vh">
-      <el-table v-loading="ruleLoad" :data="ruleData" :height="height+30" style="width: 100%" border @sort-change="ruleSort">
-        <el-table-column prop="admin_rule_id" label="ID" min-width="100" sortable="custom" fixed="left" />
-        <el-table-column prop="rule_name" label="权限" min-width="120" sortable="custom" />
-        <el-table-column prop="rule_desc" label="描述" min-width="130" />
+    <!-- 菜单角色 -->
+    <el-dialog :title="roleTitle" :visible.sync="roleDialog" width="65%" top="1vh">
+      <el-table v-loading="roleLoad" :data="roleData" :height="height+30" style="width: 100%" border @sort-change="roleSort">
+        <el-table-column prop="admin_role_id" label="ID" min-width="100" sortable="custom" fixed="left" />
+        <el-table-column prop="role_name" label="角色" min-width="120" sortable="custom" />
+        <el-table-column prop="role_desc" label="描述" min-width="130" />
         <el-table-column prop="is_prohibit" label="是否禁用" min-width="110" align="center" sortable="custom">
           <template slot-scope="scope">
             <el-switch v-model="scope.row.is_prohibit" active-value="1" inactive-value="0" disabled />
@@ -75,7 +75,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <pagination v-show="ruleCount > 0" :total="ruleCount" :page.sync="ruleQuery.page" :limit.sync="ruleQuery.limit" @pagination="ruleData" />
+      <pagination v-show="roleCount > 0" :total="roleCount" :page.sync="roleQuery.page" :limit.sync="roleQuery.limit" @pagination="roleData" />
     </el-dialog>
     <!-- 菜单用户 -->
     <el-dialog :title="userTitle" :visible.sync="userDialog" width="62%" top="2vh">
@@ -111,7 +111,7 @@ import {
   menuDele,
   menuProhibit,
   menuUnauth,
-  ruleList,
+  roleList,
   userList
 } from '@/api/admin'
 
@@ -143,15 +143,15 @@ export default {
       menuRules: {
         menu_name: [{ required: true, message: '必填', trigger: 'blur' }]
       },
-      ruleLoad: false,
-      ruleData: [],
-      ruleCount: 0,
-      ruleQuery: {
+      roleLoad: false,
+      roleData: [],
+      roleCount: 0,
+      roleQuery: {
         page: 1,
         limit: 10
       },
-      ruleDialog: false,
-      ruleTitle: '',
+      roleDialog: false,
+      roleTitle: '',
       userLoad: false,
       userData: [],
       userCount: 0,
@@ -324,44 +324,44 @@ export default {
         }
       })
     },
-    // 菜单所属权限显示
-    ruleListShow(row) {
-      this.ruleDialog = true
-      this.ruleTitle = '菜单权限：' + row.menu_name
-      this.ruleQuery.admin_menu_id = row.admin_menu_id
-      this.ruleList()
+    // 菜单所属角色显示
+    roleListShow(row) {
+      this.roleDialog = true
+      this.roleTitle = '菜单角色：' + row.menu_name
+      this.roleQuery.admin_menu_id = row.admin_menu_id
+      this.roleList()
     },
-    // 菜单所属权限列表
-    ruleList() {
-      this.ruleLoad = true
-      ruleList(this.ruleQuery)
+    // 菜单所属角色列表
+    roleList() {
+      this.roleLoad = true
+      roleList(this.roleQuery)
         .then(res => {
-          this.ruleData = res.data.list
-          this.ruleCount = res.data.count
-          this.ruleLoad = false
+          this.roleData = res.data.list
+          this.roleCount = res.data.count
+          this.roleLoad = false
         })
         .catch(() => {
-          this.ruleLoad = false
+          this.roleLoad = false
         })
     },
-    // 菜单所属权限排序
-    ruleSort(sort) {
-      this.ruleQuery.sort_field = sort.prop
-      this.ruleQuery.sort_type = ''
+    // 菜单所属角色排序
+    roleSort(sort) {
+      this.roleQuery.sort_field = sort.prop
+      this.roleQuery.sort_type = ''
       if (sort.order === 'ascending') {
-        this.ruleQuery.sort_type = 'asc'
-        this.ruleList()
+        this.roleQuery.sort_type = 'asc'
+        this.roleList()
       }
       if (sort.order === 'descending') {
-        this.ruleQuery.sort_type = 'desc'
-        this.ruleList()
+        this.roleQuery.sort_type = 'desc'
+        this.roleList()
       }
     },
     // 菜单所属菜单用户显示
     userListShow(row) {
       this.userDialog = true
-      this.userTitle = row.rule_name
-      this.userQuery.admin_rule_id = row.admin_rule_id
+      this.userTitle = row.role_name
+      this.userQuery.admin_role_id = row.admin_role_id
       this.userList()
     },
     // 菜单所属菜单用户列表

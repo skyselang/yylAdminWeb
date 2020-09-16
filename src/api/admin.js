@@ -2,6 +2,17 @@ import request from '@/utils/request'
 
 // ----------------登录|退出----------------
 /**
+ * 验证码
+ *  @param {array} params 请求参数
+ */
+export function verify(params) {
+  return request({
+    url: '/admin/AdminLogin/verify',
+    method: 'get',
+    params: params
+  })
+}
+/**
  * 登录
  * @param {array} data 请求数据
  */
@@ -21,17 +32,6 @@ export function logout(data) {
     url: '/admin/AdminLogin/logout',
     method: 'post',
     data
-  })
-}
-/**
- * 验证码
- *  @param {array} params 请求参数
- */
-export function verify(params) {
-  return request({
-    url: '/admin/AdminLogin/verify',
-    method: 'get',
-    params: params
   })
 }
 
@@ -98,6 +98,74 @@ export function menuProhibit(data) {
 export function menuUnauth(data) {
   return request({
     url: '/admin/AdminMenu/menuUnauth',
+    method: 'post',
+    data
+  })
+}
+
+// ----------------角色管理----------------
+/**
+ * 角色列表
+ * @param {array} params 请求参数
+ */
+export function roleList(params) {
+  return request({
+    url: '/admin/AdminRole/roleList',
+    method: 'get',
+    params: params
+  })
+}
+/**
+ * 角色添加
+ * @param {array} data 请求数据
+ */
+export function roleAdd(data) {
+  return request({
+    url: '/admin/AdminRole/roleAdd',
+    method: 'post',
+    data
+  })
+}
+/**
+ * 角色修改
+ * @param {array} data 请求数据
+ */
+export function roleEdit(data) {
+  return request({
+    url: '/admin/AdminRole/roleEdit',
+    method: 'post',
+    data
+  })
+}
+/**
+ * 角色删除
+ * @param {array} data 请求数据
+ */
+export function roleDele(data) {
+  return request({
+    url: '/admin/AdminRole/roleDele',
+    method: 'post',
+    data
+  })
+}
+/**
+ * 角色信息
+ * @param {array} params 请求参数
+ */
+export function roleInfo(params) {
+  return request({
+    url: '/admin/AdminRole/roleInfo',
+    method: 'get',
+    params: params
+  })
+}
+/**
+ * 角色是否禁用
+ * @param {array} data 请求数据
+ */
+export function roleProhibit(data) {
+  return request({
+    url: '/admin/AdminRole/roleProhibit',
     method: 'post',
     data
   })
@@ -210,74 +278,6 @@ export function userProhibit(data) {
 export function userSuperAdmin(data) {
   return request({
     url: '/admin/AdminUser/userSuperAdmin',
-    method: 'post',
-    data
-  })
-}
-
-// ----------------权限管理----------------
-/**
- * 权限列表
- * @param {array} params 请求参数
- */
-export function ruleList(params) {
-  return request({
-    url: '/admin/AdminRule/ruleList',
-    method: 'get',
-    params: params
-  })
-}
-/**
- * 权限添加
- * @param {array} data 请求数据
- */
-export function ruleAdd(data) {
-  return request({
-    url: '/admin/AdminRule/ruleAdd',
-    method: 'post',
-    data
-  })
-}
-/**
- * 权限修改
- * @param {array} data 请求数据
- */
-export function ruleEdit(data) {
-  return request({
-    url: '/admin/AdminRule/ruleEdit',
-    method: 'post',
-    data
-  })
-}
-/**
- * 权限删除
- * @param {array} data 请求数据
- */
-export function ruleDele(data) {
-  return request({
-    url: '/admin/AdminRule/ruleDele',
-    method: 'post',
-    data
-  })
-}
-/**
- * 权限信息
- * @param {array} params 请求参数
- */
-export function ruleInfo(params) {
-  return request({
-    url: '/admin/AdminRule/ruleInfo',
-    method: 'get',
-    params: params
-  })
-}
-/**
- * 权限是否禁用
- * @param {array} data 请求数据
- */
-export function ruleProhibit(data) {
-  return request({
-    url: '/admin/AdminRule/ruleProhibit',
     method: 'post',
     data
   })

@@ -106,44 +106,77 @@ export const asyncRoutes = [
     },
     children: [
       {
-        path: 'menu',
-        component: () => import('@/views/admin/menu/menu'),
-        name: 'Menu',
-        meta: {
-          title: '菜单管理',
-          icon: 'menu',
-          roles: ['admin/AdminMenu/menuList']
-        }
-      },
-      {
         path: 'rule',
-        component: () => import('@/views/admin/rule/rule'),
+        component: () => import('@/views/admin/rule/index'),
         name: 'Rule',
         meta: {
           title: '权限管理',
-          icon: 'rule',
-          roles: ['admin/AdminRule/ruleList']
-        }
-      },
-      {
-        path: 'user',
-        component: () => import('@/views/admin/user/user'),
-        name: 'User',
-        meta: {
-          title: '用户管理',
-          icon: 'user',
-          roles: ['admin/AdminUser/userList']
-        }
+          icon: 'rule'
+        },
+        alwaysShow: true,
+        redirect: 'noRedirect',
+        children: [
+          {
+            path: 'menu',
+            component: () => import('@/views/admin/menu/menu'),
+            name: 'Menu',
+            meta: {
+              title: '菜单管理',
+              icon: 'rule',
+              roles: ['admin/AdminMenu/menuList']
+            }
+          },
+          {
+            path: 'role',
+            component: () => import('@/views/admin/role/role'),
+            name: 'Role',
+            meta: {
+              title: '角色管理',
+              icon: 'rule',
+              roles: ['admin/AdminRole/roleList']
+            }
+          },
+          {
+            path: 'user',
+            component: () => import('@/views/admin/user/user'),
+            name: 'User',
+            meta: {
+              title: '用户管理',
+              icon: 'rule',
+              roles: ['admin/AdminUser/userList']
+            }
+          }]
       },
       {
         path: 'log',
-        component: () => import('@/views/admin/log/log'),
+        component: () => import('@/views/admin/log/index'),
         name: 'Log',
         meta: {
           title: '日志管理',
-          icon: 'log',
-          roles: ['admin/AdminLog/logList']
-        }
+          icon: 'log'
+        },
+        children: [
+          {
+            path: 'login',
+            component: () => import('@/views/admin/log/login'),
+            name: 'Login',
+            meta: {
+              title: '登录日志',
+              icon: 'log',
+              roles: ['admin/AdminLog/logList']
+            }
+          },
+          {
+            path: 'action',
+            component: () => import('@/views/admin/log/action'),
+            name: 'Action',
+            meta: {
+              title: '操作日志',
+              icon: 'log',
+              roles: ['admin/AdminLog/logList']
+            }
+          }
+        ]
       },
       {
         path: 'users',
@@ -197,9 +230,9 @@ export const asyncRoutes = [
             }
           },
           {
-            path: 'log',
-            component: () => import('@/views/admin/users/log'),
-            name: 'Log',
+            path: 'logs',
+            component: () => import('@/views/admin/users/logs'),
+            name: 'Logs',
             meta: {
               title: '个人日志',
               icon: 'users',
@@ -263,9 +296,9 @@ export const asyncRoutes = [
         redirect: 'noRedirect',
         children: [
           {
-            path: 'setting',
-            component: () => import('@/views/admin/setting/setting'),
-            name: 'Setting',
+            path: 'system',
+            component: () => import('@/views/admin/setting/system'),
+            name: 'System',
             meta: {
               title: '系统设置',
               icon: 'setting',

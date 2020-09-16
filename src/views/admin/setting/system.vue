@@ -25,7 +25,7 @@
 import ThemePicker from '@/components/ThemePicker'
 
 export default {
-  name: 'Setting',
+  name: 'System',
   components: { ThemePicker },
   data() {
     return {}

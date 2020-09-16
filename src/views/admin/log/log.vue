@@ -83,6 +83,12 @@ import { logList, logInfo, logDele } from '@/api/admin'
 export default {
   name: 'Log',
   components: { Pagination },
+  props: {
+    type: {
+      type: String,
+      default: '1'
+    }
+  },
   data() {
     return {
       height: 680,
@@ -92,7 +98,8 @@ export default {
       logCount: 0,
       logQuery: {
         page: 1,
-        limit: 10
+        limit: 10,
+        type: this.type
       },
       logDialog: false,
       logModel: {},
@@ -119,6 +126,7 @@ export default {
         type: type
       })
     },
+    // 日志列表
     logLists() {
       this.loadOpen()
       logList(this.logQuery)
@@ -131,6 +139,7 @@ export default {
           this.loadClose()
         })
     },
+    // 日志列表排序
     logSort(sort) {
       this.logQuery.sort_field = sort.prop
       this.logQuery.sort_type = ''
@@ -143,14 +152,17 @@ export default {
         this.logLists()
       }
     },
+    // 日志查询
     logSearch() {
       this.logQuery.page = 1
       this.logLists()
     },
+    // 日志刷新
     logRefresh() {
-      this.logQuery = { page: 1, limit: 10 }
+      this.logQuery = { page: 1, limit: 10, type: this.type }
       this.logLists()
     },
+    // 日志详情
     logDetail(row) {
       this.loadOpen()
       logInfo({ admin_log_id: row.admin_log_id })
@@ -163,10 +175,9 @@ export default {
           this.loadClose()
         })
     },
+    // 日志删除
     logDelete(row) {
       this.$confirm('确定要删除吗？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
         type: 'warning'
       })
         .then(() => {
@@ -183,6 +194,7 @@ export default {
         })
         .catch(() => {})
     },
+    // 日志详情重置
     logReset(row) {
       if (row) {
         this.logModel = row
@@ -190,10 +202,12 @@ export default {
         this.logModel = {}
       }
     },
+    // 日志详情取消
     logCancel() {
       this.logDialog = false
       this.logReset()
     },
+    // 日志详情确认
     logSubmit() {
       this.logDialog = false
       this.logReset()

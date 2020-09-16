@@ -1,53 +1,53 @@
 <template>
   <div class="app-container">
-    <!-- 权限查询 -->
+    <!-- 角色查询 -->
     <div class="filter-container">
-      <el-input v-model="ruleQuery.rule_name" class="filter-item" style="width: 200px;" placeholder="权限" clearable />
-      <el-input v-model="ruleQuery.rule_desc" class="filter-item" style="width: 200px;" placeholder="描述" clearable />
-      <el-button class="filter-item" type="primary" @click="ruleSearch">查询</el-button>
-      <el-button class="filter-item" type="primary" style="float:right;margin-left:10px" @click="ruleAddition">添加</el-button>
-      <el-button class="filter-item" type="primary" style="float:right;" @click="ruleRefresh">刷新</el-button>
+      <el-input v-model="roleQuery.role_name" class="filter-item" style="width: 200px;" placeholder="角色" clearable />
+      <el-input v-model="roleQuery.role_desc" class="filter-item" style="width: 200px;" placeholder="描述" clearable />
+      <el-button class="filter-item" type="primary" @click="roleSearch">查询</el-button>
+      <el-button class="filter-item" type="primary" style="float:right;margin-left:10px" @click="roleAddition">添加</el-button>
+      <el-button class="filter-item" type="primary" style="float:right;" @click="roleRefresh">刷新</el-button>
     </div>
-    <!-- 权限列表 -->
-    <el-table v-loading="loading" :data="ruleData" :height="height" style="width: 100%" border @sort-change="ruleSort">
-      <el-table-column prop="admin_rule_id" label="ID" min-width="100" sortable="custom" fixed="left" />
-      <el-table-column prop="rule_name" label="权限" min-width="120" />
-      <el-table-column prop="rule_desc" label="描述" min-width="130" />
-      <el-table-column prop="rule_sort" label="排序" min-width="100" sortable="custom" />
+    <!-- 角色列表 -->
+    <el-table v-loading="loading" :data="roleData" :height="height" style="width: 100%" border @sort-change="roleSort">
+      <el-table-column prop="admin_role_id" label="ID" min-width="100" sortable="custom" fixed="left" />
+      <el-table-column prop="role_name" label="角色" min-width="120" />
+      <el-table-column prop="role_desc" label="描述" min-width="130" />
+      <el-table-column prop="role_sort" label="排序" min-width="100" sortable="custom" />
       <el-table-column prop="create_time" label="添加时间" min-width="160" sortable="custom" />
       <el-table-column prop="update_time" label="修改时间" min-width="160" sortable="custom" />
       <el-table-column prop="is_prohibit" label="是否禁用" min-width="110" align="center" sortable="custom">
         <template slot-scope="scope">
-          <el-switch v-model="scope.row.is_prohibit" active-value="1" inactive-value="0" @change="ruleIsProhibit(scope.row)" />
+          <el-switch v-model="scope.row.is_prohibit" active-value="1" inactive-value="0" @change="roleIsProhibit(scope.row)" />
         </template>
       </el-table-column>
       <el-table-column label="操作" min-width="220" align="right" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="{ row }">
           <el-button size="mini" type="primary" @click="userListShow(row)">用户</el-button>
-          <el-button size="mini" type="primary" @click="ruleModify(row)">修改</el-button>
-          <el-button size="mini" type="danger" @click="ruleDelete(row)">删除</el-button>
+          <el-button size="mini" type="primary" @click="roleModify(row)">修改</el-button>
+          <el-button size="mini" type="danger" @click="roleDelete(row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
-    <!-- 权限分页 -->
-    <pagination v-show="ruleCount > 0" :total="ruleCount" :page.sync="ruleQuery.page" :limit.sync="ruleQuery.limit" @pagination="ruleList" />
-    <!-- 权限添加、修改 -->
-    <el-dialog :title="ruleModel.dialog_title" :visible.sync="ruleDialog" top="1vh">
-      <el-form ref="ruleRef" :rules="ruleRules" :model="ruleModel" label-width="100px" class="dialog-body" :style="{height:height+80+'px'}">
-        <el-form-item label="权限" prop="rule_name">
-          <el-input v-model="ruleModel.rule_name" placeholder="请输入权限名称" clearable />
+    <!-- 角色分页 -->
+    <pagination v-show="roleCount > 0" :total="roleCount" :page.sync="roleQuery.page" :limit.sync="roleQuery.limit" @pagination="roleList" />
+    <!-- 角色添加、修改 -->
+    <el-dialog :title="roleModel.dialog_title" :visible.sync="roleDialog" top="1vh">
+      <el-form ref="roleRef" :rules="roleRules" :model="roleModel" label-width="100px" class="dialog-body" :style="{height:height+80+'px'}">
+        <el-form-item label="角色" prop="role_name">
+          <el-input v-model="roleModel.role_name" placeholder="请输入角色名称" clearable />
         </el-form-item>
-        <el-form-item label="描述" prop="rule_desc">
-          <el-input v-model="ruleModel.rule_desc" clearable />
+        <el-form-item label="描述" prop="role_desc">
+          <el-input v-model="roleModel.role_desc" clearable />
         </el-form-item>
-        <el-form-item label="排序" prop="rule_sort">
-          <el-input v-model="ruleModel.rule_sort" type="number" />
+        <el-form-item label="排序" prop="role_sort">
+          <el-input v-model="roleModel.role_sort" type="number" />
         </el-form-item>
         <el-form-item label="菜单">
           <el-tree
             ref="menuRef"
             :data="menuData"
-            :default-checked-keys="ruleModel.admin_menu_ids"
+            :default-checked-keys="roleModel.admin_menu_ids"
             :props="menuProps"
             :expand-on-click-node="false"
             node-key="admin_menu_id"
@@ -68,8 +68,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="ruleCancel">取消</el-button>
-        <el-button type="primary" @click="ruleSubmit">提交</el-button>
+        <el-button @click="roleCancel">取消</el-button>
+        <el-button type="primary" @click="roleSubmit">提交</el-button>
       </div>
     </el-dialog>
     <!-- 用户列表 -->
@@ -101,16 +101,16 @@ import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination'
 import {
   menuList,
-  ruleList,
-  ruleProhibit,
-  ruleAdd,
-  ruleEdit,
-  ruleDele,
+  roleList,
+  roleProhibit,
+  roleAdd,
+  roleEdit,
+  roleDele,
   userList
 } from '@/api/admin'
 
 export default {
-  name: 'Rule',
+  name: 'Role',
   components: { Pagination },
   data() {
     return {
@@ -122,24 +122,24 @@ export default {
         children: 'children',
         label: 'menu_name'
       },
-      ruleDialog: false,
-      ruleData: [],
-      ruleCount: 0,
-      ruleQuery: {
+      roleDialog: false,
+      roleData: [],
+      roleCount: 0,
+      roleQuery: {
         page: 1,
         limit: 10
       },
-      ruleModel: {
+      roleModel: {
         dialog_title: '',
-        admin_rule_id: '',
+        admin_role_id: '',
         admin_menu_ids: [],
-        rule_name: '',
-        rule_desc: '',
-        rule_sort: '',
+        role_name: '',
+        role_desc: '',
+        role_sort: '',
         is_prohibit: '0'
       },
-      ruleRules: {
-        rule_name: [{ required: true, message: '必填', trigger: 'blur' }]
+      roleRules: {
+        role_name: [{ required: true, message: '必填', trigger: 'blur' }]
       },
       userDialog: false,
       userLoad: false,
@@ -151,7 +151,7 @@ export default {
   },
   created() {
     this.height = screenHeight()
-    this.ruleList()
+    this.roleList()
   },
   methods: {
     loadOpen() {
@@ -177,11 +177,11 @@ export default {
     },
     // 菜单选择
     menuCheck(data, node) {
-      this.ruleModel.admin_menu_ids = node.checkedKeys
+      this.roleModel.admin_menu_ids = node.checkedKeys
     },
     // 菜单子菜单全选反选
     menuChildrenAllCheck(data, back = false) {
-      const admin_menu_ids = this.ruleModel.admin_menu_ids
+      const admin_menu_ids = this.roleModel.admin_menu_ids
       const admin_menu_ids_child = []
       admin_menu_ids_child.push(data.admin_menu_id)
       for (let i = 0; i < data.children.length; i++) {
@@ -195,7 +195,7 @@ export default {
             }
           }
         }
-        this.ruleModel.admin_menu_ids = admin_menu_ids
+        this.roleModel.admin_menu_ids = admin_menu_ids
         this.$refs.menuRef.setCheckedKeys(admin_menu_ids)
       } else {
         const admin_menu_ids_temp = []
@@ -205,60 +205,60 @@ export default {
             admin_menu_ids_temp.push(admin_menu_ids_all[i])
           }
         }
-        this.ruleModel.admin_menu_ids = admin_menu_ids_temp
+        this.roleModel.admin_menu_ids = admin_menu_ids_temp
         this.$refs.menuRef.setCheckedKeys(admin_menu_ids_temp)
       }
     },
-    // 权限列表
-    ruleList() {
+    // 角色列表
+    roleList() {
       this.loadOpen()
-      ruleList(this.ruleQuery)
+      roleList(this.roleQuery)
         .then(res => {
-          this.ruleData = res.data.list
-          this.ruleCount = res.data.count
+          this.roleData = res.data.list
+          this.roleCount = res.data.count
           this.loadClose()
         })
         .catch(() => {
           this.loadClose()
         })
     },
-    // 权限排序
-    ruleSort(sort) {
-      this.ruleQuery.sort_field = sort.prop
-      this.ruleQuery.sort_type = ''
+    // 角色排序
+    roleSort(sort) {
+      this.roleQuery.sort_field = sort.prop
+      this.roleQuery.sort_type = ''
       if (sort.order === 'ascending') {
-        this.ruleQuery.sort_type = 'asc'
-        this.ruleList()
+        this.roleQuery.sort_type = 'asc'
+        this.roleList()
       }
       if (sort.order === 'descending') {
-        this.ruleQuery.sort_type = 'desc'
-        this.ruleList()
+        this.roleQuery.sort_type = 'desc'
+        this.roleList()
       }
     },
-    // 权限查询
-    ruleSearch() {
-      this.ruleQuery.page = 1
-      this.ruleList()
+    // 角色查询
+    roleSearch() {
+      this.roleQuery.page = 1
+      this.roleList()
     },
-    // 权限刷新
-    ruleRefresh() {
-      this.ruleQuery = { page: 1, limit: 10 }
-      this.ruleList()
+    // 角色刷新
+    roleRefresh() {
+      this.roleQuery = { page: 1, limit: 10 }
+      this.roleList()
     },
-    // 权限添加
-    ruleAddition() {
-      this.ruleDialog = true
+    // 角色添加
+    roleAddition() {
+      this.roleDialog = true
       this.menuList()
-      this.ruleReset()
+      this.roleReset()
     },
-    // 权限修改
-    ruleModify(row) {
-      this.ruleDialog = true
+    // 角色修改
+    roleModify(row) {
+      this.roleDialog = true
       this.menuList()
-      this.ruleReset(row)
+      this.roleReset(row)
     },
-    // 权限删除
-    ruleDelete(row) {
+    // 角色删除
+    roleDelete(row) {
       this.$confirm('确定要删除吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -266,11 +266,11 @@ export default {
       })
         .then(() => {
           this.loadOpen()
-          ruleDele({ admin_rule_id: row.admin_rule_id })
+          roleDele({ admin_role_id: row.admin_role_id })
             .then(res => {
               this.message(res.msg)
-              this.ruleReset()
-              this.ruleList()
+              this.roleReset()
+              this.roleList()
             })
             .catch(() => {
               this.loadClose()
@@ -278,64 +278,64 @@ export default {
         })
         .catch(() => {})
     },
-    // 权限是否禁用
-    ruleIsProhibit(row) {
+    // 角色是否禁用
+    roleIsProhibit(row) {
       this.loadOpen()
-      ruleProhibit(row)
+      roleProhibit(row)
         .then(res => {
           this.message(res.msg)
-          this.ruleList()
+          this.roleList()
         })
         .catch(() => {
           this.loadOpen()
         })
     },
-    // 权限添加、修改重置
-    ruleReset(row) {
+    // 角色添加、修改重置
+    roleReset(row) {
       if (row) {
-        this.ruleModel.dialog_title = '权限修改：' + row.rule_name
-        this.ruleModel.admin_rule_id = row.admin_rule_id
-        this.ruleModel.admin_menu_ids = row.admin_menu_ids
-        this.ruleModel.rule_name = row.rule_name
-        this.ruleModel.rule_desc = row.rule_desc
-        this.ruleModel.rule_sort = row.rule_sort
+        this.roleModel.dialog_title = '角色修改：' + row.role_name
+        this.roleModel.admin_role_id = row.admin_role_id
+        this.roleModel.admin_menu_ids = row.admin_menu_ids
+        this.roleModel.role_name = row.role_name
+        this.roleModel.role_desc = row.role_desc
+        this.roleModel.role_sort = row.role_sort
       } else {
-        this.ruleModel.dialog_title = '权限添加'
-        this.ruleModel.admin_rule_id = ''
-        this.ruleModel.admin_menu_ids = []
-        this.ruleModel.rule_name = ''
-        this.ruleModel.rule_desc = ''
-        this.ruleModel.rule_sort = 200
+        this.roleModel.dialog_title = '角色添加'
+        this.roleModel.admin_role_id = ''
+        this.roleModel.admin_menu_ids = []
+        this.roleModel.role_name = ''
+        this.roleModel.role_desc = ''
+        this.roleModel.role_sort = 200
       }
     },
-    // 权限添加、修改取消
-    ruleCancel() {
-      this.ruleDialog = false
-      this.ruleReset()
+    // 角色添加、修改取消
+    roleCancel() {
+      this.roleDialog = false
+      this.roleReset()
     },
-    // 权限添加、修改提交
-    ruleSubmit() {
-      this.$refs['ruleRef'].validate(valid => {
+    // 角色添加、修改提交
+    roleSubmit() {
+      this.$refs['roleRef'].validate(valid => {
         if (valid) {
           this.loadOpen()
-          if (this.ruleModel.admin_rule_id) {
-            ruleEdit(this.ruleModel)
+          if (this.roleModel.admin_role_id) {
+            roleEdit(this.roleModel)
               .then(res => {
-                this.ruleDialog = false
+                this.roleDialog = false
                 this.message(res.msg)
-                this.ruleReset()
-                this.ruleList()
+                this.roleReset()
+                this.roleList()
               })
               .catch(() => {
                 this.loadClose()
               })
           } else {
-            ruleAdd(this.ruleModel)
+            roleAdd(this.roleModel)
               .then(res => {
-                this.ruleDialog = false
+                this.roleDialog = false
                 this.message(res.msg)
-                this.ruleReset()
-                this.ruleList()
+                this.roleReset()
+                this.roleList()
               })
               .catch(() => {
                 this.loadClose()
@@ -347,8 +347,8 @@ export default {
     // 用户列表显示
     userListShow(row) {
       this.userDialog = true
-      this.userTitle = row.rule_name
-      this.userQuery.admin_rule_id = row.admin_rule_id
+      this.userTitle = row.role_name
+      this.userQuery.admin_role_id = row.admin_role_id
       this.userList()
     },
     // 用户列表

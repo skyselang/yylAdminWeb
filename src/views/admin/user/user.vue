@@ -51,7 +51,7 @@
     <pagination v-show="userCount > 0" :total="userCount" :page.sync="userQuery.page" :limit.sync="userQuery.limit" @pagination="userList" />
     <!-- 用户添加、修改 -->
     <el-dialog :title="userModel.dialog_title" :visible.sync="userDialog" width="65%" top="1vh" :before-close="handleClose">
-      <el-form ref="userRef" class="dialog-body" :rules="userRules" :model="userModel" label-width="100px" :style="{height:height+50+'px'}">
+      <el-form ref="userRef" class="dialog-body" :rules="userRoles" :model="userModel" label-width="100px" :style="{height:height+50+'px'}">
         <el-form-item v-if="userModel.admin_user_id && userModel.avatar" label="头像">
           <el-avatar shape="circle" fit="contain" :size="100" :src="userModel.avatar" />
         </el-form-item>
@@ -92,17 +92,17 @@
       </div>
     </el-dialog>
     <!-- 用户权限分配 -->
-    <el-dialog :title="'权限分配：'+userModel.username" :visible.sync="userDialogRule" width="65%" top="1vh" :before-close="handleClose">
-      <el-form ref="ruleRef" :model="userModel" label-width="80px" class="dialog-body" :style="{height:height+50+'px'}">
+    <el-dialog :title="'权限分配：'+userModel.username" :visible.sync="userDialogRole" width="65%" top="1vh" :before-close="handleClose">
+      <el-form ref="roleRef" :model="userModel" label-width="80px" class="dialog-body" :style="{height:height+50+'px'}">
         <el-form-item label="账号">
           <el-input v-model="userModel.username" clearable disabled />
         </el-form-item>
         <el-form-item label="昵称">
           <el-input v-model="userModel.nickname" clearable disabled />
         </el-form-item>
-        <el-form-item label="按权限">
-          <el-checkbox-group v-model="userModel.admin_rule_ids">
-            <el-checkbox v-for="item in ruleData" :key="item.admin_rule_id" :label="item.admin_rule_id">{{ item.rule_name }}</el-checkbox>
+        <el-form-item label="按角色">
+          <el-checkbox-group v-model="userModel.admin_role_ids">
+            <el-checkbox v-for="item in roleData" :key="item.admin_role_id" :label="item.admin_role_id">{{ item.role_name }}</el-checkbox>
           </el-checkbox-group>
         </el-form-item>
         <el-form-item label="按菜单">
@@ -134,8 +134,8 @@
       </div>
     </el-dialog>
     <!-- 用户权限明细 -->
-    <el-dialog :title="'权限明细：'+userModel.username" :visible.sync="userDialogRuleInfo" width="65%" top="1vh" :before-close="handleClose">
-      <el-form ref="ruleInfoRef" :model="userModel" label-width="80px" class="dialog-body" :style="{height:height+50+'px'}">
+    <el-dialog :title="'权限明细：'+userModel.username" :visible.sync="userDialogRoleInfo" width="65%" top="1vh" :before-close="handleClose">
+      <el-form ref="roleInfoRef" :model="userModel" label-width="80px" class="dialog-body" :style="{height:height+50+'px'}">
         <el-form-item label="账号">
           <el-input v-model="userModel.username" clearable disabled />
         </el-form-item>
@@ -143,8 +143,8 @@
           <el-input v-model="userModel.nickname" clearable disabled />
         </el-form-item>
         <el-form-item label="权限">
-          <el-checkbox-group v-model="userModel.admin_rule_ids">
-            <el-checkbox v-for="item in ruleData" :key="item.admin_rule_id" :label="item.admin_rule_id" disabled>{{ item.rule_name }}</el-checkbox>
+          <el-checkbox-group v-model="userModel.admin_role_ids">
+            <el-checkbox v-for="item in roleData" :key="item.admin_role_id" :label="item.admin_role_id" disabled>{{ item.role_name }}</el-checkbox>
           </el-checkbox-group>
         </el-form-item>
         <el-form-item label="菜单">
@@ -158,7 +158,7 @@
     </el-dialog>
     <!-- 用户密码重置 -->
     <el-dialog :title="'密码重置：'+userModel.username" :visible.sync="userDialogPwd" width="65%" top="1vh" :before-close="handleClose">
-      <el-form ref="rePwdRef" :rules="rePwdRules" :model="userModel" label-width="80px" class="dialog-body" :style="{height:height+50+'px'}">
+      <el-form ref="rePwdRef" :rules="rePwdRoles" :model="userModel" label-width="80px" class="dialog-body" :style="{height:height+50+'px'}">
         <el-form-item label="账号">
           <el-input v-model="userModel.username" clearable disabled />
         </el-form-item>
@@ -191,7 +191,7 @@ import {
   userRule,
   userRuleInfo,
   userPwd,
-  ruleList,
+  roleList,
   menuList
 } from '@/api/admin'
 
@@ -210,12 +210,12 @@ export default {
         limit: 10
       },
       userDialog: false,
-      userDialogRule: false,
+      userDialogRole: false,
       userDialogPwd: false,
       userModel: {
         dialog_title: '',
         admin_user_id: '',
-        admin_rule_ids: [],
+        admin_role_ids: [],
         username: '',
         nickname: '',
         password: '',
@@ -226,19 +226,19 @@ export default {
         is_prohibit: '0',
         is_super_admin: '0'
       },
-      userDialogRuleInfo: false,
-      ruleData: [],
+      userDialogRoleInfo: false,
+      roleData: [],
       menuProps: {
         children: 'children',
         label: 'menu_name'
       },
       menuData: [],
-      userRules: {
+      userRoles: {
         username: [{ required: true, message: '必填', trigger: 'blur' }],
         nickname: [{ required: true, message: '必填', trigger: 'blur' }],
         password: [{ required: true, message: '必填', trigger: 'blur' }]
       },
-      rePwdRules: {
+      rePwdRoles: {
         password: [{ required: true, message: '必填', trigger: 'blur' }]
       }
     }
@@ -280,7 +280,7 @@ export default {
           this.loadClose()
         })
     },
-    // 用户排序
+    // 用户列表排序
     userSort(sort) {
       this.userQuery.sort_field = sort.prop
       this.userQuery.sort_type = ''
@@ -298,7 +298,7 @@ export default {
       this.userQuery.page = 1
       this.userList()
     },
-    // 用户刷新
+    // 用户列表刷新
     userRefresh() {
       this.userQuery = { page: 1, limit: 10 }
       this.userList()
@@ -317,10 +317,10 @@ export default {
     },
     // 用户权限分配
     userEditRule(row) {
-      this.userDialogRule = true
+      this.userDialogRole = true
       this.menuList()
       this.userReset(row)
-      this.ruleList()
+      this.roleList()
       this.userRuleInfo(row)
     },
     // 用户是否超管
@@ -359,9 +359,9 @@ export default {
     },
     // 用户权限明细
     userEditRuleInfo(row) {
-      this.userDialogRuleInfo = true
+      this.userDialogRoleInfo = true
       this.menuList()
-      this.ruleList()
+      this.roleList()
       this.userRuleInfo(row)
     },
     // 用户权限信息
@@ -396,22 +396,22 @@ export default {
         })
         .catch(() => {})
     },
-    // 权限列表
-    ruleList() {
-      ruleList({ page: 1, limit: 9999 }).then(res => {
-        this.ruleData = res.data.list
+    // 角色列表
+    roleList() {
+      roleList({ page: 1, limit: 9999 }).then(res => {
+        this.roleData = res.data.list
       })
     },
     // 用户添加、修改重置
     userReset(row) {
       const data = this.userModel
-      data.admin_rule_ids = []
+      data.admin_role_ids = []
       data.admin_menu_ids = []
       data.admin_menu_id = []
       if (row) {
         data.dialog_title = '用户修改：' + row.username
         data.admin_user_id = row.admin_user_id
-        data.admin_rule_ids = row.admin_rule_ids ? row.admin_rule_ids : []
+        data.admin_role_ids = row.admin_role_ids ? row.admin_role_ids : []
         data.admin_menu_ids = row.admin_menu_ids ? row.admin_menu_ids : []
         data.admin_menu_id = row.admin_menu_id ? row.admin_menu_id : []
         data.username = row.username
@@ -428,7 +428,7 @@ export default {
       } else {
         data.dialog_title = '用户添加'
         data.admin_user_id = ''
-        data.admin_rule_ids = []
+        data.admin_role_ids = []
         data.admin_menu_ids = []
         data.admin_menu_id = []
         data.username = ''
@@ -442,17 +442,17 @@ export default {
     },
     // 用户权限分配取消
     userCancelRule() {
-      this.userDialogRule = false
+      this.userDialogRole = false
       this.userReset()
     },
     // 用户权限分配提交
     userSubmitRule() {
-      this.$refs['ruleRef'].validate(valid => {
+      this.$refs['roleRef'].validate(valid => {
         if (valid) {
           this.loadOpen()
           userRule(this.userModel)
             .then(res => {
-              this.userDialogRule = false
+              this.userDialogRole = false
               this.message(res.msg)
               this.userReset()
               this.userList()
