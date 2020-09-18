@@ -341,6 +341,40 @@ export const asyncRoutes = [
   },
 
   {
+    path: '/doc',
+    component: Layout,
+    redirect: 'noRedirect',
+    alwaysShow: true,
+    name: 'Doc',
+    meta: {
+      title: '文档管理',
+      icon: 'el-icon-notebook-1'
+    },
+    children: [
+      {
+        path: 'apidoc',
+        component: () => import('@/views/admin/apidoc/apidoc'),
+        name: 'Apidoc',
+        meta: {
+          title: '接口文档',
+          icon: 'el-icon-notebook-1',
+          roles: ['admin/AdminApidoc/apidocList']
+        }
+      },
+      {
+        path: 'devdoc',
+        component: () => import('@/views/admin/devdoc/devdoc'),
+        name: 'Devdoc',
+        meta: {
+          title: '开发文档',
+          icon: 'el-icon-notebook-1',
+          roles: ['admin/AdminDevdoc/devdocList']
+        }
+      }
+    ]
+  },
+
+  {
     path: '/tool',
     component: Layout,
     redirect: 'noRedirect',

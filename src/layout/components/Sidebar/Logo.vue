@@ -14,6 +14,7 @@
 </template>
 
 <script>
+import defaultSettings from '@/settings'
 export default {
   name: 'SidebarLogo',
   props: {
@@ -24,8 +25,8 @@ export default {
   },
   data() {
     return {
-      title: 'yylAdmin',
-      logo: '/logo.png'
+      title: defaultSettings.title,
+      logo: defaultSettings.logo
     }
   }
 }

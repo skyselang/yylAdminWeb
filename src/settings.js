@@ -1,5 +1,6 @@
 module.exports = {
   title: 'yylAdmin',
+  logo: '/static/img/logo.png',
 
   /**
    * @type {boolean} true | false

@@ -526,3 +526,117 @@ export function settingToken(data) {
     })
   }
 }
+
+// ----------------接口文档----------------
+/**
+ * 接口文档列表
+ * @param {array} params 请求参数
+ */
+export function apidocList(params) {
+  return request({
+    url: '/admin/AdminApidoc/apidocList',
+    method: 'get',
+    params: params
+  })
+}
+/**
+ * 接口文档详情
+ * @param {array} params 请求参数
+ */
+export function apidocInfo(params) {
+  return request({
+    url: '/admin/AdminApidoc/apidocInfo',
+    method: 'get',
+    params: params
+  })
+}
+/**
+ * 接口文档添加
+ * @param {array} data 请求数据
+ */
+export function apidocAdd(data) {
+  return request({
+    url: '/admin/AdminApidoc/apidocAdd',
+    method: 'post',
+    data
+  })
+}
+/**
+ * 接口文档修改
+ * @param {array} data 请求数据
+ */
+export function apidocEdit(data) {
+  return request({
+    url: '/admin/AdminApidoc/apidocEdit',
+    method: 'post',
+    data
+  })
+}
+/**
+ * 接口文档删除
+ * @param {array} data 请求数据
+ */
+export function apidocDele(data) {
+  return request({
+    url: '/admin/AdminApidoc/apidocDele',
+    method: 'post',
+    data
+  })
+}
+
+// ----------------开发文档----------------
+/**
+ * 开发文档列表
+ * @param {array} params 请求参数
+ */
+export function devdocList(params) {
+  return request({
+    url: '/admin/AdminDevdoc/devdocList',
+    method: 'get',
+    params: params
+  })
+}
+/**
+ * 开发文档详情
+ * @param {array} params 请求参数
+ */
+export function devdocInfo(params) {
+  return request({
+    url: '/admin/AdminDevdoc/devdocInfo',
+    method: 'get',
+    params: params
+  })
+}
+/**
+ * 开发文档添加
+ * @param {array} data 请求数据
+ */
+export function devdocAdd(data) {
+  return request({
+    url: '/admin/AdminDevdoc/devdocAdd',
+    method: 'post',
+    data
+  })
+}
+/**
+ * 开发文档修改
+ * @param {array} data 请求数据
+ */
+export function devdocEdit(data) {
+  return request({
+    url: '/admin/AdminDevdoc/devdocEdit',
+    method: 'post',
+    data
+  })
+}
+/**
+ * 开发文档删除
+ * @param {array} data 请求数据
+ */
+export function devdocDele(data) {
+  return request({
+    url: '/admin/AdminDevdoc/devdocDele',
+    method: 'post',
+    data
+  })
+}
