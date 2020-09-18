@@ -93,6 +93,6 @@ npm run lint
 # 代码格式检查并自动修复
 npm run lint -- --fix
 ```
-<img width="100%" src="./public/yyladmin_login.jpg">
+<img width="100%" src="./public/static/img/yyladmin_login.jpg">
 
-<img width="100%" src="./public/yyladmin.jpg">
+<img width="100%" src="./public/static/img/yyladmin.jpg">
