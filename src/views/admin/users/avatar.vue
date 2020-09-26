@@ -9,7 +9,7 @@
             </el-form-item>
             <el-form-item>
               <el-upload class="upload-demo" name="avatar_file" :show-file-list="false" :action="uploadAction" :headers="uploadHeaders" :data="uploadData" :on-success="uploadSuccess">
-                <div slot="tip">jpg、png格式，小于50kb</div>
+                <div slot="tip">jpg、png图片，小于50kb！</div>
                 <el-button type="primary">更换头像</el-button>
               </el-upload>
             </el-form-item>

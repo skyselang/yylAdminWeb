@@ -11,7 +11,6 @@ import Layout from '@/layout'
 /**
  * Note: sub-menu only appear when route children.length >= 1
  *
- *
  * hidden: true                   if set true, item will not show in the sidebar(default is false)
  * alwaysShow: true               if set true, will always show the root menu
  *                                if not set alwaysShow, when item has more than one children route,
@@ -21,7 +20,7 @@ import Layout from '@/layout'
  * meta : {
     roles: ['admin','editor']    control the page roles (you can set multiple roles)
     title: 'title'               the name show in sidebar and breadcrumb (recommend set)
-    icon: 'svg-name'/'el-icon-x' the icon show in the sidebar
+    icon: 'el-icon-x'            the icon show in the sidebar
     noCache: true                if set true, the page will no be cached(default is false)
     affix: true                  if set true, the tag will affix in the tags-view
     breadcrumb: false            if set false, the item will hidden in breadcrumb(default is true)
@@ -81,7 +80,7 @@ export const constantRoutes = [
         name: 'Dashboard',
         meta: {
           title: '控制台',
-          icon: 'index',
+          icon: 'el-icon-s-home',
           affix: true
         }
       }
@@ -102,7 +101,7 @@ export const asyncRoutes = [
     name: 'Admin',
     meta: {
       title: '系统管理',
-      icon: 'admin'
+      icon: 'el-icon-s-operation'
     },
     children: [
       {
@@ -111,7 +110,7 @@ export const asyncRoutes = [
         name: 'Rule',
         meta: {
           title: '权限管理',
-          icon: 'rule'
+          icon: 'el-icon-lock'
         },
         alwaysShow: true,
         redirect: 'noRedirect',
@@ -122,7 +121,7 @@ export const asyncRoutes = [
             name: 'Menu',
             meta: {
               title: '菜单管理',
-              icon: 'rule',
+              icon: 'el-icon-menu',
               roles: ['admin/AdminMenu/menuList']
             }
           },
@@ -132,7 +131,7 @@ export const asyncRoutes = [
             name: 'Role',
             meta: {
               title: '角色管理',
-              icon: 'rule',
+              icon: 'el-icon-s-custom',
               roles: ['admin/AdminRole/roleList']
             }
           },
@@ -142,7 +141,7 @@ export const asyncRoutes = [
             name: 'User',
             meta: {
               title: '用户管理',
-              icon: 'rule',
+              icon: 'el-icon-user',
               roles: ['admin/AdminUser/userList']
             }
           }]
@@ -153,7 +152,7 @@ export const asyncRoutes = [
         name: 'Log',
         meta: {
           title: '日志管理',
-          icon: 'log'
+          icon: 'el-icon-date'
         },
         children: [
           {
@@ -162,7 +161,7 @@ export const asyncRoutes = [
             name: 'Login',
             meta: {
               title: '登录日志',
-              icon: 'log',
+              icon: 'el-icon-date',
               roles: ['admin/AdminLog/logList']
             }
           },
@@ -172,7 +171,7 @@ export const asyncRoutes = [
             name: 'Action',
             meta: {
               title: '操作日志',
-              icon: 'log',
+              icon: 'el-icon-date',
               roles: ['admin/AdminLog/logList']
             }
           }
@@ -184,7 +183,7 @@ export const asyncRoutes = [
         name: 'Users',
         meta: {
           title: '个人中心',
-          icon: 'users'
+          icon: 'el-icon-user-solid'
         },
         alwaysShow: true,
         redirect: 'noRedirect',
@@ -195,7 +194,7 @@ export const asyncRoutes = [
             name: 'Info',
             meta: {
               title: '个人信息',
-              icon: 'users',
+              icon: 'el-icon-user-solid',
               roles: ['admin/AdminUsers/usersInfo']
             }
           },
@@ -205,7 +204,7 @@ export const asyncRoutes = [
             name: 'Edit',
             meta: {
               title: '修改信息',
-              icon: 'users',
+              icon: 'el-icon-user-solid',
               roles: ['admin/AdminUsers/usersEdit']
             }
           },
@@ -215,7 +214,7 @@ export const asyncRoutes = [
             name: 'Pwd',
             meta: {
               title: '修改密码',
-              icon: 'users',
+              icon: 'el-icon-user-solid',
               roles: ['admin/AdminUsers/usersPwd']
             }
           },
@@ -225,7 +224,7 @@ export const asyncRoutes = [
             name: 'Avatar',
             meta: {
               title: '修改头像',
-              icon: 'users',
+              icon: 'el-icon-user-solid',
               roles: ['admin/AdminUsers/usersAvatar']
             }
           },
@@ -235,7 +234,7 @@ export const asyncRoutes = [
             name: 'Logs',
             meta: {
               title: '个人日志',
-              icon: 'users',
+              icon: 'el-icon-user-solid',
               roles: ['admin/AdminUsers/usersLog']
             }
           }
@@ -247,7 +246,7 @@ export const asyncRoutes = [
         name: 'Visit',
         meta: {
           title: '访问统计',
-          icon: 'eye-open'
+          icon: 'el-icon-s-data'
         },
         alwaysShow: true,
         redirect: 'noRedirect',
@@ -258,7 +257,7 @@ export const asyncRoutes = [
             name: 'Count',
             meta: {
               title: '数量统计',
-              icon: 'eye-open',
+              icon: 'el-icon-s-data',
               roles: ['admin/AdminVisit/visitCount']
             }
           },
@@ -268,7 +267,7 @@ export const asyncRoutes = [
             name: 'Date',
             meta: {
               title: '日期统计',
-              icon: 'eye-open',
+              icon: 'el-icon-s-data',
               roles: ['admin/AdminVisit/visitDate']
             }
           },
@@ -278,7 +277,7 @@ export const asyncRoutes = [
             name: 'Stats',
             meta: {
               title: '访问统计',
-              icon: 'eye-open',
+              icon: 'el-icon-s-data',
               roles: ['admin/AdminVisit/visitStats']
             }
           }
@@ -290,7 +289,7 @@ export const asyncRoutes = [
         name: 'Setting',
         meta: {
           title: '系统设置',
-          icon: 'setting'
+          icon: 'el-icon-setting'
         },
         alwaysShow: true,
         redirect: 'noRedirect',
@@ -300,8 +299,8 @@ export const asyncRoutes = [
             component: () => import('@/views/admin/setting/base'),
             name: 'Base',
             meta: {
-              title: '基础设置',
-              icon: 'setting',
+              title: '基本设置',
+              icon: 'el-icon-setting',
               roles: ['admin/AdminSetting/settingBase']
             }
           },
@@ -311,7 +310,7 @@ export const asyncRoutes = [
             name: 'Cache',
             meta: {
               title: '缓存设置',
-              icon: 'setting',
+              icon: 'el-icon-setting',
               roles: ['admin/AdminSetting/settingCache']
             }
           },
@@ -321,7 +320,7 @@ export const asyncRoutes = [
             name: 'Verify',
             meta: {
               title: '验证码设置',
-              icon: 'setting',
+              icon: 'el-icon-setting',
               roles: ['admin/AdminSetting/settingVerify']
             }
           },
@@ -331,45 +330,11 @@ export const asyncRoutes = [
             name: 'Token',
             meta: {
               title: 'Token设置',
-              icon: 'setting',
+              icon: 'el-icon-setting',
               roles: ['admin/AdminSetting/settingToken']
             }
           }
         ]
-      }
-    ]
-  },
-
-  {
-    path: '/doc',
-    component: Layout,
-    redirect: 'noRedirect',
-    alwaysShow: true,
-    name: 'Doc',
-    meta: {
-      title: '文档管理',
-      icon: 'el-icon-notebook-1'
-    },
-    children: [
-      {
-        path: 'apidoc',
-        component: () => import('@/views/admin/apidoc/apidoc'),
-        name: 'Apidoc',
-        meta: {
-          title: '接口文档',
-          icon: 'el-icon-notebook-1',
-          roles: ['admin/AdminApidoc/apidocList']
-        }
-      },
-      {
-        path: 'devdoc',
-        component: () => import('@/views/admin/devdoc/devdoc'),
-        name: 'Devdoc',
-        meta: {
-          title: '开发文档',
-          icon: 'el-icon-notebook-1',
-          roles: ['admin/AdminDevdoc/devdocList']
-        }
       }
     ]
   },
@@ -382,7 +347,7 @@ export const asyncRoutes = [
     name: 'Tool',
     meta: {
       title: '实用工具',
-      icon: 'tool'
+      icon: 'el-icon-fork-spoon'
     },
     children: [
       {
@@ -391,7 +356,7 @@ export const asyncRoutes = [
         name: 'Tools',
         meta: {
           title: '实用工具合集',
-          icon: 'tools',
+          icon: 'el-icon-knife-fork',
           roles: ['admin/AdminTool/tools']
         }
       },
@@ -401,7 +366,7 @@ export const asyncRoutes = [
         name: 'MapPoint',
         meta: {
           title: '地图坐标拾取',
-          icon: 'mapPoint',
+          icon: 'el-icon-map-location',
           roles: ['admin/AdminTool/mapPoint']
         }
       }
@@ -415,7 +380,7 @@ export const asyncRoutes = [
     name: 'Logout',
     meta: {
       title: '退出',
-      icon: 'logout',
+      icon: 'el-icon-switch-button',
       roles: ['admin/AdminLogin/logout']
     }
   },

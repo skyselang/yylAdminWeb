@@ -25,6 +25,9 @@
             <el-form-item v-if="usersModel.admin_user_id" label="更新时间" prop="update_time">
               <el-input v-model="usersModel.update_time" placeholder="" />
             </el-form-item>
+            <el-form-item v-if="usersModel.admin_user_id" label="登录时间" prop="update_time">
+              <el-input v-model="usersModel.login_time" placeholder="" />
+            </el-form-item>
             <el-form-item v-if="usersModel.admin_user_id" label="退出时间" prop="logout_time">
               <el-input v-model="usersModel.logout_time" placeholder="" />
             </el-form-item>

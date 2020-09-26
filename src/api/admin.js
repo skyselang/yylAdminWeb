@@ -1,40 +1,5 @@
 import request from '@/utils/request'
 
-// ----------------登录|退出----------------
-/**
- * 验证码
- *  @param {array} params 请求参数
- */
-export function verify(params) {
-  return request({
-    url: '/admin/AdminLogin/verify',
-    method: 'get',
-    params: params
-  })
-}
-/**
- * 登录
- * @param {array} data 请求数据
- */
-export function login(data) {
-  return request({
-    url: '/admin/AdminLogin/login',
-    method: 'post',
-    data
-  })
-}
-/**
- * 退出
- * @param {array} data 请求数据
- */
-export function logout(data) {
-  return request({
-    url: '/admin/AdminLogin/logout',
-    method: 'post',
-    data
-  })
-}
-
 // ----------------菜单管理----------------
 /**
  * 菜单列表
@@ -527,115 +492,36 @@ export function settingToken(data) {
   }
 }
 
-// ----------------接口文档----------------
+// ----------------登录退出-----------------
 /**
- * 接口文档列表
- * @param {array} params 请求参数
+ * 验证码
+ *  @param {array} params 请求参数
  */
-export function apidocList(params) {
+export function verify(params) {
   return request({
-    url: '/admin/AdminApidoc/apidocList',
+    url: '/admin/AdminLogin/verify',
     method: 'get',
     params: params
   })
 }
 /**
- * 接口文档详情
- * @param {array} params 请求参数
- */
-export function apidocInfo(params) {
-  return request({
-    url: '/admin/AdminApidoc/apidocInfo',
-    method: 'get',
-    params: params
-  })
-}
-/**
- * 接口文档添加
+ * 登录
  * @param {array} data 请求数据
  */
-export function apidocAdd(data) {
+export function login(data) {
   return request({
-    url: '/admin/AdminApidoc/apidocAdd',
+    url: '/admin/AdminLogin/login',
     method: 'post',
     data
   })
 }
 /**
- * 接口文档修改
+ * 退出
  * @param {array} data 请求数据
  */
-export function apidocEdit(data) {
+export function logout(data) {
   return request({
-    url: '/admin/AdminApidoc/apidocEdit',
-    method: 'post',
-    data
-  })
-}
-/**
- * 接口文档删除
- * @param {array} data 请求数据
- */
-export function apidocDele(data) {
-  return request({
-    url: '/admin/AdminApidoc/apidocDele',
-    method: 'post',
-    data
-  })
-}
-
-// ----------------开发文档----------------
-/**
- * 开发文档列表
- * @param {array} params 请求参数
- */
-export function devdocList(params) {
-  return request({
-    url: '/admin/AdminDevdoc/devdocList',
-    method: 'get',
-    params: params
-  })
-}
-/**
- * 开发文档详情
- * @param {array} params 请求参数
- */
-export function devdocInfo(params) {
-  return request({
-    url: '/admin/AdminDevdoc/devdocInfo',
-    method: 'get',
-    params: params
-  })
-}
-/**
- * 开发文档添加
- * @param {array} data 请求数据
- */
-export function devdocAdd(data) {
-  return request({
-    url: '/admin/AdminDevdoc/devdocAdd',
-    method: 'post',
-    data
-  })
-}
-/**
- * 开发文档修改
- * @param {array} data 请求数据
- */
-export function devdocEdit(data) {
-  return request({
-    url: '/admin/AdminDevdoc/devdocEdit',
-    method: 'post',
-    data
-  })
-}
-/**
- * 开发文档删除
- * @param {array} data 请求数据
- */
-export function devdocDele(data) {
-  return request({
-    url: '/admin/AdminDevdoc/devdocDele',
+    url: '/admin/AdminLogin/logout',
     method: 'post',
     data
   })

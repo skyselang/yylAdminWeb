@@ -10,7 +10,7 @@
             <div class="text item">
               <el-row :gutter="0">
                 <el-col :span="12">
-                  <svg-icon class="icon" icon-class="visitDays" class-name="card-panel-icon" />
+                  <i class="el-icon-odometer icon" />
                 </el-col>
                 <el-col :span="12">
                   {{ data.total }}
@@ -29,7 +29,7 @@
             <div class="text item">
               <el-row :gutter="0">
                 <el-col :span="12">
-                  <svg-icon class="icon" icon-class="visitDays" class-name="card-panel-icon" />
+                  <i class="el-icon-odometer icon" />
                 </el-col>
                 <el-col :span="12">
                   {{ data.today }}
@@ -46,7 +46,7 @@
             <div class="text item">
               <el-row :gutter="0">
                 <el-col :span="12">
-                  <svg-icon class="icon" icon-class="visitDays" class-name="card-panel-icon" />
+                  <i class="el-icon-odometer icon" />
                 </el-col>
                 <el-col :span="12">
                   {{ data.yesterday }}
@@ -65,7 +65,7 @@
             <div class="text item">
               <el-row :gutter="0">
                 <el-col :span="12">
-                  <svg-icon class="icon" icon-class="visitDays" class-name="card-panel-icon" />
+                  <i class="el-icon-odometer icon" />
                 </el-col>
                 <el-col :span="12">
                   {{ data.thisweek }}
@@ -82,7 +82,7 @@
             <div class="text item">
               <el-row :gutter="0">
                 <el-col :span="12">
-                  <svg-icon class="icon" icon-class="visitDays" class-name="card-panel-icon" />
+                  <i class="el-icon-odometer icon" />
                 </el-col>
                 <el-col :span="12">
                   {{ data.lastweek }}
@@ -101,7 +101,7 @@
             <div class="text item">
               <el-row :gutter="0">
                 <el-col :span="12">
-                  <svg-icon class="icon" icon-class="visitDays" class-name="card-panel-icon" />
+                  <i class="el-icon-odometer icon" />
                 </el-col>
                 <el-col :span="12">
                   {{ data.thismonth }}
@@ -118,7 +118,7 @@
             <div class="text item">
               <el-row :gutter="0">
                 <el-col :span="12">
-                  <svg-icon class="icon" icon-class="visitDays" class-name="card-panel-icon" />
+                  <i class="el-icon-odometer icon" />
                 </el-col>
                 <el-col :span="12">
                   {{ data.lastmonth }}
