@@ -14,11 +14,9 @@
 
         <search id="header-search" class="right-menu-item" />
 
-        <screenfull id="screenfull" class="right-menu-item hover-effect" title="全屏" />
+        <screenfull id="screenfull" class="right-menu-item hover-effect" />
 
-        <el-tooltip content="字体大小" effect="dark" placement="bottom">
-          <size-select id="size-select" class="right-menu-item hover-effect" />
-        </el-tooltip>
+        <size-select id="size-select" class="right-menu-item hover-effect" />
       </template>
 
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
@@ -69,8 +67,8 @@ export default {
     },
     async logout() {
       await this.$store.dispatch('user/logout')
-      this.$router.push('/login')
-      // this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+      // this.$router.push('/login')
+      this.$router.push(`/login?redirect=${this.$route.fullPath}`)
     }
   }
 }
