@@ -56,13 +56,9 @@ export default {
       this.timeTranModel.timestamp = ''
     },
     timeTranSubmit() {
-      if (!this.timeTranModel.datetime && !this.timeTranModel.timestamp) {
-        this.$message({ message: '请输入时间戳或日期时间', type: 'error' })
-      } else {
-        timeTran(this.timeTranModel).then(res => {
-          this.timeTranModel = res.data
-        })
-      }
+      timeTran(this.timeTranModel).then(res => {
+        this.timeTranModel = res.data
+      })
     }
   }
 }
