@@ -5,12 +5,12 @@
         <el-row :gutter="8">
           <el-col :xs="24" :sm="12">
             <div class=" filter-container">
-              <ToolsStrRand />
+              <GatherStrRand />
             </div>
           </el-col>
           <el-col :xs="24" :sm="12">
             <div class="filter-container">
-              <ToolsStrTran />
+              <GatherStrTran />
             </div>
           </el-col>
         </el-row>
@@ -19,7 +19,7 @@
         <el-row :gutter="8">
           <el-col :xs="24" :sm="12">
             <div class="filter-container">
-              <ToolsTimeTran />
+              <GatherTimeTran />
             </div>
           </el-col>
         </el-row>
@@ -28,7 +28,7 @@
         <el-row :gutter="8">
           <el-col :xs="24" :sm="12">
             <div class="filter-container">
-              <ToolsQrcode />
+              <GatherQrcode />
             </div>
           </el-col>
         </el-row>
@@ -37,7 +37,7 @@
         <el-row :gutter="8">
           <el-col :xs="24" :sm="12">
             <div class="filter-container">
-              <ToolsByteTran />
+              <GatherByteTran />
             </div>
           </el-col>
         </el-row>
@@ -46,7 +46,7 @@
         <el-row :gutter="8">
           <el-col :xs="24" :sm="12">
             <div class="filter-container">
-              <ToolsIpQuery />
+              <GatherIpQuery />
             </div>
           </el-col>
         </el-row>
@@ -56,22 +56,22 @@
 </template>
 
 <script>
-import ToolsStrTran from './components/ToolsStrTran'
-import ToolsStrRand from './components/ToolsStrRand'
-import ToolsTimeTran from './components/ToolsTimeTran'
-import ToolsQrcode from './components/ToolsQrcode'
-import ToolsByteTran from './components/ToolsByteTran'
-import ToolsIpQuery from './components/ToolsIpQuery'
+import GatherStrTran from './components/GatherStrTran'
+import GatherStrRand from './components/GatherStrRand'
+import GatherTimeTran from './components/GatherTimeTran'
+import GatherQrcode from './components/GatherQrcode'
+import GatherByteTran from './components/GatherByteTran'
+import GatherIpQuery from './components/GatherIpQuery'
 
 export default {
-  name: 'Tools',
+  name: 'Gather',
   components: {
-    ToolsStrTran,
-    ToolsStrRand,
-    ToolsTimeTran,
-    ToolsQrcode,
-    ToolsByteTran,
-    ToolsIpQuery
+    GatherStrTran,
+    GatherStrRand,
+    GatherTimeTran,
+    GatherQrcode,
+    GatherByteTran,
+    GatherIpQuery
   },
   data() {
     return {

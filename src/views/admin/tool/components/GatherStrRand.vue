@@ -36,7 +36,7 @@ import clip from '@/utils/clipboard'
 import { strRand } from '@/api/admin'
 
 export default {
-  name: 'ToolsStrRand',
+  name: 'GatherStrRand',
   components: {},
   data() {
     return {

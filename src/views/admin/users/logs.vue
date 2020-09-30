@@ -46,7 +46,7 @@ export default {
       logQuery: {
         admin_user_id: getAdminUserId(),
         page: 1,
-        limit: 10,
+        limit: 13,
         type: ''
       }
     }
@@ -76,7 +76,7 @@ export default {
     },
     // 用户刷新
     logRefresh() {
-      this.logQuery = { admin_user_id: getAdminUserId(), page: 1, limit: 10 }
+      this.logQuery = { admin_user_id: getAdminUserId(), page: 1, limit: 13 }
       this.usersLogList()
     },
     // 用户排序

@@ -1,10 +1,10 @@
 <template>
-  <iframe src="https://api.map.baidu.com/lbsapi/getpoint/index.html" frameborder="0" width="100%" :height="curHeight" />
+  <iframe src="https://lbs.amap.com/console/show/picker" frameborder="0" width="100%" :height="curHeight" />
 </template>
 
 <script>
 export default {
-  name: 'MapPointBaidu',
+  name: 'MapAmap',
   components: {},
   data() {
     return {
@@ -12,7 +12,7 @@ export default {
     }
   },
   created() {
-    this.beforeMount(190)
+    this.beforeMount(180)
   },
   methods: {
     // 获取屏幕高度

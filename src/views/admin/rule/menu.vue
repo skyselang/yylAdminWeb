@@ -148,7 +148,7 @@ export default {
       roleCount: 0,
       roleQuery: {
         page: 1,
-        limit: 10
+        limit: 13
       },
       roleDialog: false,
       roleTitle: '',

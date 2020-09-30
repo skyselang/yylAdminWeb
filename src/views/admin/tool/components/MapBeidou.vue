@@ -1,10 +1,10 @@
 <template>
-  <iframe src="https://lbs.amap.com/console/show/picker" frameborder="0" width="100%" :height="curHeight" />
+  <iframe src="http://www.beidou.gov.cn/" frameborder="0" width="100%" :height="curHeight" />
 </template>
 
 <script>
 export default {
-  name: 'MapPointAmap',
+  name: 'MapBeidou',
   components: {},
   data() {
     return {

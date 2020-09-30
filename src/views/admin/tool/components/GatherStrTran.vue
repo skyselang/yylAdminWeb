@@ -5,7 +5,7 @@
     </div>
     <div class="text item">
       <el-form ref="strTranRef" :rules="strTranRules" :model="strTranModel" label-width="80px">
-        <el-form-item label="字符串" prop="str">
+        <el-form-item label="字符串" prop="">
           <el-input v-model="strTranModel.str" type="textarea" placeholder="请输入字符串" clearable />
         </el-form-item>
         <el-form-item label="长度">
@@ -36,7 +36,7 @@
 import { strTran } from '@/api/admin'
 
 export default {
-  name: 'ToolsStrTran',
+  name: 'GatherStrTran',
   components: {},
   data() {
     return {

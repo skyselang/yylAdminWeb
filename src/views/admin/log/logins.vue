@@ -5,7 +5,7 @@
 <script>
 import Log from './log'
 export default {
-  name: 'Login',
+  name: 'Logins',
   components: { Log },
   data() {
     return { type: 1 }

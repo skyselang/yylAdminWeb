@@ -1,10 +1,10 @@
 <template>
-  <iframe src="http://www.beidou.gov.cn/" frameborder="0" width="100%" :height="curHeight" />
+  <iframe src="https://api.map.baidu.com/lbsapi/getpoint/index.html" frameborder="0" width="100%" :height="curHeight" />
 </template>
 
 <script>
 export default {
-  name: 'MapPointBeidou',
+  name: 'MapBaidu',
   components: {},
   data() {
     return {
@@ -12,7 +12,7 @@ export default {
     }
   },
   created() {
-    this.beforeMount(180)
+    this.beforeMount(190)
   },
   methods: {
     // 获取屏幕高度

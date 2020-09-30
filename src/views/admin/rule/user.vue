@@ -207,7 +207,7 @@ export default {
       userCount: 0,
       userQuery: {
         page: 1,
-        limit: 10
+        limit: 13
       },
       userDialog: false,
       userDialogRole: false,
@@ -300,7 +300,7 @@ export default {
     },
     // 用户列表刷新
     userRefresh() {
-      this.userQuery = { page: 1, limit: 10 }
+      this.userQuery = { page: 1, limit: 13 }
       this.userList()
     },
     // 用户添加

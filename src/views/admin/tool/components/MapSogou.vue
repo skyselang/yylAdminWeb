@@ -4,7 +4,7 @@
 
 <script>
 export default {
-  name: 'MapPointSogou',
+  name: 'MapSogou',
   components: {},
   data() {
     return {

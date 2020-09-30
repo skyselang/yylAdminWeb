@@ -98,7 +98,7 @@ export default {
       logCount: 0,
       logQuery: {
         page: 1,
-        limit: 10,
+        limit: 13,
         type: this.type
       },
       logDialog: false,
@@ -159,7 +159,7 @@ export default {
     },
     // 日志刷新
     logRefresh() {
-      this.logQuery = { page: 1, limit: 10, type: this.type }
+      this.logQuery = { page: 1, limit: 13, type: this.type }
       this.logLists()
     },
     // 日志详情

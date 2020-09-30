@@ -6,32 +6,43 @@ Vue.use(Router)
 /* Layout */
 import Layout from '@/layout'
 
-/* Router Modules */
+/* 路由模块 */
 
 /**
- * Note: sub-menu only appear when route children.length >= 1
+ * 配置说明
  *
- * hidden: true                   if set true, item will not show in the sidebar(default is false)
- * alwaysShow: true               if set true, will always show the root menu
- *                                if not set alwaysShow, when item has more than one children route,
- *                                it will becomes nested mode, otherwise not show the root menu
- * redirect: noRedirect           if set noRedirect will no redirect in the breadcrumb
- * name:'router-name'             the name is used by <keep-alive> (must set!!!)
- * meta : {
-    roles: ['admin','editor']    control the page roles (you can set multiple roles)
-    title: 'title'               the name show in sidebar and breadcrumb (recommend set)
-    icon: 'el-icon-x'            the icon show in the sidebar
-    noCache: true                if set true, the page will no be cached(default is false)
-    affix: true                  if set true, the tag will affix in the tags-view
-    breadcrumb: false            if set false, the item will hidden in breadcrumb(default is true)
-    activeMenu: '/example/list'  if set path, the sidebar will highlight the path you set
-  }
+ * // 当设置 true 的时候该路由不会在侧边栏出现 如401，login等页面，或者如一些编辑页面/edit/1
+ * hidden: true // (默认 false)
+ *
+ * //当设置 noRedirect 的时候该路由在面包屑导航中不可被点击
+ * redirect: 'noRedirect'
+ *
+ * // 当你一个路由下面的 children 声明的路由大于1个时，自动会变成嵌套的模式--如组件页面
+ * // 只有一个时，会将那个子路由当做根路由显示在侧边栏--如引导页面
+ * // 若你想不管路由下面的 children 声明的个数都显示你的根路由
+ * // 你可以设置 alwaysShow: true，这样它就会忽略之前定义的规则，一直显示根路由
+ * alwaysShow: true
+ *
+ * name: 'router-name' // 设定路由的名字，一定要填写不然使用<keep-alive>时会出现各种问题
+ * meta: {
+ *   roles: ['admin', 'editor'] // 设置该路由进入的权限（菜单链接），支持多个权限叠加
+ *   title: 'title' // 设置该路由在侧边栏和面包屑中展示的名字
+ *   icon: 'el-icon-x' // 设置该路由的图标，element-ui 的 icon
+ *   noCache: true // 如果设置为true，则不会被 <keep-alive> 缓存(默认 false)
+ *   breadcrumb: false //  如果设置为false，则不会在breadcrumb面包屑中显示(默认 true)
+ *   affix: true // 若果设置为true，它则会固定在tags-view中(默认 false)
+ *
+ *   // 当路由设置了该属性，则会高亮相对应的侧边栏。
+ *   // 这在某些场景非常有用，比如：一个文章的列表页路由为：/article/list
+ *   // 点击文章进入文章详情页，这时候路由为/article/1，但你想在侧边栏高亮文章列表的路由，就可以进行如下设置
+ *   activeMenu: '/article/list'
+ * }
  */
 
 /**
  * constantRoutes
- * a base page that does not have permission requirements
- * all roles can be accessed
+ * 不需要动态判断权限的路由，如登录页、404、等页面
+ * 所有用户都可以访问
  */
 export const constantRoutes = [
   {
@@ -90,7 +101,8 @@ export const constantRoutes = [
 
 /**
  * asyncRoutes
- * the routes that need to be dynamically loaded based on user roles
+ * 需要动态判断权限并通过 addRoutes 动态添加的页面
+ * 需要分配相应权限才可以访问
  */
 export const asyncRoutes = [
   {
@@ -112,12 +124,12 @@ export const asyncRoutes = [
           title: '权限管理',
           icon: 'el-icon-lock'
         },
-        alwaysShow: true,
         redirect: 'noRedirect',
+        alwaysShow: true,
         children: [
           {
             path: 'menu',
-            component: () => import('@/views/admin/menu/menu'),
+            component: () => import('@/views/admin/rule/menu'),
             name: 'Menu',
             meta: {
               title: '菜单管理',
@@ -127,7 +139,7 @@ export const asyncRoutes = [
           },
           {
             path: 'role',
-            component: () => import('@/views/admin/role/role'),
+            component: () => import('@/views/admin/rule/role'),
             name: 'Role',
             meta: {
               title: '角色管理',
@@ -137,7 +149,7 @@ export const asyncRoutes = [
           },
           {
             path: 'user',
-            component: () => import('@/views/admin/user/user'),
+            component: () => import('@/views/admin/rule/user'),
             name: 'User',
             meta: {
               title: '用户管理',
@@ -154,11 +166,13 @@ export const asyncRoutes = [
           title: '日志管理',
           icon: 'el-icon-date'
         },
+        redirect: 'noRedirect',
+        alwaysShow: true,
         children: [
           {
-            path: 'login',
-            component: () => import('@/views/admin/log/login'),
-            name: 'Login',
+            path: 'logins',
+            component: () => import('@/views/admin/log/logins'),
+            name: 'Logins',
             meta: {
               title: '登录日志',
               icon: 'el-icon-date',
@@ -185,8 +199,8 @@ export const asyncRoutes = [
           title: '个人中心',
           icon: 'el-icon-user-solid'
         },
-        alwaysShow: true,
         redirect: 'noRedirect',
+        alwaysShow: true,
         children: [
           {
             path: 'info',
@@ -248,8 +262,8 @@ export const asyncRoutes = [
           title: '访问统计',
           icon: 'el-icon-s-data'
         },
-        alwaysShow: true,
         redirect: 'noRedirect',
+        alwaysShow: true,
         children: [
           {
             path: 'count',
@@ -291,8 +305,8 @@ export const asyncRoutes = [
           title: '系统设置',
           icon: 'el-icon-setting'
         },
-        alwaysShow: true,
         redirect: 'noRedirect',
+        alwaysShow: true,
         children: [
           {
             path: 'base',
@@ -351,23 +365,23 @@ export const asyncRoutes = [
     },
     children: [
       {
-        path: 'tools',
-        component: () => import('@/views/admin/tool/tools'),
-        name: 'Tools',
+        path: 'gather',
+        component: () => import('@/views/admin/tool/gather'),
+        name: 'Gather',
         meta: {
           title: '实用工具合集',
           icon: 'el-icon-knife-fork',
-          roles: ['admin/AdminTool/tools']
+          roles: ['admin/AdminTool/gather']
         }
       },
       {
-        path: 'map-point',
-        component: () => import('@/views/admin/tool/map-point'),
-        name: 'MapPoint',
+        path: 'map',
+        component: () => import('@/views/admin/tool/map'),
+        name: 'Map',
         meta: {
           title: '地图坐标拾取',
           icon: 'el-icon-map-location',
-          roles: ['admin/AdminTool/mapPoint']
+          roles: ['admin/AdminTool/map']
         }
       }
     ]
@@ -385,7 +399,7 @@ export const asyncRoutes = [
     }
   },
 
-  // 404 page must be placed at the end !!!
+  // 404页面必须放在最后 !!!
   {
     path: '*',
     redirect: '/404',
@@ -394,7 +408,7 @@ export const asyncRoutes = [
 ]
 
 const createRouter = () => new Router({
-  // mode: 'history', // require service support
+  // mode: 'history', // 去掉url中的#号，需要服务器支持
   scrollBehavior: () => ({
     y: 0
   }),

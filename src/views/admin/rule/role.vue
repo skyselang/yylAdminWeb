@@ -127,7 +127,7 @@ export default {
       roleCount: 0,
       roleQuery: {
         page: 1,
-        limit: 10
+        limit: 13
       },
       roleModel: {
         dialog_title: '',
@@ -242,7 +242,7 @@ export default {
     },
     // 角色刷新
     roleRefresh() {
-      this.roleQuery = { page: 1, limit: 10 }
+      this.roleQuery = { page: 1, limit: 13 }
       this.roleList()
     },
     // 角色添加

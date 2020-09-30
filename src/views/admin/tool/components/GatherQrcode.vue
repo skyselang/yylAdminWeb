@@ -5,7 +5,7 @@
     </div>
     <div class="text item">
       <el-form ref="qrcodeRef" :rules="qrcodeRules" :model="qrcodeModel" label-width="80px">
-        <el-form-item label="文本内容" prop="str">
+        <el-form-item label="文本内容" prop="">
           <el-input v-model="qrcodeModel.str" placeholder="请输入文本内容" clearable />
         </el-form-item>
         <el-form-item label="二维码" style="margin-bottom: 0;">
@@ -28,7 +28,7 @@
 import { qrcode } from '@/api/admin'
 
 export default {
-  name: 'ToolsQrcode',
+  name: 'GatherQrcode',
   components: {},
   data() {
     return {
@@ -57,7 +57,7 @@ export default {
       this.$refs['qrcodeRef'].validate(valid => {
         if (valid) {
           qrcode({ str: this.qrcodeModel.str }).then(res => {
-            this.qrcodeModel.url = res.data.url
+            this.qrcodeModel = res.data
           })
         }
       })

@@ -30,7 +30,7 @@
 import { timeTran } from '@/api/admin'
 
 export default {
-  name: 'ToolsTimeTran',
+  name: 'GatherTimeTran',
   components: {},
   data() {
     return {
