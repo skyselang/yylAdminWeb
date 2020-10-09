@@ -2,7 +2,7 @@
   <div class="app-container">
     <!-- 日志查询 -->
     <div class="filter-container">
-      <el-select v-model="logQuery.type" placeholder="请选择" style="width:110px;" clearable>
+      <el-select v-model="logQuery.type" class="filter-item" placeholder="日志类型" style="width:110px;" clearable>
         <el-option key="1" label="登录日志" value="1" />
         <el-option key="2" label="操作日志" value="2" />
       </el-select>
