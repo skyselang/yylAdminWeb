@@ -8,12 +8,12 @@
         <el-row>
           <el-col>
             <el-form-item label="时间戳">
-              <el-input v-model="timeTranModel.timestamp" type="number" clearable @input="timeTranValue('timestamp')" />
+              <el-input v-model="timeTranModel.timestamp" class="timestamp" type="number" placeholder="请输入时间戳" clearable @input="timeTranValue('timestamp')" />
             </el-form-item>
           </el-col>
           <el-col>
             <el-form-item label="日期时间">
-              <el-date-picker v-model="timeTranModel.datetime" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" clearable @change="timeTranValue('datetime')" />
+              <el-date-picker v-model="timeTranModel.datetime" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" placeholder="请选择日期时间" clearable @change="timeTranValue('datetime')" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -56,7 +56,7 @@ export default {
       this.timeTranModel.timestamp = ''
     },
     timeTranSubmit() {
-      timeTran(this.timeTranModel).then(res => {
+      timeTran(this.timeTranModel).then((res) => {
         this.timeTranModel = res.data
       })
     }
@@ -66,6 +66,9 @@ export default {
 
 <style scoped>
 .item {
-  height: 255px;
+  height: 410px;
+}
+.timestamp {
+  width: 220px;
 }
 </style>

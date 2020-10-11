@@ -78,6 +78,6 @@ export default {
 
 <style scoped>
 .item {
-  height: 400px;
+  height: 410px;
 }
 </style>
