@@ -33,7 +33,7 @@
     <pagination v-show="roleCount > 0" :total="roleCount" :page.sync="roleQuery.page" :limit.sync="roleQuery.limit" @pagination="roleList" />
     <!-- 角色添加、修改 -->
     <el-dialog :title="roleModel.dialog_title" :visible.sync="roleDialog" top="1vh">
-      <el-form ref="roleRef" :rules="roleRules" :model="roleModel" label-width="100px" class="dialog-body" :style="{height:height+80+'px'}">
+      <el-form ref="roleRef" :rules="roleRules" :model="roleModel" label-width="100px" class="dialog-body" :style="{height:height+60+'px'}">
         <el-form-item label="角色" prop="role_name">
           <el-input v-model="roleModel.role_name" placeholder="请输入角色名称" clearable />
         </el-form-item>
@@ -59,9 +59,10 @@
           >
             <span slot-scope="{ node, data }" class="custom-tree-node">
               <span>{{ node.label }}</span>
-              <span v-if="data.children[0]">
-                <el-button type="text" size="mini" @click="() => menuChildrenAllCheck(data)">全选</el-button>
-                <el-button type="text" size="mini" @click="() => menuChildrenAllCheck(data, true)">反选</el-button>
+              <span>
+                <i v-if="data.menu_url" class="el-icon-link" />
+                <el-button v-if="data.children[0]" type="text" size="mini" @click="() => menuChildrenAllCheck(data)">全选</el-button>
+                <el-button v-if="data.children[0]" type="text" size="mini" @click="() => menuChildrenAllCheck(data, true)">反选</el-button>
               </span>
             </span>
           </el-tree>
