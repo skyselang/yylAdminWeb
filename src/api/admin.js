@@ -1,5 +1,40 @@
 import request from '@/utils/request'
 
+// ----------------登录退出-----------------
+/**
+ * 验证码
+ *  @param {array} params 请求参数
+ */
+export function verify(params) {
+  return request({
+    url: '/admin/AdminLogin/verify',
+    method: 'get',
+    params: params
+  })
+}
+/**
+ * 登录
+ * @param {array} data 请求数据
+ */
+export function login(data) {
+  return request({
+    url: '/admin/AdminLogin/login',
+    method: 'post',
+    data
+  })
+}
+/**
+ * 退出
+ * @param {array} data 请求数据
+ */
+export function logout(data) {
+  return request({
+    url: '/admin/AdminLogin/logout',
+    method: 'post',
+    data
+  })
+}
+
 // ----------------菜单管理----------------
 /**
  * 菜单列表
@@ -375,74 +410,6 @@ export function visitStats(data) {
   })
 }
 
-// ----------------实用工具----------------
-/**
- * 字符串转换
- * @param {array} data 请求数据
- */
-export function strTran(data) {
-  return request({
-    url: '/admin/AdminTool/strTran',
-    method: 'post',
-    data
-  })
-}
-/**
- * 随机字符串
- * @param {array} data 请求数据
- */
-export function strRand(data) {
-  return request({
-    url: '/admin/AdminTool/strRand',
-    method: 'post',
-    data
-  })
-}
-/**
- * 时间戳转换
- * @param {array} data 请求数据
- */
-export function timeTran(data) {
-  return request({
-    url: '/admin/AdminTool/timeTran',
-    method: 'post',
-    data
-  })
-}
-/**
- * 生成二维码
- * @param {array} data 请求数据
- */
-export function qrcode(data) {
-  return request({
-    url: '/admin/AdminTool/qrcode',
-    method: 'post',
-    data
-  })
-}
-/**
- * 字节转换
- * @param {array} data 请求数据
- */
-export function byteTran(data) {
-  return request({
-    url: '/admin/AdminTool/byteTran',
-    method: 'post',
-    data
-  })
-}
-/**
- * IP查询
- * @param {array} data 请求数据
- */
-export function ipQuery(data) {
-  return request({
-    url: '/admin/AdminTool/ipQuery',
-    method: 'post',
-    data
-  })
-}
-
 // ----------------系统设置----------------
 /**
  * 缓存设置
@@ -492,36 +459,69 @@ export function settingToken(data) {
   }
 }
 
-// ----------------登录退出-----------------
+// ----------------实用工具----------------
 /**
- * 验证码
- *  @param {array} params 请求参数
- */
-export function verify(params) {
-  return request({
-    url: '/admin/AdminLogin/verify',
-    method: 'get',
-    params: params
-  })
-}
-/**
- * 登录
+ * 随机字符串
  * @param {array} data 请求数据
  */
-export function login(data) {
+export function strRand(data) {
   return request({
-    url: '/admin/AdminLogin/login',
+    url: '/admin/AdminTool/strRand',
     method: 'post',
     data
   })
 }
 /**
- * 退出
+ * 字符串转换
  * @param {array} data 请求数据
  */
-export function logout(data) {
+export function strTran(data) {
   return request({
-    url: '/admin/AdminLogin/logout',
+    url: '/admin/AdminTool/strTran',
+    method: 'post',
+    data
+  })
+}
+/**
+ * 时间戳转换
+ * @param {array} data 请求数据
+ */
+export function timeTran(data) {
+  return request({
+    url: '/admin/AdminTool/timeTran',
+    method: 'post',
+    data
+  })
+}
+/**
+ * 生成二维码
+ * @param {array} data 请求数据
+ */
+export function qrcode(data) {
+  return request({
+    url: '/admin/AdminTool/qrcode',
+    method: 'post',
+    data
+  })
+}
+/**
+ * 字节转换
+ * @param {array} data 请求数据
+ */
+export function byteTran(data) {
+  return request({
+    url: '/admin/AdminTool/byteTran',
+    method: 'post',
+    data
+  })
+}
+/**
+ * IP查询
+ * @param {array} data 请求数据
+ */
+export function ipQuery(data) {
+  return request({
+    url: '/admin/AdminTool/ipQuery',
     method: 'post',
     data
   })
