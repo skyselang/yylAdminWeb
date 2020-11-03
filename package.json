@@ -1,6 +1,6 @@
 {
   "name": "yyladmin",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Minimalist background management system based on thinkphpp6 and Element2",
   "author": "https://github.com/skyselang/",
   "scripts": {

@@ -1,6 +1,6 @@
 # https://www.travis-ci.org/
 language: node_js
-node_js: 10
+node_js: 12
 script: npm run test
 notifications:
 email: false

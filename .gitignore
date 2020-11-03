@@ -11,7 +11,7 @@ tests/**/coverage/
 tests/e2e/reports
 selenium-debug.log
 
-# Editor directories and files
+# 开发工具的目录和文件
 .idea
 .vscode
 *.suo

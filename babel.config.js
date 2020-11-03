@@ -6,8 +6,8 @@ module.exports = {
   ],
   'env': {
     'development': {
-      // babel-plugin-dynamic-import-node plugin only does one thing by converting all import() to require().
-      // This plugin can significantly increase the speed of hot updates, when you have a large number of pages.
+      // babel plugin动态导入节点插件只做一件事，将所有import（）转换为require（）。
+      // 当你有大量页面时，这个插件可以显著提高热更新的速度。
       'plugins': ['dynamic-import-node']
     }
   }
