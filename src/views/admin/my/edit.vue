@@ -11,7 +11,7 @@
               <el-input v-model="usersModel.nickname" placeholder="请输入昵称" clearable />
             </el-form-item>
             <el-form-item label="邮箱" prop="email">
-              <el-input v-model="usersModel.email" placeholder="" clearable />
+              <el-input v-model="usersModel.email" placeholder="请输入邮箱" clearable />
             </el-form-item>
             <el-form-item>
               <el-button @click="usersReset">刷新</el-button>
@@ -26,11 +26,11 @@
 
 <script>
 import store from '@/store'
-import { usersInfo, usersEdit } from '@/api/admin'
+import { myEdit } from '@/api/admin'
 import { getAdminUserId } from '@/utils/auth'
 
 export default {
-  name: 'Edit',
+  name: 'MyEdit',
   components: {},
   data() {
     return {
@@ -47,22 +47,23 @@ export default {
     }
   },
   created() {
-    this.usersInfo()
+    this.myEdit()
   },
   methods: {
-    usersInfo() {
-      usersInfo({ admin_user_id: this.usersModel.admin_user_id }).then(res => {
-        this.usersModel = res.data
-      })
+    myEdit() {
+      myEdit({ admin_user_id: this.usersModel.admin_user_id })
+        .then(res => {
+          this.usersModel = res.data
+        })
     },
     usersReset() {
       this.$refs['usersRef'].resetFields()
-      this.usersInfo()
+      this.myEdit()
     },
     usersSubmit() {
       this.$refs['usersRef'].validate(valid => {
         if (valid) {
-          usersEdit(this.usersModel).then(res => {
+          myEdit(this.usersModel, 'post').then(res => {
             this.$message({ message: res.msg, type: 'success' })
             this.usersReset()
             store.commit('user/SET_NICKNAME', res.data.nickname)

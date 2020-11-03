@@ -7,9 +7,11 @@
             <el-form-item label="头像">
               <el-avatar v-if="avatar" shape="circle" fit="contain" :size="100" :src="avatar" />
             </el-form-item>
+            <el-form-item label="">
+              <div>jpg、png图片，小于50kb！</div>
+            </el-form-item>
             <el-form-item>
               <el-upload class="upload-demo" name="avatar_file" :show-file-list="false" :action="uploadAction" :headers="uploadHeaders" :data="uploadData" :on-success="uploadSuccess">
-                <div slot="tip">jpg、png图片，小于50kb！</div>
                 <el-button type="primary">更换头像</el-button>
               </el-upload>
             </el-form-item>
@@ -26,12 +28,12 @@ import { mapGetters } from 'vuex'
 import { getAdminUserId, getToken } from '@/utils/auth'
 
 export default {
-  name: 'Avatar',
+  name: 'MyAvatar',
   components: {},
   data() {
     return {
       uploadAction:
-        process.env.VUE_APP_BASE_API + '/admin/AdminUsers/usersAvatar',
+        process.env.VUE_APP_BASE_API + '/admin/AdminMy/myAvatar',
       uploadHeaders: {
         AdminToken: getToken(),
         AdminUserId: getAdminUserId()

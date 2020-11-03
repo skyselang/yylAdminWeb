@@ -28,7 +28,7 @@
 import { qrcode } from '@/api/admin'
 
 export default {
-  name: 'GatherQrcode',
+  name: 'MixQrcode',
   components: {},
   data() {
     return {

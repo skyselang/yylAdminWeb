@@ -36,7 +36,7 @@
 import { ipQuery } from '@/api/admin'
 
 export default {
-  name: 'GatherIpQuery',
+  name: 'MixIpQuery',
   components: {},
   data() {
     return {

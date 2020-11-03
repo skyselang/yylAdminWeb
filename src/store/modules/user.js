@@ -1,7 +1,7 @@
 import {
   login,
   logout,
-  usersInfo
+  myInfo
 } from '@/api/admin'
 import {
   setToken,
@@ -93,7 +93,7 @@ const actions = {
     state
   }) {
     return new Promise((resolve, reject) => {
-      usersInfo({
+      myInfo({
         admin_user_id: getAdminUserId()
       }).then(response => {
         const {

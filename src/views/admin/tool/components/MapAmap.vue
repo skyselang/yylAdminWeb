@@ -1,26 +1,21 @@
 <template>
-  <iframe src="https://lbs.amap.com/console/show/picker" frameborder="0" width="100%" :height="curHeight" />
+  <iframe :src="src" frameborder="0" width="100%" :height="height" />
 </template>
 
 <script>
+import screenHeight from '@/utils/screen-height'
 export default {
   name: 'MapAmap',
   components: {},
   data() {
     return {
-      curHeight: 500
+      src: 'https://lbs.amap.com/console/show/picker',
+      height: 500
     }
   },
   created() {
-    this.beforeMount(180)
+    this.height = screenHeight(180)
   },
-  methods: {
-    // 获取屏幕高度
-    beforeMount(height) {
-      var h =
-        document.documentElement.clientHeight || document.body.clientHeight
-      this.curHeight = h - height
-    }
-  }
+  methods: {}
 }
 </script>

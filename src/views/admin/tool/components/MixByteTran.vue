@@ -36,7 +36,7 @@
 import { byteTran } from '@/api/admin'
 
 export default {
-  name: 'GatherByteTran',
+  name: 'MixByteTran',
   components: {},
   data() {
     return {

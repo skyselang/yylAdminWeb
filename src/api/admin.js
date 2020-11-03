@@ -1,50 +1,14 @@
 import request from '@/utils/request'
 
-// ----------------登录退出-----------------
-/**
- * 验证码
- *  @param {array} params 请求参数
- */
-export function verify(params) {
-  return request({
-    url: '/admin/AdminLogin/verify',
-    method: 'get',
-    params: params
-  })
-}
-/**
- * 登录
- * @param {array} data 请求数据
- */
-export function login(data) {
-  return request({
-    url: '/admin/AdminLogin/login',
-    method: 'post',
-    data
-  })
-}
-/**
- * 退出
- * @param {array} data 请求数据
- */
-export function logout(data) {
-  return request({
-    url: '/admin/AdminLogin/logout',
-    method: 'post',
-    data
-  })
-}
-
 // ----------------菜单管理----------------
 /**
  * 菜单列表
  * @param {array} params 请求参数
  */
-export function menuList(params) {
+export function menuList() {
   return request({
     url: '/admin/AdminMenu/menuList',
-    method: 'get',
-    params: params
+    method: 'get'
   })
 }
 /**
@@ -62,12 +26,20 @@ export function menuAdd(data) {
  * 菜单修改
  * @param {array} data 请求数据
  */
-export function menuEdit(data) {
-  return request({
-    url: '/admin/AdminMenu/menuEdit',
-    method: 'post',
-    data
-  })
+export function menuEdit(data, method = 'get') {
+  if (method === 'get') {
+    return request({
+      url: '/admin/AdminMenu/menuEdit',
+      method: 'get',
+      params: data
+    })
+  } else {
+    return request({
+      url: '/admin/AdminMenu/menuEdit',
+      method: 'post',
+      data
+    })
+  }
 }
 /**
  * 菜单删除
@@ -84,9 +56,9 @@ export function menuDele(data) {
  * 菜单是否禁用
  * @param {array} data 请求数据
  */
-export function menuProhibit(data) {
+export function menuDisable(data) {
   return request({
-    url: '/admin/AdminMenu/menuProhibit',
+    url: '/admin/AdminMenu/menuDisable',
     method: 'post',
     data
   })
@@ -100,6 +72,28 @@ export function menuUnauth(data) {
     url: '/admin/AdminMenu/menuUnauth',
     method: 'post',
     data
+  })
+}
+/**
+ * 菜单角色
+ * @param {array} params 请求参数
+ */
+export function menuRole(params) {
+  return request({
+    url: '/admin/AdminMenu/menuRole',
+    method: 'get',
+    params: params
+  })
+}
+/**
+ * 菜单用户
+ * @param {array} params 请求参数
+ */
+export function menuUser(params) {
+  return request({
+    url: '/admin/AdminMenu/menuUser',
+    method: 'get',
+    params: params
   })
 }
 
@@ -116,26 +110,52 @@ export function roleList(params) {
   })
 }
 /**
+ * 角色信息
+ * @param {array} params 请求参数
+ */
+export function roleInfo(params) {
+  return request({
+    url: '/admin/AdminRole/roleInfo',
+    method: 'get',
+    params: params
+  })
+}
+/**
  * 角色添加
  * @param {array} data 请求数据
  */
-export function roleAdd(data) {
-  return request({
-    url: '/admin/AdminRole/roleAdd',
-    method: 'post',
-    data
-  })
+export function roleAdd(data = [], method = 'get') {
+  if (method === 'get') {
+    return request({
+      url: '/admin/AdminRole/roleAdd',
+      method: 'get'
+    })
+  } else {
+    return request({
+      url: '/admin/AdminRole/roleAdd',
+      method: 'post',
+      data
+    })
+  }
 }
 /**
  * 角色修改
  * @param {array} data 请求数据
  */
-export function roleEdit(data) {
-  return request({
-    url: '/admin/AdminRole/roleEdit',
-    method: 'post',
-    data
-  })
+export function roleEdit(data = [], method = 'get') {
+  if (method === 'get') {
+    return request({
+      url: '/admin/AdminRole/roleEdit',
+      method: 'get',
+      params: data
+    })
+  } else {
+    return request({
+      url: '/admin/AdminRole/roleEdit',
+      method: 'post',
+      data
+    })
+  }
 }
 /**
  * 角色删除
@@ -149,25 +169,25 @@ export function roleDele(data) {
   })
 }
 /**
- * 角色信息
- * @param {array} params 请求参数
+ * 角色禁用
+ * @param {array} data 请求数据
  */
-export function roleInfo(params) {
+export function roleDisable(data) {
   return request({
-    url: '/admin/AdminRole/roleInfo',
-    method: 'get',
-    params: params
+    url: '/admin/AdminRole/roleDisable',
+    method: 'post',
+    data
   })
 }
 /**
- * 角色是否禁用
- * @param {array} data 请求数据
+ * 角色用户
+ * @param {array} params 请求参数
  */
-export function roleProhibit(data) {
+export function roleUser(params) {
   return request({
-    url: '/admin/AdminRole/roleProhibit',
-    method: 'post',
-    data
+    url: '/admin/AdminRole/roleUser',
+    method: 'get',
+    params: params
   })
 }
 
@@ -179,6 +199,17 @@ export function roleProhibit(data) {
 export function userList(params) {
   return request({
     url: '/admin/AdminUser/userList',
+    method: 'get',
+    params: params
+  })
+}
+/**
+ * 用户信息
+ * @param {array} params 请求参数
+ */
+export function userInfo(params) {
+  return request({
+    url: '/admin/AdminUser/userInfo',
     method: 'get',
     params: params
   })
@@ -217,18 +248,7 @@ export function userDele(data) {
   })
 }
 /**
- * 用户信息
- * @param {array} params 请求参数
- */
-export function userInfo(params) {
-  return request({
-    url: '/admin/AdminUser/userInfo',
-    method: 'get',
-    params: params
-  })
-}
-/**
- * 用户重置密码
+ * 用户密码重置
  * @param {array} data 请求数据
  */
 export function userPwd(data) {
@@ -242,31 +262,28 @@ export function userPwd(data) {
  * 用户权限分配
  * @param {array} data 请求数据
  */
-export function userRule(data) {
-  return request({
-    url: '/admin/AdminUser/userRule',
-    method: 'post',
-    data
-  })
-}
-/**
- * 用户权限明细
- * @param {array} params 请求数据
- */
-export function userRuleInfo(params) {
-  return request({
-    url: '/admin/AdminUser/userRuleInfo',
-    method: 'get',
-    params: params
-  })
+export function userRule(data, method = 'get') {
+  if (method === 'get') {
+    return request({
+      url: '/admin/AdminUser/userRule',
+      method: 'get',
+      params: data
+    })
+  } else {
+    return request({
+      url: '/admin/AdminUser/userRule',
+      method: 'post',
+      data
+    })
+  }
 }
 /**
  * 用户是否禁用
  * @param {array} data 请求数据
  */
-export function userProhibit(data) {
+export function userDisable(data) {
   return request({
-    url: '/admin/AdminUser/userProhibit',
+    url: '/admin/AdminUser/userDisable',
     method: 'post',
     data
   })
@@ -275,9 +292,9 @@ export function userProhibit(data) {
  * 用户是否超管
  * @param {array} data 请求数据
  */
-export function userSuperAdmin(data) {
+export function userAdmin(data) {
   return request({
-    url: '/admin/AdminUser/userSuperAdmin',
+    url: '/admin/AdminUser/userAdmin',
     method: 'post',
     data
   })
@@ -317,15 +334,26 @@ export function logInfo(params) {
     params: params
   })
 }
+/**
+ * 日志统计
+ * @param {array} data 请求数据
+ */
+export function logStatistic(data) {
+  return request({
+    url: '/admin/AdminLog/logStatistic',
+    method: 'post',
+    data
+  })
+}
 
 // ----------------个人中心----------------
 /**
- * 个人信息
+ * 我的信息
  * @param {array} params 请求参数
  */
-export function usersInfo(params) {
+export function myInfo(params) {
   return request({
-    url: '/admin/AdminUsers/usersInfo',
+    url: '/admin/AdminMy/myInfo',
     method: 'get',
     params: params
   })
@@ -333,80 +361,54 @@ export function usersInfo(params) {
 /**
  * 修改信息
  * @param {array} data 请求数据
+ * @param {string} method 请求方式
  */
-export function usersEdit(data) {
-  return request({
-    url: '/admin/AdminUsers/usersEdit',
-    method: 'post',
-    data
-  })
+export function myEdit(data, method = 'get') {
+  if (method === 'get') {
+    return request({
+      url: '/admin/AdminMy/myEdit',
+      method: 'get',
+      params: data
+    })
+  } else {
+    return request({
+      url: '/admin/AdminMy/myEdit',
+      method: 'post',
+      data
+    })
+  }
 }
 /**
  * 修改密码
  * @param {array} data 请求数据
  */
-export function usersPwd(data) {
+export function myPwd(data) {
   return request({
-    url: '/admin/AdminUsers/usersPwd',
+    url: '/admin/AdminMy/myPwd',
     method: 'post',
     data
   })
 }
 /**
- * 更换头像
+ * 修改头像
  * @param {array} data 请求数据
  */
-export function usersAvatar(data) {
+export function myAvatar(data) {
   return request({
-    url: '/admin/AdminUsers/usersAvatar',
+    url: '/admin/AdminMy/myAvatar',
     method: 'post',
     data
   })
 }
 /**
- * 日志列表
+ * 我的日志
  * @param {array} params 请求参数
  */
-export function usersLog(params) {
+export function myLog(params) {
   return request({
-    url: '/admin/AdminUsers/usersLog',
+    url: '/admin/AdminMy/myLog',
     method: 'get',
     params: params
-  })
-}
-
-// ----------------访问统计-----------------
-/**
- * 访问统计
- *  @param {array} data 请求数据
- */
-export function visitCount(data) {
-  return request({
-    url: '/admin/AdminVisit/visitCount',
-    method: 'post',
-    data
-  })
-}
-/**
- * 日期统计
- *  @param {array} data 请求数据
- */
-export function visitDate(data) {
-  return request({
-    url: '/admin/AdminVisit/visitDate',
-    method: 'post',
-    data
-  })
-}
-/**
- * 访问统计
- *  @param {array} data 请求数据
- */
-export function visitStats(data) {
-  return request({
-    url: '/admin/AdminVisit/visitStats',
-    method: 'post',
-    data
   })
 }
 
@@ -415,12 +417,20 @@ export function visitStats(data) {
  * 缓存设置
  * @param {array} data 请求数据
  */
-export function settingCache(data) {
-  return request({
-    url: '/admin/AdminSetting/settingCache',
-    method: 'post',
-    data
-  })
+export function settingCache(data = {}, method = 'get') {
+  if (method === 'get') {
+    return request({
+      url: '/admin/AdminSetting/settingCache',
+      method: 'get',
+      params: data
+    })
+  } else {
+    return request({
+      url: '/admin/AdminSetting/settingCache',
+      method: 'post',
+      data
+    })
+  }
 }
 /**
  * 验证码设置
@@ -522,6 +532,41 @@ export function byteTran(data) {
 export function ipQuery(data) {
   return request({
     url: '/admin/AdminTool/ipQuery',
+    method: 'post',
+    data
+  })
+}
+
+// ----------------登录退出-----------------
+/**
+ * 验证码
+ *  @param {array} params 请求参数
+ */
+export function verify(params) {
+  return request({
+    url: '/admin/AdminLogin/verify',
+    method: 'get',
+    params: params
+  })
+}
+/**
+ * 登录
+ * @param {array} data 请求数据
+ */
+export function login(data) {
+  return request({
+    url: '/admin/AdminLogin/login',
+    method: 'post',
+    data
+  })
+}
+/**
+ * 退出
+ * @param {array} data 请求数据
+ */
+export function logout(data) {
+  return request({
+    url: '/admin/AdminLogin/logout',
     method: 'post',
     data
   })

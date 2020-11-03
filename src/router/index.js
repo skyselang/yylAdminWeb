@@ -14,11 +14,11 @@ import Layout from '@/layout'
  * // 当设置 true 的时候该路由不会在侧边栏出现 如401，login等页面，或者如一些编辑页面/edit/1
  * hidden: true // (默认 false)
  *
- * //当设置 noRedirect 的时候该路由在面包屑导航中不可被点击
+ * // 当设置 noRedirect 的时候该路由在面包屑导航中不可被点击
  * redirect: 'noRedirect'
  *
- * // 当你一个路由下面的 children 声明的路由大于1个时，自动会变成嵌套的模式--如组件页面
- * // 只有一个时，会将那个子路由当做根路由显示在侧边栏--如引导页面
+ * // 当你一个路由下面的 children 声明的路由大于1个时，自动会变成嵌套的模式
+ * // 只有一个时，会将那个子路由当做根路由显示在侧边栏
  * // 若你想不管路由下面的 children 声明的个数都显示你的根路由
  * // 你可以设置 alwaysShow: true，这样它就会忽略之前定义的规则，一直显示根路由
  * alwaysShow: true
@@ -31,7 +31,6 @@ import Layout from '@/layout'
  *   noCache: true // 如果设置为true，则不会被 <keep-alive> 缓存(默认 false)
  *   breadcrumb: false //  如果设置为false，则不会在breadcrumb面包屑中显示(默认 true)
  *   affix: true // 若果设置为true，它则会固定在tags-view中(默认 false)
- *
  *   // 当路由设置了该属性，则会高亮相对应的侧边栏。
  *   // 这在某些场景非常有用，比如：一个文章的列表页路由为：/article/list
  *   // 点击文章进入文章详情页，这时候路由为/article/1，但你想在侧边栏高亮文章列表的路由，就可以进行如下设置
@@ -41,7 +40,7 @@ import Layout from '@/layout'
 
 /**
  * constantRoutes
- * 不需要动态判断权限的路由，如登录页、404、等页面
+ * 不需要动态判断权限的路由，如登录、404、401等页面
  * 所有用户都可以访问
  */
 export const constantRoutes = [
@@ -51,49 +50,48 @@ export const constantRoutes = [
     children: [
       {
         path: '/redirect/:path(.*)',
-        component: () => import('@/views/admin/redirect/redirect')
+        component: () => import('@/views/admin/base/redirect')
       }
-    ],
-    hidden: false
+    ]
   },
   {
     path: '/login',
-    component: () => import('@/views/admin/login/login'),
     meta: {
       title: 'login'
     },
-    hidden: true
+    hidden: true,
+    component: () => import('@/views/admin/login/login')
   },
   {
     path: '/404',
-    component: () => import('@/views/admin/error/404'),
     meta: {
       title: '404'
     },
-    hidden: true
+    hidden: true,
+    component: () => import('@/views/admin/base/404')
   },
   {
     path: '/401',
-    component: () => import('@/views/admin/error/401'),
     meta: {
       title: '401'
     },
-    hidden: true
+    hidden: true,
+    component: () => import('@/views/admin/base/401')
   },
   {
     path: '/',
-    component: Layout,
     redirect: '/dashboard',
+    component: Layout,
     children: [
       {
         path: 'dashboard',
-        component: () => import('@/views/admin/index/index'),
         name: 'Dashboard',
         meta: {
           title: '控制台',
           icon: 'el-icon-s-home',
           affix: true
-        }
+        },
+        component: () => import('@/views/admin/index/index')
       }
     ]
   }
@@ -106,300 +104,251 @@ export const constantRoutes = [
  */
 export const asyncRoutes = [
   {
-    path: '/admin',
-    component: Layout,
-    redirect: 'noRedirect',
-    alwaysShow: true,
-    name: 'Admin',
+    path: '/rule',
+    name: 'Rule',
     meta: {
-      title: '系统管理',
-      icon: 'el-icon-s-operation'
+      title: '权限管理',
+      icon: 'el-icon-lock',
+      roles: ['admin/AdminMenu/menuList', 'admin/AdminRole/roleList', 'admin/AdminUser/userList']
     },
+    redirect: 'noRedirect',
+    component: Layout,
+    alwaysShow: true,
     children: [
       {
-        path: 'rule',
-        component: () => import('@/views/admin/rule/index'),
-        name: 'Rule',
+        path: 'rule-menu',
+        name: 'RuleMenu',
         meta: {
-          title: '权限管理',
-          icon: 'el-icon-lock'
+          title: '菜单管理',
+          icon: 'el-icon-menu',
+          roles: ['admin/AdminMenu/menuList']
         },
-        redirect: 'noRedirect',
-        alwaysShow: true,
-        children: [
-          {
-            path: 'menu',
-            component: () => import('@/views/admin/rule/menu'),
-            name: 'Menu',
-            meta: {
-              title: '菜单管理',
-              icon: 'el-icon-menu',
-              roles: ['admin/AdminMenu/menuList']
-            }
-          },
-          {
-            path: 'role',
-            component: () => import('@/views/admin/rule/role'),
-            name: 'Role',
-            meta: {
-              title: '角色管理',
-              icon: 'el-icon-s-custom',
-              roles: ['admin/AdminRole/roleList']
-            }
-          },
-          {
-            path: 'user',
-            component: () => import('@/views/admin/rule/user'),
-            name: 'User',
-            meta: {
-              title: '用户管理',
-              icon: 'el-icon-user',
-              roles: ['admin/AdminUser/userList']
-            }
-          }]
+        component: () => import('@/views/admin/rule/menu')
       },
       {
-        path: 'log',
-        component: () => import('@/views/admin/log/index'),
-        name: 'Log',
+        path: 'rule-role',
+        name: 'RuleRole',
         meta: {
-          title: '日志管理',
-          icon: 'el-icon-date'
+          title: '角色管理',
+          icon: 'el-icon-s-custom',
+          roles: ['admin/AdminRole/roleList']
         },
-        redirect: 'noRedirect',
-        alwaysShow: true,
-        children: [
-          {
-            path: 'logins',
-            component: () => import('@/views/admin/log/logins'),
-            name: 'Logins',
-            meta: {
-              title: '登录日志',
-              icon: 'el-icon-date',
-              roles: ['admin/AdminLog/logList']
-            }
-          },
-          {
-            path: 'action',
-            component: () => import('@/views/admin/log/action'),
-            name: 'Action',
-            meta: {
-              title: '操作日志',
-              icon: 'el-icon-date',
-              roles: ['admin/AdminLog/logList']
-            }
-          }
-        ]
+        component: () => import('@/views/admin/rule/role')
       },
       {
-        path: 'users',
-        component: () => import('@/views/admin/users/index'),
-        name: 'Users',
+        path: 'rule-user',
+        name: 'RuleUser',
         meta: {
-          title: '个人中心',
-          icon: 'el-icon-user-solid'
+          title: '用户管理',
+          icon: 'el-icon-user',
+          roles: ['admin/AdminUser/userList']
         },
-        redirect: 'noRedirect',
-        alwaysShow: true,
-        children: [
-          {
-            path: 'info',
-            component: () => import('@/views/admin/users/info'),
-            name: 'Info',
-            meta: {
-              title: '个人信息',
-              icon: 'el-icon-user-solid',
-              roles: ['admin/AdminUsers/usersInfo']
-            }
-          },
-          {
-            path: 'edit',
-            component: () => import('@/views/admin/users/edit'),
-            name: 'Edit',
-            meta: {
-              title: '修改信息',
-              icon: 'el-icon-user-solid',
-              roles: ['admin/AdminUsers/usersEdit']
-            }
-          },
-          {
-            path: 'pwd',
-            component: () => import('@/views/admin/users/pwd'),
-            name: 'Pwd',
-            meta: {
-              title: '修改密码',
-              icon: 'el-icon-user-solid',
-              roles: ['admin/AdminUsers/usersPwd']
-            }
-          },
-          {
-            path: 'avatar',
-            component: () => import('@/views/admin/users/avatar'),
-            name: 'Avatar',
-            meta: {
-              title: '修改头像',
-              icon: 'el-icon-user-solid',
-              roles: ['admin/AdminUsers/usersAvatar']
-            }
-          },
-          {
-            path: 'logs',
-            component: () => import('@/views/admin/users/logs'),
-            name: 'Logs',
-            meta: {
-              title: '个人日志',
-              icon: 'el-icon-user-solid',
-              roles: ['admin/AdminUsers/usersLog']
-            }
-          }
-        ]
+        component: () => import('@/views/admin/rule/user')
+      }]
+  },
+
+  {
+    path: '/log',
+    name: 'Log',
+    meta: {
+      title: '日志管理',
+      icon: 'el-icon-notebook-1',
+      roles: ['admin/AdminLog/logList', 'admin/AdminLog/logStatistic']
+    },
+    redirect: 'noRedirect',
+    component: Layout,
+    alwaysShow: true,
+    children: [
+      {
+        path: 'log-list',
+        name: 'LogList',
+        meta: {
+          title: '日志列表',
+          icon: 'el-icon-notebook-2',
+          roles: ['admin/AdminLog/logList']
+        },
+        component: () => import('@/views/admin/log/log')
       },
       {
-        path: 'visit',
-        component: () => import('@/views/admin/visit/index'),
-        name: 'Visit',
+        path: 'log-statistic',
+        name: 'LogStatistic',
         meta: {
-          title: '访问统计',
-          icon: 'el-icon-s-data'
+          title: '日志统计',
+          icon: 'el-icon-s-data',
+          roles: ['admin/AdminLog/logStatistic']
         },
-        redirect: 'noRedirect',
-        alwaysShow: true,
-        children: [
-          {
-            path: 'count',
-            component: () => import('@/views/admin/visit/count'),
-            name: 'Count',
-            meta: {
-              title: '数量统计',
-              icon: 'el-icon-s-data',
-              roles: ['admin/AdminVisit/visitCount']
-            }
-          },
-          {
-            path: 'date',
-            component: () => import('@/views/admin/visit/date'),
-            name: 'Date',
-            meta: {
-              title: '日期统计',
-              icon: 'el-icon-s-data',
-              roles: ['admin/AdminVisit/visitDate']
-            }
-          },
-          {
-            path: 'stats',
-            component: () => import('@/views/admin/visit/stats'),
-            name: 'Stats',
-            meta: {
-              title: '访问统计',
-              icon: 'el-icon-s-data',
-              roles: ['admin/AdminVisit/visitStats']
-            }
-          }
-        ]
+        component: () => import('@/views/admin/log/statistic')
+      }
+    ]
+  },
+
+  {
+    path: '/my',
+    name: 'My',
+    meta: {
+      title: '个人中心',
+      icon: 'el-icon-user',
+      roles: ['admin/AdminMy/myInfo', 'admin/AdminMy/myEdit', 'admin/AdminMy/myPwd', 'admin/AdminMy/myAvatar', 'admin/AdminMy/myLog', 'admin/AdminMy/mySetting']
+    },
+    redirect: 'noRedirect',
+    component: Layout,
+    alwaysShow: true,
+    children: [
+      {
+        path: 'my-info',
+        name: 'MyInfo',
+        meta: {
+          title: '我的信息',
+          icon: 'el-icon-warning-outline',
+          roles: ['admin/AdminMy/myInfo']
+        },
+        component: () => import('@/views/admin/my/info')
       },
       {
-        path: 'setting',
-        component: () => import('@/views/admin/setting/index'),
-        name: 'Setting',
+        path: 'my-edit',
+        name: 'MyEdit',
         meta: {
-          title: '系统设置',
-          icon: 'el-icon-setting'
+          title: '修改信息',
+          icon: 'el-icon-edit-outline',
+          roles: ['admin/AdminMy/myEdit']
         },
-        redirect: 'noRedirect',
-        alwaysShow: true,
-        children: [
-          {
-            path: 'base',
-            component: () => import('@/views/admin/setting/base'),
-            name: 'Base',
-            meta: {
-              title: '基本设置',
-              icon: 'el-icon-setting',
-              roles: ['admin/AdminSetting/settingBase']
-            }
-          },
-          {
-            path: 'cache',
-            component: () => import('@/views/admin/setting/cache'),
-            name: 'Cache',
-            meta: {
-              title: '缓存设置',
-              icon: 'el-icon-setting',
-              roles: ['admin/AdminSetting/settingCache']
-            }
-          },
-          {
-            path: 'verify',
-            component: () => import('@/views/admin/setting/verify'),
-            name: 'Verify',
-            meta: {
-              title: '验证码设置',
-              icon: 'el-icon-setting',
-              roles: ['admin/AdminSetting/settingVerify']
-            }
-          },
-          {
-            path: 'token',
-            component: () => import('@/views/admin/setting/token'),
-            name: 'Token',
-            meta: {
-              title: 'Token设置',
-              icon: 'el-icon-setting',
-              roles: ['admin/AdminSetting/settingToken']
-            }
-          }
-        ]
+        component: () => import('@/views/admin/my/edit')
+      },
+      {
+        path: 'my-pwd',
+        name: 'MyPwd',
+        meta: {
+          title: '修改密码',
+          icon: 'el-icon-view',
+          roles: ['admin/AdminMy/myPwd']
+        },
+        component: () => import('@/views/admin/my/pwd')
+      },
+      {
+        path: 'my-avatar',
+        name: 'MyAvatar',
+        meta: {
+          title: '修改头像',
+          icon: 'el-icon-picture-outline-round',
+          roles: ['admin/AdminMy/myAvatar']
+        },
+        component: () => import('@/views/admin/my/avatar')
+      },
+      {
+        path: 'my-log',
+        name: 'MyLog',
+        meta: {
+          title: '我的日志',
+          icon: 'el-icon-notebook-2',
+          roles: ['admin/AdminMy/myLog']
+        },
+        component: () => import('@/views/admin/my/log')
+      },
+      {
+        path: 'my-setting',
+        name: 'MySetting',
+        meta: {
+          title: '我的设置',
+          icon: 'el-icon-set-up',
+          roles: ['admin/AdminMy/mySetting']
+        },
+        component: () => import('@/views/admin/my/setting')
+      }
+    ]
+  },
+
+  {
+    path: '/setting',
+    name: 'Setting',
+    meta: {
+      title: '系统设置',
+      icon: 'el-icon-setting',
+      roles: ['admin/AdminSetting/settingCache', 'admin/AdminSetting/settingVerify', 'admin/AdminSetting/settingToken']
+    },
+    redirect: 'noRedirect',
+    component: Layout,
+    alwaysShow: true,
+    children: [
+      {
+        path: 'setting-cache',
+        name: 'SettingCache',
+        meta: {
+          title: '缓存设置',
+          icon: 'el-icon-coin',
+          roles: ['admin/AdminSetting/settingCache']
+        },
+        component: () => import('@/views/admin/setting/cache')
+      },
+      {
+        path: 'setting-verify',
+        name: 'SettingVerify',
+        meta: {
+          title: '验证码设置',
+          icon: 'el-icon-picture-outline',
+          roles: ['admin/AdminSetting/settingVerify']
+        },
+        component: () => import('@/views/admin/setting/verify')
+      },
+      {
+        path: 'setting-token',
+        name: 'SettingToken',
+        meta: {
+          title: 'Token设置',
+          icon: 'el-icon-key',
+          roles: ['admin/AdminSetting/settingToken']
+        },
+        component: () => import('@/views/admin/setting/token')
       }
     ]
   },
 
   {
     path: '/tool',
-    component: Layout,
-    redirect: 'noRedirect',
-    alwaysShow: true,
     name: 'Tool',
     meta: {
       title: '实用工具',
-      icon: 'el-icon-fork-spoon'
+      icon: 'el-icon-suitcase',
+      roles: ['admin/AdminTool/toolMix', 'admin/AdminTool/toolMap']
     },
+    redirect: 'noRedirect',
+    component: Layout,
+    alwaysShow: true,
     children: [
       {
-        path: 'gather',
-        component: () => import('@/views/admin/tool/gather'),
-        name: 'Gather',
+        path: 'tool-mix',
+        name: 'ToolMix',
         meta: {
           title: '实用工具合集',
-          icon: 'el-icon-knife-fork',
-          roles: ['admin/AdminTool/gather']
-        }
+          icon: 'el-icon-help',
+          roles: ['admin/AdminTool/toolMix']
+        },
+        component: () => import('@/views/admin/tool/mix')
       },
       {
-        path: 'map',
-        component: () => import('@/views/admin/tool/map'),
-        name: 'Map',
+        path: 'tool-map',
+        name: 'ToolMap',
         meta: {
           title: '地图坐标拾取',
           icon: 'el-icon-map-location',
-          roles: ['admin/AdminTool/map']
-        }
+          roles: ['admin/AdminTool/toolMap']
+        },
+        component: () => import('@/views/admin/tool/map')
       }
     ]
   },
 
   {
     path: '/logout',
-    component: () => import('@/views/admin/login/logout'),
-    alwaysShow: false,
     name: 'Logout',
     meta: {
       title: '退出',
       icon: 'el-icon-switch-button',
       roles: ['admin/AdminLogin/logout']
-    }
+    },
+    component: () => import('@/views/admin/login/logout')
   },
 
-  // 404页面必须放在最后 !!!
+  // 404页面必须放在最后!!!
   {
     path: '*',
     redirect: '/404',

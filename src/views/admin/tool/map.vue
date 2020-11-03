@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-tabs v-model="tabsActiveName">
+    <el-tabs v-model="mapTabName">
       <el-tab-pane name="MapAmap" label="高德地图坐标拾取">
         <MapAmap />
       </el-tab-pane>
@@ -28,7 +28,7 @@ import MapTencent from './components/MapTencent'
 import MapBeidou from './components/MapBeidou'
 
 export default {
-  name: 'Map',
+  name: 'ToolMap',
   components: {
     MapAmap,
     MapBaidu,
@@ -38,7 +38,7 @@ export default {
   },
   data() {
     return {
-      tabsActiveName: 'MapBaidu'
+      mapTabName: 'MapBaidu'
     }
   },
   created() {},

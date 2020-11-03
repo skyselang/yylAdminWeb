@@ -19,6 +19,25 @@
             </div>
           </el-card>
         </el-col>
+        <el-col :sm="24" :md="12">
+          <el-card class="box-card">
+            <div slot="header" class="clearfix">
+              <span>Gitee</span>
+            </div>
+            <div class="text item">
+              <el-row :gutter="0">
+                <el-col :span="12">
+                  <i class="el-icon-odometer icon" />
+                </el-col>
+                <el-col :span="12">
+                  <a href="https://gitee.com/skyselang/yylAdmin" target="_blank" alt="Gitee" title="">
+                    <img src="https://gitee.com/skyselang/yylAdmin/badge/star.svg?theme=gray" alt="star">
+                  </a>
+                </el-col>
+              </el-row>
+            </div>
+          </el-card>
+        </el-col>
       </el-row>
       <el-row :gutter="10">
         <el-col :sm="12">
@@ -133,14 +152,15 @@
 </template>
 
 <script>
-import { visitCount } from '@/api/admin'
+import { logStatistic } from '@/api/admin'
 
 export default {
-  name: 'Count',
+  name: 'StaNumber',
   components: {},
   data() {
     return {
       data: {
+        type: 'number',
         total: '--',
         today: '--',
         yesterday: '--',
@@ -152,12 +172,12 @@ export default {
     }
   },
   created() {
-    this.visit()
+    this.logStatistic()
   },
   mounted() {},
   methods: {
-    visit() {
-      visitCount()
+    logStatistic() {
+      logStatistic({ type: this.type })
         .then(res => {
           this.data = res.data
         })

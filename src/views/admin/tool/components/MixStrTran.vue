@@ -36,7 +36,7 @@
 import { strTran } from '@/api/admin'
 
 export default {
-  name: 'GatherStrTran',
+  name: 'MixStrTran',
   components: {},
   data() {
     return {

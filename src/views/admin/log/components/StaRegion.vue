@@ -6,8 +6,8 @@
           <el-date-picker v-model="data.date" type="daterange" range-separator="-" value-format="yyyy-MM-dd" start-placeholder="开始日期" end-placeholder="结束日期" style="max-width:280px" @change="dateChange" />
         </el-col>
         <el-col :sm="24" :md="16">
-          <el-select v-model="statsValue" placeholder="请选择" @change="regionChange">
-            <el-option v-for="item in statsType" :key="item.value" :label="item.label" :value="item.value" />
+          <el-select v-model="regionValue" placeholder="请选择" @change="regionChange">
+            <el-option v-for="item in regionType" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
         </el-col>
       </el-row>
@@ -29,21 +29,22 @@
 
 <script>
 import screenHeight from '@/utils/screen-height'
-import { visitStats } from '@/api/admin'
+import { logStatistic } from '@/api/admin'
 import echarts from 'echarts'
 
 export default {
-  name: 'Stats',
+  name: 'StaRegion',
   components: {},
   data() {
     return {
       height: 680,
+      type: 'region',
       data: {
         x_data: [],
         y_data: [],
         date: []
       },
-      statsType: [
+      regionType: [
         {
           value: 'country',
           label: '国家'
@@ -61,49 +62,40 @@ export default {
           label: 'ISP'
         }
       ],
-      statsValue: 'city',
-      statsLabel: '城市'
+      regionValue: 'city',
+      regionLabel: '城市'
     }
   },
   created() {
     this.height = screenHeight()
-    this.visit()
+    this.logStatistic()
   },
   mounted() {},
   methods: {
-    visit() {
-      visitStats({
+    logStatistic() {
+      logStatistic({
+        type: this.type,
         date: this.data.date,
-        stats: this.statsValue
+        region: this.regionValue
       })
         .then(res => {
           this.data = res.data
-          this.setStatsLabel()
           this.echartLine(res.data)
           this.echartPie(res.data)
         })
         .catch(() => {})
     },
     dateChange() {
-      this.visit()
+      this.logStatistic()
     },
     regionChange(value) {
-      this.visit()
-    },
-    setStatsLabel() {
-      var statsLabel
-      for (let index = 0; index < this.statsType.length; index++) {
-        if (this.statsValue === this.statsType[index]['value']) {
-          statsLabel = this.statsType[index]['label']
-        }
-      }
-      this.statsLabel = statsLabel
+      this.logStatistic()
     },
     echartLine(data) {
       var echart = echarts.init(document.getElementById('echartLine'))
       var option = {
         title: {
-          text: this.statsLabel,
+          text: '',
           left: 'center',
           textStyle: {
             color: '#666',
@@ -152,7 +144,7 @@ export default {
       var echart = echarts.init(document.getElementById('echartPie'))
       var option = {
         title: {
-          text: this.statsLabel,
+          text: '',
           left: 'center',
           textStyle: {
             color: '#666',
@@ -171,7 +163,7 @@ export default {
         },
         series: [
           {
-            name: this.statsLabel,
+            name: '',
             type: 'pie',
             radius: '55%',
             center: ['50%', '60%'],

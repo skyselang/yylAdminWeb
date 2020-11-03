@@ -17,15 +17,16 @@
 
 <script>
 import screenHeight from '@/utils/screen-height'
-import { visitDate } from '@/api/admin'
+import { logStatistic } from '@/api/admin'
 import echarts from 'echarts'
 
 export default {
-  name: 'Date',
+  name: 'StaDate',
   components: {},
   data() {
     return {
       height: 680,
+      type: 'date',
       data: {
         x_data: [],
         y_data: [],
@@ -34,12 +35,13 @@ export default {
     }
   },
   created() {
-    this.visit()
+    this.logStatistic()
   },
   mounted() {},
   methods: {
-    visit() {
-      visitDate({
+    logStatistic() {
+      logStatistic({
+        type: this.type,
         date: this.data.date
       })
         .then(res => {
@@ -50,7 +52,7 @@ export default {
     },
     dateChange() {
       this.height = screenHeight()
-      this.visit()
+      this.logStatistic()
     },
     echart(data) {
       var echart = echarts.init(document.getElementById('echart'))

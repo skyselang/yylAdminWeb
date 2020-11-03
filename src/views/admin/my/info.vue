@@ -43,10 +43,10 @@
 
 <script>
 import { getAdminUserId } from '@/utils/auth'
-import { usersInfo } from '@/api/admin'
+import { myInfo } from '@/api/admin'
 
 export default {
-  name: 'Info',
+  name: 'MyInfo',
   components: {},
   data() {
     return {
@@ -55,28 +55,35 @@ export default {
         admin_user_id: getAdminUserId(),
         username: '',
         nickname: '',
-        email: ''
+        email: '',
+        create_time: '',
+        update_time: '',
+        login_time: '',
+        logout_time: ''
       },
       usersRules: {}
     }
   },
   created() {
-    this.usersInfo()
+    this.myInfo()
   },
   methods: {
-    usersInfo() {
+    myInfo(msg = false) {
       this.loading = true
-      usersInfo({ admin_user_id: this.usersModel.admin_user_id })
+      myInfo({ admin_user_id: this.usersModel.admin_user_id })
         .then(res => {
-          this.loading = false
           this.usersModel = res.data
+          if (msg) {
+            this.$message({ message: res.msg, type: 'success' })
+          }
+          this.loading = false
         })
         .catch(() => {
           this.loading = false
         })
     },
     usersReset() {
-      this.usersInfo()
+      this.myInfo(true)
     }
   }
 }

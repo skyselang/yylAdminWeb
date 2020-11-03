@@ -29,7 +29,7 @@
 import { settingToken } from '@/api/admin'
 
 export default {
-  name: 'Token',
+  name: 'SettingToken',
   components: {},
   data() {
     return {

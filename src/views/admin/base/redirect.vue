@@ -9,7 +9,7 @@ export default {
     this.$router.replace({ path: '/' + path, query })
   },
   render: function(h) {
-    return h() // avoid warning message
+    return h() // 避免警告信息
   }
 }
 </script>

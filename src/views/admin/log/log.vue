@@ -2,6 +2,10 @@
   <div class="app-container">
     <!-- 日志查询 -->
     <div class="filter-container">
+      <el-select v-model="logQuery.type" class="filter-item" placeholder="日志类型" style="width:110px;" clearable>
+        <el-option key="1" label="登录日志" value="1" />
+        <el-option key="2" label="操作日志" value="2" />
+      </el-select>
       <el-input v-model="logQuery.user_keyword" class="filter-item" style="width: 135px;" placeholder="用户账号/昵称" clearable />
       <el-input v-model="logQuery.request_keyword" class="filter-item" style="width: 155px;" placeholder="请求IP/地区/ISP" clearable />
       <el-input v-model="logQuery.menu_keyword" class="filter-item" style="width: 280px;" placeholder="菜单链接/名称" clearable />
@@ -81,14 +85,8 @@ import Pagination from '@/components/Pagination'
 import { logList, logInfo, logDele } from '@/api/admin'
 
 export default {
-  name: 'Log',
+  name: 'Loglist',
   components: { Pagination },
-  props: {
-    type: {
-      type: String,
-      default: '1'
-    }
-  },
   data() {
     return {
       height: 680,
@@ -99,7 +97,7 @@ export default {
       logQuery: {
         page: 1,
         limit: 13,
-        type: this.type
+        type: ''
       },
       logDialog: false,
       logModel: {},
@@ -111,35 +109,20 @@ export default {
     this.logLists()
   },
   methods: {
-    loadOpen() {
-      this.loading = true
-    },
-    loadClose() {
-      const that = this
-      setTimeout(function() {
-        that.loading = false
-      }, that.loadingTime)
-    },
-    message(msg, type = 'success') {
-      this.$message({
-        message: msg,
-        type: type
-      })
-    },
     // 日志列表
     logLists() {
-      this.loadOpen()
+      this.loading = true
       logList(this.logQuery)
         .then(res => {
           this.logData = res.data.list
           this.logCount = res.data.count
-          this.loadClose()
+          this.loading = false
         })
         .catch(() => {
-          this.loadClose()
+          this.loading = false
         })
     },
-    // 日志列表排序
+    // 日志排序
     logSort(sort) {
       this.logQuery.sort_field = sort.prop
       this.logQuery.sort_type = ''
@@ -159,20 +142,20 @@ export default {
     },
     // 日志刷新
     logRefresh() {
-      this.logQuery = { page: 1, limit: 13, type: this.type }
+      this.logQuery = this.$options.data().logQuery
       this.logLists()
     },
     // 日志详情
     logDetail(row) {
-      this.loadOpen()
+      this.loading = true
       logInfo({ admin_log_id: row.admin_log_id })
         .then(res => {
           this.logDialog = true
           this.logReset(res.data)
-          this.loadClose()
+          this.loading = false
         })
         .catch(() => {
-          this.loadClose()
+          this.loading = false
         })
     },
     // 日志删除
@@ -181,26 +164,22 @@ export default {
         type: 'warning'
       })
         .then(() => {
-          this.loadOpen()
+          this.loading = true
           logDele({ admin_log_id: row.admin_log_id })
             .then(res => {
-              this.message(res.msg)
+              this.$message({ message: res.msg, type: 'success' })
               this.logReset()
               this.logLists()
             })
             .catch(() => {
-              this.loadClose()
+              this.loading = false
             })
         })
         .catch(() => {})
     },
     // 日志详情重置
-    logReset(row) {
-      if (row) {
-        this.logModel = row
-      } else {
-        this.logModel = {}
-      }
+    logReset(row = {}) {
+      this.logModel = row
     },
     // 日志详情取消
     logCancel() {

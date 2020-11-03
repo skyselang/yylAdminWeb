@@ -2,25 +2,25 @@ import Vue from 'vue'
 
 import Cookies from 'js-cookie'
 
-import 'normalize.css/normalize.css' // a modern alternative to CSS resets
+import 'normalize.css/normalize.css' // 重置css
 
 import Element from 'element-ui'
 import './styles/element-variables.scss'
 
-import '@/styles/index.scss' // global css
+import '@/styles/index.scss' // 全局css
 
 import App from './App'
 import store from './store'
 import router from './router'
 
-import './permission' // permission control
-import * as filters from './filters' // global filters
+import './permission' // 权限控制
+import * as filters from './filters' // 全局筛选器
 
 Vue.use(Element, {
-  size: Cookies.get('size') || 'medium' // set element-ui default size
+  size: Cookies.get('size') || 'medium' // 设置element-ui 默认 size
 })
 
-// register global utility filters
+// 注册全局筛选器
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
 })

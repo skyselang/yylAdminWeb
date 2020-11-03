@@ -30,7 +30,7 @@
 import { timeTran } from '@/api/admin'
 
 export default {
-  name: 'GatherTimeTran',
+  name: 'MixTimeTran',
   components: {},
   data() {
     return {

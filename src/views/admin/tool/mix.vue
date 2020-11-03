@@ -1,16 +1,16 @@
 <template>
   <div class="app-container">
-    <el-tabs v-model="toolsTabName">
+    <el-tabs v-model="toolTabName">
       <el-tab-pane label="字符串" name="string">
         <el-row :gutter="8">
           <el-col :xs="24" :sm="12">
             <div class=" filter-container">
-              <GatherStrRand />
+              <MixStrRand />
             </div>
           </el-col>
           <el-col :xs="24" :sm="12">
             <div class="filter-container">
-              <GatherStrTran />
+              <MixStrTran />
             </div>
           </el-col>
         </el-row>
@@ -19,7 +19,7 @@
         <el-row :gutter="8">
           <el-col :xs="24" :sm="12">
             <div class="filter-container">
-              <GatherTimeTran />
+              <MixTimeTran />
             </div>
           </el-col>
         </el-row>
@@ -28,7 +28,7 @@
         <el-row :gutter="8">
           <el-col :xs="24" :sm="12">
             <div class="filter-container">
-              <GatherQrcode />
+              <MixQrcode />
             </div>
           </el-col>
         </el-row>
@@ -37,7 +37,7 @@
         <el-row :gutter="8">
           <el-col :xs="24" :sm="12">
             <div class="filter-container">
-              <GatherByteTran />
+              <MixByteTran />
             </div>
           </el-col>
         </el-row>
@@ -46,7 +46,7 @@
         <el-row :gutter="8">
           <el-col :xs="24" :sm="12">
             <div class="filter-container">
-              <GatherIpQuery />
+              <MixIpQuery />
             </div>
           </el-col>
         </el-row>
@@ -56,26 +56,26 @@
 </template>
 
 <script>
-import GatherStrTran from './components/GatherStrTran'
-import GatherStrRand from './components/GatherStrRand'
-import GatherTimeTran from './components/GatherTimeTran'
-import GatherQrcode from './components/GatherQrcode'
-import GatherByteTran from './components/GatherByteTran'
-import GatherIpQuery from './components/GatherIpQuery'
+import MixStrTran from './components/MixStrTran'
+import MixStrRand from './components/MixStrRand'
+import MixTimeTran from './components/MixTimeTran'
+import MixQrcode from './components/MixQrcode'
+import MixByteTran from './components/MixByteTran'
+import MixIpQuery from './components/MixIpQuery'
 
 export default {
-  name: 'Gather',
+  name: 'ToolMix',
   components: {
-    GatherStrTran,
-    GatherStrRand,
-    GatherTimeTran,
-    GatherQrcode,
-    GatherByteTran,
-    GatherIpQuery
+    MixStrTran,
+    MixStrRand,
+    MixTimeTran,
+    MixQrcode,
+    MixByteTran,
+    MixIpQuery
   },
   data() {
     return {
-      toolsTabName: 'string'
+      toolTabName: 'string'
     }
   },
   created() {},

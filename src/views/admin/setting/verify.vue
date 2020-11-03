@@ -56,11 +56,10 @@
 </template>
 
 <script>
-import { verify } from '@/api/admin'
-import { settingVerify } from '@/api/admin'
+import { verify, settingVerify } from '@/api/admin'
 
 export default {
-  name: 'Verify',
+  name: 'SettingVerify',
   components: {},
   data() {
     return {
@@ -157,7 +156,7 @@ export default {
         }
       })
     },
-    // 验证码
+    // 验证码获取
     getVerify() {
       verify()
         .then(res => {
@@ -168,7 +167,7 @@ export default {
         })
         .catch(() => {})
     },
-    // 刷新验证码
+    // 验证码刷新
     verifyRefresh() {
       this.getVerify()
     }

@@ -24,7 +24,7 @@
       <el-table-column prop="create_time" label="请求时间" min-width="160" sortable="custom" />
     </el-table>
     <!-- 日志分页 -->
-    <pagination v-show="logCount > 0" :total="logCount" :page.sync="logQuery.page" :limit.sync="logQuery.limit" @pagination="usersLogList" />
+    <pagination v-show="logCount > 0" :total="logCount" :page.sync="logQuery.page" :limit.sync="logQuery.limit" @pagination="myLogList" />
   </div>
 </template>
 
@@ -32,10 +32,10 @@
 import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination'
 import { getAdminUserId } from '@/utils/auth'
-import { usersLog } from '@/api/admin'
+import { myLog } from '@/api/admin'
 
 export default {
-  name: 'Logs',
+  name: 'MyLog',
   components: { Pagination },
   data() {
     return {
@@ -53,13 +53,13 @@ export default {
   },
   created() {
     this.height = screenHeight()
-    this.usersLogList()
+    this.myLogList()
   },
   methods: {
     // 用户列表
-    usersLogList() {
+    myLogList() {
       this.loading = true
-      usersLog(this.logQuery)
+      myLog(this.logQuery)
         .then(res => {
           this.logData = res.data.list
           this.logCount = res.data.count
@@ -72,12 +72,12 @@ export default {
     // 用户查询
     logSearch() {
       this.logQuery.page = 1
-      this.usersLogList()
+      this.myLogList()
     },
     // 用户刷新
     logRefresh() {
       this.logQuery = { admin_user_id: getAdminUserId(), page: 1, limit: 13 }
-      this.usersLogList()
+      this.myLogList()
     },
     // 用户排序
     logSort(sort) {
@@ -85,11 +85,11 @@ export default {
       this.logQuery.sort_type = ''
       if (sort.order === 'ascending') {
         this.logQuery.sort_type = 'asc'
-        this.usersLogList()
+        this.myLogList()
       }
       if (sort.order === 'descending') {
         this.logQuery.sort_type = 'desc'
-        this.usersLogList()
+        this.myLogList()
       }
     }
   }

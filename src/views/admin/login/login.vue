@@ -71,7 +71,7 @@ export default {
   mounted() {},
   destroyed() {},
   methods: {
-    // 验证码
+    // 验证码配置
     getVerify() {
       verify()
         .then(res => {
@@ -83,7 +83,7 @@ export default {
         })
         .catch(() => {})
     },
-    // 刷新验证码
+    // 验证码刷新
     verifyRefresh() {
       this.loginModel.verify_id = ''
       this.loginModel.verify_code = ''

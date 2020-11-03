@@ -4,14 +4,14 @@
       <el-row :gutter="0">
         <el-col :sm="24" :md="12">
           <el-form ref="usersRef" :rules="usersRules" :model="usersModel" label-width="100px">
-            <el-form-item label="原密码" prop="password">
-              <el-input v-model="usersModel.password" type="password" autocomplete="off" placeholder="请输入原密码" clearable show-password />
+            <el-form-item label="旧密码" prop="password_old">
+              <el-input v-model="usersModel.password_old" type="password_old" autocomplete="off" placeholder="请输入旧密码" clearable show-password />
             </el-form-item>
-            <el-form-item label="新密码" prop="passwords">
-              <el-input v-model="usersModel.passwords" type="password" autocomplete="off" placeholder="请输入新密码" clearable show-password />
+            <el-form-item label="新密码" prop="password_new">
+              <el-input v-model="usersModel.password_new" type="password" autocomplete="off" placeholder="请输入新密码" clearable show-password />
             </el-form-item>
             <el-form-item>
-              <el-button @click="usersReset">刷新</el-button>
+              <el-button @click="usersReset">重置</el-button>
               <el-button type="primary" @click="usersSubmit">提交</el-button>
             </el-form-item>
           </el-form>
@@ -22,24 +22,24 @@
 </template>
 
 <script>
-import { usersPwd } from '@/api/admin'
+import { myPwd } from '@/api/admin'
 import { getAdminUserId } from '@/utils/auth'
 
 export default {
-  name: 'Pwd',
+  name: 'MyPwd',
   components: {},
   data() {
     return {
       usersModel: {
         admin_user_id: getAdminUserId(),
-        password: '',
-        passwords: ''
+        password_old: '',
+        password_new: ''
       },
       usersRules: {
-        password: [
-          { required: true, message: '请输入原密码', trigger: 'blur' }
+        password_old: [
+          { required: true, message: '请输入旧密码', trigger: 'blur' }
         ],
-        passwords: [
+        password_new: [
           { required: true, message: '请输入新密码', trigger: 'blur' }
         ]
       }
@@ -53,7 +53,7 @@ export default {
     usersSubmit() {
       this.$refs['usersRef'].validate(valid => {
         if (valid) {
-          usersPwd(this.usersModel).then(res => {
+          myPwd(this.usersModel).then(res => {
             this.$message({ message: res.msg, type: 'success' })
             this.usersReset()
           })
