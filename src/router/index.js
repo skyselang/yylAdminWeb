@@ -167,7 +167,7 @@ export const asyncRoutes = [
           icon: 'el-icon-notebook-2',
           roles: ['admin/AdminLog/logList']
         },
-        component: () => import('@/views/admin/log/log')
+        component: () => import('@/views/admin/log/loglist')
       },
       {
         path: 'log-statistic',

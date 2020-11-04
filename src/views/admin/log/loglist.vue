@@ -35,8 +35,8 @@
     <!-- 日志分页 -->
     <pagination v-show="logCount > 0" :total="logCount" :page.sync="logQuery.page" :limit.sync="logQuery.limit" @pagination="logLists" />
     <!-- 日志详情 -->
-    <el-dialog :title="'日志信息：' + logModel.admin_log_id" :visible.sync="logDialog" width="65%" top="1vh">
-      <el-form ref="formRef" :rules="logRules" :model="logModel" label-width="100px" class="dialog-body" :style="{height:height+80+'px'}">
+    <el-dialog :title="'日志信息：' + logModel.admin_log_id" :visible.sync="logDialog" width="65%" top="1vh" :before-close="logCancel">
+      <el-form ref="formRef" :rules="logRules" :model="logModel" label-width="100px" class="dialog-body" :style="{height:height+60+'px'}">
         <el-form-item label="用户ID" prop="admin_user_id">
           <el-input v-model="logModel.admin_user_id" />
         </el-form-item>
@@ -45,6 +45,9 @@
         </el-form-item>
         <el-form-item label="用户昵称" prop="nickname">
           <el-input v-model="logModel.nickname" />
+        </el-form-item>
+        <el-form-item label="菜单ID" prop="admin_menu_id">
+          <el-input v-model="logModel.admin_menu_id" />
         </el-form-item>
         <el-form-item label="菜单链接" prop="menu_url">
           <el-input v-model="logModel.menu_url" />
@@ -91,7 +94,6 @@ export default {
     return {
       height: 680,
       loading: false,
-      loadingTime: 0,
       logData: [],
       logCount: 0,
       logQuery: {
@@ -150,8 +152,8 @@ export default {
       this.loading = true
       logInfo({ admin_log_id: row.admin_log_id })
         .then(res => {
-          this.logDialog = true
           this.logReset(res.data)
+          this.logDialog = true
           this.loading = false
         })
         .catch(() => {
