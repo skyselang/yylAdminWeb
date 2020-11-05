@@ -9,7 +9,7 @@
       <el-button class="filter-item" type="primary" style="float:right;" @click="roleRefresh">刷新</el-button>
     </div>
     <!-- 角色列表 -->
-    <el-table v-loading="loading" :data="roleData" :height="height" style="width: 100%" border @sort-change="roleSort">
+    <el-table ref="roleRef" v-loading="loading" :data="roleData" :height="height" style="width: 100%" border @sort-change="roleSort">
       <el-table-column prop="admin_role_id" label="ID" min-width="100" sortable="custom" fixed="left" />
       <el-table-column prop="role_name" label="角色" min-width="120" />
       <el-table-column prop="role_desc" label="描述" min-width="130" />
@@ -76,7 +76,7 @@
     </el-dialog>
     <!-- 用户列表 -->
     <el-dialog :title="userTitle" :visible.sync="userDialog" width="65%" top="1vh">
-      <el-table v-loading="userLoad" :data="userData" :height="height+20" style="width: 100%" border @sort-change="userSort">
+      <el-table ref="userRef" v-loading="userLoad" :data="userData" :height="height+20" style="width: 100%" border @sort-change="userSort">
         <el-table-column prop="admin_user_id" label="ID" min-width="100" sortable="custom" fixed="left" />
         <el-table-column prop="username" label="账号" min-width="120" sortable="custom" />
         <el-table-column prop="nickname" label="昵称" min-width="120" />
@@ -166,6 +166,9 @@ export default {
         .catch(() => {
           this.loading = false
         })
+      this.$nextTick(() => {
+        this.$refs['roleRef'].doLayout()
+      })
     },
     // 角色查询
     roleSearch() {
@@ -344,6 +347,9 @@ export default {
         .catch(() => {
           this.userLoad = false
         })
+      this.$nextTick(() => {
+        this.$refs['userRef'].doLayout()
+      })
     },
     // 用户排序
     userSort(sort) {

@@ -57,7 +57,7 @@
     </el-dialog>
     <!-- 菜单角色 -->
     <el-dialog :title="roleTitle" :visible.sync="roleDialog" width="65%" top="1vh">
-      <el-table v-loading="roleLoad" :data="roleData" :height="height+30" style="width: 100%" border @sort-change="menuRoleSort">
+      <el-table ref="roleRef" v-loading="roleLoad" :data="roleData" :height="height+30" style="width: 100%" border @sort-change="menuRoleSort">
         <el-table-column prop="admin_role_id" label="ID" min-width="100" sortable="custom" fixed="left" />
         <el-table-column prop="role_name" label="角色" min-width="120" sortable="custom" />
         <el-table-column prop="role_desc" label="描述" min-width="130" />
@@ -76,7 +76,7 @@
     </el-dialog>
     <!-- 菜单用户 -->
     <el-dialog :title="userTitle" :visible.sync="userDialog" width="62%" top="2vh">
-      <el-table v-loading="userLoad" :data="userData" :height="height+10" style="width: 100%" border @sort-change="menuUserSort">
+      <el-table ref="userRef" v-loading="userLoad" :data="userData" :height="height+10" style="width: 100%" border @sort-change="menuUserSort">
         <el-table-column prop="admin_user_id" label="ID" min-width="100" sortable="custom" fixed="left" />
         <el-table-column prop="username" label="账号" min-width="120" sortable="custom" />
         <el-table-column prop="nickname" label="昵称" min-width="120" />
@@ -336,6 +336,9 @@ export default {
         .catch(() => {
           this.roleLoad = false
         })
+      this.$nextTick(() => {
+        this.$refs['roleRef'].doLayout()
+      })
     },
     // 菜单角色排序
     menuRoleSort(sort) {
@@ -374,6 +377,9 @@ export default {
         .catch(() => {
           this.userLoad = false
         })
+      this.$nextTick(() => {
+        this.$refs['userRef'].doLayout()
+      })
     },
     // 菜单用户排序
     menuUserSort(sort) {
