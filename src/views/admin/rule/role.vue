@@ -92,6 +92,11 @@
             <el-switch v-model="scope.row.is_disable" active-value="1" inactive-value="0" disabled />
           </template>
         </el-table-column>
+        <el-table-column label="操作" min-width="100" align="right" class-name="small-padding fixed-width" fixed="right">
+          <template slot-scope="{ row }">
+            <el-button size="mini" type="danger" @click="roleUserRemove(row)">解除</el-button>
+          </template>
+        </el-table-column>
       </el-table>
       <pagination v-show="userCount > 0" :total="userCount" :page.sync="userQuery.page" :limit.sync="userQuery.limit" @pagination="roleUser" />
     </el-dialog>
@@ -107,6 +112,7 @@ import {
   roleEdit,
   roleDele,
   roleUser,
+  roleUserRemove,
   roleDisable
 } from '@/api/admin'
 
@@ -331,7 +337,7 @@ export default {
     // 用户显示
     roleUserShow(row) {
       this.userDialog = true
-      this.userTitle = row.role_name
+      this.userTitle = '角色：' + row.role_name + ' > 用户'
       this.userQuery.admin_role_id = row.admin_role_id
       this.roleUser()
     },
@@ -363,6 +369,28 @@ export default {
         this.userQuery.sort_type = 'desc'
         this.roleUser()
       }
+    },
+    // 用户解除
+    roleUserRemove(row) {
+      this.$confirm(
+        '确定要解除该角色与用户 <span style="color:red">' + row.username + ' </span>的关联吗？',
+        '解除确认',
+        {
+          type: 'warning',
+          dangerouslyUseHTMLString: true
+        }
+      ).then(() => {
+        this.userLoad = true
+        roleUserRemove(
+          { admin_role_id: this.userQuery.admin_role_id, admin_user_id: row.admin_user_id }
+        ).then(res => {
+          this.$message({ message: res.msg, type: 'success' })
+          this.roleUser()
+        })
+          .catch(() => {
+            this.userLoad = false
+          })
+      }).catch(() => {})
     }
   }
 }

@@ -86,6 +86,17 @@ export function menuRole(params) {
   })
 }
 /**
+ * 菜单角色解除
+ * @param {array} data 请求数据
+ */
+export function menuRoleRemove(data) {
+  return request({
+    url: '/admin/AdminMenu/menuRoleRemove',
+    method: 'post',
+    data
+  })
+}
+/**
  * 菜单用户
  * @param {array} params 请求参数
  */
@@ -94,6 +105,17 @@ export function menuUser(params) {
     url: '/admin/AdminMenu/menuUser',
     method: 'get',
     params: params
+  })
+}
+/**
+ * 菜单用户解除
+ * @param {array} data 请求数据
+ */
+export function menuUserRemove(data) {
+  return request({
+    url: '/admin/AdminMenu/menuUserRemove',
+    method: 'post',
+    data
   })
 }
 
@@ -188,6 +210,17 @@ export function roleUser(params) {
     url: '/admin/AdminRole/roleUser',
     method: 'get',
     params: params
+  })
+}
+/**
+ * 角色用户解除
+ * @param {array} data 请求数据
+ */
+export function roleUserRemove(data) {
+  return request({
+    url: '/admin/AdminRole/roleUserRemove',
+    method: 'post',
+    data
   })
 }
 
@@ -289,7 +322,7 @@ export function userDisable(data) {
   })
 }
 /**
- * 用户是否超管
+ * 用户是否管理员
  * @param {array} data 请求数据
  */
 export function userAdmin(data) {
@@ -313,17 +346,6 @@ export function logList(params) {
   })
 }
 /**
- * 日志删除
- * @param {array} data 请求数据
- */
-export function logDele(data) {
-  return request({
-    url: '/admin/AdminLog/logDele',
-    method: 'post',
-    data
-  })
-}
-/**
  * 日志信息
  * @param {array} params 请求参数
  */
@@ -332,6 +354,17 @@ export function logInfo(params) {
     url: '/admin/AdminLog/logInfo',
     method: 'get',
     params: params
+  })
+}
+/**
+ * 日志删除
+ * @param {array} data 请求数据
+ */
+export function logDele(data) {
+  return request({
+    url: '/admin/AdminLog/logDele',
+    method: 'post',
+    data
   })
 }
 /**

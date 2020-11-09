@@ -66,9 +66,10 @@
             <el-switch v-model="scope.row.is_disable" active-value="1" inactive-value="0" disabled />
           </template>
         </el-table-column>
-        <el-table-column label="用户" min-width="100" align="right" class-name="small-padding fixed-width" fixed="right">
+        <el-table-column label="操作" min-width="100" align="right" class-name="small-padding fixed-width" fixed="right">
           <template slot-scope="{ row }">
             <el-button size="mini" type="primary" @click="menuUserShow(row)">用户</el-button>
+            <el-button size="mini" type="danger" @click="menuRoleRemove(row)">解除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -92,6 +93,11 @@
             <el-switch v-model="scope.row.is_disable" active-value="1" inactive-value="0" disabled />
           </template>
         </el-table-column>
+        <el-table-column label="操作" min-width="100" align="right" class-name="small-padding fixed-width" fixed="right">
+          <template slot-scope="{ row }">
+            <el-button v-if="userQuery.admin_menu_id" size="mini" type="danger" @click="menuUserRemove(row)">解除</el-button>
+          </template>
+        </el-table-column>
       </el-table>
       <pagination v-show="userCount > 0" :total="userCount" :page.sync="userQuery.page" :limit.sync="userQuery.limit" @pagination="menuUserList" />
     </el-dialog>
@@ -109,7 +115,9 @@ import {
   menuDisable,
   menuUnauth,
   menuRole,
-  menuUser
+  menuRoleRemove,
+  menuUser,
+  menuUserRemove
 } from '@/api/admin'
 
 export default {
@@ -353,14 +361,38 @@ export default {
         this.menuRoleList()
       }
     },
+    // 菜单角色解除
+    menuRoleRemove(row) {
+      this.$confirm(
+        '确定要解除菜单与角色 <span style="color:red">' + row.role_name + ' </span>的关联吗？',
+        '解除确认',
+        {
+          type: 'warning',
+          dangerouslyUseHTMLString: true
+        }
+      ).then(() => {
+        this.roleLoad = true
+        menuRoleRemove(
+          { admin_menu_id: this.roleQuery.admin_menu_id, admin_role_id: row.admin_role_id }
+        ).then(res => {
+          this.$message({ message: res.msg, type: 'success' })
+          this.menuRoleList()
+        })
+          .catch(() => {
+            this.roleLoad = false
+          })
+      }).catch(() => {})
+    },
     // 菜单用户显示
     menuUserShow(row, type = 'admin_role_id') {
       this.userDialog = true
       if (type === 'admin_menu_id') {
         this.userTitle = '菜单用户（按菜单）：' + row.menu_name
         this.userQuery.admin_menu_id = row.admin_menu_id
+        this.userQuery.admin_role_id = ''
       } else {
         this.userTitle = '菜单用户（按角色）：' + row.role_name
+        this.userQuery.admin_menu_id = ''
         this.userQuery.admin_role_id = row.admin_role_id
       }
       this.menuUserList()
@@ -393,6 +425,28 @@ export default {
         this.userQuery.sort_type = 'desc'
         this.menuUserList()
       }
+    },
+    // 菜单用户解除
+    menuUserRemove(row) {
+      this.$confirm(
+        '确定要解除菜单与用户 <span style="color:red">' + row.username + ' </span>的关联吗？',
+        '解除确认',
+        {
+          type: 'warning',
+          dangerouslyUseHTMLString: true
+        }
+      ).then(() => {
+        this.userLoad = true
+        menuUserRemove(
+          { admin_menu_id: this.userQuery.admin_menu_id, admin_user_id: row.admin_user_id }
+        ).then(res => {
+          this.$message({ message: res.msg, type: 'success' })
+          this.menuUserList()
+        })
+          .catch(() => {
+            this.userLoad = false
+          })
+      }).catch(() => {})
     }
   }
 }
