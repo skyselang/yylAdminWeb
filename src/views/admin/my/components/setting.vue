@@ -1,23 +1,21 @@
 <template>
-  <div class="app-container">
-    <div class="filter-container">
-      <el-card class="box-card">
-        <el-form ref="formRef" label-width="100px">
-          <el-form-item label="设置主题">
-            <theme-picker @change="themeChange" />
-          </el-form-item>
-          <el-form-item label="便签导航">
-            <el-switch v-model="tagsView" class="drawer-switch" />
-          </el-form-item>
-          <el-form-item label="固定头部">
-            <el-switch v-model="fixedHeader" class="drawer-switch" />
-          </el-form-item>
-          <el-form-item label="Logo标题">
-            <el-switch v-model="sidebarLogo" class="drawer-switch" />
-          </el-form-item>
-        </el-form>
-      </el-card>
-    </div>
+  <div>
+    <el-card class="box-card">
+      <el-form ref="formRef" label-width="100px">
+        <el-form-item label="设置主题">
+          <theme-picker @change="themeChange" />
+        </el-form-item>
+        <el-form-item label="便签导航">
+          <el-switch v-model="tagsView" class="drawer-switch" />
+        </el-form-item>
+        <el-form-item label="固定头部">
+          <el-switch v-model="fixedHeader" class="drawer-switch" />
+        </el-form-item>
+        <el-form-item label="Logo标题">
+          <el-switch v-model="sidebarLogo" class="drawer-switch" />
+        </el-form-item>
+      </el-form>
+    </el-card>
   </div>
 </template>
 

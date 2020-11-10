@@ -88,7 +88,7 @@ import Pagination from '@/components/Pagination'
 import { logList, logInfo, logDele } from '@/api/admin'
 
 export default {
-  name: 'Loglist',
+  name: 'Log',
   components: { Pagination },
   data() {
     return {

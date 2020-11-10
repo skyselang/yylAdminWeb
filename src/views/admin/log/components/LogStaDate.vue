@@ -21,7 +21,7 @@ import { logStatistic } from '@/api/admin'
 import echarts from 'echarts'
 
 export default {
-  name: 'StaDate',
+  name: 'LogStaDate',
   components: {},
   data() {
     return {

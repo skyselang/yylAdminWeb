@@ -1,5 +1,5 @@
 <template>
-  <div />
+  <div v-loading.fullscreen.lock="loading" element-loading-text="正在退出" />
 </template>
 
 <script>

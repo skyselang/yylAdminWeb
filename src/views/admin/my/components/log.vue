@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <div>
     <!-- 日志查询 -->
     <div class="filter-container">
       <el-select v-model="logQuery.type" class="filter-item" placeholder="日志类型" style="width:110px;" clearable>
@@ -13,7 +13,7 @@
       <el-button class="filter-item" type="primary" style="float:right;" @click="logRefresh">刷新</el-button>
     </div>
     <!-- 日志列表 -->
-    <el-table v-loading="loading" :data="logData" :height="height" style="width: 100%" border @sort-change="logSort">
+    <el-table v-loading="loading" :data="logData" :height="height-50" style="width: 100%" border @sort-change="logSort">
       <el-table-column prop="admin_log_id" label="ID" min-width="100" sortable="custom" fixed="left" />
       <el-table-column prop="menu_url" label="菜单链接" min-width="235" />
       <el-table-column prop="menu_name" label="菜单名称" min-width="130" />

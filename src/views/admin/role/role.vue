@@ -117,7 +117,7 @@ import {
 } from '@/api/admin'
 
 export default {
-  name: 'RuleRole',
+  name: 'Role',
   components: { Pagination },
   data() {
     return {

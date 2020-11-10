@@ -116,154 +116,75 @@ export const asyncRoutes = [
     alwaysShow: true,
     children: [
       {
-        path: 'rule-menu',
-        name: 'RuleMenu',
+        path: 'menu',
+        name: 'Menu',
         meta: {
           title: '菜单管理',
           icon: 'el-icon-menu',
           roles: ['admin/AdminMenu/menuList']
         },
-        component: () => import('@/views/admin/rule/menu')
+        component: () => import('@/views/admin/menu/menu')
       },
       {
-        path: 'rule-role',
-        name: 'RuleRole',
+        path: 'role',
+        name: 'Role',
         meta: {
           title: '角色管理',
           icon: 'el-icon-s-custom',
           roles: ['admin/AdminRole/roleList']
         },
-        component: () => import('@/views/admin/rule/role')
+        component: () => import('@/views/admin/role/role')
       },
       {
-        path: 'rule-user',
-        name: 'RuleUser',
+        path: 'user',
+        name: 'User',
         meta: {
           title: '用户管理',
           icon: 'el-icon-user',
           roles: ['admin/AdminUser/userList']
         },
-        component: () => import('@/views/admin/rule/user')
-      }]
-  },
-
-  {
-    path: '/log',
-    name: 'Log',
-    meta: {
-      title: '日志管理',
-      icon: 'el-icon-notebook-1',
-      roles: ['admin/AdminLog/logList', 'admin/AdminLog/logStatistic']
-    },
-    redirect: 'noRedirect',
-    component: Layout,
-    alwaysShow: true,
-    children: [
+        component: () => import('@/views/admin/user/user')
+      },
       {
-        path: 'log-list',
-        name: 'LogList',
+        path: 'log',
+        name: 'Log',
         meta: {
-          title: '日志列表',
+          title: '日志管理',
           icon: 'el-icon-notebook-2',
           roles: ['admin/AdminLog/logList']
         },
-        component: () => import('@/views/admin/log/loglist')
+        component: () => import('@/views/admin/log/log')
       },
       {
-        path: 'log-statistic',
-        name: 'LogStatistic',
+        path: 'log-sta',
+        name: 'LogSta',
         meta: {
           title: '日志统计',
           icon: 'el-icon-s-data',
           roles: ['admin/AdminLog/logStatistic']
         },
-        component: () => import('@/views/admin/log/statistic')
-      }
-    ]
-  },
-
-  {
-    path: '/my',
-    name: 'My',
-    meta: {
-      title: '个人中心',
-      icon: 'el-icon-user',
-      roles: ['admin/AdminMy/myInfo', 'admin/AdminMy/myEdit', 'admin/AdminMy/myPwd', 'admin/AdminMy/myAvatar', 'admin/AdminMy/myLog', 'admin/AdminMy/mySetting']
-    },
-    redirect: 'noRedirect',
-    component: Layout,
-    alwaysShow: true,
-    children: [
+        component: () => import('@/views/admin/log/logsta')
+      },
       {
-        path: 'my-info',
-        name: 'MyInfo',
+        path: 'my',
+        name: 'My',
         meta: {
-          title: '我的信息',
+          title: '个人中心',
           icon: 'el-icon-warning-outline',
           roles: ['admin/AdminMy/myInfo']
         },
-        component: () => import('@/views/admin/my/info')
-      },
-      {
-        path: 'my-edit',
-        name: 'MyEdit',
-        meta: {
-          title: '修改信息',
-          icon: 'el-icon-edit-outline',
-          roles: ['admin/AdminMy/myEdit']
-        },
-        component: () => import('@/views/admin/my/edit')
-      },
-      {
-        path: 'my-pwd',
-        name: 'MyPwd',
-        meta: {
-          title: '修改密码',
-          icon: 'el-icon-view',
-          roles: ['admin/AdminMy/myPwd']
-        },
-        component: () => import('@/views/admin/my/pwd')
-      },
-      {
-        path: 'my-avatar',
-        name: 'MyAvatar',
-        meta: {
-          title: '修改头像',
-          icon: 'el-icon-picture-outline-round',
-          roles: ['admin/AdminMy/myAvatar']
-        },
-        component: () => import('@/views/admin/my/avatar')
-      },
-      {
-        path: 'my-log',
-        name: 'MyLog',
-        meta: {
-          title: '我的日志',
-          icon: 'el-icon-notebook-2',
-          roles: ['admin/AdminMy/myLog']
-        },
-        component: () => import('@/views/admin/my/log')
-      },
-      {
-        path: 'my-setting',
-        name: 'MySetting',
-        meta: {
-          title: '我的设置',
-          icon: 'el-icon-set-up',
-          roles: ['admin/AdminMy/mySetting']
-        },
-        component: () => import('@/views/admin/my/setting')
+        component: () => import('@/views/admin/my/my')
       }
     ]
   },
 
   {
-    path: '/setting',
-    name: 'Setting',
+    path: '/system',
+    name: 'System',
     meta: {
-      title: '系统设置',
+      title: '系统管理',
       icon: 'el-icon-setting',
-      roles: ['admin/AdminSetting/settingCache', 'admin/AdminSetting/settingVerify', 'admin/AdminSetting/settingToken']
+      roles: ['admin/AdminSetting/settingCache', 'admin/AdminSetting/settingVerify', 'admin/AdminSetting/settingToken', 'admin/AdminTool/toolMix', 'admin/AdminTool/toolMap']
     },
     redirect: 'noRedirect',
     component: Layout,
@@ -298,22 +219,7 @@ export const asyncRoutes = [
           roles: ['admin/AdminSetting/settingToken']
         },
         component: () => import('@/views/admin/setting/token')
-      }
-    ]
-  },
-
-  {
-    path: '/tool',
-    name: 'Tool',
-    meta: {
-      title: '实用工具',
-      icon: 'el-icon-suitcase',
-      roles: ['admin/AdminTool/toolMix', 'admin/AdminTool/toolMap']
-    },
-    redirect: 'noRedirect',
-    component: Layout,
-    alwaysShow: true,
-    children: [
+      },
       {
         path: 'tool-mix',
         name: 'ToolMix',
@@ -335,17 +241,6 @@ export const asyncRoutes = [
         component: () => import('@/views/admin/tool/map')
       }
     ]
-  },
-
-  {
-    path: '/logout',
-    name: 'Logout',
-    meta: {
-      title: '退出',
-      icon: 'el-icon-switch-button',
-      roles: ['admin/AdminLogin/logout']
-    },
-    component: () => import('@/views/admin/login/logout')
   },
 
   // 404页面必须放在最后!!!

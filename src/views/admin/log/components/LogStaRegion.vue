@@ -33,7 +33,7 @@ import { logStatistic } from '@/api/admin'
 import echarts from 'echarts'
 
 export default {
-  name: 'StaRegion',
+  name: 'LogStaRegion',
   components: {},
   data() {
     return {

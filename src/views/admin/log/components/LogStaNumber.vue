@@ -155,7 +155,7 @@
 import { logStatistic } from '@/api/admin'
 
 export default {
-  name: 'StaNumber',
+  name: 'LogStaNumber',
   components: {},
   data() {
     return {

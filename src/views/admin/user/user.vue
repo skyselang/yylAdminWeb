@@ -162,7 +162,7 @@ import {
 } from '@/api/admin'
 
 export default {
-  name: 'RuleUser',
+  name: 'User',
   components: { Pagination },
   data() {
     return {

@@ -121,7 +121,7 @@ import {
 } from '@/api/admin'
 
 export default {
-  name: 'RuleMenu',
+  name: 'Menu',
   components: { Pagination },
   data() {
     return {
