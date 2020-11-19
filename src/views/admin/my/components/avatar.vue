@@ -8,10 +8,10 @@
               <el-avatar v-if="avatar" shape="circle" fit="contain" :size="100" :src="avatar" />
             </el-form-item>
             <el-form-item label="">
-              <div>jpg、png图片，小于50kb！</div>
+              <div>jpg、png图片，小于50kb，宽高1:1。</div>
             </el-form-item>
             <el-form-item>
-              <el-upload class="upload-demo" name="avatar_file" :show-file-list="false" :action="uploadAction" :headers="uploadHeaders" :data="uploadData" :on-success="uploadSuccess">
+              <el-upload name="avatar_file" :show-file-list="false" :action="uploadAction" :headers="uploadHeaders" :data="uploadData" :on-success="uploadSuccess">
                 <el-button type="primary">更换头像</el-button>
               </el-upload>
             </el-form-item>

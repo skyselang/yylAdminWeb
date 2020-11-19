@@ -46,6 +46,11 @@
         <el-form-item v-if="userModel.admin_user_id && userModel.avatar" label="头像" prop="avatar">
           <el-avatar shape="circle" fit="contain" :size="100" :src="userModel.avatar" />
         </el-form-item>
+        <el-form-item v-if="userModel.admin_user_id" label="" prop="avatar_file">
+          <el-upload name="avatar_file" :show-file-list="false" :before-upload="uploadBefore" :action="uploadAction" :headers="uploadHeaders" :data="uploadData" :on-success="uploadSuccess">
+            <el-button title="jpg、png图片，小于50kb，宽高1:1">更换头像</el-button>
+          </el-upload>
+        </el-form-item>
         <el-form-item label="账号" prop="username">
           <el-input v-model="userModel.username" placeholder="请输入账号" clearable />
         </el-form-item>
@@ -160,6 +165,7 @@ import {
   userRule,
   userPwd
 } from '@/api/admin'
+import { getAdminUserId, getToken } from '@/utils/auth'
 
 export default {
   name: 'User',
@@ -193,6 +199,13 @@ export default {
         is_disable: '0',
         is_admin: '0'
       },
+      uploadAction:
+        process.env.VUE_APP_BASE_API + '/admin/AdminUser/userAvatar',
+      uploadHeaders: {
+        AdminToken: getToken(),
+        AdminUserId: getAdminUserId()
+      },
+      uploadData: { admin_user_id: '' },
       roleData: [],
       menuProps: {
         children: 'children',
@@ -272,6 +285,18 @@ export default {
         .then(res => {
           this.userModel = res.data
         })
+    },
+    // 用户修改头像
+    uploadBefore(file) {
+      this.uploadData.admin_user_id = this.userModel.admin_user_id
+    },
+    uploadSuccess(res, file) {
+      if (res.code === 200) {
+        this.userModel.avatar = res.data.avatar_url
+        this.$message({ message: res.msg, type: 'success' })
+      } else {
+        this.$message({ message: res.msg, type: 'error' })
+      }
     },
     // 用户删除
     userDelete(row) {

@@ -221,6 +221,16 @@ export const asyncRoutes = [
         component: () => import('@/views/admin/setting/token')
       },
       {
+        path: 'server-info',
+        name: 'ServerInfo',
+        meta: {
+          title: '服务器信息',
+          icon: 'el-icon-info',
+          roles: ['admin/AdminSetting/serverInfo']
+        },
+        component: () => import('@/views/admin/setting/server')
+      },
+      {
         path: 'tool-mix',
         name: 'ToolMix',
         meta: {

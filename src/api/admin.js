@@ -501,6 +501,25 @@ export function settingToken(data) {
     })
   }
 }
+/**
+ * 服务器信息
+ * @param {array} data 请求数据
+ */
+export function serverInfo(data, method = 'get') {
+  if (method === 'get') {
+    return request({
+      url: '/admin/AdminSetting/serverInfo',
+      method: 'get',
+      params: data
+    })
+  } else {
+    return request({
+      url: '/admin/AdminSetting/serverInfo',
+      method: 'post',
+      params: data
+    })
+  }
+}
 
 // ----------------实用工具----------------
 /**
