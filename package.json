@@ -1,6 +1,6 @@
 {
   "name": "yyladmin",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Minimalist background management system based on thinkphpp6 and Element2",
   "author": "https://github.com/skyselang/",
   "scripts": {
@@ -13,6 +13,7 @@
   "dependencies": {
     "axios": "0.20.0",
     "clipboard": "2.0.6",
+    "core-js": "^3.7.0",
     "echarts": "4.9.0",
     "element-ui": "2.14.1",
     "fuse.js": "3.6.1",
