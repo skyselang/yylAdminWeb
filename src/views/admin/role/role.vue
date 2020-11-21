@@ -9,7 +9,7 @@
       <el-button class="filter-item" type="primary" style="float:right;" @click="roleRefresh">刷新</el-button>
     </div>
     <!-- 角色列表 -->
-    <el-table ref="roleRef" v-loading="loading" :data="roleData" :height="height" style="width: 100%" border @sort-change="roleSort">
+    <el-table ref="roleTableRef" v-loading="loading" :data="roleData" :height="height" style="width: 100%" border @sort-change="roleSort">
       <el-table-column prop="admin_role_id" label="ID" min-width="100" sortable="custom" fixed="left" />
       <el-table-column prop="role_name" label="角色" min-width="120" />
       <el-table-column prop="role_desc" label="描述" min-width="130" />
@@ -82,7 +82,7 @@
         <el-table-column prop="nickname" label="昵称" min-width="120" />
         <el-table-column prop="email" label="邮箱" min-width="200" show-overflow-tooltip />
         <el-table-column prop="remark" label="备注" width="100" />
-        <el-table-column prop="is_admin" label="是否管理员" min-width="80" align="center">
+        <el-table-column prop="is_admin" label="是否管理员" min-width="100" align="center">
           <template slot-scope="scope">
             <el-switch v-model="scope.row.is_admin" active-value="1" inactive-value="0" disabled />
           </template>
@@ -173,7 +173,7 @@ export default {
           this.loading = false
         })
       this.$nextTick(() => {
-        this.$refs['roleRef'].doLayout()
+        this.$refs['roleTableRef'].doLayout()
       })
     },
     // 角色查询
