@@ -8,7 +8,7 @@
     <!-- 菜单列表 -->
     <el-table v-loading="loading" :data="menuData" :height="height+100" style="width: 100%" row-key="admin_menu_id" border>
       <el-table-column prop="menu_name" label="菜单名称" min-width="180" fixed="left" />
-      <el-table-column prop="menu_url" label="菜单链接" min-width="250" />
+      <el-table-column prop="menu_url" label="菜单链接" min-width="260" />
       <el-table-column prop="menu_sort" label="菜单排序" min-width="90" />
       <el-table-column prop="admin_menu_id" label="ID" min-width="90" />
       <el-table-column prop="menu_pid" label="PID" min-width="90" />
@@ -24,7 +24,7 @@
           <el-switch v-if="scope.row.menu_url" v-model="scope.row.is_unauth" active-value="1" inactive-value="0" @change="menuIsUnauth(scope.row)" />
         </template>
       </el-table-column>
-      <el-table-column label="操作" min-width="340" align="right" fixed="right" class-name="small-padding fixed-width">
+      <el-table-column label="操作" min-width="352" align="right" fixed="right" class-name="small-padding fixed-width">
         <template slot-scope="{ row }">
           <el-button size="mini" type="primary" @click="menuRoleShow(row)">角色</el-button>
           <el-button size="mini" type="primary" @click="menuUserShow(row,'admin_menu_id')">用户</el-button>
@@ -66,7 +66,7 @@
             <el-switch v-model="scope.row.is_disable" active-value="1" inactive-value="0" disabled />
           </template>
         </el-table-column>
-        <el-table-column label="操作" min-width="100" align="right" class-name="small-padding fixed-width" fixed="right">
+        <el-table-column label="操作" min-width="120" align="right" class-name="small-padding fixed-width" fixed="right">
           <template slot-scope="{ row }">
             <el-button size="mini" type="primary" @click="menuUserShow(row)">用户</el-button>
             <el-button size="mini" type="danger" @click="menuRoleRemove(row)">解除</el-button>
@@ -83,7 +83,7 @@
         <el-table-column prop="nickname" label="昵称" min-width="120" />
         <el-table-column prop="email" label="邮箱" min-width="200" show-overflow-tooltip />
         <el-table-column prop="remark" label="备注" width="100" />
-        <el-table-column prop="is_admin" label="是否管理员" min-width="80" align="center">
+        <el-table-column prop="is_admin" label="是否管理员" min-width="96" align="center">
           <template slot-scope="scope">
             <el-switch v-model="scope.row.is_admin" active-value="1" inactive-value="0" disabled />
           </template>

@@ -5,11 +5,8 @@
         <el-form ref="formRef" label-width="100px">
           <el-row>
             <el-col :xs="24" :sm="12">
-              <el-form-item label="版本" prop="">
+              <el-form-item label="Redis" prop="">
                 <el-input v-model="cacheModel.redis_version" type="text" />
-              </el-form-item>
-              <el-form-item label="系统" prop="">
-                <el-input v-model="cacheModel.os_arch_bits" type="text" />
               </el-form-item>
               <el-form-item label="运行时长" prop="">
                 <el-input v-model="cacheModel.uptime_in_days" type="text" />

@@ -5,29 +5,30 @@
         <el-card class="box-card">
           <div slot="header" class="clearfix">
             <span>Environment</span>
+            <el-button icon="el-icon-refresh" style="float: right; padding: 2px" @click="serverInfoRefresh()" />
           </div>
           <div class="text item">
-            <el-form ref="serverInfoRef" :rules="serverInfoRules" :model="serverInfoModel" label-width="100px">
+            <el-form ref="serverInfoRef" :rules="serverInfoRules" :model="serverInfoModel" label-width="120px">
               <el-form-item label="OS">
                 <el-input v-model="serverInfoModel.system_info" />
               </el-form-item>
               <el-form-item label="Web">
                 <el-input v-model="serverInfoModel.server_software" />
               </el-form-item>
-              <el-form-item label="PHP">
-                <el-input v-model="serverInfoModel.php_info" />
+              <el-form-item label="MySQL">
+                <el-input v-model="serverInfoModel.mysql" />
               </el-form-item>
-              <el-form-item label="Database">
-                <el-input v-model="serverInfoModel.database" />
+              <el-form-item label="PHP">
+                <el-input v-model="serverInfoModel.php_version" />
+              </el-form-item>
+              <el-form-item label="php_sapi_name">
+                <el-input v-model="serverInfoModel.php_sapi_name" />
               </el-form-item>
               <el-form-item label="ThinkPHP">
                 <el-input v-model="serverInfoModel.thinkphp" />
               </el-form-item>
               <el-form-item label="Redis">
                 <el-input v-model="serverInfoModel.redis" />
-              </el-form-item>
-              <el-form-item>
-                <el-button :loading="serverInfoLoad" @click="serverInfoRefresh()">刷新</el-button>
               </el-form-item>
             </el-form>
           </div>
@@ -37,28 +38,29 @@
         <el-card class="box-card">
           <div slot="header" class="clearfix">
             <span>Server</span>
+            <el-button icon="el-icon-refresh" style="float: right; padding: 2px" @click="serverInfoRefresh()" />
           </div>
           <div class="text item">
-            <el-form ref="serverInfoRef" :rules="serverInfoRules" :model="serverInfoModel" label-width="140px">
+            <el-form ref="serverInfoRef" :rules="serverInfoRules" :model="serverInfoModel" label-width="150px">
               <el-form-item label="IP">
                 <el-input v-model="serverInfoModel.ip" />
               </el-form-item>
-              <el-form-item label="域名">
+              <el-form-item label="Domain">
                 <el-input v-model="serverInfoModel.domain" />
               </el-form-item>
-              <el-form-item label="端口">
+              <el-form-item label="Port">
                 <el-input v-model="serverInfoModel.port" />
               </el-form-item>
-              <el-form-item label="协议/版本">
+              <el-form-item label="Protocol">
                 <el-input v-model="serverInfoModel.server_protocol" />
               </el-form-item>
-              <el-form-item label="脚本最大执行时间">
+              <el-form-item label="max_execution_time">
                 <el-input v-model="serverInfoModel.max_execution_time" />
               </el-form-item>
-              <el-form-item label="上传文件最大尺寸">
+              <el-form-item label="upload_max_filesize">
                 <el-input v-model="serverInfoModel.upload_max_filesize" />
               </el-form-item>
-              <el-form-item label="POST数据最大尺寸">
+              <el-form-item label="post_max_size">
                 <el-input v-model="serverInfoModel.post_max_size" />
               </el-form-item>
             </el-form>
@@ -88,19 +90,14 @@ export default {
   methods: {
     serverInfoRefresh() {
       this.serverInfoLoad = true
-      serverInfo('', 'post')
-        .then(res => {
-          this.serverInfoLoad = false
-          this.serverInfoModel = res.data
-          this.$message({ message: res.msg, type: 'success' })
-        })
-        .catch(() => {
-          this.serverInfoLoad = false
-        })
+      this.serverInfoGet()
     },
     serverInfoGet() {
       serverInfo().then(res => {
         this.serverInfoModel = res.data
+        this.serverInfoLoad = false
+      }).catch(() => {
+        this.serverInfoLoad = false
       })
     }
   }
@@ -109,6 +106,6 @@ export default {
 
 <style scoped>
 .item {
-  height: 410px;
+  height: 390px;
 }
 </style>

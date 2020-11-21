@@ -5,6 +5,9 @@
         <el-form ref="verifyRefs" :rules="verifyRules" :model="verifyModel" label-width="120px">
           <el-row>
             <el-col :xs="24" :sm="12">
+              <el-form-item v-if="verifyShow" label="验证码" prop="verify_code">
+                <el-image style="width:200px;height:50px;" :src="verifySrc" fit="fill" alt="验证码" title="点击刷新验证码" @click="verifyRefresh" />
+              </el-form-item>
               <el-form-item label="验证码开关" prop="switch">
                 <el-switch v-model="verifyModel.switch" />
               </el-form-item>
@@ -41,11 +44,6 @@
               <el-form-item>
                 <el-button :loading="verifyRefLoad" @click="verifyRef()">刷新</el-button>
                 <el-button :loading="verifySubLoad" type="primary" @click="verifySub()">提交</el-button>
-              </el-form-item>
-            </el-col>
-            <el-col :xs="24" :sm="12">
-              <el-form-item v-if="verifyShow" prop="verify_code">
-                <el-image style="width:200px;height:50px;" :src="verifySrc" fit="fill" alt="验证码" title="点击刷新验证码" @click="verifyRefresh" />
               </el-form-item>
             </el-col>
           </el-row>

@@ -29,7 +29,7 @@
           <el-switch v-model="scope.row.is_disable" active-value="1" inactive-value="0" @change="userIsProhibit(scope.row)" />
         </template>
       </el-table-column>
-      <el-table-column label="操作" min-width="250" align="right" fixed="right" class-name="small-padding fixed-width">
+      <el-table-column label="操作" min-width="282" align="right" fixed="right" class-name="small-padding fixed-width">
         <template slot-scope="{ row }">
           <el-button size="mini" type="primary" @click="userEditRule(row)">权限</el-button>
           <el-button size="mini" type="primary" @click="userPassword(row)">密码</el-button>
