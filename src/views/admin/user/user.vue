@@ -21,7 +21,7 @@
       <el-table-column prop="sort" label="排序" width="80" sortable="custom" />
       <el-table-column prop="is_admin" label="管理员" min-width="88" sortable="custom" align="center">
         <template slot-scope="scope">
-          <el-switch v-model="scope.row.is_admin" active-value="1" inactive-value="0" @change="userIsSuperAdmin(scope.row)" />
+          <el-switch v-model="scope.row.is_admin" active-value="1" inactive-value="0" @change="userIsAdmin(scope.row)" />
         </template>
       </el-table-column>
       <el-table-column prop="is_disable" label="禁用" min-width="80" sortable="custom" align="center" fixed="right">
@@ -52,13 +52,13 @@
           </el-upload>
         </el-form-item>
         <el-form-item label="账号" prop="username">
-          <el-input v-model="userModel.username" placeholder="请输入账号" clearable />
+          <el-input key="username" v-model="userModel.username" placeholder="请输入账号" clearable />
         </el-form-item>
         <el-form-item label="昵称" prop="nickname">
-          <el-input v-model="userModel.nickname" placeholder="请输入昵称" clearable />
+          <el-input key="nickname" v-model="userModel.nickname" placeholder="请输入昵称" clearable />
         </el-form-item>
         <el-form-item v-if="userModel.admin_user_id == ''" label="密码" prop="password">
-          <el-input v-model="userModel.password" placeholder="请输入密码" clearable show-password />
+          <el-input key="password" v-model="userModel.password" placeholder="请输入密码" clearable show-password />
         </el-form-item>
         <el-form-item label="邮箱" prop="email">
           <el-input v-model="userModel.email" clearable />
@@ -321,7 +321,7 @@ export default {
         .catch(() => {})
     },
     // 用户是否管理员
-    userIsSuperAdmin(row) {
+    userIsAdmin(row) {
       this.loading = true
       userAdmin({ admin_user_id: row.admin_user_id, is_admin: row.is_admin })
         .then(res => {
