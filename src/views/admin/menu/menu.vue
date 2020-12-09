@@ -7,8 +7,8 @@
     </div>
     <!-- 菜单列表 -->
     <el-table v-loading="loading" :data="menuData" :height="height+100" style="width: 100%" row-key="admin_menu_id" border>
-      <el-table-column prop="menu_name" label="菜单名称" min-width="180" fixed="left" />
-      <el-table-column prop="menu_url" label="菜单链接" min-width="260" />
+      <el-table-column prop="menu_name" label="菜单名称" min-width="220" fixed="left" />
+      <el-table-column prop="menu_url" label="菜单链接" min-width="260" @click="menuCellDblclick(menu_url)" />
       <el-table-column prop="menu_sort" label="菜单排序" min-width="90" />
       <el-table-column prop="admin_menu_id" label="ID" min-width="90" />
       <el-table-column prop="menu_pid" label="PID" min-width="90" />
@@ -447,6 +447,10 @@ export default {
             this.userLoad = false
           })
       }).catch(() => {})
+    },
+    // 菜单单元格双击
+    menuCellDblclick(row, column, cell, event) {
+      console.log(row)
     }
   }
 }

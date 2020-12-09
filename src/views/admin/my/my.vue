@@ -2,22 +2,22 @@
   <div class="app-container">
     <el-tabs v-model="activeName">
       <el-tab-pane v-if="checkPermission(['admin/AdminMy/myInfo'])" label="我的信息" name="info">
-        <MyInfo />
+        <my-info />
       </el-tab-pane>
       <el-tab-pane v-if="checkPermission(['admin/AdminMy/myEdit'])" label="修改信息" name="edit">
-        <MyEdit />
+        <my-edit />
       </el-tab-pane>
       <el-tab-pane v-if="checkPermission(['admin/AdminMy/myPwd'])" label="修改密码" name="pwd">
-        <MyPwd />
+        <my-pwd />
       </el-tab-pane>
       <el-tab-pane v-if="checkPermission(['admin/AdminMy/myAvatar'])" label="修改头像" name="avatar">
-        <MyAvatar />
+        <my-avatar />
       </el-tab-pane>
       <el-tab-pane v-if="checkPermission(['admin/AdminMy/myLog'])" label="我的日志" name="log">
-        <MyLog />
+        <my-log />
       </el-tab-pane>
       <el-tab-pane v-if="checkPermission(['admin/AdminMy/mySetting'])" label="我的设置" name="setting">
-        <MySetting />
+        <my-setting />
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -40,7 +40,7 @@ export default {
       activeName: 'info'
     }
   },
-  created() {},
+  created() { },
   methods: { checkPermission }
 }
 </script>

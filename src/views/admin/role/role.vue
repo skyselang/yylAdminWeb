@@ -62,7 +62,7 @@
               <span>
                 <el-button v-if="data.children[0]" type="text" size="mini" @click="() => menuChildrenAllCheck(data)">全选</el-button>
                 <el-button v-if="data.children[0]" type="text" size="mini" @click="() => menuChildrenAllCheck(data, true)">反选</el-button>
-                <i v-if="data.menu_url" class="el-icon-link" />
+                <i v-if="data.menu_url" class="el-icon-link" :title="data.menu_url" />
                 <i v-else class="el-icon-link" style="color:#fff" />
               </span>
             </span>
@@ -237,7 +237,7 @@ export default {
               this.loading = false
             })
         })
-        .catch(() => {})
+        .catch(() => { })
     },
     // 角色是否禁用
     roleIsDisable(row) {
@@ -390,7 +390,7 @@ export default {
           .catch(() => {
             this.userLoad = false
           })
-      }).catch(() => {})
+      }).catch(() => { })
     }
   }
 }

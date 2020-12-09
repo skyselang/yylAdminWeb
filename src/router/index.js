@@ -104,6 +104,113 @@ export const constantRoutes = [
  */
 export const asyncRoutes = [
   {
+    path: '/member',
+    name: 'Member',
+    meta: {
+      title: '会员管理',
+      icon: 'el-icon-menu',
+      roles: ['admin/Member/memberList']
+    },
+    redirect: 'noRedirect',
+    component: Layout,
+    alwaysShow: true,
+    children: [
+      {
+        path: 'member-list',
+        name: 'MemberList',
+        meta: {
+          title: '会员列表',
+          icon: 'el-icon-s-grid',
+          roles: ['admin/Member/memberList']
+        },
+        component: () => import('@/views/member/member-list')
+      }
+    ]
+  },
+  {
+    path: '/mlog',
+    name: 'MLog',
+    meta: {
+      title: '会员日志',
+      icon: 'el-icon-menu',
+      roles: ['admin/Log/logList']
+    },
+    redirect: 'noRedirect',
+    component: Layout,
+    alwaysShow: true,
+    children: [
+      {
+        path: 'mlog-list',
+        name: 'MLogList',
+        meta: {
+          title: '会员日志列表',
+          icon: 'el-icon-s-grid',
+          roles: ['admin/Log/logList']
+        },
+        component: () => import('@/views/mlog/mlog-list')
+      },
+      {
+        path: 'member-sta',
+        name: 'MLogSta',
+        meta: {
+          title: '会员日志统计',
+          icon: 'el-icon-s-grid',
+          roles: ['admin/Log/logStatistic']
+        },
+        component: () => import('@/views/mlog/mlog-sta')
+      }
+    ]
+  },
+  {
+    path: '/api',
+    name: 'Api',
+    meta: {
+      title: '接口管理',
+      icon: 'el-icon-menu',
+      roles: ['admin/Api/apiList']
+    },
+    redirect: 'noRedirect',
+    component: Layout,
+    alwaysShow: true,
+    children: [
+      {
+        path: 'api-list',
+        name: 'ApiList',
+        meta: {
+          title: '接口列表',
+          icon: 'el-icon-s-grid',
+          roles: ['admin/Api/apiList']
+        },
+        component: () => import('@/views/api/api-list')
+      }
+    ]
+  },
+  {
+    path: '/region',
+    name: 'Region',
+    meta: {
+      title: '地区管理',
+      icon: 'el-icon-menu',
+      roles: ['admin/Region/regionList']
+    },
+    redirect: 'noRedirect',
+    component: Layout,
+    alwaysShow: true,
+    children: [
+      {
+        path: 'region-list',
+        name: 'RegionList',
+        meta: {
+          title: '地区列表',
+          icon: 'el-icon-s-grid',
+          roles: ['admin/Region/regionList']
+        },
+        component: () => import('@/views/region/region-list')
+      }
+    ]
+  },
+
+  {
     path: '/rule',
     name: 'Rule',
     meta: {
@@ -158,10 +265,12 @@ export const asyncRoutes = [
       {
         path: 'log-sta',
         name: 'LogSta',
+        hidden: true,
         meta: {
           title: '日志统计',
           icon: 'el-icon-s-data',
-          roles: ['admin/AdminLog/logStatistic']
+          roles: ['admin/AdminLog/logStatistic'],
+          activeMenu: '/rule/log'
         },
         component: () => import('@/views/admin/log/logsta')
       },

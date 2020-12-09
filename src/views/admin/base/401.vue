@@ -48,6 +48,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.yyl-top{margin-top: 2vh;}
-.yyl-center { text-align: center;}
+.yyl-top {
+  margin-top: 2vh;
+}
+.yyl-center {
+  text-align: center;
+}
 </style>
