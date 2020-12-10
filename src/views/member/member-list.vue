@@ -15,11 +15,11 @@
       <el-table-column prop="member_id" label="ID" min-width="100" sortable="custom" fixed="left" />
       <el-table-column prop="username" label="账号" min-width="120" sortable="custom" />
       <el-table-column prop="nickname" label="昵称" min-width="120" sortable="custom" />
-      <el-table-column prop="phone" label="手机" min-width="130" sortable="custom" />
+      <el-table-column prop="phone" label="手机" min-width="120" sortable="custom" />
       <el-table-column prop="email" label="邮箱" min-width="200" sortable="custom" show-overflow-tooltip />
-      <el-table-column prop="create_time" label="注册时间" min-width="140" sortable="custom" />
+      <el-table-column prop="create_time" label="注册时间" min-width="160" sortable="custom" />
       <el-table-column prop="login_time" label="登录时间" min-width="160" sortable="custom" />
-      <el-table-column prop="remark" label="备注" min-width="105" />
+      <el-table-column prop="remark" label="备注" min-width="110" />
       <el-table-column prop="sort" label="排序" width="80" sortable="custom" />
       <el-table-column prop="is_disable" label="禁用" min-width="80" sortable="custom" align="center" fixed="right">
         <template slot-scope="scope">

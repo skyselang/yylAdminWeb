@@ -292,7 +292,7 @@ export default {
     },
     uploadSuccess(res, file) {
       if (res.code === 200) {
-        this.userModel.avatar = res.data.avatar_url
+        this.userModel.avatar = res.data.avatar
         this.$message({ message: res.msg, type: 'success' })
       } else {
         this.$message({ message: res.msg, type: 'error' })

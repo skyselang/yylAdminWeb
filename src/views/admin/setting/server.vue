@@ -1,34 +1,34 @@
 <template>
   <div class="app-container">
-    <el-row v-loading="serverInfoLoad" :gutter="8">
+    <el-row v-loading="serverLoad" :gutter="8">
       <el-col :xs="24" :sm="12">
         <el-card class="box-card">
           <div slot="header" class="clearfix">
             <span>Environment</span>
-            <el-button icon="el-icon-refresh" style="float: right; padding: 2px" @click="serverInfoRefresh()" />
+            <el-button icon="el-icon-refresh" style="float: right; padding: 2px" @click="serverRefresh()" />
           </div>
           <div class="text item">
-            <el-form ref="serverInfoRef" :rules="serverInfoRules" :model="serverInfoModel" label-width="120px">
+            <el-form ref="serverInfoRef" :rules="serverRules" :model="serverModel" label-width="120px">
               <el-form-item label="OS">
-                <el-input v-model="serverInfoModel.system_info" />
+                <el-input v-model="serverModel.system_info" />
               </el-form-item>
               <el-form-item label="Web">
-                <el-input v-model="serverInfoModel.server_software" />
+                <el-input v-model="serverModel.server_software" />
               </el-form-item>
               <el-form-item label="MySQL">
-                <el-input v-model="serverInfoModel.mysql" />
+                <el-input v-model="serverModel.mysql" />
               </el-form-item>
               <el-form-item label="PHP">
-                <el-input v-model="serverInfoModel.php_version" />
+                <el-input v-model="serverModel.php_version" />
               </el-form-item>
               <el-form-item label="php_sapi_name">
-                <el-input v-model="serverInfoModel.php_sapi_name" />
+                <el-input v-model="serverModel.php_sapi_name" />
               </el-form-item>
               <el-form-item label="ThinkPHP">
-                <el-input v-model="serverInfoModel.thinkphp" />
+                <el-input v-model="serverModel.thinkphp" />
               </el-form-item>
               <el-form-item label="Redis">
-                <el-input v-model="serverInfoModel.redis" />
+                <el-input v-model="serverModel.redis" />
               </el-form-item>
             </el-form>
           </div>
@@ -38,30 +38,30 @@
         <el-card class="box-card">
           <div slot="header" class="clearfix">
             <span>Server</span>
-            <el-button icon="el-icon-refresh" style="float: right; padding: 2px" @click="serverInfoRefresh()" />
+            <el-button icon="el-icon-refresh" style="float: right; padding: 2px" @click="serverRefresh()" />
           </div>
           <div class="text item">
-            <el-form ref="serverInfoRef" :rules="serverInfoRules" :model="serverInfoModel" label-width="150px">
+            <el-form ref="serverInfoRef" :rules="serverRules" :model="serverModel" label-width="150px">
               <el-form-item label="IP">
-                <el-input v-model="serverInfoModel.ip" />
+                <el-input v-model="serverModel.ip" />
               </el-form-item>
               <el-form-item label="Domain">
-                <el-input v-model="serverInfoModel.domain" />
+                <el-input v-model="serverModel.domain" />
               </el-form-item>
               <el-form-item label="Port">
-                <el-input v-model="serverInfoModel.port" />
+                <el-input v-model="serverModel.port" />
               </el-form-item>
               <el-form-item label="Protocol">
-                <el-input v-model="serverInfoModel.server_protocol" />
+                <el-input v-model="serverModel.server_protocol" />
               </el-form-item>
               <el-form-item label="max_execution_time">
-                <el-input v-model="serverInfoModel.max_execution_time" />
+                <el-input v-model="serverModel.max_execution_time" />
               </el-form-item>
               <el-form-item label="upload_max_filesize">
-                <el-input v-model="serverInfoModel.upload_max_filesize" />
+                <el-input v-model="serverModel.upload_max_filesize" />
               </el-form-item>
               <el-form-item label="post_max_size">
-                <el-input v-model="serverInfoModel.post_max_size" />
+                <el-input v-model="serverModel.post_max_size" />
               </el-form-item>
             </el-form>
           </div>
@@ -79,25 +79,28 @@ export default {
   components: {},
   data() {
     return {
-      serverInfoLoad: false,
-      serverInfoModel: {},
-      serverInfoRules: {}
+      serverLoad: false,
+      serverModel: {},
+      serverRules: {}
     }
   },
   created() {
-    this.serverInfoGet()
+    this.serverGet()
   },
   methods: {
-    serverInfoRefresh() {
-      this.serverInfoLoad = true
-      this.serverInfoGet()
-    },
-    serverInfoGet() {
+    serverGet() {
       serverInfo().then(res => {
-        this.serverInfoModel = res.data
-        this.serverInfoLoad = false
+        this.serverModel = res.data
+      })
+    },
+    serverRefresh() {
+      this.serverLoad = true
+      serverInfo().then(res => {
+        this.serverModel = res.data
+        this.serverLoad = false
+        this.$message({ message: res.msg, type: 'success' })
       }).catch(() => {
-        this.serverInfoLoad = false
+        this.serverLoad = false
       })
     }
   }

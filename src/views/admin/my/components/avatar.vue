@@ -49,7 +49,7 @@ export default {
     uploadSuccess(res, file) {
       if (res.code === 200) {
         this.$message({ message: res.msg, type: 'success' })
-        store.commit('user/SET_AVATAR', res.data.avatar_url)
+        store.commit('user/SET_AVATAR', res.data.avatar)
       } else {
         this.$message({ message: res.msg, type: 'error' })
       }
