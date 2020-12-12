@@ -24,8 +24,8 @@
           <el-input v-model="byteTranModel.TB" type="number" clearable @input="byteTranValue('TB')" />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="byteTranClear()">清空</el-button>
-          <el-button type="primary" @click="byteTranSubmit()">提交</el-button>
+          <el-button @click="byteTranClear()">清空</el-button>
+          <el-button type="primary" @click="byteTranSubmit()">转换</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -53,21 +53,14 @@ export default {
       byteTranRules: {}
     }
   },
-  created() {},
+  created() { },
   methods: {
     byteTranValue(type) {
       this.byteTranModel.type = type
       this.byteTranModel.value = this.byteTranModel[type]
     },
     byteTranClear() {
-      this.byteTranModel.type = 'b'
-      this.byteTranModel.value = 0
-      this.byteTranModel.b = ''
-      this.byteTranModel.B = ''
-      this.byteTranModel.KB = ''
-      this.byteTranModel.MB = ''
-      this.byteTranModel.GB = ''
-      this.byteTranModel.TB = ''
+      this.byteTranModel = this.$options.data().byteTranModel
     },
     byteTranSubmit() {
       this.$refs['byteTranRef'].validate(valid => {

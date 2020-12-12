@@ -3,7 +3,7 @@
     <!-- 地区添加 -->
     <div class="filter-container">
       <el-button class="filter-item" type="primary" style="float:right;margin-left:10px" @click="regionAddition('')">添加</el-button>
-      <el-button class="filter-item" type="primary" style="float:right;" @click="regionRefresh()">刷新</el-button>
+      <el-button class="filter-item" style="float:right;" @click="regionRefresh()">刷新</el-button>
     </div>
     <!-- 地区列表 -->
     <el-table
@@ -199,7 +199,7 @@ export default {
           this.loadClose()
         })
     },
-    // 地区列表排序
+    // 地区排序
     regionSort(sort) {
       this.regionQuery.sort_field = sort.prop
       this.regionQuery.sort_type = ''
@@ -212,7 +212,7 @@ export default {
         this.regionList()
       }
     },
-    // 地区列表加载
+    // 地区加载
     regionListLoad(tree, treeNode, resolve) {
       regionList({ region_pid: tree.region_id })
         .then(res => {
@@ -246,17 +246,14 @@ export default {
           }
           this.regionModel.region_tree = res.data.region_tree
         })
-        .catch(() => {})
     },
     // 地区修改
     regionModify(row) {
       this.regionDialog = true
       regionEdit({ region_id: row.region_id }, 'get')
         .then(res => {
-          console.log(res.data)
           this.regionReset(res.data)
         })
-        .catch(() => {})
     },
     // 地区删除
     regionDelete(row) {
@@ -281,7 +278,7 @@ export default {
         this.regionModel.region_pid = value[value.length - 1]
       }
     },
-    // 地区添加、修改重置
+    // 地区信息重置
     regionReset(row) {
       if (row) {
         this.regionModel = row

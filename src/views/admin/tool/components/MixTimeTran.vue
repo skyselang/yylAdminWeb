@@ -4,11 +4,11 @@
       <span>时间戳转换</span>
     </div>
     <div class="text item">
-      <el-form ref="timeTranRef" :rules="timeTranRules" :model="timeTranModel" label-width="80px">
+      <el-form ref="timeTranRef" :rules="timeTranRules" :model="timeTranModel" label-width="100px">
         <el-row>
           <el-col>
             <el-form-item label="时间戳">
-              <el-input v-model="timeTranModel.timestamp" class="timestamp" type="number" placeholder="请输入时间戳" clearable @input="timeTranValue('timestamp')" />
+              <el-input v-model="timeTranModel.timestamp" type="number" placeholder="请输入时间戳" clearable @input="timeTranValue('timestamp')" />
             </el-form-item>
           </el-col>
           <el-col>
@@ -18,7 +18,7 @@
           </el-col>
         </el-row>
         <el-form-item>
-          <el-button type="primary" @click="timeTranClear()">清空</el-button>
+          <el-button @click="timeTranClear()">清空</el-button>
           <el-button type="primary" @click="timeTranSubmit()">转换</el-button>
         </el-form-item>
       </el-form>
@@ -43,17 +43,14 @@ export default {
       timeTranRules: {}
     }
   },
-  created() {},
+  created() { },
   methods: {
     timeTranValue(type) {
       this.timeTranModel.type = type
       this.timeTranModel.value = this.timeTranModel[type]
     },
     timeTranClear() {
-      this.timeTranModel.type = 'timestamp'
-      this.timeTranModel.value = ''
-      this.timeTranModel.datetime = ''
-      this.timeTranModel.timestamp = ''
+      this.timeTranModel = this.$options.data().timeTranModel
     },
     timeTranSubmit() {
       timeTran(this.timeTranModel).then((res) => {
@@ -67,8 +64,5 @@ export default {
 <style scoped>
 .item {
   height: 410px;
-}
-.timestamp {
-  width: 220px;
 }
 </style>

@@ -30,13 +30,7 @@ import MapBeidou from './components/MapBeidou'
 
 export default {
   name: 'ToolMap',
-  components: {
-    MapAmap,
-    MapBaidu,
-    MapSogou,
-    MapTencent,
-    MapBeidou
-  },
+  components: { MapAmap, MapBaidu, MapSogou, MapTencent, MapBeidou },
   data() {
     return {
       mapTabName: 'MapBaidu'

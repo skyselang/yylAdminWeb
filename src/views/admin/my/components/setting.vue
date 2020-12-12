@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-card class="box-card">
-      <el-form ref="formRef" label-width="100px">
+      <el-form ref="settingRef" label-width="100px">
         <el-form-item label="设置主题">
           <theme-picker @change="themeChange" />
         </el-form-item>

@@ -55,29 +55,25 @@ export default {
     // 刷新
     tokenRefresh() {
       this.tokenLoad = true
-      settingToken()
-        .then(res => {
-          this.tokenModel = res.data
-          this.tokenLoad = false
-          this.$message({ message: res.msg, type: 'success' })
-        })
-        .catch(() => {
-          this.tokenLoad = false
-        })
+      settingToken().then(res => {
+        this.tokenModel = res.data
+        this.tokenLoad = false
+        this.$message({ message: res.msg, type: 'success' })
+      }).catch(() => {
+        this.tokenLoad = false
+      })
     },
     // 提交
     tokenSubmit() {
       this.$refs['tokenRef'].validate(valid => {
         if (valid) {
           this.tokenLoad = true
-          settingToken(this.tokenModel)
-            .then(res => {
-              this.tokenLoad = false
-              this.$message({ message: res.msg, type: 'success' })
-            })
-            .catch(() => {
-              this.tokenLoad = false
-            })
+          settingToken(this.tokenModel).then(res => {
+            this.tokenLoad = false
+            this.$message({ message: res.msg, type: 'success' })
+          }).catch(() => {
+            this.tokenLoad = false
+          })
         }
       })
     }

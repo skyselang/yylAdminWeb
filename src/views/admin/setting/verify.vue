@@ -85,27 +85,9 @@ export default {
         expire: 180
       },
       verifyRules: {
-        type: [
-          {
-            required: true,
-            message: '请选择验证码类型',
-            trigger: 'blur'
-          }
-        ],
-        length: [
-          {
-            required: true,
-            message: '请选择验证码位数',
-            trigger: 'blur'
-          }
-        ],
-        expire: [
-          {
-            required: true,
-            message: '请输入验证码有效时间',
-            trigger: 'blur'
-          }
-        ]
+        type: [{ required: true, message: '请选择验证码类型', trigger: 'blur' }],
+        length: [{ required: true, message: '请选择验证码位数', trigger: 'blur' }],
+        expire: [{ required: true, message: '请输入验证码有效时间', trigger: 'blur' }]
       }
     }
   },
@@ -123,44 +105,38 @@ export default {
     // 刷新
     verifyRefresh() {
       this.verifyLoad = true
-      settingVerify()
-        .then(res => {
-          this.getVerify()
-          this.verifyModel = res.data
-          this.verifyLoad = false
-          this.$message({ message: res.msg, type: 'success' })
-        })
-        .catch(() => {
-          this.verifyLoad = false
-        })
+      settingVerify().then(res => {
+        this.getVerify()
+        this.verifyModel = res.data
+        this.verifyLoad = false
+        this.$message({ message: res.msg, type: 'success' })
+      }).catch(() => {
+        this.verifyLoad = false
+      })
     },
     // 提交
     verifySubmit() {
       this.$refs['verifyRef'].validate(valid => {
         if (valid) {
           this.verifyLoad = true
-          settingVerify(this.verifyModel)
-            .then(res => {
-              this.getVerify()
-              this.verifyLoad = false
-              this.$message({ message: res.msg, type: 'success' })
-            })
-            .catch(() => {
-              this.verifyLoad = false
-            })
+          settingVerify(this.verifyModel).then(res => {
+            this.getVerify()
+            this.verifyLoad = false
+            this.$message({ message: res.msg, type: 'success' })
+          }).catch(() => {
+            this.verifyLoad = false
+          })
         }
       })
     },
     // 获取验证码
     getVerify() {
-      verify()
-        .then(res => {
-          this.verifyShow = res.data.verify_switch
-          if (res.data.verify_switch) {
-            this.verifySrc = res.data.verify_src
-          }
-        })
-        .catch(() => {})
+      verify().then(res => {
+        this.verifyShow = res.data.verify_switch
+        if (res.data.verify_switch) {
+          this.verifySrc = res.data.verify_src
+        }
+      })
     },
     // 刷新验证码
     refreshVerify() {

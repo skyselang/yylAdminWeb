@@ -176,12 +176,12 @@
 </template>
 
 <script>
+import { logStatistic } from '@/api/log'
 import echarts from 'echarts'
 import BackToTop from '@/components/BackToTop'
-import { logStatistic } from '@/api/admin'
 
 export default {
-  name: 'Logsta',
+  name: 'MemberLogsta',
   components: { BackToTop },
   data() {
     return {
@@ -234,21 +234,23 @@ export default {
   mounted() {},
   methods: {
     logStatistic() {
-      logStatistic().then(res => {
-        this.number = res.data.number
-        this.date = res.data.date
-        this.region = res.data.region
-        this.echartDate(res.data.date)
-        this.echartRegionLine(res.data.region)
-        this.echartRegionPie(res.data.region)
-      })
+      logStatistic()
+        .then(res => {
+          this.number = res.data.number
+          this.date = res.data.date
+          this.region = res.data.region
+          this.echartDate(res.data.date)
+          this.echartRegionLine(res.data.region)
+          this.echartRegionPie(res.data.region)
+        })
+        .catch(() => {})
     },
     echartDateChange() {
-      logStatistic({
-        type: 'date', date: this.date.date
-      }).then(res => {
-        this.echartDate(res.data.date)
-      })
+      logStatistic({ type: 'date', date: this.date.date })
+        .then(res => {
+          this.echartDate(res.data.date)
+        })
+        .catch(() => {})
     },
     echartDate(data) {
       var echart = echarts.init(document.getElementById('echartDate'))
@@ -297,10 +299,12 @@ export default {
         type: 'region',
         date: this.region.date,
         region: this.regionValue
-      }).then(res => {
-        this.echartRegionLine(res.data.region)
-        this.echartRegionPie(res.data.region)
       })
+        .then(res => {
+          this.echartRegionLine(res.data.region)
+          this.echartRegionPie(res.data.region)
+        })
+        .catch(() => {})
     },
     echartRegionLine(data) {
       var echart = echarts.init(document.getElementById('echartRegionLine'))

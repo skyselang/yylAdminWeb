@@ -4,6 +4,7 @@
 
 <script>
 import screenHeight from '@/utils/screen-height'
+
 export default {
   name: 'MapBaidu',
   components: {},

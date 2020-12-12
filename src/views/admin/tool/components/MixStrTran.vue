@@ -4,7 +4,7 @@
       <span>字符串转换</span>
     </div>
     <div class="text item">
-      <el-form ref="strTranRef" :rules="strTranRules" :model="strTranModel" label-width="80px">
+      <el-form ref="strTranRef" :rules="strTranRules" :model="strTranModel" label-width="100px">
         <el-form-item label="字符串" prop="">
           <el-input v-model="strTranModel.str" type="textarea" placeholder="请输入字符串" clearable />
         </el-form-item>
@@ -24,8 +24,8 @@
           <el-input v-model="strTranModel.md5" clearable />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="strTranClear()">清空</el-button>
-          <el-button type="primary" @click="strTranSubmit()">提交</el-button>
+          <el-button @click="strTranClear()">清空</el-button>
+          <el-button type="primary" @click="strTranSubmit()">转换</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -56,17 +56,14 @@ export default {
   created() {},
   methods: {
     strTranClear() {
-      this.strTranModel.str = ''
-      this.strTranModel.len = ''
-      this.strTranModel.lower = ''
-      this.strTranModel.upper = ''
-      this.strTranModel.rev = ''
-      this.strTranModel.md5 = ''
+      this.strTranModel = this.$options.data().strTranModel
     },
     strTranSubmit() {
       this.$refs['strTranRef'].validate(valid => {
         if (valid) {
-          strTran({ str: this.strTranModel.str }).then(res => {
+          strTran({
+            str: this.strTranModel.str
+          }).then(res => {
             this.strTranModel = res.data
           })
         }

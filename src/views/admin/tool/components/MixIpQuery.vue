@@ -24,8 +24,8 @@
           <el-input v-model="ipQueryModel.isp" type="text" />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="ipQueryClear()">清空</el-button>
-          <el-button type="primary" @click="ipQuerySubmit()">提交</el-button>
+          <el-button @click="ipQueryClear()">清空</el-button>
+          <el-button type="primary" @click="ipQuerySubmit()">查询</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -54,17 +54,14 @@ export default {
   created() {},
   methods: {
     ipQueryClear() {
-      this.ipQueryModel.ip = ''
-      this.ipQueryModel.country = ''
-      this.ipQueryModel.province = ''
-      this.ipQueryModel.city = ''
-      this.ipQueryModel.area = ''
-      this.ipQueryModel.isp = ''
+      this.ipQueryModel = this.$options.data().ipQueryModel
     },
     ipQuerySubmit() {
       this.$refs['ipQueryRef'].validate(valid => {
         if (valid) {
-          ipQuery({ ip: this.ipQueryModel.ip }).then(res => {
+          ipQuery({
+            ip: this.ipQueryModel.ip
+          }).then(res => {
             this.ipQueryModel = res.data
           })
         }

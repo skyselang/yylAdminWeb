@@ -5,9 +5,9 @@
       <el-input v-model="userQuery.username" class="filter-item" style="width: 150px;" placeholder="账号" clearable />
       <el-input v-model="userQuery.nickname" class="filter-item" style="width: 150px;" placeholder="昵称" clearable />
       <el-input v-model="userQuery.email" class="filter-item" style="width: 250px;" placeholder="邮箱" clearable />
-      <el-button class="filter-item" type="primary" @click="userSearch">查询</el-button>
-      <el-button class="filter-item" type="primary" style="float:right;margin-left:10px" @click="userAddition">添加</el-button>
-      <el-button class="filter-item" type="primary" style="float:right;" @click="userRefresh">刷新</el-button>
+      <el-button class="filter-item" type="primary" @click="userSearch()">查询</el-button>
+      <el-button class="filter-item" @click="userRefresh()">重置</el-button>
+      <el-button class="filter-item" type="primary" style="float:right;margin-left:10px" @click="userAddition()">添加</el-button>
     </div>
     <!-- 用户列表 -->
     <el-table v-loading="loading" :data="userData" :height="height" style="width: 100%" border @sort-change="userSort">
@@ -29,7 +29,7 @@
           <el-switch v-model="scope.row.is_disable" active-value="1" inactive-value="0" @change="userIsProhibit(scope.row)" />
         </template>
       </el-table-column>
-      <el-table-column label="操作" min-width="282" align="right" fixed="right" class-name="small-padding fixed-width">
+      <el-table-column label="操作" min-width="282" align="right" fixed="right">
         <template slot-scope="{ row }">
           <el-button size="mini" type="primary" @click="userEditRule(row)">权限</el-button>
           <el-button size="mini" type="primary" @click="userPassword(row)">密码</el-button>
@@ -227,25 +227,16 @@ export default {
     this.userList()
   },
   methods: {
-    // 用户重置
-    userReset() {
-      this.userModel = this.$options.data().userModel
-      if (this.$refs['userRef'] !== undefined) {
-        this.$refs['userRef'].resetFields()
-      }
-    },
     // 用户列表
     userList() {
       this.loading = true
-      userList(this.userQuery)
-        .then(res => {
-          this.userData = res.data.list
-          this.userCount = res.data.count
-          this.loading = false
-        })
-        .catch(() => {
-          this.loading = false
-        })
+      userList(this.userQuery).then(res => {
+        this.userData = res.data.list
+        this.userCount = res.data.count
+        this.loading = false
+      }).catch(() => {
+        this.loading = false
+      })
     },
     // 用户查询
     userSearch() {
@@ -270,6 +261,13 @@ export default {
         this.userList()
       }
     },
+    // 用户重置
+    userReset() {
+      this.userModel = this.$options.data().userModel
+      if (this.$refs['userRef'] !== undefined) {
+        this.$refs['userRef'].resetFields()
+      }
+    },
     // 用户添加打开
     userAddition() {
       this.userDialog = true
@@ -281,10 +279,11 @@ export default {
       this.userDialog = true
       this.userDialogTitle = '用户修改：' + row.username
       this.userReset()
-      userInfo({ admin_user_id: row.admin_user_id })
-        .then(res => {
-          this.userModel = res.data
-        })
+      userInfo({
+        admin_user_id: row.admin_user_id
+      }).then(res => {
+        this.userModel = res.data
+      })
     },
     // 用户修改头像
     uploadBefore(file) {
@@ -306,58 +305,57 @@ export default {
         {
           type: 'warning',
           dangerouslyUseHTMLString: true
+        }
+      ).then(() => {
+        this.loading = true
+        userDele({
+          admin_user_id: row.admin_user_id
+        }).then(res => {
+          this.userList()
+          this.$message({ message: res.msg, type: 'success' })
+        }).catch(() => {
+          this.loading = false
         })
-        .then(() => {
-          this.loading = true
-          userDele({ admin_user_id: row.admin_user_id })
-            .then(res => {
-              this.$message({ message: res.msg, type: 'success' })
-              this.userList()
-            })
-            .catch(() => {
-              this.loading = false
-            })
-        })
-        .catch(() => {})
+      })
     },
     // 用户是否管理员
     userIsAdmin(row) {
       this.loading = true
-      userAdmin({ admin_user_id: row.admin_user_id, is_admin: row.is_admin })
-        .then(res => {
-          this.$message({ message: res.msg, type: 'success' })
-          this.userList()
-        })
-        .catch(() => {
-          this.userList()
-        })
+      userAdmin({
+        admin_user_id: row.admin_user_id,
+        is_admin: row.is_admin
+      }).then(res => {
+        this.userList()
+        this.$message({ message: res.msg, type: 'success' })
+      }).catch(() => {
+        this.userList()
+      })
     },
     // 用户是否禁用
     userIsProhibit(row) {
       this.loading = true
-      userDisable(row)
-        .then(res => {
-          this.$message({ message: res.msg, type: 'success' })
-          this.userList()
-        })
-        .catch(() => {
-          this.userList()
-        })
+      userDisable(row).then(res => {
+        this.userList()
+        this.$message({ message: res.msg, type: 'success' })
+      }).catch(() => {
+        this.userList()
+      })
     },
     // 用户权限分配打开
     userEditRule(row) {
       this.userDialogRole = true
-      userRule({ admin_user_id: row.admin_user_id })
-        .then(res => {
-          this.roleData = res.data.role_data
-          this.menuData = res.data.menu_data
-          this.userModel.username = res.data.username
-          this.userModel.nickname = res.data.nickname
-          this.userModel.admin_user_id = row.admin_user_id
-          this.userModel.admin_role_ids = res.data.admin_role_ids
-          this.userModel.admin_menu_ids = res.data.admin_menu_ids
-          this.userModel.menu_ids = res.data.menu_ids
-        })
+      userRule({
+        admin_user_id: row.admin_user_id
+      }).then(res => {
+        this.roleData = res.data.role_data
+        this.menuData = res.data.menu_data
+        this.userModel.username = res.data.username
+        this.userModel.nickname = res.data.nickname
+        this.userModel.admin_user_id = row.admin_user_id
+        this.userModel.admin_role_ids = res.data.admin_role_ids
+        this.userModel.admin_menu_ids = res.data.admin_menu_ids
+        this.userModel.menu_ids = res.data.menu_ids
+      })
     },
     // 用户权限分配取消
     userCancelRule() {
@@ -377,15 +375,13 @@ export default {
             admin_user_id: this.userModel.admin_user_id,
             admin_role_ids: this.userModel.admin_role_ids,
             admin_menu_ids: this.userModel.admin_menu_ids
-          }, 'post')
-            .then(res => {
-              this.userDialogRole = false
-              this.$message({ message: res.msg, type: 'success' })
-              this.userList()
-            })
-            .catch(() => {
-              this.loading = false
-            })
+          }, 'post').then(res => {
+            this.userList()
+            this.userDialogRole = false
+            this.$message({ message: res.msg, type: 'success' })
+          }).catch(() => {
+            this.loading = false
+          })
         }
       })
     },
@@ -410,15 +406,13 @@ export default {
           userPwd({
             admin_user_id: this.userModel.admin_user_id,
             password: this.userModel.password
+          }).then(res => {
+            this.userList()
+            this.userDialogPwd = false
+            this.$message({ message: res.msg, type: 'success' })
+          }).catch(() => {
+            this.loading = false
           })
-            .then(res => {
-              this.userDialogPwd = false
-              this.$message({ message: res.msg, type: 'success' })
-              this.userList()
-            })
-            .catch(() => {
-              this.loading = false
-            })
         }
       })
     },
@@ -442,25 +436,21 @@ export default {
             sort: this.userModel.sort
           }
           if (params.admin_user_id) {
-            userEdit(params)
-              .then(res => {
-                this.userDialog = false
-                this.$message({ message: res.msg, type: 'success' })
-                this.userList()
-              })
-              .catch(() => {
-                this.loading = false
-              })
+            userEdit(params).then(res => {
+              this.userList()
+              this.userDialog = false
+              this.$message({ message: res.msg, type: 'success' })
+            }).catch(() => {
+              this.loading = false
+            })
           } else {
-            userAdd(params)
-              .then(res => {
-                this.userDialog = false
-                this.$message({ message: res.msg, type: 'success' })
-                this.userList()
-              })
-              .catch(() => {
-                this.loading = false
-              })
+            userAdd(params).then(res => {
+              this.userList()
+              this.userDialog = false
+              this.$message({ message: res.msg, type: 'success' })
+            }).catch(() => {
+              this.loading = false
+            })
           }
         }
       })

@@ -2,8 +2,8 @@
   <div class="app-container">
     <!-- 接口添加 -->
     <div class="filter-container" style="text-align:right">
-      <el-button class="filter-item" type="primary" @click="apiRefresh">刷新</el-button>
-      <el-button class="filter-item" type="primary" @click="apiAddition">添加</el-button>
+      <el-button class="filter-item" @click="apiRefresh()">刷新</el-button>
+      <el-button class="filter-item" type="primary" @click="apiAddition()">添加</el-button>
     </div>
     <!-- 接口列表 -->
     <el-table v-loading="loading" :data="apiData" :height="height+100" style="width: 100%" row-key="api_id" border>
@@ -24,7 +24,7 @@
           <el-switch v-if="scope.row.api_url" v-model="scope.row.is_unauth" active-value="1" inactive-value="0" @change="apiIsUnauth(scope.row)" />
         </template>
       </el-table-column>
-      <el-table-column label="操作" min-width="220" align="right" fixed="right" class-name="small-padding fixed-width">
+      <el-table-column label="操作" min-width="220" align="right" fixed="right">
         <template slot-scope="{ row }">
           <el-button size="mini" type="primary" @click="apiAddition(row)">添加</el-button>
           <el-button size="mini" type="primary" @click="apiModify(row)">修改</el-button>
@@ -33,7 +33,7 @@
       </el-table-column>
     </el-table>
     <!-- 接口添加、修改 -->
-    <el-dialog :title="apiDialogTitle" :visible.sync="apiDialog" top="1vh" :before-close="apiCancel">
+    <el-dialog :title="apiDialogTitle" :visible.sync="apiDialog" width="65%" top="1vh" :before-close="apiCancel">
       <el-form ref="apiRef" :rules="apiRules" :model="apiModel" class="dialog-body" label-width="100px" :style="{height:height+70+'px'}">
         <el-form-item label="接口父级" prop="api_pid">
           <el-cascader v-model="apiModel.api_pid" :options="apiData" :props="apiProps" style="width:100%" clearable filterable placeholder="一级接口" @change="apiPidChange" />
@@ -61,10 +61,12 @@ import screenHeight from '@/utils/screen-height'
 import {
   apiList,
   apiAdd,
+  apiInfo,
   apiEdit,
   apiDele,
   apiDisable,
   apiUnauth
+
 } from '@/api/api'
 
 export default {
@@ -158,11 +160,10 @@ export default {
     apiModify(row) {
       this.apiDialog = true
       this.apiDialogTitle = '接口修改：' + row.api_name
-      apiEdit(
-        { api_id: row.api_id }
-      ).then(res => {
-        this.apiModel = res.data
-      })
+      apiInfo({ api_id: row.api_id })
+        .then(res => {
+          this.apiModel = res.data
+        })
     },
     // 接口删除
     apiDelete(row) {
@@ -175,17 +176,16 @@ export default {
         }
       ).then(() => {
         this.loading = true
-        apiDele(
-          { api_id: row.api_id }
-        ).then(res => {
-          this.$message({ message: res.msg, type: 'success' })
-          this.apiList()
-          this.apiReset()
-        })
+        apiDele({ api_id: row.api_id })
+          .then(res => {
+            this.$message({ message: res.msg, type: 'success' })
+            this.apiList()
+            this.apiReset()
+          })
           .catch(() => {
             this.loading = false
           })
-      }).catch(() => {})
+      })
     },
     // 接口父级选择
     apiPidChange(value) {
@@ -193,7 +193,7 @@ export default {
         this.apiModel.api_pid = value[value.length - 1]
       }
     },
-    // 接口添加、修改数据重置
+    // 接口添加、修改重置
     apiReset(row) {
       if (row) {
         this.apiModel = row
@@ -214,16 +214,15 @@ export default {
       this.$refs['apiRef'].validate(valid => {
         if (valid) {
           this.loading = true
+          const params = {
+            api_id: this.apiModel.api_id,
+            api_pid: this.apiModel.api_pid,
+            api_name: this.apiModel.api_name,
+            api_url: this.apiModel.api_url,
+            api_sort: this.apiModel.api_sort
+          }
           if (this.apiModel.api_id) {
-            apiEdit(
-              {
-                api_id: this.apiModel.api_id,
-                api_pid: this.apiModel.api_pid,
-                api_name: this.apiModel.api_name,
-                api_url: this.apiModel.api_url,
-                api_sort: this.apiModel.api_sort,
-                is_disable: this.apiModel.is_disable
-              }, 'post')
+            apiEdit(params)
               .then(res => {
                 this.$message({ message: res.msg, type: 'success' })
                 this.apiReset()
@@ -234,22 +233,15 @@ export default {
                 this.loading = false
               })
           } else {
-            apiAdd(
-              {
-                api_pid: this.apiModel.api_pid,
-                api_name: this.apiModel.api_name,
-                api_url: this.apiModel.api_url,
-                api_sort: this.apiModel.api_sort,
-                is_disable: this.apiModel.is_disable
-              }
-            ).then(res => {
-              this.$message({ message: res.msg, type: 'success' })
-              this.apiReset()
-              this.apiList()
-              this.apiDialog = false
-            }).catch(() => {
-              this.loading = false
-            })
+            apiAdd(params)
+              .then(res => {
+                this.$message({ message: res.msg, type: 'success' })
+                this.apiReset()
+                this.apiList()
+                this.apiDialog = false
+              }).catch(() => {
+                this.loading = false
+              })
           }
         }
       })

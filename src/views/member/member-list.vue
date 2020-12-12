@@ -6,12 +6,18 @@
       <el-input v-model="memberQuery.nickname" class="filter-item" style="width: 150px;" placeholder="昵称" clearable />
       <el-input v-model="memberQuery.phone" class="filter-item" style="width: 150px;" placeholder="手机" clearable />
       <el-input v-model="memberQuery.email" class="filter-item" style="width: 250px;" placeholder="邮箱" clearable />
-      <el-button class="filter-item" type="primary" @click="memberSearch">查询</el-button>
-      <el-button class="filter-item" type="primary" style="float:right;margin-left:10px" @click="memberAddition">添加</el-button>
-      <el-button class="filter-item" type="primary" style="float:right;" @click="memberRefresh">刷新</el-button>
+      <el-select v-model="memberQuery.date_type" class="filter-item" placeholder="日期" style="width:110px;" clearable>
+        <el-option key="create_time" label="注册时间" value="create_time" />
+        <el-option key="login_time" label="登录时间" value="login_time" />
+        <el-option key="update_time" label="更新时间" value="update_time" />
+      </el-select>
+      <el-date-picker v-model="memberQuery.date_range" type="daterange" style="width: 240px;top: -4px;" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd" />
+      <el-button class="filter-item" type="primary" @click="memberSearch()">查询</el-button>
+      <el-button class="filter-item" @click="memberReset()">重置</el-button>
+      <el-button class="filter-item" type="primary" style="float:right;" @click="memberAddition()">添加</el-button>
     </div>
     <!-- 会员列表 -->
-    <el-table v-loading="loading" :data="memberData" :height="height" style="width: 100%" border @sort-change="memberSort">
+    <el-table v-loading="loading" :data="memberData" :height="height" style="width: 100%" border @sort-change="memberSort()">
       <el-table-column prop="member_id" label="ID" min-width="100" sortable="custom" fixed="left" />
       <el-table-column prop="username" label="账号" min-width="120" sortable="custom" />
       <el-table-column prop="nickname" label="昵称" min-width="120" sortable="custom" />
@@ -23,10 +29,10 @@
       <el-table-column prop="sort" label="排序" width="80" sortable="custom" />
       <el-table-column prop="is_disable" label="禁用" min-width="80" sortable="custom" align="center" fixed="right">
         <template slot-scope="scope">
-          <el-switch v-model="scope.row.is_disable" active-value="1" inactive-value="0" @change="userIsProhibit(scope.row)" />
+          <el-switch v-model="scope.row.is_disable" active-value="1" inactive-value="0" @change="memberIsProhibit(scope.row)" />
         </template>
       </el-table-column>
-      <el-table-column label="操作" min-width="220" align="right" fixed="right" class-name="small-padding fixed-width">
+      <el-table-column label="操作" min-width="210" align="right" fixed="right">
         <template slot-scope="{ row }">
           <el-button size="mini" type="primary" @click="memberPassword(row)">密码</el-button>
           <el-button size="mini" type="primary" @click="memberModify(row)">修改</el-button>
@@ -38,7 +44,7 @@
     <pagination v-show="memberCount > 0" :total="memberCount" :page.sync="memberQuery.page" :limit.sync="memberQuery.limit" @pagination="memberList" />
     <!-- 会员添加、修改 -->
     <el-dialog :title="memberDialogTitle" :visible.sync="memberDialog" width="65%" top="1vh" :before-close="memberCancel">
-      <el-form ref="userRef" :model="memberModel" :rules="memberRoles" class="dialog-body" label-width="100px" :style="{height:height+50+'px'}">
+      <el-form ref="memberRef" :model="memberModel" :rules="memberRules" class="dialog-body" label-width="100px" :style="{height:height+50+'px'}">
         <el-form-item v-if="memberModel.member_id" label="头像" prop="avatar">
           <el-avatar shape="circle" fit="contain" :size="100" :src="memberModel.avatar" />
         </el-form-item>
@@ -71,7 +77,7 @@
         <el-form-item v-if="memberModel.member_id" label="登录地区" prop="login_region">
           <el-input v-model="memberModel.login_region" disabled />
         </el-form-item>
-        <el-form-item v-if="memberModel.member_id" label="添加时间" prop="create_time">
+        <el-form-item v-if="memberModel.member_id" label="注册时间" prop="create_time">
           <el-input v-model="memberModel.create_time" disabled />
         </el-form-item>
         <el-form-item v-if="memberModel.member_id" label="更新时间" prop="update_time">
@@ -80,12 +86,12 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="memberCancel">取消</el-button>
-        <el-button type="primary" @click="userSubmit">提交</el-button>
+        <el-button type="primary" @click="memberSubmit">提交</el-button>
       </div>
     </el-dialog>
     <!-- 会员密码重置 -->
-    <el-dialog :title="'密码重置：'+memberModel.username" :visible.sync="memberDialogPwd" width="65%" top="1vh">
-      <el-form ref="rePwdRef" :rules="memberPwdRoles" :model="memberModel" label-width="80px" class="dialog-body" :style="{height:height+50+'px'}">
+    <el-dialog :title="'密码重置：'+memberModel.username" :visible.sync="memberPwdDialog" width="65%" top="1vh">
+      <el-form ref="memberPwdRef" :rules="memberPwdRules" :model="memberModel" label-width="100px" class="dialog-body" :style="{height:height+50+'px'}">
         <el-form-item label="账号">
           <el-input v-model="memberModel.username" clearable disabled />
         </el-form-item>
@@ -98,7 +104,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="memberCancelPwd">取消</el-button>
-        <el-button type="primary" @click="userSubmitPwd">提交</el-button>
+        <el-button type="primary" @click="memberSubmitPwd">提交</el-button>
       </div>
     </el-dialog>
   </div>
@@ -113,9 +119,8 @@ import {
   memberAdd,
   memberEdit,
   memberDele,
-  memberPassword,
-  memberDisable
-
+  memberDisable,
+  memberPassword
 } from '@/api/member'
 import { getAdminUserId, getToken } from '@/utils/auth'
 
@@ -134,7 +139,7 @@ export default {
       },
       memberDialog: false,
       memberDialogTitle: '',
-      memberDialogPwd: false,
+      memberPwdDialog: false,
       memberModel: {
         member_id: '',
         username: '',
@@ -142,10 +147,10 @@ export default {
         password: '',
         phone: '',
         email: '',
+        avatar: '',
         remark: '',
         sort: 10000,
-        login_region: '',
-        is_disable: '0'
+        login_region: ''
       },
       uploadAction:
         process.env.VUE_APP_BASE_API + '/admin/Member/memberAvatar',
@@ -154,11 +159,11 @@ export default {
         AdminUserId: getAdminUserId()
       },
       uploadData: { member_id: '' },
-      memberRoles: {
+      memberRules: {
         username: [{ required: true, message: '请输入账号', trigger: 'blur' }],
         password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
       },
-      memberPwdRoles: {
+      memberPwdRules: {
         password: [{ required: true, message: '请输入新密码', trigger: 'blur' }]
       }
     }
@@ -168,13 +173,6 @@ export default {
     this.memberList()
   },
   methods: {
-    // 会员重置
-    userReset() {
-      this.memberModel = this.$options.data().memberModel
-      if (this.$refs['userRef'] !== undefined) {
-        this.$refs['userRef'].resetFields()
-      }
-    },
     // 会员列表
     memberList() {
       this.loading = true
@@ -193,8 +191,8 @@ export default {
       this.memberQuery.page = 1
       this.memberList()
     },
-    // 会员刷新
-    memberRefresh() {
+    // 会员重置
+    memberReset() {
       this.memberQuery = { page: 1, limit: 13 }
       this.memberList()
     },
@@ -211,22 +209,27 @@ export default {
         this.memberList()
       }
     },
+    // 会员信息重置
+    memberModelReset() {
+      this.memberModel = this.$options.data().memberModel
+      if (this.$refs['memberRef'] !== undefined) {
+        this.$refs['memberRef'].resetFields()
+      }
+    },
     // 会员添加打开
     memberAddition() {
       this.memberDialog = true
       this.memberDialogTitle = '会员添加'
-      this.userReset()
+      this.memberModelReset()
     },
     // 会员修改打开
     memberModify(row) {
       this.memberDialog = true
       this.memberDialogTitle = '会员修改：' + row.username
-      this.userReset()
+      this.memberModelReset()
       memberInfo({ member_id: row.member_id })
         .then(res => {
           this.memberModel = res.data
-        })
-        .catch(() => {
         })
     },
     // 会员修改头像
@@ -261,10 +264,9 @@ export default {
               this.loading = false
             })
         })
-        .catch(() => {})
     },
     // 会员是否禁用
-    userIsProhibit(row) {
+    memberIsProhibit(row) {
       this.loading = true
       memberDisable(row)
         .then(res => {
@@ -277,7 +279,7 @@ export default {
     },
     // 会员密码重置打开
     memberPassword(row) {
-      this.memberDialogPwd = true
+      this.memberPwdDialog = true
       this.memberModel.member_id = row.member_id
       this.memberModel.username = row.username
       this.memberModel.nickname = row.nickname
@@ -285,12 +287,12 @@ export default {
     },
     // 会员密码重置取消
     memberCancelPwd() {
-      this.memberDialogPwd = false
-      this.userReset()
+      this.memberPwdDialog = false
+      this.memberModelReset()
     },
     // 会员密码重置提交
-    userSubmitPwd() {
-      this.$refs['rePwdRef'].validate(valid => {
+    memberSubmitPwd() {
+      this.$refs['memberPwdRef'].validate(valid => {
         if (valid) {
           this.loading = true
           memberPassword({
@@ -298,7 +300,7 @@ export default {
             password: this.memberModel.password
           })
             .then(res => {
-              this.memberDialogPwd = false
+              this.memberPwdDialog = false
               this.$message({ message: res.msg, type: 'success' })
               this.memberList()
             })
@@ -310,19 +312,18 @@ export default {
     },
     // 会员添加、修改取消
     memberCancel() {
-      this.userReset()
+      this.memberModelReset()
       this.memberDialog = false
     },
     // 会员添加、修改提交
-    userSubmit() {
-      this.$refs['userRef'].validate(valid => {
+    memberSubmit() {
+      this.$refs['memberRef'].validate(valid => {
         if (valid) {
           this.loading = true
-          var params = {
+          const params = {
             member_id: this.memberModel.member_id,
             username: this.memberModel.username,
             nickname: this.memberModel.nickname,
-            password: this.memberModel.password,
             phone: this.memberModel.phone,
             email: this.memberModel.email,
             remark: this.memberModel.remark,
@@ -339,6 +340,7 @@ export default {
                 this.loading = false
               })
           } else {
+            params.password = this.memberModel.password
             memberAdd(params)
               .then(res => {
                 this.memberDialog = false

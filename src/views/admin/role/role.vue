@@ -4,9 +4,9 @@
     <div class="filter-container">
       <el-input v-model="roleQuery.role_name" class="filter-item" style="width: 200px;" placeholder="角色" clearable />
       <el-input v-model="roleQuery.role_desc" class="filter-item" style="width: 200px;" placeholder="描述" clearable />
-      <el-button class="filter-item" type="primary" @click="roleSearch">查询</el-button>
-      <el-button class="filter-item" type="primary" style="float:right;margin-left:10px" @click="roleAddition">添加</el-button>
-      <el-button class="filter-item" type="primary" style="float:right;" @click="roleRefresh">刷新</el-button>
+      <el-button class="filter-item" type="primary" @click="roleSearch()">查询</el-button>
+      <el-button class="filter-item" @click="roleRefresh()">重置</el-button>
+      <el-button class="filter-item" type="primary" style="float:right;margin-left:10px" @click="roleAddition()">添加</el-button>
     </div>
     <!-- 角色列表 -->
     <el-table ref="roleTableRef" v-loading="loading" :data="roleData" :height="height" style="width: 100%" border @sort-change="roleSort">
@@ -21,7 +21,7 @@
           <el-switch v-model="scope.row.is_disable" active-value="1" inactive-value="0" @change="roleIsDisable(scope.row)" />
         </template>
       </el-table-column>
-      <el-table-column label="操作" min-width="220" align="right" fixed="right" class-name="small-padding fixed-width">
+      <el-table-column label="操作" min-width="220" align="right" fixed="right">
         <template slot-scope="{ row }">
           <el-button size="mini" type="primary" @click="roleUserShow(row)">用户</el-button>
           <el-button size="mini" type="primary" @click="roleModify(row)">修改</el-button>
@@ -111,9 +111,9 @@ import {
   roleAdd,
   roleEdit,
   roleDele,
+  roleDisable,
   roleUser,
-  roleUserRemove,
-  roleDisable
+  roleUserRemove
 } from '@/api/admin'
 
 export default {
@@ -141,8 +141,7 @@ export default {
         admin_menu_ids: [],
         role_name: '',
         role_desc: '',
-        role_sort: 200,
-        is_disable: '0'
+        role_sort: 200
       },
       roleRules: {
         role_name: [{ required: true, message: '请输入角色名称', trigger: 'blur' }]
@@ -163,17 +162,15 @@ export default {
     // 角色列表
     roleList() {
       this.loading = true
-      roleList(this.roleQuery)
-        .then(res => {
-          this.roleData = res.data.list
-          this.roleCount = res.data.count
-          this.loading = false
+      roleList(this.roleQuery).then(res => {
+        this.roleData = res.data.list
+        this.roleCount = res.data.count
+        this.loading = false
+        this.$nextTick(() => {
+          this.$refs['roleTableRef'].doLayout()
         })
-        .catch(() => {
-          this.loading = false
-        })
-      this.$nextTick(() => {
-        this.$refs['roleTableRef'].doLayout()
+      }).catch(() => {
+        this.loading = false
       })
     },
     // 角色查询
@@ -210,11 +207,12 @@ export default {
     // 角色修改打开
     roleModify(row) {
       this.roleDialog = true
-      roleEdit({ admin_role_id: row.admin_role_id })
-        .then(res => {
-          this.menuData = res.data.menu_data
-          this.roleReset(res.data.admin_role)
-        })
+      roleEdit({
+        admin_role_id: row.admin_role_id
+      }).then(res => {
+        this.menuData = res.data.menu_data
+        this.roleReset(res.data.admin_role)
+      })
     },
     // 角色删除
     roleDelete(row) {
@@ -224,32 +222,28 @@ export default {
         {
           type: 'warning',
           dangerouslyUseHTMLString: true
+        }).then(() => {
+        this.loading = true
+        roleDele({
+          admin_role_id: row.admin_role_id
+        }).then(res => {
+          this.roleReset()
+          this.roleList()
+          this.$message({ message: res.msg, type: 'success' })
+        }).catch(() => {
+          this.loading = false
         })
-        .then(() => {
-          this.loading = true
-          roleDele({ admin_role_id: row.admin_role_id })
-            .then(res => {
-              this.$message({ message: res.msg, type: 'success' })
-              this.roleReset()
-              this.roleList()
-            })
-            .catch(() => {
-              this.loading = false
-            })
-        })
-        .catch(() => { })
+      })
     },
     // 角色是否禁用
     roleIsDisable(row) {
       this.loading = true
-      roleDisable(row)
-        .then(res => {
-          this.$message({ message: res.msg, type: 'success' })
-          this.roleList()
-        })
-        .catch(() => {
-          this.loading = true
-        })
+      roleDisable(row).then(res => {
+        this.roleList()
+        this.$message({ message: res.msg, type: 'success' })
+      }).catch(() => {
+        this.loading = true
+      })
     },
     // 角色菜单选择
     menuCheck(data, node) {
@@ -309,27 +303,23 @@ export default {
         if (valid) {
           this.loading = true
           if (this.roleModel.admin_role_id) {
-            roleEdit(this.roleModel, 'post')
-              .then(res => {
-                this.roleDialog = false
-                this.$message({ message: res.msg, type: 'success' })
-                this.roleList()
-                this.roleReset()
-              })
-              .catch(() => {
-                this.loading = false
-              })
+            roleEdit(this.roleModel, 'post').then(res => {
+              this.roleList()
+              this.roleReset()
+              this.roleDialog = false
+              this.$message({ message: res.msg, type: 'success' })
+            }).catch(() => {
+              this.loading = false
+            })
           } else {
-            roleAdd(this.roleModel, 'post')
-              .then(res => {
-                this.roleDialog = false
-                this.$message({ message: res.msg, type: 'success' })
-                this.roleList()
-                this.roleReset()
-              })
-              .catch(() => {
-                this.loading = false
-              })
+            roleAdd(this.roleModel, 'post').then(res => {
+              this.roleList()
+              this.roleReset()
+              this.roleDialog = false
+              this.$message({ message: res.msg, type: 'success' })
+            }).catch(() => {
+              this.loading = false
+            })
           }
         }
       })
@@ -344,17 +334,15 @@ export default {
     // 用户列表
     roleUser() {
       this.userLoad = true
-      roleUser(this.userQuery)
-        .then(res => {
-          this.userData = res.data.list
-          this.userCount = res.data.count
-          this.userLoad = false
+      roleUser(this.userQuery).then(res => {
+        this.userData = res.data.list
+        this.userCount = res.data.count
+        this.userLoad = false
+        this.$nextTick(() => {
+          this.$refs['userRef'].doLayout()
         })
-        .catch(() => {
-          this.userLoad = false
-        })
-      this.$nextTick(() => {
-        this.$refs['userRef'].doLayout()
+      }).catch(() => {
+        this.userLoad = false
       })
     },
     // 用户排序
@@ -381,16 +369,16 @@ export default {
         }
       ).then(() => {
         this.userLoad = true
-        roleUserRemove(
-          { admin_role_id: this.userQuery.admin_role_id, admin_user_id: row.admin_user_id }
-        ).then(res => {
-          this.$message({ message: res.msg, type: 'success' })
+        roleUserRemove({
+          admin_role_id: this.userQuery.admin_role_id,
+          admin_user_id: row.admin_user_id
+        }).then(res => {
           this.roleUser()
+          this.$message({ message: res.msg, type: 'success' })
+        }).catch(() => {
+          this.userLoad = false
         })
-          .catch(() => {
-            this.userLoad = false
-          })
-      }).catch(() => { })
+      })
     }
   }
 }

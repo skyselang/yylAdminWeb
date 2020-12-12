@@ -4,8 +4,9 @@
 
 <script>
 import screenHeight from '@/utils/screen-height'
+
 export default {
-  name: 'MapPointTencent',
+  name: 'MapTencent',
   components: {},
   data() {
     return {

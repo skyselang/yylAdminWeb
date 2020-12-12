@@ -67,28 +67,24 @@ export default {
     // 刷新
     cacheRefresh() {
       this.cacheLoad = true
-      settingCache()
-        .then(res => {
-          this.cacheModel = res.data
-          this.cacheLoad = false
-          this.$message({ message: res.msg, type: 'success' })
-        })
-        .catch(() => {
-          this.cacheLoad = false
-        })
+      settingCache().then(res => {
+        this.cacheModel = res.data
+        this.cacheLoad = false
+        this.$message({ message: res.msg, type: 'success' })
+      }).catch(() => {
+        this.cacheLoad = false
+      })
     },
     // 清空
     cacheClear() {
       this.cacheLoad = true
-      settingCache({}, 'post')
-        .then(res => {
-          this.cacheGet()
-          this.cacheLoad = false
-          this.$message({ message: res.msg, type: 'success' })
-        })
-        .catch(() => {
-          this.cacheLoad = false
-        })
+      settingCache({}, 'post').then(res => {
+        this.cacheGet()
+        this.cacheLoad = false
+        this.$message({ message: res.msg, type: 'success' })
+      }).catch(() => {
+        this.cacheLoad = false
+      })
     }
   }
 }

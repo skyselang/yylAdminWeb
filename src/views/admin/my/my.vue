@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-tabs v-model="activeName">
+    <el-tabs v-model="actTabName">
       <el-tab-pane v-if="checkPermission(['admin/AdminMy/myInfo'])" label="我的信息" name="info">
         <my-info />
       </el-tab-pane>
@@ -37,10 +37,9 @@ export default {
   components: { MyInfo, MyEdit, MyPwd, MyAvatar, MyLog, MySetting },
   data() {
     return {
-      activeName: 'info'
+      actTabName: 'info'
     }
   },
-  created() { },
   methods: { checkPermission }
 }
 </script>

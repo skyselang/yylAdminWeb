@@ -10,9 +10,9 @@
       <el-input v-model="logQuery.request_keyword" class="filter-item" style="width: 155px;" placeholder="请求IP/地区/ISP" clearable />
       <el-input v-model="logQuery.menu_keyword" class="filter-item" style="width: 280px;" placeholder="菜单链接/名称" clearable />
       <el-date-picker v-model="logQuery.create_time" type="daterange" style="width: 240px;top: -4px;" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd" />
-      <el-button class="filter-item" type="primary" @click="logSearch">查询</el-button>
-      <el-button class="filter-item" type="primary" style="float:right;" @click="logRefresh">刷新</el-button>
-      <el-button class="filter-item" type="primary" style="float:right;" title="日志统计" @click="logStaRouter">统计</el-button>
+      <el-button class="filter-item" type="primary" @click="logSearch()">查询</el-button>
+      <el-button class="filter-item" @click="logRefresh()">重置</el-button>
+      <el-button v-permission="['admin/AdminLog/logStatistic']" class="filter-item" type="primary" style="float:right;" title="日志统计" @click="logStaRouter">统计</el-button>
     </div>
     <!-- 日志列表 -->
     <el-table v-loading="loading" :data="logData" :height="height" style="width: 100%" border @sort-change="logSort">
@@ -26,7 +26,7 @@
       <el-table-column prop="request_region" label="请求地区" min-width="150" />
       <el-table-column prop="request_isp" label="请求ISP" min-width="110" />
       <el-table-column prop="create_time" label="请求时间" min-width="160" sortable="custom" />
-      <el-table-column label="操作" min-width="150" align="right" fixed="right" class-name="small-padding fixed-width">
+      <el-table-column label="操作" min-width="150" align="right" fixed="right">
         <template slot-scope="{ row }">
           <el-button size="mini" type="primary" @click="logDetail(row)">信息</el-button>
           <el-button size="mini" type="danger" @click="logDelete(row)">删除</el-button>
@@ -86,11 +86,13 @@
 <script>
 import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination'
+import permission from '@/directive/permission/index.js' // 权限判断指令
 import { logList, logInfo, logDele } from '@/api/admin'
 
 export default {
   name: 'Log',
   components: { Pagination },
+  directives: { permission },
   data() {
     return {
       height: 680,
@@ -114,15 +116,13 @@ export default {
     // 日志列表
     logLists() {
       this.loading = true
-      logList(this.logQuery)
-        .then(res => {
-          this.logData = res.data.list
-          this.logCount = res.data.count
-          this.loading = false
-        })
-        .catch(() => {
-          this.loading = false
-        })
+      logList(this.logQuery).then(res => {
+        this.logData = res.data.list
+        this.logCount = res.data.count
+        this.loading = false
+      }).catch(() => {
+        this.loading = false
+      })
     },
     // 日志排序
     logSort(sort) {
@@ -144,10 +144,7 @@ export default {
     },
     // 日志统计
     logStaRouter() {
-      this.$router
-        .push({
-          path: '/rule/log-sta'
-        })
+      this.$router.push('/rule/log-sta')
     },
     // 日志刷新
     logRefresh() {
@@ -157,34 +154,32 @@ export default {
     // 日志详情
     logDetail(row) {
       this.loading = true
-      logInfo({ admin_log_id: row.admin_log_id })
-        .then(res => {
-          this.logReset(res.data)
-          this.logDialog = true
-          this.loading = false
-        })
-        .catch(() => {
-          this.loading = false
-        })
+      logInfo({
+        admin_log_id: row.admin_log_id
+      }).then(res => {
+        this.logReset(res.data)
+        this.logDialog = true
+        this.loading = false
+      }).catch(() => {
+        this.loading = false
+      })
     },
     // 日志删除
     logDelete(row) {
       this.$confirm('确定要删除吗？', '提示', {
         type: 'warning'
-      })
-        .then(() => {
-          this.loading = true
-          logDele({ admin_log_id: row.admin_log_id })
-            .then(res => {
-              this.$message({ message: res.msg, type: 'success' })
-              this.logReset()
-              this.logLists()
-            })
-            .catch(() => {
-              this.loading = false
-            })
+      }).then(() => {
+        this.loading = true
+        logDele({
+          admin_log_id: row.admin_log_id
+        }).then(res => {
+          this.logReset()
+          this.logLists()
+          this.$message({ message: res.msg, type: 'success' })
+        }).catch(() => {
+          this.loading = false
         })
-        .catch(() => {})
+      })
     },
     // 日志详情重置
     logReset(row = {}) {
@@ -192,13 +187,13 @@ export default {
     },
     // 日志详情取消
     logCancel() {
-      this.logDialog = false
       this.logReset()
+      this.logDialog = false
     },
     // 日志详情确认
     logSubmit() {
-      this.logDialog = false
       this.logReset()
+      this.logDialog = false
     }
   }
 }

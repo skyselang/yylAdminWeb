@@ -1,21 +1,21 @@
 <template>
   <div>
-    <el-card class="box-card">
+    <el-card v-loading="loading" class="box-card">
       <el-row :gutter="0">
         <el-col :sm="24" :md="12">
-          <el-form ref="usersRef" :rules="usersRules" :model="usersModel" label-width="100px">
+          <el-form ref="userRef" :rules="userRules" :model="userModel" label-width="100px">
             <el-form-item label="账号" prop="username">
-              <el-input v-model="usersModel.username" placeholder="请输入账号" clearable />
+              <el-input v-model="userModel.username" placeholder="请输入账号" clearable />
             </el-form-item>
             <el-form-item label="昵称" prop="nickname">
-              <el-input v-model="usersModel.nickname" placeholder="请输入昵称" clearable />
+              <el-input v-model="userModel.nickname" placeholder="请输入昵称" clearable />
             </el-form-item>
             <el-form-item label="邮箱" prop="email">
-              <el-input v-model="usersModel.email" placeholder="请输入邮箱" clearable />
+              <el-input v-model="userModel.email" placeholder="请输入邮箱" clearable />
             </el-form-item>
             <el-form-item>
-              <el-button @click="usersReset">刷新</el-button>
-              <el-button type="primary" @click="usersSubmit">提交</el-button>
+              <el-button @click="userReset">刷新</el-button>
+              <el-button type="primary" @click="userSubmit">提交</el-button>
             </el-form-item>
           </el-form>
         </el-col>
@@ -34,13 +34,14 @@ export default {
   components: {},
   data() {
     return {
-      usersModel: {
+      loading: false,
+      userModel: {
         admin_user_id: getAdminUserId(),
         username: '',
         nickname: '',
         email: ''
       },
-      usersRules: {
+      userRules: {
         username: [{ required: true, message: '请输入账号', trigger: 'blur' }],
         nickname: [{ required: true, message: '请输入昵称', trigger: 'blur' }]
       }
@@ -51,23 +52,30 @@ export default {
   },
   methods: {
     myEdit() {
-      myEdit({ admin_user_id: this.usersModel.admin_user_id })
-        .then(res => {
-          this.usersModel = res.data
-        })
+      myEdit({
+        admin_user_id: this.userModel.admin_user_id
+      }).then(res => {
+        this.$refs['userRef'].resetFields()
+        this.userModel = res.data
+      })
     },
-    usersReset() {
-      this.$refs['usersRef'].resetFields()
+    userReset() {
+      this.loading = true
       this.myEdit()
+      this.loading = false
     },
-    usersSubmit() {
-      this.$refs['usersRef'].validate(valid => {
+    userSubmit() {
+      this.$refs['userRef'].validate(valid => {
         if (valid) {
-          myEdit(this.usersModel, 'post').then(res => {
-            this.$message({ message: res.msg, type: 'success' })
-            this.usersReset()
+          this.loading = true
+          myEdit(this.userModel, 'post').then(res => {
+            this.userReset()
             store.commit('user/SET_NICKNAME', res.data.nickname)
             store.commit('user/SET_USERNAME', res.data.username)
+            this.loading = false
+            this.$message({ message: res.msg, type: 'success' })
+          }).catch(() => {
+            this.loading = false
           })
         }
       })

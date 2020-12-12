@@ -24,8 +24,8 @@
 </template>
 
 <script>
-import { verify } from '@/api/admin'
 import getPageTitle from '@/utils/get-page-title'
+import { verify } from '@/api/admin'
 
 export default {
   name: 'Login',
@@ -45,15 +45,9 @@ export default {
         verify_code: ''
       },
       loginRules: {
-        username: [
-          { required: true, message: '请输入账号', trigger: 'blur' }
-        ],
-        password: [
-          { required: true, message: '请输入密码', trigger: 'blur' }
-        ],
-        verify_code: [
-          { required: true, message: '请输入验证码', trigger: 'blur' }
-        ]
+        username: [{ required: true, message: '请输入账号', trigger: 'blur' }],
+        password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
+        verify_code: [{ required: true, message: '请输入验证码', trigger: 'blur' }]
       }
     }
   },
@@ -72,20 +66,18 @@ export default {
   created() {
     this.getVerify()
   },
-  mounted() {},
-  destroyed() {},
+  mounted() { },
+  destroyed() { },
   methods: {
     // 验证码配置
     getVerify() {
-      verify()
-        .then(res => {
-          this.verifyShow = res.data.verify_switch
-          if (res.data.verify_switch) {
-            this.verifySrc = res.data.verify_src
-            this.loginModel.verify_id = res.data.verify_id
-          }
-        })
-        .catch(() => {})
+      verify().then(res => {
+        this.verifyShow = res.data.verify_switch
+        if (res.data.verify_switch) {
+          this.verifySrc = res.data.verify_src
+          this.loginModel.verify_id = res.data.verify_id
+        }
+      })
     },
     // 验证码刷新
     verifyRefresh() {
@@ -96,23 +88,18 @@ export default {
     },
     // 登录
     handleLogin() {
-      this.$refs.loginRef.validate(valid => {
+      this.$refs['loginRef'].validate(valid => {
         if (valid) {
           this.loading = true
-          this.$store
-            .dispatch('user/login', this.loginModel)
-            .then(() => {
-              this.$router
-                .push({
-                  path: this.redirect || '/',
-                  query: this.otherQuery
-                })
-                .catch(() => {})
-              this.loading = false
+          this.$store.dispatch('user/login', this.loginModel).then(() => {
+            this.$router.push({
+              path: this.redirect || '/',
+              query: this.otherQuery
             })
-            .catch(() => {
-              this.loading = false
-            })
+            this.loading = false
+          }).catch(() => {
+            this.loading = false
+          })
         } else {
           return false
         }

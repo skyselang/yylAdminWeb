@@ -67,15 +67,8 @@ import MixIpQuery from './components/MixIpQuery'
 
 export default {
   name: 'ToolMix',
-  components: {
-    MixStrTran,
-    MixStrRand,
-    MixTimeTran,
-    MixQrcode,
-    MixByteTran,
-    MixIpQuery
-  },
   directives: { permission },
+  components: { MixStrTran, MixStrRand, MixTimeTran, MixQrcode, MixByteTran, MixIpQuery },
   data() {
     return {
       toolTabName: 'string'

@@ -23,23 +23,26 @@ export function menuAdd(data) {
   })
 }
 /**
+ * 菜单信息
+ * @param {array} data 请求数据
+ */
+export function menuInfo(data) {
+  return request({
+    url: '/admin/AdminMenu/menuInfo',
+    method: 'get',
+    params: data
+  })
+}
+/**
  * 菜单修改
  * @param {array} data 请求数据
  */
-export function menuEdit(data, method = 'get') {
-  if (method === 'get') {
-    return request({
-      url: '/admin/AdminMenu/menuEdit',
-      method: 'get',
-      params: data
-    })
-  } else {
-    return request({
-      url: '/admin/AdminMenu/menuEdit',
-      method: 'post',
-      data
-    })
-  }
+export function menuEdit(data) {
+  return request({
+    url: '/admin/AdminMenu/menuEdit',
+    method: 'post',
+    data
+  })
 }
 /**
  * 菜单删除

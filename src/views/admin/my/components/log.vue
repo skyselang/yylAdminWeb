@@ -9,8 +9,8 @@
       <el-input v-model="logQuery.request_keyword" class="filter-item" style="width: 155px;" placeholder="请求IP/地区/ISP" clearable />
       <el-input v-model="logQuery.menu_keyword" class="filter-item" style="width: 280px;" placeholder="菜单链接/名称" clearable />
       <el-date-picker v-model="logQuery.create_time" type="daterange" style="width: 240px;top: -4px;" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd" />
-      <el-button class="filter-item" type="primary" @click="logSearch">查询</el-button>
-      <el-button class="filter-item" type="primary" style="float:right;" @click="logRefresh">刷新</el-button>
+      <el-button class="filter-item" type="primary" @click="logSearch()">查询</el-button>
+      <el-button class="filter-item" @click="logRefresh()">重置</el-button>
     </div>
     <!-- 日志列表 -->
     <el-table v-loading="loading" :data="logData" :height="height-50" style="width: 100%" border @sort-change="logSort">
@@ -58,15 +58,13 @@ export default {
     // 用户列表
     myLogList() {
       this.loading = true
-      myLog(this.logQuery)
-        .then(res => {
-          this.logData = res.data.list
-          this.logCount = res.data.count
-          this.loading = false
-        })
-        .catch(() => {
-          this.loading = false
-        })
+      myLog(this.logQuery).then(res => {
+        this.logData = res.data.list
+        this.logCount = res.data.count
+        this.loading = false
+      }).catch(() => {
+        this.loading = false
+      })
     },
     // 用户查询
     logSearch() {

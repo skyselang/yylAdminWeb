@@ -10,8 +10,9 @@
       <el-input v-model="logQuery.request_keyword" class="filter-item" style="width: 155px;" placeholder="请求IP/地区/ISP" clearable />
       <el-input v-model="logQuery.api_keyword" class="filter-item" style="width: 280px;" placeholder="接口链接/名称" clearable />
       <el-date-picker v-model="logQuery.create_time" type="daterange" style="width: 240px;top: -4px;" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd" />
-      <el-button class="filter-item" type="primary" @click="logSearch">查询</el-button>
-      <el-button class="filter-item" type="primary" style="float:right;" @click="logRefresh">刷新</el-button>
+      <el-button class="filter-item" type="primary" @click="logSearch()">查询</el-button>
+      <el-button class="filter-item" @click="logReset()">重置</el-button>
+      <el-button v-permission="['admin/Log/logStatistic']" class="filter-item" type="primary" style="float:right;" title="会员日志统计" @click="logStaRouter">统计</el-button>
     </div>
     <!-- 日志列表 -->
     <el-table v-loading="loading" :data="logData" :height="height" style="width: 100%" border @sort-change="logSort">
@@ -33,10 +34,10 @@
       </el-table-column>
     </el-table>
     <!-- 日志分页 -->
-    <pagination v-show="logCount > 0" :total="logCount" :page.sync="logQuery.page" :limit.sync="logQuery.limit" @pagination="logLists" />
+    <pagination v-show="logCount > 0" :total="logCount" :page.sync="logQuery.page" :limit.sync="logQuery.limit" @pagination="logList" />
     <!-- 日志详情 -->
-    <el-dialog :title="'日志信息：' + logModel.log_id" :visible.sync="logDialog" width="65%" top="1vh" :before-close="logCancel">
-      <el-form ref="formRef" :rules="logRules" :model="logModel" label-width="100px" class="dialog-body" :style="{height:height+60+'px'}">
+    <el-dialog :title="'日志详情：' + logModel.log_id" :visible.sync="logDialog" width="65%" top="1vh" :before-close="logCancel">
+      <el-form ref="logRef" :rules="logRules" :model="logModel" label-width="100px" class="dialog-body" :style="{height:height+60+'px'}">
         <el-form-item label="会员ID" prop="member_id">
           <el-input v-model="logModel.member_id" />
         </el-form-item>
@@ -85,11 +86,13 @@
 <script>
 import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination'
+import permission from '@/directive/permission/index.js' // 权限判断指令
 import { logList, logInfo, logDele } from '@/api/log'
 
 export default {
-  name: 'MLogList',
+  name: 'MemberLog',
   components: { Pagination },
+  directives: { permission },
   data() {
     return {
       height: 680,
@@ -98,8 +101,7 @@ export default {
       logCount: 0,
       logQuery: {
         page: 1,
-        limit: 13,
-        type: ''
+        limit: 13
       },
       logDialog: false,
       logModel: {},
@@ -108,11 +110,11 @@ export default {
   },
   created() {
     this.height = screenHeight()
-    this.logLists()
+    this.logList()
   },
   methods: {
     // 日志列表
-    logLists() {
+    logList() {
       this.loading = true
       logList(this.logQuery)
         .then(res => {
@@ -124,35 +126,39 @@ export default {
           this.loading = false
         })
     },
+    // 日志查询
+    logSearch() {
+      this.logQuery.page = 1
+      this.logList()
+    },
+    // 日志重置
+    logReset() {
+      this.logQuery = this.$options.data().logQuery
+      this.logList()
+    },
     // 日志排序
     logSort(sort) {
       this.logQuery.sort_field = sort.prop
       this.logQuery.sort_type = ''
       if (sort.order === 'ascending') {
         this.logQuery.sort_type = 'asc'
-        this.logLists()
+        this.logList()
       }
       if (sort.order === 'descending') {
         this.logQuery.sort_type = 'desc'
-        this.logLists()
+        this.logList()
       }
     },
-    // 日志查询
-    logSearch() {
-      this.logQuery.page = 1
-      this.logLists()
-    },
-    // 日志刷新
-    logRefresh() {
-      this.logQuery = this.$options.data().logQuery
-      this.logLists()
+    // 日志统计
+    logStaRouter() {
+      this.$router.push('/member/member-logsta')
     },
     // 日志详情
     logDetail(row) {
       this.loading = true
       logInfo({ log_id: row.log_id })
         .then(res => {
-          this.logReset(res.data)
+          this.logModelReset(res.data)
           this.logDialog = true
           this.loading = false
         })
@@ -170,28 +176,27 @@ export default {
           logDele({ log_id: row.log_id })
             .then(res => {
               this.$message({ message: res.msg, type: 'success' })
-              this.logReset()
-              this.logLists()
+              this.logModelReset()
+              this.logList()
             })
             .catch(() => {
               this.loading = false
             })
         })
-        .catch(() => {})
     },
     // 日志详情重置
-    logReset(row = {}) {
+    logModelReset(row = {}) {
       this.logModel = row
     },
     // 日志详情取消
     logCancel() {
       this.logDialog = false
-      this.logReset()
+      this.logModelReset()
     },
     // 日志详情确认
     logSubmit() {
       this.logDialog = false
-      this.logReset()
+      this.logModelReset()
     }
   }
 }

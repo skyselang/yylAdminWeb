@@ -2,13 +2,13 @@
   <div class="app-container">
     <!-- 菜单添加 -->
     <div class="filter-container" style="text-align:right">
-      <el-button class="filter-item" type="primary" @click="menuRefresh">刷新</el-button>
-      <el-button class="filter-item" type="primary" @click="menuAddition">添加</el-button>
+      <el-button class="filter-item" @click="menuRefresh()">刷新</el-button>
+      <el-button class="filter-item" type="primary" @click="menuAddition()">添加</el-button>
     </div>
     <!-- 菜单列表 -->
     <el-table v-loading="loading" :data="menuData" :height="height+100" style="width: 100%" row-key="admin_menu_id" border>
       <el-table-column prop="menu_name" label="菜单名称" min-width="220" fixed="left" />
-      <el-table-column prop="menu_url" label="菜单链接" min-width="260" @click="menuCellDblclick(menu_url)" />
+      <el-table-column prop="menu_url" label="菜单链接" min-width="260" />
       <el-table-column prop="menu_sort" label="菜单排序" min-width="90" />
       <el-table-column prop="admin_menu_id" label="ID" min-width="90" />
       <el-table-column prop="menu_pid" label="PID" min-width="90" />
@@ -24,7 +24,7 @@
           <el-switch v-if="scope.row.menu_url" v-model="scope.row.is_unauth" active-value="1" inactive-value="0" @change="menuIsUnauth(scope.row)" />
         </template>
       </el-table-column>
-      <el-table-column label="操作" min-width="352" align="right" fixed="right" class-name="small-padding fixed-width">
+      <el-table-column label="操作" min-width="352" align="right" fixed="right">
         <template slot-scope="{ row }">
           <el-button size="mini" type="primary" @click="menuRoleShow(row)">角色</el-button>
           <el-button size="mini" type="primary" @click="menuUserShow(row,'admin_menu_id')">用户</el-button>
@@ -110,6 +110,7 @@ import Pagination from '@/components/Pagination'
 import {
   menuList,
   menuAdd,
+  menuInfo,
   menuEdit,
   menuDele,
   menuDisable,
@@ -173,14 +174,12 @@ export default {
     // 菜单列表
     menuList() {
       this.loading = true
-      menuList()
-        .then(res => {
-          this.menuData = res.data.list
-          this.loading = false
-        })
-        .catch(() => {
-          this.loading = false
-        })
+      menuList().then(res => {
+        this.menuData = res.data.list
+        this.loading = false
+      }).catch(() => {
+        this.loading = false
+      })
     },
     // 菜单刷新
     menuRefresh() {
@@ -189,29 +188,25 @@ export default {
     // 菜单是否禁用
     menuIsProhibit(row) {
       this.loading = true
-      menuDisable(
-        {
-          admin_menu_id: row.admin_menu_id,
-          is_disable: row.is_disable
-        }
-      ).then(res => {
-        this.$message({ message: res.msg, type: 'success' })
+      menuDisable({
+        admin_menu_id: row.admin_menu_id,
+        is_disable: row.is_disable
+      }).then(res => {
         this.menuList()
+        this.$message({ message: res.msg, type: 'success' })
       }).catch(() => {
         this.loading = false
       })
     },
-    // 菜单是否无需权限
+    // 菜单无需权限
     menuIsUnauth(row) {
       this.loading = true
-      menuUnauth(
-        {
-          admin_menu_id: row.admin_menu_id,
-          is_unauth: row.is_unauth
-        }
-      ).then(res => {
-        this.$message({ message: res.msg, type: 'success' })
+      menuUnauth({
+        admin_menu_id: row.admin_menu_id,
+        is_unauth: row.is_unauth
+      }).then(res => {
         this.menuList()
+        this.$message({ message: res.msg, type: 'success' })
       }).catch(() => {
         this.loading = false
       })
@@ -229,9 +224,9 @@ export default {
     menuModify(row) {
       this.menuDialog = true
       this.menuDialogTitle = '菜单修改：' + row.menu_name
-      menuEdit(
-        { admin_menu_id: row.admin_menu_id }
-      ).then(res => {
+      menuInfo({
+        admin_menu_id: row.admin_menu_id
+      }).then(res => {
         this.menuModel = res.data
       })
     },
@@ -246,17 +241,16 @@ export default {
         }
       ).then(() => {
         this.loading = true
-        menuDele(
-          { admin_menu_id: row.admin_menu_id }
-        ).then(res => {
-          this.$message({ message: res.msg, type: 'success' })
+        menuDele({
+          admin_menu_id: row.admin_menu_id
+        }).then(res => {
           this.menuList()
           this.menuReset()
+          this.$message({ message: res.msg, type: 'success' })
+        }).catch(() => {
+          this.loading = false
         })
-          .catch(() => {
-            this.loading = false
-          })
-      }).catch(() => {})
+      })
     },
     // 菜单父级选择
     menuPidChange(value) {
@@ -285,39 +279,28 @@ export default {
       this.$refs['menuRef'].validate(valid => {
         if (valid) {
           this.loading = true
-          if (this.menuModel.admin_menu_id) {
-            menuEdit(
-              {
-                admin_menu_id: this.menuModel.admin_menu_id,
-                menu_pid: this.menuModel.menu_pid,
-                menu_name: this.menuModel.menu_name,
-                menu_url: this.menuModel.menu_url,
-                menu_sort: this.menuModel.menu_sort,
-                is_disable: this.menuModel.is_disable
-              }, 'post')
-              .then(res => {
-                this.$message({ message: res.msg, type: 'success' })
-                this.menuReset()
-                this.menuList()
-                this.menuDialog = false
-              })
-              .catch(() => {
-                this.loading = false
-              })
-          } else {
-            menuAdd(
-              {
-                menu_pid: this.menuModel.menu_pid,
-                menu_name: this.menuModel.menu_name,
-                menu_url: this.menuModel.menu_url,
-                menu_sort: this.menuModel.menu_sort,
-                is_disable: this.menuModel.is_disable
-              }
-            ).then(res => {
-              this.$message({ message: res.msg, type: 'success' })
+          const params = {
+            admin_menu_id: this.menuModel.admin_menu_id,
+            menu_pid: this.menuModel.menu_pid,
+            menu_name: this.menuModel.menu_name,
+            menu_url: this.menuModel.menu_url,
+            menu_sort: this.menuModel.menu_sort
+          }
+          if (params.admin_menu_id) {
+            menuEdit(params).then(res => {
               this.menuReset()
               this.menuList()
               this.menuDialog = false
+              this.$message({ message: res.msg, type: 'success' })
+            }).catch(() => {
+              this.loading = false
+            })
+          } else {
+            menuAdd(params).then(res => {
+              this.menuReset()
+              this.menuList()
+              this.menuDialog = false
+              this.$message({ message: res.msg, type: 'success' })
             }).catch(() => {
               this.loading = false
             })
@@ -335,17 +318,15 @@ export default {
     // 菜单角色列表
     menuRoleList() {
       this.roleLoad = true
-      menuRole(this.roleQuery)
-        .then(res => {
-          this.roleData = res.data.list
-          this.roleCount = res.data.count
-          this.roleLoad = false
+      menuRole(this.roleQuery).then(res => {
+        this.roleData = res.data.list
+        this.roleCount = res.data.count
+        this.roleLoad = false
+        this.$nextTick(() => {
+          this.$refs['roleRef'].doLayout()
         })
-        .catch(() => {
-          this.roleLoad = false
-        })
-      this.$nextTick(() => {
-        this.$refs['roleRef'].doLayout()
+      }).catch(() => {
+        this.roleLoad = false
       })
     },
     // 菜单角色排序
@@ -372,16 +353,16 @@ export default {
         }
       ).then(() => {
         this.roleLoad = true
-        menuRoleRemove(
-          { admin_menu_id: this.roleQuery.admin_menu_id, admin_role_id: row.admin_role_id }
-        ).then(res => {
-          this.$message({ message: res.msg, type: 'success' })
+        menuRoleRemove({
+          admin_menu_id: this.roleQuery.admin_menu_id,
+          admin_role_id: row.admin_role_id
+        }).then(res => {
           this.menuRoleList()
+          this.$message({ message: res.msg, type: 'success' })
+        }).catch(() => {
+          this.roleLoad = false
         })
-          .catch(() => {
-            this.roleLoad = false
-          })
-      }).catch(() => {})
+      })
     },
     // 菜单用户显示
     menuUserShow(row, type = 'admin_role_id') {
@@ -400,17 +381,15 @@ export default {
     // 菜单用户列表
     menuUserList() {
       this.userLoad = true
-      menuUser(this.userQuery)
-        .then(res => {
-          this.userData = res.data.list
-          this.userCount = res.data.count
-          this.userLoad = false
+      menuUser(this.userQuery).then(res => {
+        this.userData = res.data.list
+        this.userCount = res.data.count
+        this.userLoad = false
+        this.$nextTick(() => {
+          this.$refs['userRef'].doLayout()
         })
-        .catch(() => {
-          this.userLoad = false
-        })
-      this.$nextTick(() => {
-        this.$refs['userRef'].doLayout()
+      }).catch(() => {
+        this.userLoad = false
       })
     },
     // 菜单用户排序
@@ -437,20 +416,16 @@ export default {
         }
       ).then(() => {
         this.userLoad = true
-        menuUserRemove(
-          { admin_menu_id: this.userQuery.admin_menu_id, admin_user_id: row.admin_user_id }
-        ).then(res => {
-          this.$message({ message: res.msg, type: 'success' })
+        menuUserRemove({
+          admin_menu_id: this.userQuery.admin_menu_id,
+          admin_user_id: row.admin_user_id
+        }).then(res => {
           this.menuUserList()
+          this.$message({ message: res.msg, type: 'success' })
+        }).catch(() => {
+          this.userLoad = false
         })
-          .catch(() => {
-            this.userLoad = false
-          })
-      }).catch(() => {})
-    },
-    // 菜单单元格双击
-    menuCellDblclick(row, column, cell, event) {
-      console.log(row)
+      })
     }
   }
 }

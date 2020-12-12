@@ -4,7 +4,7 @@
       <span>随机字符串</span>
     </div>
     <div class="text item">
-      <el-form ref="strRandRef" :rules="strRandRules" :model="strRandModel" label-position="right" label-width="80px">
+      <el-form ref="strRandRef" :rules="strRandRules" :model="strRandModel" label-position="right" label-width="100px">
         <el-form-item label="所用字符" prop="ids">
           <el-checkbox-group v-model="strRandModel.ids" style="width:100px;">
             <el-checkbox v-for="item in strRandModel.idss" :key="item.id" :label="item.id">
@@ -23,7 +23,7 @@
           <el-input v-model="strRandModel.str" type="textarea" rows="4" clearable />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="strRandCopy(strRandModel.str, $event)">复制</el-button>
+          <el-button @click="strRandCopy(strRandModel.str, $event)">复制</el-button>
           <el-button type="primary" @click="strRandSubmit()">生成</el-button>
         </el-form-item>
       </el-form>
@@ -74,10 +74,7 @@ export default {
       if (text) {
         clip(text, event)
       } else {
-        this.$message({
-          message: '请生成随机字符串',
-          type: 'error'
-        })
+        this.$message({ message: '请生成随机字符串', type: 'error' })
       }
     },
     strRandSubmit() {

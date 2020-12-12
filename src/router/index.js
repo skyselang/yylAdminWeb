@@ -23,9 +23,10 @@ import Layout from '@/layout'
  * // 你可以设置 alwaysShow: true，这样它就会忽略之前定义的规则，一直显示根路由
  * alwaysShow: true
  *
- * name: 'router-name' // 设定路由的名字，一定要填写不然使用<keep-alive>时会出现各种问题
+ * // 设定路由的名字，一定要填写不然使用<keep-alive>时会出现各种问题
+ * name: 'router-name'
  * meta: {
- *   roles: ['admin', 'editor'] // 设置该路由进入的权限（菜单链接），支持多个权限叠加
+ *   roles: ['admin/Index/index'] // 设置该路由进入的权限（菜单链接），支持多个权限叠加
  *   title: 'title' // 设置该路由在侧边栏和面包屑中展示的名字
  *   icon: 'el-icon-x' // 设置该路由的图标，element-ui 的 icon
  *   noCache: true // 如果设置为true，则不会被 <keep-alive> 缓存(默认 false)
@@ -109,7 +110,7 @@ export const asyncRoutes = [
     meta: {
       title: '会员管理',
       icon: 'el-icon-menu',
-      roles: ['admin/Member/memberList']
+      roles: ['admin/Member/memberList', 'admin/Log/logList', 'admin/Log/logStatistic']
     },
     redirect: 'noRedirect',
     component: Layout,
@@ -124,64 +125,28 @@ export const asyncRoutes = [
           roles: ['admin/Member/memberList']
         },
         component: () => import('@/views/member/member-list')
-      }
-    ]
-  },
-  {
-    path: '/mlog',
-    name: 'MLog',
-    meta: {
-      title: '会员日志',
-      icon: 'el-icon-menu',
-      roles: ['admin/Log/logList']
-    },
-    redirect: 'noRedirect',
-    component: Layout,
-    alwaysShow: true,
-    children: [
+      },
       {
-        path: 'mlog-list',
-        name: 'MLogList',
+        path: 'member-log',
+        name: 'MemberLog',
         meta: {
           title: '会员日志列表',
           icon: 'el-icon-s-grid',
           roles: ['admin/Log/logList']
         },
-        component: () => import('@/views/mlog/mlog-list')
+        component: () => import('@/views/member/member-log')
       },
       {
-        path: 'member-sta',
-        name: 'MLogSta',
+        path: 'member-logsta',
+        name: 'MemberLogsta',
         meta: {
           title: '会员日志统计',
           icon: 'el-icon-s-grid',
-          roles: ['admin/Log/logStatistic']
+          roles: ['admin/Log/logStatistic'],
+          activeMenu: '/member/member-log'
         },
-        component: () => import('@/views/mlog/mlog-sta')
-      }
-    ]
-  },
-  {
-    path: '/api',
-    name: 'Api',
-    meta: {
-      title: '接口管理',
-      icon: 'el-icon-menu',
-      roles: ['admin/Api/apiList']
-    },
-    redirect: 'noRedirect',
-    component: Layout,
-    alwaysShow: true,
-    children: [
-      {
-        path: 'api-list',
-        name: 'ApiList',
-        meta: {
-          title: '接口列表',
-          icon: 'el-icon-s-grid',
-          roles: ['admin/Api/apiList']
-        },
-        component: () => import('@/views/api/api-list')
+        component: () => import('@/views/member/member-logsta'),
+        hidden: true
       }
     ]
   },
@@ -209,6 +174,30 @@ export const asyncRoutes = [
       }
     ]
   },
+  {
+    path: '/index',
+    name: 'Index',
+    meta: {
+      title: '应用管理',
+      icon: 'el-icon-menu',
+      roles: ['admin/Api/apiList']
+    },
+    redirect: 'noRedirect',
+    component: Layout,
+    alwaysShow: true,
+    children: [
+      {
+        path: 'api-list',
+        name: 'ApiList',
+        meta: {
+          title: '接口列表',
+          icon: 'el-icon-s-grid',
+          roles: ['admin/Api/apiList']
+        },
+        component: () => import('@/views/api/api-list')
+      }
+    ]
+  },
 
   {
     path: '/rule',
@@ -216,7 +205,7 @@ export const asyncRoutes = [
     meta: {
       title: '权限管理',
       icon: 'el-icon-lock',
-      roles: ['admin/AdminMenu/menuList', 'admin/AdminRole/roleList', 'admin/AdminUser/userList']
+      roles: ['admin/AdminMenu/menuList', 'admin/AdminRole/roleList', 'admin/AdminUser/userList', 'admin/AdminLog/logList']
     },
     redirect: 'noRedirect',
     component: Layout,
@@ -265,14 +254,14 @@ export const asyncRoutes = [
       {
         path: 'log-sta',
         name: 'LogSta',
-        hidden: true,
         meta: {
           title: '日志统计',
           icon: 'el-icon-s-data',
           roles: ['admin/AdminLog/logStatistic'],
           activeMenu: '/rule/log'
         },
-        component: () => import('@/views/admin/log/logsta')
+        component: () => import('@/views/admin/log/logsta'),
+        hidden: true
       },
       {
         path: 'my',
