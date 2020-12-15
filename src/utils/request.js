@@ -1,13 +1,7 @@
 import axios from 'axios'
-import {
-  MessageBox,
-  Message
-} from 'element-ui'
+import { Message, MessageBox } from 'element-ui'
 import store from '@/store'
-import {
-  getToken,
-  getAdminUserId
-} from '@/utils/auth'
+import { getToken, getAdminUserId } from '@/utils/auth'
 
 // 创建axios实例
 const service = axios.create({
@@ -20,11 +14,9 @@ const service = axios.create({
 service.interceptors.request.use(
   config => {
     // 在发送请求之前做些什么
-
     if (store.getters.token) {
-      // 让每个请求头部带上token
-      // AdminToken是token自定义头部键名
-      // 可以根据实际情况修改
+      // 让每个请求头部带上token、userid
+      // AdminToken、AdminUserId是自定义键名，可根据实际情况修改
       config.headers['AdminToken'] = getToken()
       config.headers['AdminUserId'] = getAdminUserId()
     }
@@ -32,7 +24,6 @@ service.interceptors.request.use(
   },
   error => {
     // 对请求错误做些什么
-    console.log(error) // 用于调试
     return Promise.reject(error)
   }
 )
@@ -40,20 +31,14 @@ service.interceptors.request.use(
 // 响应拦截器
 service.interceptors.response.use(
   /**
-   * 如果您想获取http信息，如头部或状态
-   * 请返回response=>response
-   */
-
-  /**
-   * 通过自定义代码确定请求状态
-   * 这里只是一个例子
-   * 您还可以通过HTTP状态代码来判断状态
+   * 通过接口返回码确定返回状态
+   * 还可以通过HTTP状态代码来判断请求状态
    */
   response => {
     // 对响应数据做点什么
     const res = response.data
 
-    // 如果自定义代码不是200，则判断为错误
+    // 如果返回码不是200，则判断为错误
     if (res.code !== 200) {
       Message({
         message: res.msg || 'Error',
@@ -61,7 +46,7 @@ service.interceptors.response.use(
         duration: 5 * 1000
       })
 
-      // 401:token无效；
+      // 返回码401:token无效
       if (res.code === 401) {
         // 重新登录
         MessageBox.confirm(res.msg, '提示', {
@@ -69,10 +54,9 @@ service.interceptors.response.use(
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          store.dispatch('user/resetToken')
-            .then(() => {
-              location.reload()
-            })
+          store.dispatch('user/resetToken').then(() => {
+            location.reload()
+          })
         })
       }
       return Promise.reject(new Error(res.msg || 'Error'))
@@ -82,7 +66,6 @@ service.interceptors.response.use(
   },
   error => {
     // 对响应错误做点什么
-    console.log('err' + error) // 用于调试
     Message({
       message: error.message,
       type: 'error',
