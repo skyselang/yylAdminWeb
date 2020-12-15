@@ -1,9 +1,9 @@
 module.exports = {
-  // 标题
+  /**
+   * @type {string}
+   * @description 系统名称
+   */
   title: 'yylAdmin',
-
-  // logo
-  logo: '/static/img/logo.png',
 
   /**
    * @type {boolean} true | false
@@ -25,7 +25,7 @@ module.exports = {
 
   /**
    * @type {boolean} true | false
-   * @description 是否在侧边栏中显示logo
+   * @description 是否在侧边栏中显示logo、名称
    */
   sidebarLogo: true
 }

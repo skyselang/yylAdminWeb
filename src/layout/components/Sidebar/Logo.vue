@@ -15,6 +15,8 @@
 
 <script>
 import defaultSettings from '@/settings'
+import logo from '@/assets/logo/logo.png'
+
 export default {
   name: 'SidebarLogo',
   props: {
@@ -26,7 +28,7 @@ export default {
   data() {
     return {
       title: defaultSettings.title,
-      logo: defaultSettings.logo
+      logo: logo
     }
   }
 }

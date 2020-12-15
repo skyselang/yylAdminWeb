@@ -11,7 +11,7 @@
         <el-form-item label="固定头部">
           <el-switch v-model="fixedHeader" class="drawer-switch" />
         </el-form-item>
-        <el-form-item label="Logo标题">
+        <el-form-item label="Logo名称">
           <el-switch v-model="sidebarLogo" class="drawer-switch" />
         </el-form-item>
       </el-form>
