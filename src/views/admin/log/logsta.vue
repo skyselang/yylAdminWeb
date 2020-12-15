@@ -176,7 +176,14 @@
 </template>
 
 <script>
-import echarts from 'echarts'
+// ECharts
+var echarts = require('echarts/lib/echarts')
+require('echarts/lib/chart/line')
+require('echarts/lib/chart/bar')
+require('echarts/lib/chart/pie')
+require('echarts/lib/component/tooltip')
+require('echarts/lib/component/legend')
+require('echarts/lib/component/title')
 import BackToTop from '@/components/BackToTop'
 import { logStatistic } from '@/api/admin'
 
@@ -369,8 +376,7 @@ export default {
         legend: {
           orient: 'vertical',
           left: '3%',
-          top: '20px',
-          data: data.x_data
+          top: '20px'
         },
         series: [
           {

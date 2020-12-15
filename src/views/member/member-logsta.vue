@@ -176,9 +176,16 @@
 </template>
 
 <script>
-import { logStatistic } from '@/api/log'
-import echarts from 'echarts'
+// ECharts
+var echarts = require('echarts/lib/echarts')
+require('echarts/lib/chart/line')
+require('echarts/lib/chart/bar')
+require('echarts/lib/chart/pie')
+require('echarts/lib/component/tooltip')
+require('echarts/lib/component/legend')
+require('echarts/lib/component/title')
 import BackToTop from '@/components/BackToTop'
+import { logStatistic } from '@/api/log'
 
 export default {
   name: 'MemberLogsta',
@@ -234,23 +241,21 @@ export default {
   mounted() {},
   methods: {
     logStatistic() {
-      logStatistic()
-        .then(res => {
-          this.number = res.data.number
-          this.date = res.data.date
-          this.region = res.data.region
-          this.echartDate(res.data.date)
-          this.echartRegionLine(res.data.region)
-          this.echartRegionPie(res.data.region)
-        })
-        .catch(() => {})
+      logStatistic().then(res => {
+        this.number = res.data.number
+        this.date = res.data.date
+        this.region = res.data.region
+        this.echartDate(res.data.date)
+        this.echartRegionLine(res.data.region)
+        this.echartRegionPie(res.data.region)
+      })
     },
     echartDateChange() {
-      logStatistic({ type: 'date', date: this.date.date })
-        .then(res => {
-          this.echartDate(res.data.date)
-        })
-        .catch(() => {})
+      logStatistic({
+        type: 'date', date: this.date.date
+      }).then(res => {
+        this.echartDate(res.data.date)
+      })
     },
     echartDate(data) {
       var echart = echarts.init(document.getElementById('echartDate'))
@@ -299,12 +304,10 @@ export default {
         type: 'region',
         date: this.region.date,
         region: this.regionValue
+      }).then(res => {
+        this.echartRegionLine(res.data.region)
+        this.echartRegionPie(res.data.region)
       })
-        .then(res => {
-          this.echartRegionLine(res.data.region)
-          this.echartRegionPie(res.data.region)
-        })
-        .catch(() => {})
     },
     echartRegionLine(data) {
       var echart = echarts.init(document.getElementById('echartRegionLine'))
@@ -373,8 +376,7 @@ export default {
         legend: {
           orient: 'vertical',
           left: '3%',
-          top: '20px',
-          data: data.x_data
+          top: '20px'
         },
         series: [
           {
