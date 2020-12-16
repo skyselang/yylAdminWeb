@@ -1,15 +1,15 @@
 <template>
   <div class="app-container">
     <!-- 地区添加 -->
-    <div class="filter-container">
-      <el-button class="filter-item" type="primary" style="float:right;margin-left:10px" @click="regionAddition('')">添加</el-button>
-      <el-button class="filter-item" style="float:right;" @click="regionRefresh()">刷新</el-button>
+    <div class="filter-container" style="text-align:right;">
+      <el-button class="filter-item" @click="regionRefresh()">刷新</el-button>
+      <el-button class="filter-item" type="primary" @click="regionAddition('')">添加</el-button>
     </div>
     <!-- 地区列表 -->
     <el-table
       v-loading="loading"
       :data="regionData"
-      :height="height+100"
+      :height="height+90"
       style="width: 100%"
       row-key="region_id"
       border
@@ -36,9 +36,9 @@
     </el-table>
     <!-- 地区添加、修改 -->
     <el-dialog :title="regionDialogTitle" :visible.sync="regionDialog" top="1vh">
-      <el-form ref="regionRef" :rules="regionRules" :model="regionModel" class="dialog-body" label-width="100px" :style="{height:height+60+'px'}">
+      <el-form ref="regionRef" v-loading="regionDialogLoad" :rules="regionRules" :model="regionModel" class="dialog-body" label-width="100px" :style="{height:height+60+'px'}">
         <el-form-item label="父级" prop="region_pid">
-          <el-cascader v-model="regionModel.region_pid" :options="regionModel.region_tree" :props="regionProps" style="width:100%" clearable filterable placeholder="一级" @change="regionPidChange" />
+          <el-cascader v-model="regionModel.region_pid" :options="regionModel.region_tree" style="width:100%" clearable filterable placeholder="一级" @change="regionPidChange" />
         </el-form-item>
         <el-form-item label="名称" prop="region_name">
           <el-input v-model="regionModel.region_name" clearable placeholder="请输入名称：北京市" />
@@ -121,23 +121,8 @@ export default {
       regionData: [],
       regionCount: 0,
       regionQuery: {},
-      regionProps: {
-        expandTrigger: 'click',
-        checkStrictly: true,
-        value: 'region_id',
-        label: 'region_name',
-        lazy: false,
-        lazyLoad(node, resolve) {
-          if (node.data) {
-            regionList({ region_pid: node.data.region_id })
-              .then(res => {
-                resolve(res.data.list)
-              })
-              .catch(() => {})
-          }
-        }
-      },
       regionDialog: false,
+      regionDialogLoad: false,
       regionDialogTitle: '',
       regionModel: {
         region_id: '',
@@ -189,15 +174,13 @@ export default {
     regionList() {
       this.loadOpen()
       this.regionData = []
-      regionList(this.regionQuery)
-        .then(res => {
-          this.regionData = res.data.list
-          this.regionCount = res.data.count
-          this.loadClose()
-        })
-        .catch(() => {
-          this.loadClose()
-        })
+      regionList(this.regionQuery).then(res => {
+        this.regionData = res.data.list
+        this.regionCount = res.data.count
+        this.loadClose()
+      }).catch(() => {
+        this.loadClose()
+      })
     },
     // 地区排序
     regionSort(sort) {
@@ -214,18 +197,19 @@ export default {
     },
     // 地区加载
     regionListLoad(tree, treeNode, resolve) {
-      regionList({ region_pid: tree.region_id })
-        .then(res => {
-          resolve(res.data.list)
-        })
-        .catch(() => {})
+      regionList({
+        region_pid: tree.region_id
+      }).then(res => {
+        resolve(res.data.list)
+      })
     },
     // 地区信息
     regionInfo(region_id) {
-      regionInfo({ region_id: region_id })
-        .then(res => {
-          this.regionReset(res.data)
-        })
+      regionInfo({
+        region_id: region_id
+      }).then(res => {
+        this.regionReset(res.data)
+      })
     },
     // 地区刷新
     regionRefresh() {
@@ -235,25 +219,29 @@ export default {
     // 地区添加
     regionAddition(row) {
       this.regionDialog = true
-      regionAdd({}, 'get')
-        .then(res => {
-          if (row) {
-            this.regionModel = this.$options.data().regionModel
-            this.regionDialogTitle = '地区添加'
-            this.regionModel.region_pid = row.region_id
-          } else {
-            this.regionReset()
-          }
-          this.regionModel.region_tree = res.data.region_tree
-        })
+      this.regionDialogLoad = true
+      regionAdd({}, 'get').then(res => {
+        if (row) {
+          this.regionModel = this.$options.data().regionModel
+          this.regionDialogTitle = '地区添加'
+          this.regionModel.region_pid = row.region_id
+        } else {
+          this.regionReset()
+        }
+        this.regionModel.region_tree = res.data.region_tree
+        this.regionDialogLoad = false
+      })
     },
     // 地区修改
     regionModify(row) {
       this.regionDialog = true
-      regionEdit({ region_id: row.region_id }, 'get')
-        .then(res => {
-          this.regionReset(res.data)
-        })
+      this.regionDialogLoad = true
+      regionEdit({
+        region_id: row.region_id
+      }, 'get').then(res => {
+        this.regionReset(res.data)
+        this.regionDialogLoad = false
+      })
     },
     // 地区删除
     regionDelete(row) {
@@ -262,15 +250,17 @@ export default {
         dangerouslyUseHTMLString: true
       }).then(() => {
         this.loadOpen()
-        regionDele({ region_id: row.region_id })
-          .then(res => {
-            this.message(res.msg)
-            this.regionReset()
-          })
-          .catch(() => {
-            this.loadClose()
-          })
-      }).catch(() => {})
+        regionDele({
+          region_id: row.region_id
+        }).then(res => {
+          this.message(res.msg)
+          this.regionReset()
+          this.regionList()
+          this.loadClose()
+        }).catch(() => {
+          this.loadClose()
+        })
+      })
     },
     // 地区父级选择
     regionPidChange(value) {
@@ -305,27 +295,23 @@ export default {
           this.loadOpen()
           this.regionModel.region_tree = []
           if (this.regionModel.region_id) {
-            regionEdit(this.regionModel)
-              .then(res => {
-                this.regionDialog = false
-                this.message(res.msg)
-                this.regionReset()
-                this.regionList()
-              })
-              .catch(() => {
-                this.loadClose()
-              })
+            regionEdit(this.regionModel).then(res => {
+              this.regionDialog = false
+              this.message(res.msg)
+              this.regionReset()
+              this.regionList()
+            }).catch(() => {
+              this.loadClose()
+            })
           } else {
-            regionAdd(this.regionModel)
-              .then(res => {
-                this.regionDialog = false
-                this.message(res.msg)
-                this.regionReset()
-                this.regionList()
-              })
-              .catch(() => {
-                this.loadClose()
-              })
+            regionAdd(this.regionModel).then(res => {
+              this.regionDialog = false
+              this.message(res.msg)
+              this.regionReset()
+              this.regionList()
+            }).catch(() => {
+              this.loadClose()
+            })
           }
         }
       })
