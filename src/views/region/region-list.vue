@@ -38,7 +38,7 @@
     <el-dialog :title="regionDialogTitle" :visible.sync="regionDialog" top="1vh">
       <el-form ref="regionRef" v-loading="regionDialogLoad" :rules="regionRules" :model="regionModel" class="dialog-body" label-width="100px" :style="{height:height+60+'px'}">
         <el-form-item label="父级" prop="region_pid">
-          <el-cascader v-model="regionModel.region_pid" :options="regionModel.region_tree" style="width:100%" clearable filterable placeholder="一级" @change="regionPidChange" />
+          <el-cascader v-model="regionModel.region_pid" :options="regionModel.region_tree" :props="regionProps" style="width:100%" clearable filterable placeholder="一级" @change="regionPidChange" />
         </el-form-item>
         <el-form-item label="名称" prop="region_name">
           <el-input v-model="regionModel.region_name" clearable placeholder="请输入名称：北京市" />
@@ -124,6 +124,7 @@ export default {
       regionDialog: false,
       regionDialogLoad: false,
       regionDialogTitle: '',
+      regionProps: { value: 'region_id', label: 'region_name' },
       regionModel: {
         region_id: '',
         region_pid: 0,
