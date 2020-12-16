@@ -1,8 +1,8 @@
 <template>
   <div class="login-container">
-    <el-form ref="loginRef" :model="loginModel" :rules="loginRules" class="login-form" autocomplete="on" label-position="left">
+    <el-form ref="loginRef" :model="loginModel" :rules="loginRules" class="login-form" label-position="left">
       <div class="title-container">
-        <h3 class="title">{{ title }}</h3>
+        <h3 class="title">{{ name }}</h3>
       </div>
       <el-form-item prop="username">
         <el-input v-model="loginModel.username" type="text" name="username" placeholder="请输入账号" prefix-icon="el-icon-user" autocomplete="on" clearable />
@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import getPageTitle from '@/utils/get-page-title'
+import defaultSettings from '@/settings'
 import { verify } from '@/api/admin'
 
 export default {
@@ -32,7 +32,7 @@ export default {
   components: {},
   data() {
     return {
-      title: getPageTitle(),
+      name: defaultSettings.systemName,
       loading: false,
       redirect: undefined,
       otherQuery: {},

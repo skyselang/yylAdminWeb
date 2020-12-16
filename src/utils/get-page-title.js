@@ -1,10 +1,10 @@
 import defaultSettings from '@/settings'
 
-const title = defaultSettings.title || 'yylAdmin'
+const pageTitle = defaultSettings.pageTitle
 
-export default function getPageTitle(pageTitle) {
-  if (pageTitle) {
-    return `${title} - ${pageTitle}`
+export default function getPageTitle(pageName) {
+  if (pageName) {
+    return `${pageTitle} - ${pageName}`
   }
-  return `${title}`
+  return `${pageTitle}`
 }

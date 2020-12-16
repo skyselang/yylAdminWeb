@@ -3,7 +3,13 @@ module.exports = {
    * @type {string}
    * @description 系统名称
    */
-  title: 'yylAdmin',
+  systemName: 'yylAdmin',
+
+  /**
+   * @type {string}
+   * @description 页面标题
+   */
+  pageTitle: 'yylAdmin后台',
 
   /**
    * @type {boolean} true | false
