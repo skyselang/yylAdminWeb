@@ -58,7 +58,7 @@ export const constantRoutes = [
   {
     path: '/login',
     meta: {
-      title: 'login'
+      title: '登录'
     },
     hidden: true,
     component: () => import('@/views/admin/login/login')
