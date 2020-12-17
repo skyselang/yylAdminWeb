@@ -26,7 +26,7 @@
       <el-table-column prop="region_sort" label="排序" min-width="80" sortable="custom" />
       <el-table-column prop="region_id" label="ID" min-width="80" sortable="custom" />
       <el-table-column prop="region_pid" label="PID" min-width="80" />
-      <el-table-column label="操作" width="220" fixed="right" align="right" class-name="small-padding fixed-width">
+      <el-table-column label="操作" width="220" fixed="right" align="right">
         <template slot-scope="{ row }">
           <el-button size="mini" type="primary" @click="regionAddition(row)">添加</el-button>
           <el-button size="mini" type="primary" @click="regionModify(row)">修改</el-button>
@@ -43,7 +43,7 @@
         <el-form-item label="名称" prop="region_name">
           <el-input v-model="regionModel.region_name" clearable placeholder="请输入名称：北京市" />
         </el-form-item>
-        <el-form-item label="拼音">
+        <el-form-item label="拼音" prop="">
           <el-col :span="11">
             <el-input v-model="regionModel.region_pinyin" clearable placeholder="请输入拼音：Beijing" />
           </el-col>
@@ -52,7 +52,7 @@
             <el-input v-model="regionModel.region_sort" clearable placeholder="请输入排序：1000" />
           </el-col>
         </el-form-item>
-        <el-form-item label="简拼">
+        <el-form-item label="简拼" prop="">
           <el-col :span="11">
             <el-input v-model="regionModel.region_jianpin" clearable placeholder="请输入简拼：BJ" />
           </el-col>
@@ -81,7 +81,7 @@
         <el-form-item label="纬度" prop="region_latitude">
           <el-input v-model="regionModel.region_latitude" clearable placeholder="请输入纬度：39.915156" />
         </el-form-item>
-        <el-form-item label="添加">
+        <el-form-item label="添加" prop="">
           <el-col :span="11">
             <el-input v-model="regionModel.create_time" clearable placeholder="" disabled />
           </el-col>
