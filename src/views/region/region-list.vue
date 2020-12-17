@@ -43,23 +43,17 @@
         <el-form-item label="名称" prop="region_name">
           <el-input v-model="regionModel.region_name" clearable placeholder="请输入名称：北京市" />
         </el-form-item>
-        <el-form-item label="拼音" prop="">
-          <el-col :span="11">
-            <el-input v-model="regionModel.region_pinyin" clearable placeholder="请输入拼音：Beijing" />
-          </el-col>
-          <el-col class="line" :span="3" style="text-align:center">排序</el-col>
-          <el-col :span="10">
-            <el-input v-model="regionModel.region_sort" clearable placeholder="请输入排序：1000" />
-          </el-col>
+        <el-form-item label="拼音" prop="region_pinyin">
+          <el-input v-model="regionModel.region_pinyin" clearable placeholder="请输入拼音：Beijing" />
         </el-form-item>
-        <el-form-item label="简拼" prop="">
-          <el-col :span="11">
-            <el-input v-model="regionModel.region_jianpin" clearable placeholder="请输入简拼：BJ" />
-          </el-col>
-          <el-col class="line" :span="3" style="text-align:center">首字母</el-col>
-          <el-col :span="10">
-            <el-input v-model="regionModel.region_initials" clearable placeholder="请输入首字母：B" />
-          </el-col>
+        <el-form-item label="简拼" prop="region_jianpin">
+          <el-input v-model="regionModel.region_jianpin" clearable placeholder="请输入简拼：BJ" />
+        </el-form-item>
+        <el-form-item label="首字母" prop="region_initials">
+          <el-input v-model="regionModel.region_initials" clearable placeholder="请输入首字母：B" />
+        </el-form-item>
+        <el-form-item label="排序" prop="region_sort">
+          <el-input v-model="regionModel.region_sort" clearable placeholder="请输入排序：1000" type="number" />
         </el-form-item>
         <el-form-item label="区号" prop="region_citycode">
           <el-input v-model="regionModel.region_citycode" clearable placeholder="请输入区号：010" />
@@ -67,27 +61,27 @@
         <el-form-item label="邮编" prop="region_zipcode">
           <el-input v-model="regionModel.region_zipcode" clearable placeholder="请输入邮编：100000" />
         </el-form-item>
-        <el-form-item label="" prop="">
-          <el-col :span="12">
-            <el-link type="primary" href="https://www.ip138.com/post/" target="_blank">查询区号邮编</el-link>
-          </el-col>
-          <el-col :span="12">
-            <el-link type="primary" href="http://api.map.baidu.com/lbsapi/getpoint/index.html" target="_blank">查询经度纬度</el-link>
-          </el-col>
-        </el-form-item>
         <el-form-item label="经度" prop="region_longitude">
           <el-input v-model="regionModel.region_longitude" clearable placeholder="请输入经度：116.403263" />
         </el-form-item>
         <el-form-item label="纬度" prop="region_latitude">
           <el-input v-model="regionModel.region_latitude" clearable placeholder="请输入纬度：39.915156" />
         </el-form-item>
-        <el-form-item label="添加" prop="">
+        <el-form-item label="添加时间" prop="">
           <el-col :span="11">
             <el-input v-model="regionModel.create_time" clearable placeholder="" disabled />
           </el-col>
-          <el-col class="line" :span="3" style="text-align:center">更新</el-col>
+          <el-col class="line" :span="3" style="text-align:center">更新时间</el-col>
           <el-col :span="10">
             <el-input v-model="regionModel.update_time" clearable placeholder="" disabled />
+          </el-col>
+        </el-form-item>
+        <el-form-item label="" prop="">
+          <el-col :span="12">
+            <el-link type="info" href="https://www.ip138.com/post/" target="_blank">查询区号邮编</el-link>
+          </el-col>
+          <el-col :span="12">
+            <el-link type="info" href="http://api.map.baidu.com/lbsapi/getpoint/index.html" target="_blank">查询经度纬度</el-link>
           </el-col>
         </el-form-item>
       </el-form>
@@ -124,7 +118,12 @@ export default {
       regionDialog: false,
       regionDialogLoad: false,
       regionDialogTitle: '',
-      regionProps: { value: 'region_id', label: 'region_name' },
+      regionProps: {
+        expandTrigger: 'hover',
+        checkStrictly: true,
+        value: 'region_id',
+        label: 'region_name'
+      },
       regionModel: {
         region_id: '',
         region_pid: 0,
@@ -140,14 +139,7 @@ export default {
         region_tree: []
       },
       regionRules: {
-        region_name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
-        region_pinyin: [{ required: true, message: '请输入拼音', trigger: 'blur' }],
-        region_jianpin: [{ required: true, message: '请输入简拼', trigger: 'blur' }],
-        region_initials: [{ required: true, message: '请输入首字母', trigger: 'blur' }],
-        region_citycode: [{ required: true, message: '请输入区号', trigger: 'blur' }],
-        region_zipcode: [{ required: true, message: '请输入邮编', trigger: 'blur' }],
-        region_longitude: [{ required: true, message: '请输入经度', trigger: 'blur' }],
-        region_latitude: [{ required: true, message: '请输入纬度', trigger: 'blur' }]
+        region_name: [{ required: true, message: '请输入名称', trigger: 'blur' }]
       }
     }
   },
