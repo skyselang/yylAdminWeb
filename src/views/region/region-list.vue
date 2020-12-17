@@ -225,7 +225,7 @@ export default {
     // 地区添加
     regionAddition(row) {
       this.regionDialog = true
-      this.regionDialogLoad = true
+      this.regionDialogLoad = false
       regionAdd({}, 'get').then(res => {
         this.regionDialogLoad = false
         if (row) {
@@ -241,7 +241,7 @@ export default {
     // 地区修改
     regionModify(row) {
       this.regionDialog = true
-      this.regionDialogLoad = true
+      this.regionDialogLoad = false
       regionEdit({
         region_id: row.region_id
       }, 'get').then(res => {
