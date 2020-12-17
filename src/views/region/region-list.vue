@@ -5,8 +5,6 @@
         <el-col :span="18">
           <el-input v-model="regionQuery.region_name" class="filter-item" style="width: 200px;" placeholder="名称" clearable />
           <el-input v-model="regionQuery.region_pinyin" class="filter-item" style="width: 200px;" placeholder="拼音" clearable />
-          <el-input v-model="regionQuery.region_jianpin" class="filter-item" style="width: 200px;" placeholder="简拼" clearable />
-          <el-input v-model="regionQuery.region_initials" class="filter-item" style="width: 200px;" placeholder="首字母" clearable />
           <el-button class="filter-item" type="primary" @click="regionSearch()">查询</el-button>
           <el-button class="filter-item" @click="regionRefresh()">刷新</el-button>
         </el-col>
