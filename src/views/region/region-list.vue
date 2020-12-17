@@ -1,9 +1,19 @@
 <template>
   <div class="app-container">
-    <!-- 地区添加 -->
-    <div class="filter-container" style="text-align:right;">
-      <el-button class="filter-item" @click="regionRefresh()">刷新</el-button>
-      <el-button class="filter-item" type="primary" @click="regionAddition('')">添加</el-button>
+    <div class="filter-container">
+      <el-row>
+        <el-col :span="18">
+          <el-input v-model="regionQuery.region_name" class="filter-item" style="width: 200px;" placeholder="名称" clearable />
+          <el-input v-model="regionQuery.region_pinyin" class="filter-item" style="width: 200px;" placeholder="拼音" clearable />
+          <el-input v-model="regionQuery.region_jianpin" class="filter-item" style="width: 200px;" placeholder="简拼" clearable />
+          <el-input v-model="regionQuery.region_initials" class="filter-item" style="width: 200px;" placeholder="首字母" clearable />
+          <el-button class="filter-item" type="primary" @click="regionSearch()">查询</el-button>
+          <el-button class="filter-item" @click="regionRefresh()">刷新</el-button>
+        </el-col>
+        <el-col :span="6" style="text-align:right;">
+          <el-button class="filter-item" type="primary" @click="regionAddition('')">添加</el-button>
+        </el-col>
+      </el-row>
     </div>
     <!-- 地区列表 -->
     <el-table
@@ -18,7 +28,7 @@
       @sort-change="regionSort"
     >
       <el-table-column prop="region_name" label="名称" min-width="250" fixed="left" />
-      <el-table-column prop="region_pinyin" label="拼音" min-width="250" />
+      <el-table-column prop="region_pinyin" label="拼音" min-width="250" sortable="custom" />
       <el-table-column prop="region_jianpin" label="简拼" min-width="120" sortable="custom" />
       <el-table-column prop="region_initials" label="首字母" min-width="90" sortable="custom" />
       <el-table-column prop="region_citycode" label="区号" min-width="80" sortable="custom" />
@@ -188,6 +198,11 @@ export default {
         this.regionList()
       }
     },
+    // 地区查询
+    regionSearch() {
+      this.regionQuery.page = 1
+      this.regionList()
+    },
     // 地区加载
     regionListLoad(tree, treeNode, resolve) {
       regionList({
@@ -214,6 +229,7 @@ export default {
       this.regionDialog = true
       this.regionDialogLoad = true
       regionAdd({}, 'get').then(res => {
+        this.regionDialogLoad = false
         if (row) {
           this.regionModel = this.$options.data().regionModel
           this.regionDialogTitle = '地区添加'
@@ -222,7 +238,6 @@ export default {
           this.regionReset()
         }
         this.regionModel.region_tree = res.data.region_tree
-        this.regionDialogLoad = false
       })
     },
     // 地区修改
@@ -232,8 +247,8 @@ export default {
       regionEdit({
         region_id: row.region_id
       }, 'get').then(res => {
-        this.regionReset(res.data)
         this.regionDialogLoad = false
+        this.regionReset(res.data)
       })
     },
     // 地区删除
