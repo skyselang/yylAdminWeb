@@ -68,6 +68,9 @@
         <el-form-item label="邮箱" prop="email">
           <el-input v-model="memberModel.email" clearable />
         </el-form-item>
+        <el-form-item label="地区" prop="region_id">
+          <el-cascader v-model="memberModel.region_id" :options="regionTree" :props="regionProps" placeholder="" style="width:100%" @change="regionChange" />
+        </el-form-item>
         <el-form-item label="备注" prop="remark">
           <el-input v-model="memberModel.remark" clearable />
         </el-form-item>
@@ -115,7 +118,6 @@ import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination'
 import {
   memberList,
-  memberInfo,
   memberAdd,
   memberEdit,
   memberDele,
@@ -147,13 +149,20 @@ export default {
         password: '',
         phone: '',
         email: '',
+        region_id: '',
         avatar: '',
         remark: '',
         sort: 10000,
         login_region: ''
       },
-      uploadAction:
-        process.env.VUE_APP_BASE_API + '/admin/Member/memberAvatar',
+      regionTree: [],
+      regionProps: {
+        expandTrigger: 'hover',
+        checkStrictly: true,
+        value: 'region_id',
+        label: 'region_name'
+      },
+      uploadAction: process.env.VUE_APP_BASE_API + '/admin/Member/memberAvatar',
       uploadHeaders: {
         AdminToken: getToken(),
         AdminUserId: getAdminUserId()
@@ -176,15 +185,13 @@ export default {
     // 会员列表
     memberList() {
       this.loading = true
-      memberList(this.memberQuery)
-        .then(res => {
-          this.memberData = res.data.list
-          this.memberCount = res.data.count
-          this.loading = false
-        })
-        .catch(() => {
-          this.loading = false
-        })
+      memberList(this.memberQuery).then(res => {
+        this.memberData = res.data.list
+        this.memberCount = res.data.count
+        this.loading = false
+      }).catch(() => {
+        this.loading = false
+      })
     },
     // 会员查询
     memberSearch() {
@@ -216,21 +223,31 @@ export default {
         this.$refs['memberRef'].resetFields()
       }
     },
+    // 地区选择
+    regionChange(value) {
+      if (value) {
+        this.memberModel.region_id = value[value.length - 1]
+      }
+    },
     // 会员添加打开
     memberAddition() {
       this.memberDialog = true
       this.memberDialogTitle = '会员添加'
+      memberAdd().then(res => {
+        this.regionTree = res.data.region_tree
+      })
       this.memberModelReset()
     },
     // 会员修改打开
     memberModify(row) {
       this.memberDialog = true
       this.memberDialogTitle = '会员修改：' + row.username
-      this.memberModelReset()
-      memberInfo({ member_id: row.member_id })
-        .then(res => {
-          this.memberModel = res.data
-        })
+      memberEdit({
+        member_id: row.member_id
+      }).then(res => {
+        this.memberModel = res.data.member_info
+        this.regionTree = res.data.region_tree
+      })
     },
     // 会员修改头像
     uploadBefore(file) {
@@ -252,30 +269,27 @@ export default {
         {
           type: 'warning',
           dangerouslyUseHTMLString: true
+        }).then(() => {
+        this.loading = true
+        memberDele({
+          member_id: row.member_id
+        }).then(res => {
+          this.$message({ message: res.msg, type: 'success' })
+          this.memberList()
+        }).catch(() => {
+          this.loading = false
         })
-        .then(() => {
-          this.loading = true
-          memberDele({ member_id: row.member_id })
-            .then(res => {
-              this.$message({ message: res.msg, type: 'success' })
-              this.memberList()
-            })
-            .catch(() => {
-              this.loading = false
-            })
-        })
+      })
     },
     // 会员是否禁用
     memberIsProhibit(row) {
       this.loading = true
-      memberDisable(row)
-        .then(res => {
-          this.$message({ message: res.msg, type: 'success' })
-          this.memberList()
-        })
-        .catch(() => {
-          this.memberList()
-        })
+      memberDisable(row).then(res => {
+        this.$message({ message: res.msg, type: 'success' })
+        this.memberList()
+      }).catch(() => {
+        this.memberList()
+      })
     },
     // 会员密码重置打开
     memberPassword(row) {
@@ -298,15 +312,13 @@ export default {
           memberPassword({
             member_id: this.memberModel.member_id,
             password: this.memberModel.password
+          }).then(res => {
+            this.memberPwdDialog = false
+            this.$message({ message: res.msg, type: 'success' })
+            this.memberList()
+          }).catch(() => {
+            this.loading = false
           })
-            .then(res => {
-              this.memberPwdDialog = false
-              this.$message({ message: res.msg, type: 'success' })
-              this.memberList()
-            })
-            .catch(() => {
-              this.loading = false
-            })
         }
       })
     },
@@ -326,30 +338,27 @@ export default {
             nickname: this.memberModel.nickname,
             phone: this.memberModel.phone,
             email: this.memberModel.email,
+            region_id: this.memberModel.region_id,
             remark: this.memberModel.remark,
             sort: this.memberModel.sort
           }
           if (params.member_id) {
-            memberEdit(params)
-              .then(res => {
-                this.memberDialog = false
-                this.$message({ message: res.msg, type: 'success' })
-                this.memberList()
-              })
-              .catch(() => {
-                this.loading = false
-              })
+            memberEdit(params, 'post').then(res => {
+              this.memberDialog = false
+              this.memberList()
+              this.$message({ message: res.msg, type: 'success' })
+            }).catch(() => {
+              this.loading = false
+            })
           } else {
             params.password = this.memberModel.password
-            memberAdd(params)
-              .then(res => {
-                this.memberDialog = false
-                this.$message({ message: res.msg, type: 'success' })
-                this.memberList()
-              })
-              .catch(() => {
-                this.loading = false
-              })
+            memberAdd(params, 'post').then(res => {
+              this.memberDialog = false
+              this.memberList()
+              this.$message({ message: res.msg, type: 'success' })
+            }).catch(() => {
+              this.loading = false
+            })
           }
         }
       })

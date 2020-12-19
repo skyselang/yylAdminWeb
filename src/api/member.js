@@ -27,23 +27,39 @@ export function memberInfo(params) {
    * 会员添加
    * @param {array} data 请求数据
    */
-export function memberAdd(data) {
-  return request({
-    url: '/admin/Member/memberAdd',
-    method: 'post',
-    data
-  })
+export function memberAdd(data, method = 'get') {
+  if (method === 'get') {
+    return request({
+      url: '/admin/Member/memberAdd',
+      method: 'get',
+      params: data
+    })
+  } else {
+    return request({
+      url: '/admin/Member/memberAdd',
+      method: 'post',
+      data
+    })
+  }
 }
 /**
    * 会员修改
    * @param {array} data 请求数据
    */
-export function memberEdit(data) {
-  return request({
-    url: '/admin/Member/memberEdit',
-    method: 'post',
-    data
-  })
+export function memberEdit(data, method = 'get') {
+  if (method === 'get') {
+    return request({
+      url: '/admin/Member/memberEdit',
+      method: 'get',
+      params: data
+    })
+  } else {
+    return request({
+      url: '/admin/Member/memberEdit',
+      method: 'post',
+      data
+    })
+  }
 }
 /**
    * 会员删除
