@@ -44,12 +44,16 @@
     <el-dialog :title="userDialogTitle" :visible.sync="userDialog" width="65%" top="1vh" :before-close="userCancel">
       <el-form ref="userRef" :model="userModel" :rules="userRoles" class="dialog-body" label-width="100px" :style="{height:height+50+'px'}">
         <el-form-item v-if="userModel.admin_user_id && userModel.avatar" label="头像" prop="avatar">
-          <el-avatar shape="circle" fit="contain" :size="100" :src="userModel.avatar" />
-        </el-form-item>
-        <el-form-item v-if="userModel.admin_user_id" label="" prop="avatar_file">
-          <el-upload name="avatar_file" :show-file-list="false" :before-upload="uploadBefore" :action="uploadAction" :headers="uploadHeaders" :data="uploadData" :on-success="uploadSuccess">
-            <el-button title="jpg、png图片，小于50kb，宽高1:1">更换头像</el-button>
-          </el-upload>
+          <el-col :span="10">
+            <el-avatar shape="circle" fit="contain" :size="100" :src="userModel.avatar" />
+          </el-col>
+          <el-col class="line" :span="3" style="text-align:center" />
+          <el-col :span="11">
+            <el-upload name="avatar_file" :show-file-list="false" :before-upload="uploadBefore" :action="uploadAction" :headers="uploadHeaders" :data="uploadData" :on-success="uploadSuccess">
+              <el-button>更换头像</el-button>
+            </el-upload>
+            <span>jpg、png图片，小于50kb，宽高1:1</span>
+          </el-col>
         </el-form-item>
         <el-form-item label="账号" prop="username">
           <el-input key="username" v-model="userModel.username" placeholder="请输入账号" clearable />
