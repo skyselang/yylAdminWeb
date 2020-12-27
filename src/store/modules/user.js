@@ -1,15 +1,11 @@
+import { login, logout, myInfo } from '@/api/admin'
 import {
-  login,
-  logout,
-  myInfo
-} from '@/api/admin'
-import {
-  setToken,
-  getToken,
-  delToken,
   setAdminUserId,
   getAdminUserId,
   delAdminUserId,
+  setAdminToken,
+  getAdminToken,
+  delAdminToken,
   setUsername,
   delUsername,
   setNickname,
@@ -23,17 +19,20 @@ import router, {
 
 const state = {
   adminUserId: '',
+  adminToken: getAdminToken(),
   username: '',
   nickname: '',
   avatar: '',
   remark: '',
-  token: getToken(),
   roles: []
 }
 
 const mutations = {
   SET_ADMINUSERID: (state, adminUserId) => {
     state.adminUserId = adminUserId
+  },
+  SET_ADMINTOKEN: (state, adminToken) => {
+    state.adminToken = adminToken
   },
   SET_USERNAME: (state, username) => {
     state.username = username
@@ -44,22 +43,14 @@ const mutations = {
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
   },
-  SET_REMARK: (state, remark) => {
-    state.remark = remark
-  },
-  SET_TOKEN: (state, token) => {
-    state.token = token
-  },
   SET_ROLES: (state, roles) => {
     state.roles = roles
   }
 }
 
 const actions = {
-  // user login
-  login({
-    commit
-  }, userInfo) {
+  // 登录
+  login({ commit }, userInfo) {
     const {
       username,
       password,
@@ -68,18 +59,16 @@ const actions = {
     } = userInfo
     return new Promise((resolve, reject) => {
       login({
-        username: username.trim(),
+        username: username,
         password: password,
         verify_id: verify_id,
         verify_code: verify_code
       }).then(response => {
-        const {
-          data
-        } = response
-        commit('SET_TOKEN', data.admin_token)
+        const { data } = response
         commit('SET_ADMINUSERID', data.admin_user_id)
-        setToken(data.admin_token)
+        commit('SET_ADMINTOKEN', data.admin_token)
         setAdminUserId(data.admin_user_id)
+        setAdminToken(data.admin_token)
         resolve()
       }).catch(error => {
         reject(error)
@@ -87,18 +76,13 @@ const actions = {
     })
   },
 
-  // get user info
-  userInfo({
-    commit,
-    state
-  }) {
+  // 获取用户信息
+  userInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
       myInfo({
         admin_user_id: getAdminUserId()
       }).then(response => {
-        const {
-          data
-        } = response
+        const { data } = response
 
         if (!data) {
           reject('授权失败, 请重新登录！')
@@ -109,20 +93,18 @@ const actions = {
           username,
           nickname,
           avatar,
-          remark,
           roles
         } = data
 
-        // roles must be a non-empty array
+        // 权限必须是一个非空数组
         if (!roles || roles.length <= 0) {
           reject('获取权限失败, 请重新登录！')
         }
 
         commit('SET_ADMINUSERID', admin_user_id)
-        commit('SET_NICKNAME', nickname)
         commit('SET_USERNAME', username)
+        commit('SET_NICKNAME', nickname)
         commit('SET_AVATAR', avatar)
-        commit('SET_REMARK', remark)
         commit('SET_ROLES', roles)
         setUsername(data.username)
         setNickname(data.nickname)
@@ -134,29 +116,23 @@ const actions = {
     })
   },
 
-  // user logout
-  logout({
-    commit,
-    state,
-    dispatch
-  }) {
+  // 退出
+  logout({ commit, state, dispatch }) {
     return new Promise((resolve, reject) => {
       logout({
         admin_user_id: getAdminUserId()
       }).then(() => {
-        commit('SET_TOKEN', '')
+        commit('SET_ADMINTOKEN', '')
         commit('SET_ROLES', [])
         delAdminUserId()
+        delAdminToken()
         delUsername()
         delNickname()
         delAvatar()
-        delToken()
         resetRouter()
 
-        // reset visited views and cached views
-        dispatch('tagsView/delAllViews', null, {
-          root: true
-        })
+        // 重置访问的视图和缓存的视图
+        dispatch('tagsView/delAllViews', null, { root: true })
 
         resolve()
       }).catch(error => {
@@ -165,47 +141,36 @@ const actions = {
     })
   },
 
-  // remove token
-  resetToken({
-    commit
-  }) {
+  // 重置token
+  resetAdminToken({ commit }) {
     return new Promise(resolve => {
-      commit('SET_TOKEN', '')
+      commit('SET_ADMINTOKEN', '')
       commit('SET_ROLES', [])
       delAdminUserId()
-      delToken()
+      delAdminToken()
       resolve()
     })
   },
 
-  // dynamically modify permissions
-  async changeRoles({
-    commit,
-    dispatch
-  }, role) {
-    const token = role + '-token'
+  // 动态修改权限
+  async changeRoles({ commit, dispatch }, role) {
+    const adminToken = role + '-adminToken'
 
-    commit('SET_TOKEN', token)
-    setToken(token)
+    commit('SET_ADMINTOKEN', adminToken)
+    setAdminToken(adminToken)
 
-    const {
-      roles
-    } = await dispatch('userInfo')
+    const { roles } = await dispatch('userInfo')
 
     resetRouter()
 
-    // generate accessible routes map based on roles
-    const accessRoutes = await dispatch('permission/generateRoutes', roles, {
-      root: true
-    })
+    // 根据权限生成可访问路由
+    const accessRoutes = await dispatch('permission/generateRoutes', roles, { root: true })
 
-    // dynamically add accessible routes
+    // 动态添加可访问路由
     router.addRoutes(accessRoutes)
 
-    // reset visited views and cached views
-    dispatch('tagsView/delAllViews', null, {
-      root: true
-    })
+    // 重置访问的视图和缓存的视图
+    dispatch('tagsView/delAllViews', null, { root: true })
   }
 }
 
