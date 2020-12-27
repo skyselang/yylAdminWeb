@@ -37,12 +37,20 @@ export function apiAdd(data) {
    * 接口修改
    * @param {array} data 请求数据
    */
-export function apiEdit(data) {
-  return request({
-    url: '/admin/Api/apiEdit',
-    method: 'post',
-    data
-  })
+export function apiEdit(data, method = 'get') {
+  if (method === 'get') {
+    return request({
+      url: '/admin/Api/apiEdit',
+      method: 'get',
+      params: data
+    })
+  } else {
+    return request({
+      url: '/admin/Api/apiEdit',
+      method: 'post',
+      data
+    })
+  }
 }
 /**
    * 接口删除

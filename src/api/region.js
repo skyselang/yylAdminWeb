@@ -27,7 +27,7 @@ export function regionInfo(params) {
  * 地区添加
  * @param {array} data 请求数据
  */
-export function regionAdd(data, method = 'post') {
+export function regionAdd(data, method = 'get') {
   if (method === 'get') {
     return request({
       url: '/admin/Region/regionAdd',
@@ -46,7 +46,7 @@ export function regionAdd(data, method = 'post') {
  * 地区修改
  * @param {array} data 请求数据
  */
-export function regionEdit(data, method = 'post') {
+export function regionEdit(data, method = 'get') {
   if (method === 'get') {
     return request({
       url: '/admin/Region/regionEdit',

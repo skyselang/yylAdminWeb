@@ -1,83 +1,101 @@
 <template>
   <div class="app-container">
-    <!-- 日志查询 -->
+    <!-- 会员日志查询 -->
     <div class="filter-container">
-      <el-select v-model="logQuery.log_type" class="filter-item" placeholder="日志类型" style="width:110px;" clearable>
-        <el-option key="1" label="登录日志" value="1" />
-        <el-option key="2" label="操作日志" value="2" />
-      </el-select>
-      <el-input v-model="logQuery.member_keyword" class="filter-item" style="width: 135px;" placeholder="会员账号/昵称" clearable />
-      <el-input v-model="logQuery.request_keyword" class="filter-item" style="width: 155px;" placeholder="请求IP/地区/ISP" clearable />
-      <el-input v-model="logQuery.api_keyword" class="filter-item" style="width: 280px;" placeholder="接口链接/名称" clearable />
-      <el-date-picker v-model="logQuery.create_time" type="daterange" style="width: 240px;top: -4px;" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd" />
-      <el-button class="filter-item" type="primary" @click="logSearch()">查询</el-button>
-      <el-button class="filter-item" @click="logReset()">重置</el-button>
-      <el-button v-permission="['admin/Log/logStatistic']" class="filter-item" type="primary" style="float:right;" title="会员日志统计" @click="logStaRouter">统计</el-button>
+      <el-row :gutter="0">
+        <el-col :xs="24" :sm="18">
+          <el-select v-model="memberLogQuery.member_log_type" class="filter-item" placeholder="日志类型" style="width:110px;" clearable>
+            <el-option key="member_log_type1" label="登录日志" :value="1" />
+            <el-option key="member_log_type2" label="操作日志" :value="2" />
+          </el-select>
+          <el-input v-model="memberLogQuery.member_keyword" class="filter-item" style="width: 135px;" placeholder="会员账号/昵称" clearable />
+          <el-input v-model="memberLogQuery.request_keyword" class="filter-item" style="width: 155px;" placeholder="请求IP/地区/ISP" clearable />
+          <el-input v-model="memberLogQuery.api_keyword" class="filter-item" style="width: 280px;" placeholder="接口链接/名称" clearable />
+          <el-date-picker v-model="memberLogQuery.create_time" type="daterange" style="width: 240px;top: -4px;" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd" />
+          <el-button class="filter-item" type="primary" @click="memberLogSearch()">查询</el-button>
+          <el-button class="filter-item" @click="memberLogReset()">重置</el-button>
+        </el-col>
+        <el-col :xs="24" :sm="6" style="text-align:right;">
+          <el-button v-permission="['admin/MemberLog/memberLogSta']" class="filter-item" type="primary" title="会员日志统计" @click="memberLogStaRouter">统计</el-button>
+        </el-col>
+      </el-row>
     </div>
-    <!-- 日志列表 -->
-    <el-table v-loading="loading" :data="logData" :height="height" style="width: 100%" border @sort-change="logSort">
-      <el-table-column prop="log_id" label="ID" min-width="100" sortable="custom" fixed="left" />
-      <el-table-column prop="username" label="会员账号" min-width="110" />
+    <!-- 会员日志列表 -->
+    <el-table v-loading="loading" :data="memberLogData" :height="height" style="width: 100%" border @sort-change="memberLogSort">
+      <el-table-column prop="member_log_id" label="ID" min-width="100" sortable="custom" fixed="left" />
+      <el-table-column prop="username" label="会员账号" min-width="110" sortable="custom" />
       <el-table-column prop="nickname" label="会员昵称" min-width="110" />
-      <el-table-column prop="api_url" label="接口链接" min-width="235" />
+      <el-table-column prop="api_url" label="接口链接" min-width="235" sortable="custom" />
       <el-table-column prop="api_name" label="接口名称" min-width="130" />
       <el-table-column prop="request_method" label="请求方式 " min-width="110" sortable="custom" />
       <el-table-column prop="request_ip" label="请求IP" min-width="130" sortable="custom" />
       <el-table-column prop="request_region" label="请求地区" min-width="150" />
       <el-table-column prop="request_isp" label="请求ISP" min-width="110" />
       <el-table-column prop="create_time" label="请求时间" min-width="160" sortable="custom" />
-      <el-table-column label="操作" min-width="150" align="right" fixed="right" class-name="small-padding fixed-width">
+      <el-table-column label="操作" min-width="150" align="right" fixed="right">
         <template slot-scope="{ row }">
-          <el-button size="mini" type="primary" @click="logDetail(row)">详情</el-button>
-          <el-button size="mini" type="danger" @click="logDelete(row)">删除</el-button>
+          <el-button size="mini" type="primary" @click="memberLogDetail(row)">详情</el-button>
+          <el-button size="mini" type="danger" @click="memberLogDelete(row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
-    <!-- 日志分页 -->
-    <pagination v-show="logCount > 0" :total="logCount" :page.sync="logQuery.page" :limit.sync="logQuery.limit" @pagination="logList" />
-    <!-- 日志详情 -->
-    <el-dialog :title="'日志详情：' + logModel.log_id" :visible.sync="logDialog" width="65%" top="1vh" :before-close="logCancel">
-      <el-form ref="logRef" :rules="logRules" :model="logModel" label-width="100px" class="dialog-body" :style="{height:height+60+'px'}">
+    <!-- 会员日志分页 -->
+    <pagination v-show="memberLogCount > 0" :total="memberLogCount" :page.sync="memberLogQuery.page" :limit.sync="memberLogQuery.limit" @pagination="memberLogList" />
+    <!-- 会员日志详情 -->
+    <el-dialog :title="memberLogDialogTitle" :visible.sync="memberLogDialog" top="1vh" :before-close="memberLogCancel">
+      <el-form ref="memberLogRef" :rules="memberLogRules" :model="memberLogModel" label-width="100px" class="dialog-body" :style="{height:height+30+'px'}">
         <el-form-item label="会员ID" prop="member_id">
-          <el-input v-model="logModel.member_id" />
+          <el-col :span="10">
+            <el-input v-model="memberLogModel.member_id" />
+          </el-col>
+          <el-col class="line" :span="4" style="text-align:center">会员昵称</el-col>
+          <el-col :span="10">
+            <el-input v-model="memberLogModel.nickname" />
+          </el-col>
         </el-form-item>
         <el-form-item label="会员账号" prop="username">
-          <el-input v-model="logModel.username" />
-        </el-form-item>
-        <el-form-item label="会员昵称" prop="nickname">
-          <el-input v-model="logModel.nickname" />
+          <el-input v-model="memberLogModel.username" />
         </el-form-item>
         <el-form-item label="接口ID" prop="api_id">
-          <el-input v-model="logModel.api_id" />
+          <el-col :span="10">
+            <el-input v-model="memberLogModel.api_id" />
+          </el-col>
+          <el-col class="line" :span="4" style="text-align:center">接口名称</el-col>
+          <el-col :span="10">
+            <el-input v-model="memberLogModel.api_name" />
+          </el-col>
         </el-form-item>
         <el-form-item label="接口链接" prop="api_url">
-          <el-input v-model="logModel.api_url" />
-        </el-form-item>
-        <el-form-item label="接口名称" prop="api_name">
-          <el-input v-model="logModel.api_name" />
+          <el-input v-model="memberLogModel.api_url" />
         </el-form-item>
         <el-form-item label="请求方式" prop="request_method">
-          <el-input v-model="logModel.request_method" />
-        </el-form-item>
-        <el-form-item label="请求IP" prop="request_ip">
-          <el-input v-model="logModel.request_ip" />
+          <el-col :span="10">
+            <el-input v-model="memberLogModel.request_method" />
+          </el-col>
+          <el-col class="line" :span="4" style="text-align:center">请求IP</el-col>
+          <el-col :span="10">
+            <el-input v-model="memberLogModel.request_ip" />
+          </el-col>
         </el-form-item>
         <el-form-item label="请求地区" prop="request_region">
-          <el-input v-model="logModel.request_region" />
-        </el-form-item>
-        <el-form-item label="请求ISP" prop="request_isp">
-          <el-input v-model="logModel.request_isp" />
+          <el-col :span="10">
+            <el-input v-model="memberLogModel.request_region" />
+          </el-col>
+          <el-col class="line" :span="4" style="text-align:center">请求ISP</el-col>
+          <el-col :span="10">
+            <el-input v-model="memberLogModel.request_isp" />
+          </el-col>
         </el-form-item>
         <el-form-item label="请求时间" prop="create_time">
-          <el-input v-model="logModel.create_time" />
+          <el-input v-model="memberLogModel.create_time" />
         </el-form-item>
         <el-form-item label="请求参数" prop="request_param">
-          <pre>{{ logModel.request_param }}</pre>
+          <pre>{{ memberLogModel.request_param }}</pre>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="logCancel">取消</el-button>
-        <el-button type="primary" @click="logSubmit">确定</el-button>
+        <el-button @click="memberLogCancel">取消</el-button>
+        <el-button type="primary" @click="memberLogSubmit">确定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -87,7 +105,7 @@
 import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination'
 import permission from '@/directive/permission/index.js' // 权限判断指令
-import { logList, logInfo, logDele } from '@/api/log'
+import { memberLogList, memberLogInfo, memberLogDele } from '@/api/member-log'
 
 export default {
   name: 'MemberLog',
@@ -97,106 +115,110 @@ export default {
     return {
       height: 680,
       loading: false,
-      logData: [],
-      logCount: 0,
-      logQuery: {
+      memberLogData: [],
+      memberLogCount: 0,
+      memberLogQuery: {
         page: 1,
         limit: 13
       },
-      logDialog: false,
-      logModel: {},
-      logRules: {}
+      memberLogDialog: false,
+      memberLogDialogTitle: '',
+      memberLogModel: {},
+      memberLogRules: {}
     }
   },
   created() {
     this.height = screenHeight()
-    this.logList()
+    this.memberLogList()
   },
   methods: {
-    // 日志列表
-    logList() {
+    // 会员日志列表
+    memberLogList() {
       this.loading = true
-      logList(this.logQuery)
-        .then(res => {
-          this.logData = res.data.list
-          this.logCount = res.data.count
-          this.loading = false
-        })
-        .catch(() => {
-          this.loading = false
-        })
+      memberLogList(this.memberLogQuery).then(res => {
+        this.memberLogData = res.data.list
+        this.memberLogCount = res.data.count
+        this.loading = false
+      }).catch(() => {
+        this.loading = false
+      })
     },
-    // 日志查询
-    logSearch() {
-      this.logQuery.page = 1
-      this.logList()
+    // 会员日志查询
+    memberLogSearch() {
+      this.memberLogQuery.page = 1
+      this.memberLogList()
     },
-    // 日志重置
-    logReset() {
-      this.logQuery = this.$options.data().logQuery
-      this.logList()
+    // 会员日志重置
+    memberLogReset() {
+      this.memberLogQuery = this.$options.data().memberLogQuery
+      this.memberLogList()
     },
-    // 日志排序
-    logSort(sort) {
-      this.logQuery.sort_field = sort.prop
-      this.logQuery.sort_type = ''
+    // 会员日志排序
+    memberLogSort(sort) {
+      this.memberLogQuery.sort_field = sort.prop
+      this.memberLogQuery.sort_type = ''
       if (sort.order === 'ascending') {
-        this.logQuery.sort_type = 'asc'
-        this.logList()
+        this.memberLogQuery.sort_type = 'asc'
+        this.memberLogList()
       }
       if (sort.order === 'descending') {
-        this.logQuery.sort_type = 'desc'
-        this.logList()
+        this.memberLogQuery.sort_type = 'desc'
+        this.memberLogList()
       }
     },
-    // 日志统计
-    logStaRouter() {
+    // 会员日志统计
+    memberLogStaRouter() {
       this.$router.push('/member/member-logsta')
     },
-    // 日志详情
-    logDetail(row) {
+    // 会员日志详情
+    memberLogDetail(row) {
       this.loading = true
-      logInfo({ log_id: row.log_id })
-        .then(res => {
-          this.logModelReset(res.data)
-          this.logDialog = true
-          this.loading = false
-        })
-        .catch(() => {
-          this.loading = false
-        })
-    },
-    // 日志删除
-    logDelete(row) {
-      this.$confirm('确定要删除吗？', '提示', {
-        type: 'warning'
+      this.memberLogDialogTitle = '会员日志详情：' + row.member_log_id
+      memberLogInfo({
+        member_log_id: row.member_log_id
+      }).then(res => {
+        this.memberLogModelReset(res.data)
+        this.memberLogDialog = true
+        this.loading = false
+      }).catch(() => {
+        this.loading = false
       })
-        .then(() => {
-          this.loading = true
-          logDele({ log_id: row.log_id })
-            .then(res => {
-              this.$message({ message: res.msg, type: 'success' })
-              this.logModelReset()
-              this.logList()
-            })
-            .catch(() => {
-              this.loading = false
-            })
+    },
+    // 会员日志删除
+    memberLogDelete(row) {
+      this.$confirm(
+        '确定要删除会员日志 <span style="color:red">' + row.member_log_id + ' </span>吗？',
+        '删除：' + row.member_log_id,
+        {
+          type: 'warning',
+          dangerouslyUseHTMLString: true
+        }
+      ).then(() => {
+        this.loading = true
+        memberLogDele({
+          member_log_id: row.member_log_id
+        }).then(res => {
+          this.memberLogList()
+          this.memberLogModelReset()
+          this.$message.success(res.msg)
+        }).catch(() => {
+          this.loading = false
         })
+      }).catch(() => {})
     },
-    // 日志详情重置
-    logModelReset(row = {}) {
-      this.logModel = row
+    // 会员日志详情重置
+    memberLogModelReset(row = {}) {
+      this.memberLogModel = row
     },
-    // 日志详情取消
-    logCancel() {
-      this.logDialog = false
-      this.logModelReset()
+    // 会员日志详情取消
+    memberLogCancel() {
+      this.memberLogDialog = false
+      this.memberLogModelReset()
     },
-    // 日志详情确认
-    logSubmit() {
-      this.logDialog = false
-      this.logModelReset()
+    // 会员日志详情确认
+    memberLogSubmit() {
+      this.memberLogDialog = false
+      this.memberLogModelReset()
     }
   }
 }

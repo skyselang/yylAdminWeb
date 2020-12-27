@@ -19,16 +19,16 @@ import Layout from '@/layout'
  *
  * // 当你一个路由下面的 children 声明的路由大于1个时，自动会变成嵌套的模式
  * // 只有一个时，会将那个子路由当做根路由显示在侧边栏
- * // 若你想不管路由下面的 children 声明的个数都显示你的根路由
+ * // 若你想不管路由下面的 children 声明的个数多少都显示你的根路由
  * // 你可以设置 alwaysShow: true，这样它就会忽略之前定义的规则，一直显示根路由
  * alwaysShow: true
  *
  * // 设定路由的名字，一定要填写不然使用<keep-alive>时会出现各种问题
- * name: 'router-name'
+ * name: 'Index'
  * meta: {
  *   roles: ['admin/Index/index'] // 设置该路由进入的权限（菜单链接），支持多个权限叠加
- *   title: 'title' // 设置该路由在侧边栏和面包屑中展示的名字
- *   icon: 'el-icon-x' // 设置该路由的图标，element-ui 的 icon
+ *   title: '控制台' // 设置该路由在侧边栏和面包屑中展示的名字
+ *   icon: 'el-icon-s-home' // 设置该路由的图标，element-ui 的 icon
  *   noCache: true // 如果设置为true，则不会被 <keep-alive> 缓存(默认 false)
  *   breadcrumb: false //  如果设置为false，则不会在breadcrumb面包屑中显示(默认 true)
  *   affix: true // 若果设置为true，它则会固定在tags-view中(默认 false)
@@ -110,7 +110,10 @@ export const asyncRoutes = [
     meta: {
       title: '会员管理',
       icon: 'el-icon-menu',
-      roles: ['admin/Member/memberList', 'admin/Log/logList', 'admin/Log/logStatistic']
+      roles: [
+        'admin/Member/memberList',
+        'admin/MemberLog/memberLogList'
+      ]
     },
     redirect: 'noRedirect',
     component: Layout,
@@ -120,7 +123,7 @@ export const asyncRoutes = [
         path: 'member-list',
         name: 'MemberList',
         meta: {
-          title: '会员列表',
+          title: '会员管理',
           icon: 'el-icon-s-grid',
           roles: ['admin/Member/memberList']
         },
@@ -130,9 +133,9 @@ export const asyncRoutes = [
         path: 'member-log',
         name: 'MemberLog',
         meta: {
-          title: '会员日志列表',
+          title: '会员日志',
           icon: 'el-icon-s-grid',
-          roles: ['admin/Log/logList']
+          roles: ['admin/MemberLog/memberLogList']
         },
         component: () => import('@/views/member/member-log')
       },
@@ -142,7 +145,7 @@ export const asyncRoutes = [
         meta: {
           title: '会员日志统计',
           icon: 'el-icon-s-grid',
-          roles: ['admin/Log/logStatistic'],
+          roles: ['admin/MemberLog/memberLogSta'],
           activeMenu: '/member/member-log'
         },
         component: () => import('@/views/member/member-logsta'),
@@ -190,7 +193,7 @@ export const asyncRoutes = [
         path: 'api-list',
         name: 'ApiList',
         meta: {
-          title: '接口列表',
+          title: '接口管理',
           icon: 'el-icon-s-grid',
           roles: ['admin/Api/apiList']
         },
@@ -205,7 +208,13 @@ export const asyncRoutes = [
     meta: {
       title: '权限管理',
       icon: 'el-icon-lock',
-      roles: ['admin/AdminMenu/menuList', 'admin/AdminRole/roleList', 'admin/AdminUser/userList', 'admin/AdminLog/logList']
+      roles: [
+        'admin/AdminMenu/menuList',
+        'admin/AdminRole/roleList',
+        'admin/AdminUser/userList',
+        'admin/AdminLog/logList',
+        'admin/AdminMy/myInfo'
+      ]
     },
     redirect: 'noRedirect',
     component: Layout,
@@ -282,7 +291,14 @@ export const asyncRoutes = [
     meta: {
       title: '系统管理',
       icon: 'el-icon-setting',
-      roles: ['admin/AdminSetting/settingCache', 'admin/AdminSetting/settingVerify', 'admin/AdminSetting/settingToken', 'admin/AdminTool/toolMix', 'admin/AdminTool/toolMap']
+      roles: [
+        'admin/AdminSetting/settingCache',
+        'admin/AdminSetting/settingVerify',
+        'admin/AdminSetting/settingToken',
+        'admin/AdminSetting/serverInfo',
+        'admin/AdminTool/toolMix',
+        'admin/AdminTool/toolMap'
+      ]
     },
     redirect: 'noRedirect',
     component: Layout,

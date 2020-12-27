@@ -2,13 +2,14 @@
   <div class="app-container">
     <div class="filter-container">
       <el-row>
-        <el-col :span="18">
+        <el-col :xm="24" :sm="18">
           <el-input v-model="regionQuery.region_name" class="filter-item" style="width: 200px;" placeholder="名称" clearable />
           <el-input v-model="regionQuery.region_pinyin" class="filter-item" style="width: 200px;" placeholder="拼音" clearable />
           <el-button class="filter-item" type="primary" @click="regionSearch()">查询</el-button>
-          <el-button class="filter-item" @click="regionRefresh()">刷新</el-button>
+          <el-button class="filter-item" @click="regionRefresh()">重置</el-button>
         </el-col>
-        <el-col :span="6" style="text-align:right;">
+        <el-col :xm="24" :sm="6" style="text-align:right;">
+          <el-button class="filter-item" @click="regionRefresh()">刷新</el-button>
           <el-button class="filter-item" type="primary" @click="regionAddition('')">添加</el-button>
         </el-col>
       </el-row>
@@ -17,7 +18,7 @@
     <el-table
       v-loading="loading"
       :data="regionData"
-      :height="height+90"
+      :height="height+80"
       style="width: 100%"
       row-key="region_id"
       border
@@ -32,21 +33,21 @@
       <el-table-column prop="region_citycode" label="区号" min-width="80" sortable="custom" />
       <el-table-column prop="region_zipcode" label="邮编" min-width="80" sortable="custom" />
       <el-table-column prop="region_sort" label="排序" min-width="80" sortable="custom" />
-      <el-table-column prop="region_id" label="ID" min-width="80" sortable="custom" />
-      <el-table-column prop="region_pid" label="PID" min-width="80" />
+      <el-table-column prop="region_id" label="地区ID" min-width="90" sortable="custom" />
+      <el-table-column prop="region_pid" label="地区PID" min-width="80" />
       <el-table-column label="操作" width="220" fixed="right" align="right">
         <template slot-scope="{ row }">
           <el-button size="mini" type="primary" @click="regionAddition(row)">添加</el-button>
-          <el-button size="mini" type="primary" @click="regionModify(row)">修改</el-button>
+          <el-button size="mini" type="success" @click="regionModify(row)">修改</el-button>
           <el-button size="mini" type="danger" @click="regionDelete(row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
     <!-- 地区添加、修改 -->
-    <el-dialog :title="regionDialogTitle" :visible.sync="regionDialog" top="1vh">
-      <el-form ref="regionRef" v-loading="regionDialogLoad" :rules="regionRules" :model="regionModel" class="dialog-body" label-width="100px" :style="{height:height+60+'px'}">
+    <el-dialog :title="regionDialogTitle" :visible.sync="regionDialog" top="1vh" :before-close="regionCancel">
+      <el-form ref="regionRef" v-loading="regionDialogLoad" :rules="regionRules" :model="regionModel" class="dialog-body" label-width="100px" :style="{height:height+30+'px'}">
         <el-form-item label="父级" prop="region_pid">
-          <el-cascader v-model="regionModel.region_pid" :options="regionModel.region_tree" :props="regionProps" style="width:100%" clearable filterable placeholder="一级" @change="regionPidChange" />
+          <el-cascader v-model="regionModel.region_pid" :options="regionTree" :props="regionProps" style="width:100%" clearable filterable placeholder="一级" @change="regionPidChange" />
         </el-form-item>
         <el-form-item label="名称" prop="region_name">
           <el-input v-model="regionModel.region_name" clearable placeholder="请输入名称：北京市" />
@@ -67,7 +68,7 @@
           <el-input v-model="regionModel.region_citycode" clearable placeholder="请输入区号：010" />
         </el-form-item>
         <el-form-item label="邮编" prop="region_zipcode">
-          <el-input v-model="regionModel.region_zipcode" clearable placeholder="请输入邮编：100000" />
+          <el-input v-model="regionModel.region_zipcode" clearable placeholder="请输入邮编：1000" />
         </el-form-item>
         <el-form-item label="经度" prop="region_longitude">
           <el-input v-model="regionModel.region_longitude" clearable placeholder="请输入经度：116.403263" />
@@ -76,10 +77,10 @@
           <el-input v-model="regionModel.region_latitude" clearable placeholder="请输入纬度：39.915156" />
         </el-form-item>
         <el-form-item label="添加时间" prop="">
-          <el-col :span="11">
+          <el-col :span="10">
             <el-input v-model="regionModel.create_time" clearable placeholder="" disabled />
           </el-col>
-          <el-col class="line" :span="3" style="text-align:center">更新时间</el-col>
+          <el-col class="line" :span="4" style="text-align:center">更新时间</el-col>
           <el-col :span="10">
             <el-input v-model="regionModel.update_time" clearable placeholder="" disabled />
           </el-col>
@@ -103,10 +104,8 @@
 
 <script>
 import screenHeight from '@/utils/screen-height'
-
 import {
   regionList,
-  regionInfo,
   regionAdd,
   regionEdit,
   regionDele
@@ -119,7 +118,6 @@ export default {
     return {
       height: 680,
       loading: false,
-      loadingTime: 0,
       regionData: [],
       regionCount: 0,
       regionQuery: {},
@@ -127,7 +125,7 @@ export default {
       regionDialogLoad: false,
       regionDialogTitle: '',
       regionProps: {
-        expandTrigger: 'hover',
+        expandTrigger: 'click',
         checkStrictly: true,
         value: 'region_id',
         label: 'region_name'
@@ -143,9 +141,9 @@ export default {
         region_zipcode: '',
         region_longitude: '',
         region_latitude: '',
-        region_sort: 1000,
-        region_tree: []
+        region_sort: 1000
       },
+      regionTree: [],
       regionRules: {
         region_name: [{ required: true, message: '请输入名称', trigger: 'blur' }]
       }
@@ -156,31 +154,16 @@ export default {
     this.regionList()
   },
   methods: {
-    loadOpen() {
-      this.loading = true
-    },
-    loadClose() {
-      const that = this
-      setTimeout(function() {
-        that.loading = false
-      }, that.loadingTime)
-    },
-    message(msg, type = 'success') {
-      this.$message({
-        message: msg,
-        type: type
-      })
-    },
     // 地区列表
     regionList() {
-      this.loadOpen()
+      this.loading = true
       this.regionData = []
       regionList(this.regionQuery).then(res => {
         this.regionData = res.data.list
         this.regionCount = res.data.count
-        this.loadClose()
+        this.loading = false
       }).catch(() => {
-        this.loadClose()
+        this.loading = false
       })
     },
     // 地区排序
@@ -209,14 +192,6 @@ export default {
         resolve(res.data.list)
       })
     },
-    // 地区信息
-    regionInfo(region_id) {
-      regionInfo({
-        region_id: region_id
-      }).then(res => {
-        this.regionReset(res.data)
-      })
-    },
     // 地区刷新
     regionRefresh() {
       this.regionQuery = {}
@@ -226,47 +201,52 @@ export default {
     regionAddition(row) {
       this.regionDialog = true
       this.regionDialogLoad = false
-      regionAdd({}, 'get').then(res => {
+      this.regionDialogTitle = '地区添加'
+      regionAdd().then(res => {
         this.regionDialogLoad = false
         if (row) {
           this.regionModel = this.$options.data().regionModel
-          this.regionDialogTitle = '地区添加'
           this.regionModel.region_pid = row.region_id
         } else {
           this.regionReset()
         }
-        this.regionModel.region_tree = res.data.region_tree
+        this.regionTree = res.data.region_tree
       })
     },
     // 地区修改
     regionModify(row) {
       this.regionDialog = true
       this.regionDialogLoad = false
+      this.regionDialogTitle = '地区修改：' + row.region_name
       regionEdit({
         region_id: row.region_id
-      }, 'get').then(res => {
+      }).then(res => {
         this.regionDialogLoad = false
-        this.regionReset(res.data)
+        this.regionModel = res.data.region_info
+        this.regionTree = res.data.region_tree
       })
     },
     // 地区删除
     regionDelete(row) {
-      this.$confirm('确定要删除地区 <span style="color:red">' + row.region_name + ' </span>吗？', '地区删除确认', {
-        type: 'warning',
-        dangerouslyUseHTMLString: true
-      }).then(() => {
-        this.loadOpen()
+      this.$confirm('确定要删除地区 <span style="color:red">' + row.region_name + ' </span>吗？',
+        '删除：' + row.region_id,
+        {
+          type: 'warning',
+          dangerouslyUseHTMLString: true
+        }
+      ).then(() => {
+        this.loading = true
         regionDele({
           region_id: row.region_id
         }).then(res => {
-          this.message(res.msg)
-          this.regionReset()
           this.regionList()
-          this.loadClose()
+          this.regionReset()
+          this.loading = false
+          this.$message.success(res.msg)
         }).catch(() => {
-          this.loadClose()
+          this.loading = false
         })
-      })
+      }).catch(() => {})
     },
     // 地区父级选择
     regionPidChange(value) {
@@ -278,12 +258,8 @@ export default {
     regionReset(row) {
       if (row) {
         this.regionModel = row
-        this.regionDialogTitle = '地区修改：' + row.region_name
       } else {
-        this.regionModel = {}
-        this.regionDialogTitle = '地区添加'
-        this.regionModel.region_id = ''
-        this.regionModel.region_pid = 0
+        this.regionModel = this.$options.data().regionModel
       }
       if (this.$refs['regionRef'] !== undefined) {
         this.$refs['regionRef'].resetFields()
@@ -298,25 +274,24 @@ export default {
     regionSubmit() {
       this.$refs['regionRef'].validate(valid => {
         if (valid) {
-          this.loadOpen()
-          this.regionModel.region_tree = []
+          this.loading = true
           if (this.regionModel.region_id) {
-            regionEdit(this.regionModel).then(res => {
-              this.regionDialog = false
-              this.message(res.msg)
-              this.regionReset()
+            regionEdit(this.regionModel, 'post').then(res => {
               this.regionList()
+              this.regionReset()
+              this.regionDialog = false
+              this.$message.success(res.msg)
             }).catch(() => {
-              this.loadClose()
+              this.loading = false
             })
           } else {
-            regionAdd(this.regionModel).then(res => {
-              this.regionDialog = false
-              this.message(res.msg)
-              this.regionReset()
+            regionAdd(this.regionModel, 'post').then(res => {
               this.regionList()
+              this.regionReset()
+              this.regionDialog = false
+              this.$message.success(res.msg)
             }).catch(() => {
-              this.loadClose()
+              this.loading = false
             })
           }
         }

@@ -135,7 +135,7 @@
       <el-card class="box-card">
         <el-row :gutter="0">
           <el-col :sm="24">
-            <el-date-picker v-model="date.date" type="daterange" range-separator="-" value-format="yyyy-MM-dd" start-placeholder="开始日期" end-placeholder="结束日期" style="max-width:280px" @change="echartDateChange()" />
+            <el-date-picker v-model="date.date" type="daterange" value-format="yyyy-MM-dd" start-placeholder="开始日期" end-placeholder="结束日期" style="max-width:280px" @change="echartDateChange()" />
           </el-col>
         </el-row>
         <el-row :gutter="0">
@@ -149,7 +149,7 @@
       <el-card class="box-card">
         <el-row :gutter="0">
           <el-col :sm="24" :md="8">
-            <el-date-picker v-model="region.date" type="daterange" range-separator="-" value-format="yyyy-MM-dd" start-placeholder="开始日期" end-placeholder="结束日期" style="max-width:280px" @change="echartRegionChange()" />
+            <el-date-picker v-model="region.date" type="daterange" value-format="yyyy-MM-dd" start-placeholder="开始日期" end-placeholder="结束日期" style="max-width:280px" @change="echartRegionChange()" />
           </el-col>
           <el-col :sm="24" :md="16">
             <el-select v-model="regionValue" placeholder="请选择" @change="echartRegionChange()">
@@ -185,7 +185,7 @@ require('echarts/lib/component/tooltip')
 require('echarts/lib/component/legend')
 require('echarts/lib/component/title')
 import BackToTop from '@/components/BackToTop'
-import { logStatistic } from '@/api/log'
+import { memberLogSta } from '@/api/member-log'
 
 export default {
   name: 'MemberLogsta',
@@ -236,12 +236,12 @@ export default {
   },
   computed: {},
   created() {
-    this.logStatistic()
+    this.memberLogSta()
   },
   mounted() {},
   methods: {
-    logStatistic() {
-      logStatistic().then(res => {
+    memberLogSta() {
+      memberLogSta().then(res => {
         this.number = res.data.number
         this.date = res.data.date
         this.region = res.data.region
@@ -251,7 +251,7 @@ export default {
       })
     },
     echartDateChange() {
-      logStatistic({
+      memberLogSta({
         type: 'date', date: this.date.date
       }).then(res => {
         this.echartDate(res.data.date)
@@ -300,7 +300,7 @@ export default {
       echart.setOption(option)
     },
     echartRegionChange(value) {
-      logStatistic({
+      memberLogSta({
         type: 'region',
         date: this.region.date,
         region: this.regionValue
