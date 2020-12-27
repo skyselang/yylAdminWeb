@@ -2,7 +2,7 @@
   <div>
     <el-card v-loading="loading" class="box-card">
       <el-row :gutter="0">
-        <el-col :sm="24" :md="12">
+        <el-col :xs="24" :sm="12">
           <el-form ref="userRef" :rules="userRules" :model="userModel" class="dialog-body" label-width="100px">
             <el-form-item v-if="userModel.admin_user_id && userModel.avatar" label="头像">
               <el-avatar shape="circle" fit="contain" :size="100" :src="userModel.avatar" />
@@ -76,7 +76,7 @@ export default {
         this.userModel = res.data
         this.loading = false
         if (msg) {
-          this.$message({ message: res.msg, type: 'success' })
+          this.$message.success(res.msg)
         }
       }).catch(() => {
         this.loading = false

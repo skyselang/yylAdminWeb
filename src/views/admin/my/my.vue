@@ -10,7 +10,7 @@
       <el-tab-pane v-if="checkPermission(['admin/AdminMy/myPwd'])" label="修改密码" name="pwd">
         <my-pwd />
       </el-tab-pane>
-      <el-tab-pane v-if="checkPermission(['admin/AdminMy/myAvatar'])" label="修改头像" name="avatar">
+      <el-tab-pane v-if="checkPermission(['admin/AdminMy/myAvatar'])" label="更换头像" name="avatar">
         <my-avatar />
       </el-tab-pane>
       <el-tab-pane v-if="checkPermission(['admin/AdminMy/myLog'])" label="我的日志" name="log">

@@ -2,7 +2,7 @@
   <div class="login-container">
     <el-form ref="loginRef" :model="loginModel" :rules="loginRules" class="login-form" label-position="left">
       <div class="title-container">
-        <h3 class="title">{{ name }}</h3>
+        <h3 class="title">{{ systemName }}</h3>
       </div>
       <el-form-item prop="username">
         <el-input v-model="loginModel.username" type="text" name="username" placeholder="请输入账号" prefix-icon="el-icon-user" autocomplete="on" clearable />
@@ -32,7 +32,7 @@ export default {
   components: {},
   data() {
     return {
-      name: defaultSettings.systemName,
+      systemName: defaultSettings.systemName,
       loading: false,
       redirect: undefined,
       otherQuery: {},
@@ -95,7 +95,7 @@ export default {
             this.$router.push({
               path: this.redirect || '/',
               query: this.otherQuery
-            })
+            }).catch(() => {})
             this.loading = false
           }).catch(() => {
             this.loading = false

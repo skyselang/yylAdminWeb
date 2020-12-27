@@ -1,9 +1,9 @@
 <template>
   <div class="app-container">
     <el-card v-loading="tokenLoad" class="box-card">
-      <el-form ref="tokenRef" :rules="tokenRules" :model="tokenModel" label-width="120px">
-        <el-row>
-          <el-col :xs="24" :sm="12">
+      <el-row :gutter="0">
+        <el-col :xs="24" :sm="12">
+          <el-form ref="tokenRef" :model="tokenModel" :rules="tokenRules" label-width="120px">
             <el-form-item label="Token签发者" prop="iss">
               <el-input v-model="tokenModel.iss" type="text" />
             </el-form-item>
@@ -16,9 +16,9 @@
               <el-button @click="tokenRefresh()">刷新</el-button>
               <el-button type="primary" @click="tokenSubmit()">提交</el-button>
             </el-form-item>
-          </el-col>
-        </el-row>
-      </el-form>
+          </el-form>
+        </el-col>
+      </el-row>
     </el-card>
   </div>
 </template>
@@ -58,7 +58,7 @@ export default {
       settingToken().then(res => {
         this.tokenModel = res.data
         this.tokenLoad = false
-        this.$message({ message: res.msg, type: 'success' })
+        this.$message.success(res.msg)
       }).catch(() => {
         this.tokenLoad = false
       })
@@ -70,7 +70,7 @@ export default {
           this.tokenLoad = true
           settingToken(this.tokenModel).then(res => {
             this.tokenLoad = false
-            this.$message({ message: res.msg, type: 'success' })
+            this.$message.success(res.msg)
           }).catch(() => {
             this.tokenLoad = false
           })

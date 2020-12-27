@@ -4,7 +4,7 @@
       <span>随机字符串</span>
     </div>
     <div class="text item">
-      <el-form ref="strRandRef" :rules="strRandRules" :model="strRandModel" label-position="right" label-width="100px">
+      <el-form ref="strRandRef" :model="strRandModel" :rules="strRandRules" label-width="100px">
         <el-form-item label="所用字符" prop="ids">
           <el-checkbox-group v-model="strRandModel.ids" style="width:100px;">
             <el-checkbox v-for="item in strRandModel.idss" :key="item.id" :label="item.id">
@@ -19,7 +19,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="生成字符">
+        <el-form-item label="生成字符" prop="str">
           <el-input v-model="strRandModel.str" type="textarea" rows="4" clearable />
         </el-form-item>
         <el-form-item>

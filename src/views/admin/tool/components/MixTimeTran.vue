@@ -4,19 +4,13 @@
       <span>时间戳转换</span>
     </div>
     <div class="text item">
-      <el-form ref="timeTranRef" :rules="timeTranRules" :model="timeTranModel" label-width="100px">
-        <el-row>
-          <el-col>
-            <el-form-item label="时间戳">
-              <el-input v-model="timeTranModel.timestamp" type="number" placeholder="请输入时间戳" clearable @input="timeTranValue('timestamp')" />
-            </el-form-item>
-          </el-col>
-          <el-col>
-            <el-form-item label="日期时间">
-              <el-date-picker v-model="timeTranModel.datetime" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" placeholder="请选择日期时间" clearable @change="timeTranValue('datetime')" />
-            </el-form-item>
-          </el-col>
-        </el-row>
+      <el-form ref="timeTranRef" :model="timeTranModel" :rules="timeTranRules" label-width="100px">
+        <el-form-item label="时间戳">
+          <el-input v-model="timeTranModel.timestamp" type="number" prefix-icon="el-icon-stopwatch" placeholder="请输入时间戳" clearable @input="timeTranValue('timestamp')" />
+        </el-form-item>
+        <el-form-item label="日期时间">
+          <el-date-picker v-model="timeTranModel.datetime" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" placeholder="请选择日期时间" clearable @change="timeTranValue('datetime')" />
+        </el-form-item>
         <el-form-item>
           <el-button @click="timeTranClear()">清空</el-button>
           <el-button type="primary" @click="timeTranSubmit()">转换</el-button>

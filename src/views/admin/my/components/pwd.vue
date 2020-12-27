@@ -2,7 +2,7 @@
   <div>
     <el-card v-loading="loading" class="box-card">
       <el-row :gutter="0">
-        <el-col :sm="24" :md="12">
+        <el-col :xs="24" :sm="12">
           <el-form ref="userRef" :rules="userRules" :model="userModel" label-width="100px">
             <el-form-item label="旧密码" prop="password_old">
               <el-input v-model="userModel.password_old" type="password_old" autocomplete="off" placeholder="请输入旧密码" clearable show-password />
@@ -53,7 +53,7 @@ export default {
           myPwd(this.userModel).then(res => {
             this.userReset()
             this.loading = false
-            this.$message({ message: res.msg, type: 'success' })
+            this.$message.success(res.msg)
           }).catch(() => {
             this.loading = false
           })

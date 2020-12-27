@@ -1,27 +1,31 @@
 <template>
   <div class="app-container">
     <!-- 菜单添加 -->
-    <div class="filter-container" style="text-align:right">
-      <el-button class="filter-item" @click="menuRefresh()">刷新</el-button>
-      <el-button class="filter-item" type="primary" @click="menuAddition()">添加</el-button>
+    <div class="filter-container">
+      <el-row :gutter="0">
+        <el-col :xs="24" :sm="24" style="text-align:right;">
+          <el-button class="filter-item" @click="menuRefresh()">刷新</el-button>
+          <el-button class="filter-item" type="primary" @click="menuAddition()">添加</el-button>
+        </el-col>
+      </el-row>
     </div>
     <!-- 菜单列表 -->
-    <el-table v-loading="loading" :data="menuData" :height="height+100" style="width: 100%" row-key="admin_menu_id" border>
+    <el-table v-loading="loading" :data="menuData" :height="height+80" style="width: 100%" row-key="admin_menu_id" border>
       <el-table-column prop="menu_name" label="菜单名称" min-width="220" fixed="left" />
       <el-table-column prop="menu_url" label="菜单链接" min-width="260" />
       <el-table-column prop="menu_sort" label="菜单排序" min-width="90" />
-      <el-table-column prop="admin_menu_id" label="ID" min-width="90" />
-      <el-table-column prop="menu_pid" label="PID" min-width="90" />
+      <el-table-column prop="admin_menu_id" label="菜单ID" min-width="90" />
+      <el-table-column prop="menu_pid" label="菜单PID" min-width="90" />
       <el-table-column prop="create_time" label="添加时间" min-width="160" />
       <el-table-column prop="update_time" label="修改时间" min-width="160" />
       <el-table-column prop="is_disable" label="是否禁用" min-width="80" align="center" fixed="right">
         <template slot-scope="scope">
-          <el-switch v-if="scope.row.menu_url" v-model="scope.row.is_disable" active-value="1" inactive-value="0" @change="menuIsProhibit(scope.row)" />
+          <el-switch v-if="scope.row.menu_url" v-model="scope.row.is_disable" :active-value="1" :inactive-value="0" @change="menuIsProhibit(scope.row)" />
         </template>
       </el-table-column>
       <el-table-column prop="is_unauth" label="无需权限" min-width="80" align="center" fixed="right">
         <template slot-scope="scope">
-          <el-switch v-if="scope.row.menu_url" v-model="scope.row.is_unauth" active-value="1" inactive-value="0" @change="menuIsUnauth(scope.row)" />
+          <el-switch v-if="scope.row.menu_url" v-model="scope.row.is_unauth" :active-value="1" :inactive-value="0" @change="menuIsUnauth(scope.row)" />
         </template>
       </el-table-column>
       <el-table-column label="操作" min-width="352" align="right" fixed="right">
@@ -29,14 +33,14 @@
           <el-button size="mini" type="primary" @click="menuRoleShow(row)">角色</el-button>
           <el-button size="mini" type="primary" @click="menuUserShow(row,'admin_menu_id')">用户</el-button>
           <el-button size="mini" type="primary" @click="menuAddition(row)">添加</el-button>
-          <el-button size="mini" type="primary" @click="menuModify(row)">修改</el-button>
+          <el-button size="mini" type="success" @click="menuModify(row)">修改</el-button>
           <el-button size="mini" type="danger" @click="menuDelete(row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
     <!-- 菜单添加、修改 -->
     <el-dialog :title="menuDialogTitle" :visible.sync="menuDialog" top="1vh" :before-close="menuCancel">
-      <el-form ref="menuRef" :rules="menuRules" :model="menuModel" class="dialog-body" label-width="100px" :style="{height:height+70+'px'}">
+      <el-form ref="menuRef" :rules="menuRules" :model="menuModel" class="dialog-body" label-width="100px" :style="{height:height+30+'px'}">
         <el-form-item label="菜单父级" prop="menu_pid">
           <el-cascader v-model="menuModel.menu_pid" :options="menuData" :props="menuProps" style="width:100%" clearable filterable placeholder="一级菜单" @change="menuPidChange" />
         </el-form-item>
@@ -63,7 +67,7 @@
         <el-table-column prop="role_desc" label="描述" min-width="130" />
         <el-table-column prop="is_disable" label="是否禁用" min-width="110" align="center" sortable="custom">
           <template slot-scope="scope">
-            <el-switch v-model="scope.row.is_disable" active-value="1" inactive-value="0" disabled />
+            <el-switch v-model="scope.row.is_disable" :active-value="1" :inactive-value="0" disabled />
           </template>
         </el-table-column>
         <el-table-column label="操作" min-width="120" align="right" class-name="small-padding fixed-width" fixed="right">
@@ -76,8 +80,8 @@
       <pagination v-show="roleCount > 0" :total="roleCount" :page.sync="roleQuery.page" :limit.sync="roleQuery.limit" @pagination="menuRoleList" />
     </el-dialog>
     <!-- 菜单用户 -->
-    <el-dialog :title="userTitle" :visible.sync="userDialog" width="62%" top="2vh">
-      <el-table ref="userRef" v-loading="userLoad" :data="userData" :height="height+10" style="width: 100%" border @sort-change="menuUserSort">
+    <el-dialog :title="userTitle" :visible.sync="userDialog" width="65%" top="1vh">
+      <el-table ref="userRef" v-loading="userLoad" :data="userData" :height="height+30" style="width: 100%" border @sort-change="menuUserSort">
         <el-table-column prop="admin_user_id" label="ID" min-width="100" sortable="custom" fixed="left" />
         <el-table-column prop="username" label="账号" min-width="120" sortable="custom" />
         <el-table-column prop="nickname" label="昵称" min-width="120" />
@@ -85,12 +89,12 @@
         <el-table-column prop="remark" label="备注" width="100" />
         <el-table-column prop="is_admin" label="是否管理员" min-width="96" align="center">
           <template slot-scope="scope">
-            <el-switch v-model="scope.row.is_admin" active-value="1" inactive-value="0" disabled />
+            <el-switch v-model="scope.row.is_admin" :active-value="1" :inactive-value="0" disabled />
           </template>
         </el-table-column>
         <el-table-column prop="is_disable" label="是否禁用" min-width="80" align="center">
           <template slot-scope="scope">
-            <el-switch v-model="scope.row.is_disable" active-value="1" inactive-value="0" disabled />
+            <el-switch v-model="scope.row.is_disable" :active-value="1" :inactive-value="0" disabled />
           </template>
         </el-table-column>
         <el-table-column label="操作" min-width="100" align="right" class-name="small-padding fixed-width" fixed="right">
@@ -110,7 +114,6 @@ import Pagination from '@/components/Pagination'
 import {
   menuList,
   menuAdd,
-  menuInfo,
   menuEdit,
   menuDele,
   menuDisable,
@@ -193,7 +196,7 @@ export default {
         is_disable: row.is_disable
       }).then(res => {
         this.menuList()
-        this.$message({ message: res.msg, type: 'success' })
+        this.$message.success(res.msg)
       }).catch(() => {
         this.loading = false
       })
@@ -206,7 +209,7 @@ export default {
         is_unauth: row.is_unauth
       }).then(res => {
         this.menuList()
-        this.$message({ message: res.msg, type: 'success' })
+        this.$message.success(res.msg)
       }).catch(() => {
         this.loading = false
       })
@@ -224,7 +227,7 @@ export default {
     menuModify(row) {
       this.menuDialog = true
       this.menuDialogTitle = '菜单修改：' + row.menu_name
-      menuInfo({
+      menuEdit({
         admin_menu_id: row.admin_menu_id
       }).then(res => {
         this.menuModel = res.data
@@ -234,7 +237,7 @@ export default {
     menuDelete(row) {
       this.$confirm(
         '确定要删除菜单 <span style="color:red">' + row.menu_name + ' </span>吗？',
-        '菜单删除确认',
+        '删除：' + row.admin_menu_id,
         {
           type: 'warning',
           dangerouslyUseHTMLString: true
@@ -246,11 +249,11 @@ export default {
         }).then(res => {
           this.menuList()
           this.menuReset()
-          this.$message({ message: res.msg, type: 'success' })
+          this.$message.success(res.msg)
         }).catch(() => {
           this.loading = false
         })
-      })
+      }).catch(() => {})
     },
     // 菜单父级选择
     menuPidChange(value) {
@@ -279,28 +282,21 @@ export default {
       this.$refs['menuRef'].validate(valid => {
         if (valid) {
           this.loading = true
-          const params = {
-            admin_menu_id: this.menuModel.admin_menu_id,
-            menu_pid: this.menuModel.menu_pid,
-            menu_name: this.menuModel.menu_name,
-            menu_url: this.menuModel.menu_url,
-            menu_sort: this.menuModel.menu_sort
-          }
-          if (params.admin_menu_id) {
-            menuEdit(params).then(res => {
-              this.menuReset()
+          if (this.menuModel.admin_menu_id) {
+            menuEdit(this.menuModel, 'post').then(res => {
               this.menuList()
+              this.menuReset()
               this.menuDialog = false
-              this.$message({ message: res.msg, type: 'success' })
+              this.$message.success(res.msg)
             }).catch(() => {
               this.loading = false
             })
           } else {
-            menuAdd(params).then(res => {
-              this.menuReset()
+            menuAdd(this.menuModel).then(res => {
               this.menuList()
+              this.menuReset()
               this.menuDialog = false
-              this.$message({ message: res.msg, type: 'success' })
+              this.$message.success(res.msg)
             }).catch(() => {
               this.loading = false
             })
@@ -346,7 +342,7 @@ export default {
     menuRoleRemove(row) {
       this.$confirm(
         '确定要解除菜单与角色 <span style="color:red">' + row.role_name + ' </span>的关联吗？',
-        '解除确认',
+        '解除：' + row.admin_role_id,
         {
           type: 'warning',
           dangerouslyUseHTMLString: true
@@ -358,11 +354,11 @@ export default {
           admin_role_id: row.admin_role_id
         }).then(res => {
           this.menuRoleList()
-          this.$message({ message: res.msg, type: 'success' })
+          this.$message.success(res.msg)
         }).catch(() => {
           this.roleLoad = false
         })
-      })
+      }).catch(() => {})
     },
     // 菜单用户显示
     menuUserShow(row, type = 'admin_role_id') {
@@ -409,7 +405,7 @@ export default {
     menuUserRemove(row) {
       this.$confirm(
         '确定要解除菜单与用户 <span style="color:red">' + row.username + ' </span>的关联吗？',
-        '解除确认',
+        '解除：' + row.admin_user_id,
         {
           type: 'warning',
           dangerouslyUseHTMLString: true
@@ -421,11 +417,11 @@ export default {
           admin_user_id: row.admin_user_id
         }).then(res => {
           this.menuUserList()
-          this.$message({ message: res.msg, type: 'success' })
+          this.$message.success(res.msg)
         }).catch(() => {
           this.userLoad = false
         })
-      })
+      }).catch(() => {})
     }
   }
 }

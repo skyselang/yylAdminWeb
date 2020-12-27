@@ -4,7 +4,7 @@
       <span>字节转换</span>
     </div>
     <div class="text item">
-      <el-form ref="byteTranRef" :rules="byteTranRules" :model="byteTranModel" label-width="100px">
+      <el-form ref="byteTranRef" :model="byteTranModel" :rules="byteTranRules" label-width="100px">
         <el-form-item label="比特(b)">
           <el-input v-model="byteTranModel.b" type="number" clearable @input="byteTranValue('b')" />
         </el-form-item>
@@ -41,8 +41,8 @@ export default {
   data() {
     return {
       byteTranModel: {
-        type: 'b',
-        value: 0,
+        type: '',
+        value: '',
         b: '',
         B: '',
         KB: '',

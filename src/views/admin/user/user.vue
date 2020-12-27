@@ -2,12 +2,18 @@
   <div class="app-container">
     <!-- 用户查询 -->
     <div class="filter-container">
-      <el-input v-model="userQuery.username" class="filter-item" style="width: 150px;" placeholder="账号" clearable />
-      <el-input v-model="userQuery.nickname" class="filter-item" style="width: 150px;" placeholder="昵称" clearable />
-      <el-input v-model="userQuery.email" class="filter-item" style="width: 250px;" placeholder="邮箱" clearable />
-      <el-button class="filter-item" type="primary" @click="userSearch()">查询</el-button>
-      <el-button class="filter-item" @click="userRefresh()">重置</el-button>
-      <el-button class="filter-item" type="primary" style="float:right;margin-left:10px" @click="userAddition()">添加</el-button>
+      <el-row :gutter="0">
+        <el-col :xs="24" :sm="18">
+          <el-input v-model="userQuery.username" class="filter-item" style="width: 150px;" placeholder="账号" clearable />
+          <el-input v-model="userQuery.nickname" class="filter-item" style="width: 150px;" placeholder="昵称" clearable />
+          <el-input v-model="userQuery.email" class="filter-item" style="width: 250px;" placeholder="邮箱" clearable />
+          <el-button class="filter-item" type="primary" @click="userSearch()">查询</el-button>
+          <el-button class="filter-item" @click="userRefresh()">重置</el-button>
+        </el-col>
+        <el-col :xs="24" :sm="6" style="text-align:right;">
+          <el-button class="filter-item" type="primary" @click="userAddition()">添加</el-button>
+        </el-col>
+      </el-row>
     </div>
     <!-- 用户列表 -->
     <el-table v-loading="loading" :data="userData" :height="height" style="width: 100%" border @sort-change="userSort">
@@ -21,19 +27,19 @@
       <el-table-column prop="sort" label="排序" width="80" sortable="custom" />
       <el-table-column prop="is_admin" label="管理员" min-width="88" sortable="custom" align="center">
         <template slot-scope="scope">
-          <el-switch v-model="scope.row.is_admin" active-value="1" inactive-value="0" @change="userIsAdmin(scope.row)" />
+          <el-switch v-model="scope.row.is_admin" :active-value="1" :inactive-value="0" @change="userIsAdmin(scope.row)" />
         </template>
       </el-table-column>
       <el-table-column prop="is_disable" label="禁用" min-width="80" sortable="custom" align="center" fixed="right">
         <template slot-scope="scope">
-          <el-switch v-model="scope.row.is_disable" active-value="1" inactive-value="0" @change="userIsProhibit(scope.row)" />
+          <el-switch v-model="scope.row.is_disable" :active-value="1" :inactive-value="0" @change="userIsProhibit(scope.row)" />
         </template>
       </el-table-column>
-      <el-table-column label="操作" min-width="282" align="right" fixed="right">
+      <el-table-column label="操作" min-width="285" align="right" fixed="right">
         <template slot-scope="{ row }">
           <el-button size="mini" type="primary" @click="userEditRule(row)">权限</el-button>
           <el-button size="mini" type="primary" @click="userPassword(row)">密码</el-button>
-          <el-button size="mini" type="primary" @click="userModify(row)">修改</el-button>
+          <el-button size="mini" type="success" @click="userModify(row)">修改</el-button>
           <el-button size="mini" type="danger" @click="userDelete(row)">删除</el-button>
         </template>
       </el-table-column>
@@ -41,14 +47,14 @@
     <!-- 用户分页 -->
     <pagination v-show="userCount > 0" :total="userCount" :page.sync="userQuery.page" :limit.sync="userQuery.limit" @pagination="userList" />
     <!-- 用户添加、修改 -->
-    <el-dialog :title="userDialogTitle" :visible.sync="userDialog" width="65%" top="1vh" :before-close="userCancel">
-      <el-form ref="userRef" :model="userModel" :rules="userRoles" class="dialog-body" label-width="100px" :style="{height:height+50+'px'}">
+    <el-dialog :title="userDialogTitle" :visible.sync="userDialog" top="1vh" :before-close="userCancel">
+      <el-form ref="userRef" :model="userModel" :rules="userRoles" class="dialog-body" label-width="100px" :style="{height:height+30+'px'}">
         <el-form-item v-if="userModel.admin_user_id && userModel.avatar" label="头像" prop="avatar">
           <el-col :span="10">
             <el-avatar shape="circle" fit="contain" :size="100" :src="userModel.avatar" />
           </el-col>
-          <el-col class="line" :span="3" style="text-align:center" />
-          <el-col :span="11">
+          <el-col class="line" :span="4" style="text-align:center" />
+          <el-col :span="10">
             <el-upload name="avatar_file" :show-file-list="false" :before-upload="uploadBefore" :action="uploadAction" :headers="uploadHeaders" :data="uploadData" :on-success="uploadSuccess">
               <el-button>更换头像</el-button>
             </el-upload>
@@ -73,17 +79,32 @@
         <el-form-item label="排序" prop="sort">
           <el-input v-model="userModel.sort" type="number" />
         </el-form-item>
-        <el-form-item v-if="userModel.admin_user_id" label="登录地区" prop="login_region">
-          <el-input v-model="userModel.login_region" disabled />
+        <el-form-item v-if="userModel.admin_user_id" label="登录IP" prop="login_ip">
+          <el-col :span="10">
+            <el-input v-model="userModel.login_ip" disabled />
+          </el-col>
+          <el-col class="line" :span="4" style="text-align:center">登录地区</el-col>
+          <el-col :span="10">
+            <el-input v-model="userModel.login_region" disabled />
+          </el-col>
+        </el-form-item>
+        <el-form-item v-if="userModel.admin_user_id" label="登录时间" prop="login_time">
+          <el-col :span="10">
+            <el-input v-model="userModel.login_time" disabled />
+          </el-col>
+          <el-col class="line" :span="4" style="text-align:center">退出时间</el-col>
+          <el-col :span="10">
+            <el-input v-model="userModel.logout_time" disabled />
+          </el-col>
         </el-form-item>
         <el-form-item v-if="userModel.admin_user_id" label="添加时间" prop="create_time">
-          <el-input v-model="userModel.create_time" disabled />
-        </el-form-item>
-        <el-form-item v-if="userModel.admin_user_id" label="更新时间" prop="update_time">
-          <el-input v-model="userModel.update_time" disabled />
-        </el-form-item>
-        <el-form-item v-if="userModel.admin_user_id" label="退出时间" prop="logout_time">
-          <el-input v-model="userModel.logout_time" disabled />
+          <el-col :span="10">
+            <el-input v-model="userModel.create_time" disabled />
+          </el-col>
+          <el-col class="line" :span="4" style="text-align:center">更新时间</el-col>
+          <el-col :span="10">
+            <el-input v-model="userModel.update_time" disabled />
+          </el-col>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -92,8 +113,8 @@
       </div>
     </el-dialog>
     <!-- 用户权限分配 -->
-    <el-dialog :title="'权限分配：'+userModel.username" :visible.sync="userDialogRole" width="65%" top="1vh">
-      <el-form ref="roleRef" :model="userModel" label-width="80px" class="dialog-body" :style="{height:height+60+'px'}">
+    <el-dialog :title="'权限分配：'+userModel.username" :visible.sync="userDialogRole" top="1vh">
+      <el-form ref="roleRef" :model="userModel" class="dialog-body" label-width="100px" :style="{height:height+30+'px'}">
         <el-form-item label="账号">
           <el-input v-model="userModel.username" clearable disabled />
         </el-form-item>
@@ -108,7 +129,7 @@
         <el-form-item label="按菜单">
           <el-tree
             ref="menuRef"
-            :data="menuData"
+            :data="menuTree"
             :default-checked-keys="userModel.admin_menu_ids"
             :props="menuProps"
             :expand-on-click-node="false"
@@ -122,8 +143,10 @@
             <span slot-scope="{ node, data }" class="custom-tree-node">
               <span>{{ node.label }}<i v-if="data.is_check" class="el-icon-check" title="已分配" /></span>
               <span>
-                <i v-if="data.is_role" class="el-icon-s-custom" title="按角色" />
-                <i v-if="data.is_menu" class="el-icon-menu" title="按菜单" />
+                <i v-if="data.is_role" class="el-icon-s-custom" style="margin-left:10px" title="按角色" />
+                <i v-if="data.is_menu" class="el-icon-menu" style="margin-left:10px" title="按菜单" />
+                <i v-if="data.menu_url" class="el-icon-link" style="margin-left:10px" :title="data.menu_url" />
+                <i v-else class="el-icon-link" style="margin-left:10px;color:#fff" />
               </span>
             </span>
           </el-tree>
@@ -135,8 +158,8 @@
       </div>
     </el-dialog>
     <!-- 用户密码重置 -->
-    <el-dialog :title="'密码重置：'+userModel.username" :visible.sync="userDialogPwd" width="65%" top="1vh">
-      <el-form ref="rePwdRef" :rules="pwdRoles" :model="userModel" label-width="80px" class="dialog-body" :style="{height:height+50+'px'}">
+    <el-dialog :title="'密码重置：'+userModel.username" :visible.sync="userDialogPwd" top="1vh">
+      <el-form ref="pwdRef" :rules="pwdRoles" :model="userModel" class="dialog-body" label-width="100px" :style="{height:height+30+'px'}">
         <el-form-item label="账号">
           <el-input v-model="userModel.username" clearable disabled />
         </el-form-item>
@@ -158,9 +181,9 @@
 <script>
 import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination'
+import { getAdminToken, getAdminUserId } from '@/utils/auth'
 import {
   userList,
-  userInfo,
   userAdd,
   userEdit,
   userDele,
@@ -169,7 +192,6 @@ import {
   userRule,
   userPwd
 } from '@/api/admin'
-import { getAdminUserId, getToken } from '@/utils/auth'
 
 export default {
   name: 'User',
@@ -199,14 +221,11 @@ export default {
         email: '',
         remark: '',
         sort: 200,
-        login_region: '',
-        is_disable: '0',
-        is_admin: '0'
+        login_region: ''
       },
-      uploadAction:
-        process.env.VUE_APP_BASE_API + '/admin/AdminUser/userAvatar',
+      uploadAction: process.env.VUE_APP_BASE_API + '/admin/AdminUser/userAvatar',
       uploadHeaders: {
-        AdminToken: getToken(),
+        AdminToken: getAdminToken(),
         AdminUserId: getAdminUserId()
       },
       uploadData: { admin_user_id: '' },
@@ -215,7 +234,7 @@ export default {
         children: 'children',
         label: 'menu_name'
       },
-      menuData: [],
+      menuTree: [],
       userRoles: {
         username: [{ required: true, message: '请输入账号', trigger: 'blur' }],
         nickname: [{ required: true, message: '请输入昵称', trigger: 'blur' }],
@@ -247,9 +266,9 @@ export default {
       this.userQuery.page = 1
       this.userList()
     },
-    // 用户刷新
+    // 用户重置
     userRefresh() {
-      this.userQuery = { page: 1, limit: 13 }
+      this.userQuery = this.$options.data().userQuery
       this.userList()
     },
     // 用户排序
@@ -265,7 +284,7 @@ export default {
         this.userList()
       }
     },
-    // 用户重置
+    // 用户数据重置
     userReset() {
       this.userModel = this.$options.data().userModel
       if (this.$refs['userRef'] !== undefined) {
@@ -283,10 +302,10 @@ export default {
       this.userDialog = true
       this.userDialogTitle = '用户修改：' + row.username
       this.userReset()
-      userInfo({
+      userEdit({
         admin_user_id: row.admin_user_id
       }).then(res => {
-        this.userModel = res.data
+        this.userModel = res.data.admin_user
       })
     },
     // 用户修改头像
@@ -296,16 +315,16 @@ export default {
     uploadSuccess(res, file) {
       if (res.code === 200) {
         this.userModel.avatar = res.data.avatar
-        this.$message({ message: res.msg, type: 'success' })
+        this.$message.success(res.msg)
       } else {
-        this.$message({ message: res.msg, type: 'error' })
+        this.$message.error(res.msg)
       }
     },
     // 用户删除
     userDelete(row) {
       this.$confirm(
         '确定要删除用户 <span style="color:red">' + row.username + ' </span>吗？',
-        '用户删除确认',
+        '删除：' + row.admin_user_id,
         {
           type: 'warning',
           dangerouslyUseHTMLString: true
@@ -316,11 +335,11 @@ export default {
           admin_user_id: row.admin_user_id
         }).then(res => {
           this.userList()
-          this.$message({ message: res.msg, type: 'success' })
+          this.$message.success(res.msg)
         }).catch(() => {
           this.loading = false
         })
-      })
+      }).catch(() => {})
     },
     // 用户是否管理员
     userIsAdmin(row) {
@@ -330,7 +349,7 @@ export default {
         is_admin: row.is_admin
       }).then(res => {
         this.userList()
-        this.$message({ message: res.msg, type: 'success' })
+        this.$message.success(res.msg)
       }).catch(() => {
         this.userList()
       })
@@ -338,9 +357,12 @@ export default {
     // 用户是否禁用
     userIsProhibit(row) {
       this.loading = true
-      userDisable(row).then(res => {
+      userDisable({
+        admin_user_id: row.admin_user_id,
+        is_disable: row.is_disable
+      }).then(res => {
         this.userList()
-        this.$message({ message: res.msg, type: 'success' })
+        this.$message.success(res.msg)
       }).catch(() => {
         this.userList()
       })
@@ -351,8 +373,8 @@ export default {
       userRule({
         admin_user_id: row.admin_user_id
       }).then(res => {
-        this.roleData = res.data.role_data
-        this.menuData = res.data.menu_data
+        this.roleData = res.data.admin_role
+        this.menuTree = res.data.admin_menu
         this.userModel.username = res.data.username
         this.userModel.nickname = res.data.nickname
         this.userModel.admin_user_id = row.admin_user_id
@@ -382,7 +404,7 @@ export default {
           }, 'post').then(res => {
             this.userList()
             this.userDialogRole = false
-            this.$message({ message: res.msg, type: 'success' })
+            this.$message.success(res.msg)
           }).catch(() => {
             this.loading = false
           })
@@ -404,7 +426,7 @@ export default {
     },
     // 用户密码重置提交
     userSubmitPwd() {
-      this.$refs['rePwdRef'].validate(valid => {
+      this.$refs['pwdRef'].validate(valid => {
         if (valid) {
           this.loading = true
           userPwd({
@@ -413,7 +435,7 @@ export default {
           }).then(res => {
             this.userList()
             this.userDialogPwd = false
-            this.$message({ message: res.msg, type: 'success' })
+            this.$message.success(res.msg)
           }).catch(() => {
             this.loading = false
           })
@@ -430,28 +452,19 @@ export default {
       this.$refs['userRef'].validate(valid => {
         if (valid) {
           this.loading = true
-          var params = {
-            admin_user_id: this.userModel.admin_user_id,
-            username: this.userModel.username,
-            nickname: this.userModel.nickname,
-            password: this.userModel.password,
-            email: this.userModel.email,
-            remark: this.userModel.remark,
-            sort: this.userModel.sort
-          }
-          if (params.admin_user_id) {
-            userEdit(params).then(res => {
+          if (this.userModel.admin_user_id) {
+            userEdit(this.userModel, 'post').then(res => {
               this.userList()
               this.userDialog = false
-              this.$message({ message: res.msg, type: 'success' })
+              this.$message.success(res.msg)
             }).catch(() => {
               this.loading = false
             })
           } else {
-            userAdd(params).then(res => {
+            userAdd(this.userModel).then(res => {
               this.userList()
               this.userDialog = false
-              this.$message({ message: res.msg, type: 'success' })
+              this.$message.success(res.msg)
             }).catch(() => {
               this.loading = false
             })

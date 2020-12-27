@@ -37,12 +37,20 @@ export function menuInfo(data) {
  * 菜单修改
  * @param {array} data 请求数据
  */
-export function menuEdit(data) {
-  return request({
-    url: '/admin/AdminMenu/menuEdit',
-    method: 'post',
-    data
-  })
+export function menuEdit(data, method = 'get') {
+  if (method === 'get') {
+    return request({
+      url: '/admin/AdminMenu/menuEdit',
+      method: 'get',
+      params: data
+    })
+  } else {
+    return request({
+      url: '/admin/AdminMenu/menuEdit',
+      method: 'post',
+      data
+    })
+  }
 }
 /**
  * 菜单删除
@@ -265,12 +273,20 @@ export function userAdd(data) {
  * 用户修改
  * @param {array} data 请求数据
  */
-export function userEdit(data) {
-  return request({
-    url: '/admin/AdminUser/userEdit',
-    method: 'post',
-    data
-  })
+export function userEdit(data, method = 'get') {
+  if (method === 'get') {
+    return request({
+      url: '/admin/AdminUser/userEdit',
+      method: 'get',
+      params: data
+    })
+  } else {
+    return request({
+      url: '/admin/AdminUser/userEdit',
+      method: 'post',
+      data
+    })
+  }
 }
 /**
  * 用户删除

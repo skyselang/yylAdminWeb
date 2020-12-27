@@ -1,9 +1,9 @@
 <template>
   <div class="app-container">
     <el-card v-loading="verifyLoad" class="box-card">
-      <el-form ref="verifyRef" :rules="verifyRules" :model="verifyModel" label-width="120px">
-        <el-row>
-          <el-col :xs="24" :sm="12">
+      <el-row :gutter="0">
+        <el-col :xs="24" :sm="12">
+          <el-form ref="verifyRef" :model="verifyModel" :rules="verifyRules" label-width="120px">
             <el-form-item v-if="verifyShow" label="验证码" prop="verify_code">
               <el-image style="width:200px;height:50px;" :src="verifySrc" fit="fill" alt="验证码" title="点击刷新验证码" @click="refreshVerify()" />
             </el-form-item>
@@ -34,7 +34,7 @@
               </el-select>
             </el-form-item>
             <el-form-item label="验证码有效时间" prop="expire">
-              <el-col :xs="24" :sm="12">
+              <el-col :xs="24" :sm="8">
                 <el-input v-model="verifyModel.expire" type="number">
                   <template slot="append">秒</template>
                 </el-input>
@@ -44,9 +44,9 @@
               <el-button @click="verifyRefresh()">刷新</el-button>
               <el-button type="primary" @click="verifySubmit()">提交</el-button>
             </el-form-item>
-          </el-col>
-        </el-row>
-      </el-form>
+          </el-form>
+        </el-col>
+      </el-row>
     </el-card>
   </div>
 </template>
@@ -109,7 +109,7 @@ export default {
         this.getVerify()
         this.verifyModel = res.data
         this.verifyLoad = false
-        this.$message({ message: res.msg, type: 'success' })
+        this.$message.success(res.msg)
       }).catch(() => {
         this.verifyLoad = false
       })
@@ -122,14 +122,14 @@ export default {
           settingVerify(this.verifyModel).then(res => {
             this.getVerify()
             this.verifyLoad = false
-            this.$message({ message: res.msg, type: 'success' })
+            this.$message.success(res.msg)
           }).catch(() => {
             this.verifyLoad = false
           })
         }
       })
     },
-    // 获取验证码
+    // 验证码获取
     getVerify() {
       verify().then(res => {
         this.verifyShow = res.data.verify_switch
@@ -138,7 +138,7 @@ export default {
         }
       })
     },
-    // 刷新验证码
+    // 验证码刷新
     refreshVerify() {
       this.getVerify()
     }

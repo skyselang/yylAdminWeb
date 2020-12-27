@@ -1,9 +1,9 @@
 <template>
   <div class="app-container">
     <el-card v-loading="cacheLoad" class="box-card">
-      <el-form ref="cacheRef" label-width="120px">
-        <el-row>
-          <el-col :xs="24" :sm="12">
+      <el-row :gutter="0">
+        <el-col :xs="24" :sm="12">
+          <el-form ref="cacheRef" :model="cacheModel" :rules="cacheRules" label-width="120px">
             <el-form-item label="Redis" prop="">
               <el-input v-model="cacheModel.redis_version" type="text" />
             </el-form-item>
@@ -35,9 +35,9 @@
               <el-button title="刷新信息" @click="cacheRefresh()">刷新</el-button>
               <el-button type="primary" title="清空缓存" @click="cacheClear()">清空</el-button>
             </el-form-item>
-          </el-col>
-        </el-row>
-      </el-form>
+          </el-form>
+        </el-col>
+      </el-row>
     </el-card>
   </div>
 </template>
@@ -51,7 +51,8 @@ export default {
   data() {
     return {
       cacheLoad: false,
-      cacheModel: {}
+      cacheModel: {},
+      cacheRules: {}
     }
   },
   created() {
@@ -70,7 +71,7 @@ export default {
       settingCache().then(res => {
         this.cacheModel = res.data
         this.cacheLoad = false
-        this.$message({ message: res.msg, type: 'success' })
+        this.$message.success(res.msg)
       }).catch(() => {
         this.cacheLoad = false
       })
@@ -81,7 +82,7 @@ export default {
       settingCache({}, 'post').then(res => {
         this.cacheGet()
         this.cacheLoad = false
-        this.$message({ message: res.msg, type: 'success' })
+        this.$message.success(res.msg)
       }).catch(() => {
         this.cacheLoad = false
       })

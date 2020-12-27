@@ -2,21 +2,27 @@
   <div class="app-container">
     <!-- 日志查询 -->
     <div class="filter-container">
-      <el-select v-model="logQuery.admin_log_type" class="filter-item" placeholder="日志类型" style="width:110px;" clearable>
-        <el-option key="1" label="登录日志" value="1" />
-        <el-option key="2" label="操作日志" value="2" />
-      </el-select>
-      <el-input v-model="logQuery.user_keyword" class="filter-item" style="width: 135px;" placeholder="用户账号/昵称" clearable />
-      <el-input v-model="logQuery.request_keyword" class="filter-item" style="width: 155px;" placeholder="请求IP/地区/ISP" clearable />
-      <el-input v-model="logQuery.menu_keyword" class="filter-item" style="width: 280px;" placeholder="菜单链接/名称" clearable />
-      <el-date-picker v-model="logQuery.create_time" type="daterange" style="width: 240px;top: -4px;" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd" />
-      <el-button class="filter-item" type="primary" @click="logSearch()">查询</el-button>
-      <el-button class="filter-item" @click="logRefresh()">重置</el-button>
-      <el-button v-permission="['admin/AdminLog/logStatistic']" class="filter-item" type="primary" style="float:right;" title="日志统计" @click="logStaRouter">统计</el-button>
+      <el-row :gutter="0">
+        <el-col :xs="24" :sm="18">
+          <el-select v-model="logQuery.admin_log_type" class="filter-item" placeholder="日志类型" style="width:110px;" clearable>
+            <el-option key="admin_log_type1" label="登录日志" :value="1" />
+            <el-option key="admin_log_type2" label="操作日志" :value="2" />
+          </el-select>
+          <el-input v-model="logQuery.user_keyword" class="filter-item" style="width: 135px;" placeholder="用户账号/昵称" clearable />
+          <el-input v-model="logQuery.request_keyword" class="filter-item" style="width: 155px;" placeholder="请求IP/地区/ISP" clearable />
+          <el-input v-model="logQuery.menu_keyword" class="filter-item" style="width: 280px;" placeholder="菜单链接/名称" clearable />
+          <el-date-picker v-model="logQuery.create_time" type="daterange" style="width: 240px;top: -4px;" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd" />
+          <el-button class="filter-item" type="primary" @click="logSearch()">查询</el-button>
+          <el-button class="filter-item" @click="logRefresh()">重置</el-button>
+        </el-col>
+        <el-col :xs="24" :sm="6" style="text-align:right;">
+          <el-button v-permission="['admin/AdminLog/logStatistic']" class="filter-item" type="primary" title="日志统计" @click="logStaRouter">统计</el-button>
+        </el-col>
+      </el-row>
     </div>
     <!-- 日志列表 -->
     <el-table v-loading="loading" :data="logData" :height="height" style="width: 100%" border @sort-change="logSort">
-      <el-table-column prop="admin_log_id" label="ID" min-width="100" sortable="custom" fixed="left" />
+      <el-table-column prop="admin_log_id" label="日志ID" min-width="100" sortable="custom" fixed="left" />
       <el-table-column prop="username" label="用户账号" min-width="110" />
       <el-table-column prop="nickname" label="用户昵称" min-width="110" />
       <el-table-column prop="menu_url" label="菜单链接" min-width="235" />
@@ -28,7 +34,7 @@
       <el-table-column prop="create_time" label="请求时间" min-width="160" sortable="custom" />
       <el-table-column label="操作" min-width="150" align="right" fixed="right">
         <template slot-scope="{ row }">
-          <el-button size="mini" type="primary" @click="logDetail(row)">信息</el-button>
+          <el-button size="mini" type="primary" @click="logDetail(row)">详情</el-button>
           <el-button size="mini" type="danger" @click="logDelete(row)">删除</el-button>
         </template>
       </el-table-column>
@@ -36,37 +42,49 @@
     <!-- 日志分页 -->
     <pagination v-show="logCount > 0" :total="logCount" :page.sync="logQuery.page" :limit.sync="logQuery.limit" @pagination="logLists" />
     <!-- 日志详情 -->
-    <el-dialog :title="'日志信息：' + logModel.admin_log_id" :visible.sync="logDialog" width="65%" top="1vh" :before-close="logCancel">
-      <el-form ref="logRef" :rules="logRules" :model="logModel" label-width="100px" class="dialog-body" :style="{height:height+60+'px'}">
+    <el-dialog :title="'日志详情：' + logModel.admin_log_id" :visible.sync="logDialog" top="1vh" :before-close="logCancel">
+      <el-form ref="logRef" :rules="logRules" :model="logModel" label-width="100px" class="dialog-body" :style="{height:height+30+'px'}">
         <el-form-item label="用户ID" prop="admin_user_id">
-          <el-input v-model="logModel.admin_user_id" />
+          <el-col :span="10">
+            <el-input v-model="logModel.admin_user_id" />
+          </el-col>
+          <el-col class="line" :span="4" style="text-align:center">用户昵称</el-col>
+          <el-col :span="10">
+            <el-input v-model="logModel.nickname" />
+          </el-col>
         </el-form-item>
         <el-form-item label="用户账号" prop="username">
           <el-input v-model="logModel.username" />
         </el-form-item>
-        <el-form-item label="用户昵称" prop="nickname">
-          <el-input v-model="logModel.nickname" />
-        </el-form-item>
         <el-form-item label="菜单ID" prop="admin_menu_id">
-          <el-input v-model="logModel.admin_menu_id" />
+          <el-col :span="10">
+            <el-input v-model="logModel.admin_menu_id" />
+          </el-col>
+          <el-col class="line" :span="4" style="text-align:center">菜单名称</el-col>
+          <el-col :span="10">
+            <el-input v-model="logModel.menu_name" />
+          </el-col>
         </el-form-item>
         <el-form-item label="菜单链接" prop="menu_url">
           <el-input v-model="logModel.menu_url" />
         </el-form-item>
-        <el-form-item label="菜单名称" prop="menu_name">
-          <el-input v-model="logModel.menu_name" />
-        </el-form-item>
         <el-form-item label="请求方式" prop="request_method">
-          <el-input v-model="logModel.request_method" />
-        </el-form-item>
-        <el-form-item label="请求IP" prop="request_ip">
-          <el-input v-model="logModel.request_ip" />
+          <el-col :span="10">
+            <el-input v-model="logModel.request_method" />
+          </el-col>
+          <el-col class="line" :span="4" style="text-align:center">请求IP</el-col>
+          <el-col :span="10">
+            <el-input v-model="logModel.request_ip" />
+          </el-col>
         </el-form-item>
         <el-form-item label="请求地区" prop="request_region">
-          <el-input v-model="logModel.request_region" />
-        </el-form-item>
-        <el-form-item label="请求ISP" prop="request_isp">
-          <el-input v-model="logModel.request_isp" />
+          <el-col :span="10">
+            <el-input v-model="logModel.request_region" />
+          </el-col>
+          <el-col class="line" :span="4" style="text-align:center">请求ISP</el-col>
+          <el-col :span="10">
+            <el-input v-model="logModel.request_isp" />
+          </el-col>
         </el-form-item>
         <el-form-item label="请求时间" prop="create_time">
           <el-input v-model="logModel.create_time" />
@@ -146,7 +164,7 @@ export default {
     logStaRouter() {
       this.$router.push('/rule/log-sta')
     },
-    // 日志刷新
+    // 日志重置
     logRefresh() {
       this.logQuery = this.$options.data().logQuery
       this.logLists()
@@ -154,11 +172,11 @@ export default {
     // 日志详情
     logDetail(row) {
       this.loading = true
+      this.logDialog = true
       logInfo({
         admin_log_id: row.admin_log_id
       }).then(res => {
         this.logReset(res.data)
-        this.logDialog = true
         this.loading = false
       }).catch(() => {
         this.loading = false
@@ -166,16 +184,21 @@ export default {
     },
     // 日志删除
     logDelete(row) {
-      this.$confirm('确定要删除吗？', '提示', {
-        type: 'warning'
-      }).then(() => {
+      this.$confirm(
+        '确定要删除日志 <span style="color:red">' + row.admin_log_id + ' </span>吗？',
+        '删除：' + row.admin_log_id,
+        {
+          type: 'warning',
+          dangerouslyUseHTMLString: true
+        }
+      ).then(() => {
         this.loading = true
         logDele({
           admin_log_id: row.admin_log_id
         }).then(res => {
-          this.logReset()
           this.logLists()
-          this.$message({ message: res.msg, type: 'success' })
+          this.logReset()
+          this.$message.success(res.msg)
         }).catch(() => {
           this.loading = false
         })

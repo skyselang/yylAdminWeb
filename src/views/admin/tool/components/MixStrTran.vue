@@ -4,23 +4,23 @@
       <span>字符串转换</span>
     </div>
     <div class="text item">
-      <el-form ref="strTranRef" :rules="strTranRules" :model="strTranModel" label-width="100px">
-        <el-form-item label="字符串" prop="">
+      <el-form ref="strTranRef" :model="strTranModel" :rules="strTranRules" label-width="100px">
+        <el-form-item label="字符串" prop="str">
           <el-input v-model="strTranModel.str" type="textarea" placeholder="请输入字符串" clearable />
         </el-form-item>
-        <el-form-item label="长度">
+        <el-form-item label="长度" prop="len">
           <el-input v-model="strTranModel.len" clearable />
         </el-form-item>
-        <el-form-item label="小写">
+        <el-form-item label="小写" prop="lower">
           <el-input v-model="strTranModel.lower" clearable />
         </el-form-item>
-        <el-form-item label="大写">
+        <el-form-item label="大写" prop="upper">
           <el-input v-model="strTranModel.upper" clearable />
         </el-form-item>
-        <el-form-item label="反转">
+        <el-form-item label="反转" prop="rev">
           <el-input v-model="strTranModel.rev" clearable />
         </el-form-item>
-        <el-form-item label="MD5">
+        <el-form-item label="MD5" prop="md5">
           <el-input v-model="strTranModel.md5" clearable />
         </el-form-item>
         <el-form-item>
@@ -48,9 +48,7 @@ export default {
         rev: '',
         md5: ''
       },
-      strTranRules: {
-        str: [{ required: true, message: '请输入字符串', trigger: 'blur' }]
-      }
+      strTranRules: {}
     }
   },
   created() {},

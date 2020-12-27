@@ -2,7 +2,7 @@
   <div>
     <el-card v-loading="loading" class="box-card">
       <el-row :gutter="0">
-        <el-col :sm="24" :md="12">
+        <el-col :xs="24" :sm="12">
           <el-form ref="userRef" :rules="userRules" :model="userModel" label-width="100px">
             <el-form-item label="账号" prop="username">
               <el-input v-model="userModel.username" placeholder="请输入账号" clearable />
@@ -73,7 +73,7 @@ export default {
             store.commit('user/SET_NICKNAME', res.data.nickname)
             store.commit('user/SET_USERNAME', res.data.username)
             this.loading = false
-            this.$message({ message: res.msg, type: 'success' })
+            this.$message.success(res.msg)
           }).catch(() => {
             this.loading = false
           })

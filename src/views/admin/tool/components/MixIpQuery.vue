@@ -4,7 +4,7 @@
       <span>IP查询</span>
     </div>
     <div class="text item">
-      <el-form ref="ipQueryRef" :rules="ipQueryRules" :model="ipQueryModel" label-width="100px">
+      <el-form ref="ipQueryRef" :model="ipQueryModel" :rules="ipQueryRules" label-width="100px">
         <el-form-item label="IP">
           <el-input v-model="ipQueryModel.ip" type="text" clearable />
         </el-form-item>

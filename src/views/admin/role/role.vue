@@ -2,29 +2,35 @@
   <div class="app-container">
     <!-- 角色查询 -->
     <div class="filter-container">
-      <el-input v-model="roleQuery.role_name" class="filter-item" style="width: 200px;" placeholder="角色" clearable />
-      <el-input v-model="roleQuery.role_desc" class="filter-item" style="width: 200px;" placeholder="描述" clearable />
-      <el-button class="filter-item" type="primary" @click="roleSearch()">查询</el-button>
-      <el-button class="filter-item" @click="roleRefresh()">重置</el-button>
-      <el-button class="filter-item" type="primary" style="float:right;margin-left:10px" @click="roleAddition()">添加</el-button>
+      <el-row :gutter="0">
+        <el-col :xs="24" :sm="18">
+          <el-input v-model="roleQuery.role_name" class="filter-item" style="width: 200px;" placeholder="角色" clearable />
+          <el-input v-model="roleQuery.role_desc" class="filter-item" style="width: 200px;" placeholder="描述" clearable />
+          <el-button class="filter-item" type="primary" @click="roleSearch()">查询</el-button>
+          <el-button class="filter-item" @click="roleRefresh()">重置</el-button>
+        </el-col>
+        <el-col :xs="24" :sm="6" style="text-align:right;">
+          <el-button class="filter-item" type="primary" @click="roleAddition()">添加</el-button>
+        </el-col>
+      </el-row>
     </div>
     <!-- 角色列表 -->
     <el-table ref="roleTableRef" v-loading="loading" :data="roleData" :height="height" style="width: 100%" border @sort-change="roleSort">
-      <el-table-column prop="admin_role_id" label="ID" min-width="100" sortable="custom" fixed="left" />
+      <el-table-column prop="admin_role_id" label="角色ID" min-width="100" sortable="custom" fixed="left" />
       <el-table-column prop="role_name" label="角色" min-width="120" />
       <el-table-column prop="role_desc" label="描述" min-width="130" />
       <el-table-column prop="role_sort" label="排序" min-width="100" sortable="custom" />
       <el-table-column prop="create_time" label="添加时间" min-width="160" sortable="custom" />
       <el-table-column prop="update_time" label="修改时间" min-width="160" sortable="custom" />
-      <el-table-column prop="is_disable" label="是否禁用" min-width="102" align="center" fixed="right" sortable="custom">
+      <el-table-column prop="is_disable" label="是否禁用" min-width="110" align="center" fixed="right" sortable="custom">
         <template slot-scope="scope">
-          <el-switch v-model="scope.row.is_disable" active-value="1" inactive-value="0" @change="roleIsDisable(scope.row)" />
+          <el-switch v-model="scope.row.is_disable" :active-value="1" :inactive-value="0" @change="roleIsDisable(scope.row)" />
         </template>
       </el-table-column>
       <el-table-column label="操作" min-width="220" align="right" fixed="right">
         <template slot-scope="{ row }">
           <el-button size="mini" type="primary" @click="roleUserShow(row)">用户</el-button>
-          <el-button size="mini" type="primary" @click="roleModify(row)">修改</el-button>
+          <el-button size="mini" type="success" @click="roleModify(row)">修改</el-button>
           <el-button size="mini" type="danger" @click="roleDelete(row)">删除</el-button>
         </template>
       </el-table-column>
@@ -33,7 +39,7 @@
     <pagination v-show="roleCount > 0" :total="roleCount" :page.sync="roleQuery.page" :limit.sync="roleQuery.limit" @pagination="roleList" />
     <!-- 角色添加、修改 -->
     <el-dialog :title="roleDialogTitle" :visible.sync="roleDialog" top="1vh" :before-close="roleCancel">
-      <el-form ref="roleRef" :rules="roleRules" :model="roleModel" label-width="100px" class="dialog-body" :style="{height:height+60+'px'}">
+      <el-form ref="roleRef" :rules="roleRules" :model="roleModel" label-width="100px" class="dialog-body" :style="{height:height+30+'px'}">
         <el-form-item label="角色" prop="role_name">
           <el-input v-model="roleModel.role_name" placeholder="请输入角色名称" clearable />
         </el-form-item>
@@ -46,7 +52,7 @@
         <el-form-item label="菜单">
           <el-tree
             ref="menuRef"
-            :data="menuData"
+            :data="menuTree"
             :default-checked-keys="roleModel.admin_menu_ids"
             :props="menuProps"
             :expand-on-click-node="false"
@@ -62,8 +68,8 @@
               <span>
                 <el-button v-if="data.children[0]" type="text" size="mini" @click="() => menuChildrenAllCheck(data)">全选</el-button>
                 <el-button v-if="data.children[0]" type="text" size="mini" @click="() => menuChildrenAllCheck(data, true)">反选</el-button>
-                <i v-if="data.menu_url" class="el-icon-link" :title="data.menu_url" />
-                <i v-else class="el-icon-link" style="color:#fff" />
+                <i v-if="data.menu_url" class="el-icon-link" style="margin-left:10px;" :title="data.menu_url" />
+                <i v-else class="el-icon-link" style="margin-left:10px;color:#fff" />
               </span>
             </span>
           </el-tree>
@@ -74,9 +80,9 @@
         <el-button type="primary" @click="roleSubmit">提交</el-button>
       </div>
     </el-dialog>
-    <!-- 用户列表 -->
+    <!-- 角色用户列表 -->
     <el-dialog :title="userTitle" :visible.sync="userDialog" width="65%" top="1vh">
-      <el-table ref="userRef" v-loading="userLoad" :data="userData" :height="height+20" style="width: 100%" border @sort-change="userSort">
+      <el-table ref="userRef" v-loading="userLoad" :data="userData" :height="height+30" style="width: 100%" border @sort-change="userSort">
         <el-table-column prop="admin_user_id" label="ID" min-width="100" sortable="custom" fixed="left" />
         <el-table-column prop="username" label="账号" min-width="120" sortable="custom" />
         <el-table-column prop="nickname" label="昵称" min-width="120" />
@@ -84,12 +90,12 @@
         <el-table-column prop="remark" label="备注" width="100" />
         <el-table-column prop="is_admin" label="是否管理员" min-width="100" align="center">
           <template slot-scope="scope">
-            <el-switch v-model="scope.row.is_admin" active-value="1" inactive-value="0" disabled />
+            <el-switch v-model="scope.row.is_admin" :active-value="1" :inactive-value="0" disabled />
           </template>
         </el-table-column>
         <el-table-column prop="is_disable" label="是否禁用" min-width="80" align="center">
           <template slot-scope="scope">
-            <el-switch v-model="scope.row.is_disable" active-value="1" inactive-value="0" disabled />
+            <el-switch v-model="scope.row.is_disable" :active-value="1" :inactive-value="0" disabled />
           </template>
         </el-table-column>
         <el-table-column label="操作" min-width="100" align="right" class-name="small-padding fixed-width" fixed="right">
@@ -123,7 +129,7 @@ export default {
     return {
       height: 680,
       loading: false,
-      menuData: [],
+      menuTree: [],
       menuProps: {
         children: 'children',
         label: 'menu_name'
@@ -180,7 +186,7 @@ export default {
     },
     // 角色刷新
     roleRefresh() {
-      this.roleQuery = { page: 1, limit: 13 }
+      this.roleQuery = this.$options.data().roleQuery
       this.roleList()
     },
     // 角色排序
@@ -200,7 +206,7 @@ export default {
     roleAddition() {
       this.roleDialog = true
       roleAdd().then(res => {
-        this.menuData = res.data.menu_data
+        this.menuTree = res.data.menu_tree
       })
       this.roleReset()
     },
@@ -210,7 +216,7 @@ export default {
       roleEdit({
         admin_role_id: row.admin_role_id
       }).then(res => {
-        this.menuData = res.data.menu_data
+        this.menuTree = res.data.menu_tree
         this.roleReset(res.data.admin_role)
       })
     },
@@ -218,29 +224,33 @@ export default {
     roleDelete(row) {
       this.$confirm(
         '确定要删除角色 <span style="color:red">' + row.role_name + ' </span>吗？',
-        '角色删除确认',
+        '删除：' + row.admin_role_id,
         {
           type: 'warning',
           dangerouslyUseHTMLString: true
-        }).then(() => {
+        }
+      ).then(() => {
         this.loading = true
         roleDele({
           admin_role_id: row.admin_role_id
         }).then(res => {
           this.roleReset()
           this.roleList()
-          this.$message({ message: res.msg, type: 'success' })
+          this.$message.success(res.msg)
         }).catch(() => {
           this.loading = false
         })
-      })
+      }).catch(() => {})
     },
     // 角色是否禁用
     roleIsDisable(row) {
       this.loading = true
-      roleDisable(row).then(res => {
+      roleDisable({
+        admin_role_id: row.admin_role_id,
+        is_disable: row.is_disable
+      }).then(res => {
         this.roleList()
-        this.$message({ message: res.msg, type: 'success' })
+        this.$message.success(res.msg)
       }).catch(() => {
         this.loading = true
       })
@@ -307,7 +317,7 @@ export default {
               this.roleList()
               this.roleReset()
               this.roleDialog = false
-              this.$message({ message: res.msg, type: 'success' })
+              this.$message.success(res.msg)
             }).catch(() => {
               this.loading = false
             })
@@ -316,7 +326,7 @@ export default {
               this.roleList()
               this.roleReset()
               this.roleDialog = false
-              this.$message({ message: res.msg, type: 'success' })
+              this.$message.success(res.msg)
             }).catch(() => {
               this.loading = false
             })
@@ -324,14 +334,14 @@ export default {
         }
       })
     },
-    // 用户显示
+    // 角色用户显示
     roleUserShow(row) {
       this.userDialog = true
       this.userTitle = '角色：' + row.role_name + ' > 用户'
       this.userQuery.admin_role_id = row.admin_role_id
       this.roleUser()
     },
-    // 用户列表
+    // 角色用户列表
     roleUser() {
       this.userLoad = true
       roleUser(this.userQuery).then(res => {
@@ -345,7 +355,7 @@ export default {
         this.userLoad = false
       })
     },
-    // 用户排序
+    // 角色用户排序
     userSort(sort) {
       this.userQuery.sort_field = sort.prop
       this.userQuery.sort_type = ''
@@ -358,11 +368,11 @@ export default {
         this.roleUser()
       }
     },
-    // 用户解除
+    // 角色用户解除
     roleUserRemove(row) {
       this.$confirm(
         '确定要解除该角色与用户 <span style="color:red">' + row.username + ' </span>的关联吗？',
-        '解除确认',
+        '解除：' + row.admin_user_id,
         {
           type: 'warning',
           dangerouslyUseHTMLString: true
@@ -374,11 +384,11 @@ export default {
           admin_user_id: row.admin_user_id
         }).then(res => {
           this.roleUser()
-          this.$message({ message: res.msg, type: 'success' })
+          this.$message.success(res.msg)
         }).catch(() => {
           this.userLoad = false
         })
-      })
+      }).catch(() => {})
     }
   }
 }

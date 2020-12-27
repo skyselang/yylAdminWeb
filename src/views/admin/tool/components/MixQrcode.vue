@@ -4,11 +4,11 @@
       <span>生成二维码</span>
     </div>
     <div class="text item">
-      <el-form ref="qrcodeRef" :rules="qrcodeRules" :model="qrcodeModel" label-width="100px">
-        <el-form-item label="文本内容" prop="">
+      <el-form ref="qrcodeRef" :model="qrcodeModel" :rules="qrcodeRules" label-width="100px">
+        <el-form-item label="文本内容" prop="str">
           <el-input v-model="qrcodeModel.str" placeholder="请输入文本内容" clearable />
         </el-form-item>
-        <el-form-item label="二维码" style="margin-bottom: 0;">
+        <el-form-item label="二维码" prop="url" style="margin-bottom: 0;">
           <el-image style="width: 150px; height: 150px" :src="qrcodeModel.url" fit="fill" title="右击图片另存为">
             <div slot="error" class="image-slot">
               <i class="el-icon-picture-outline" />
@@ -36,9 +36,7 @@ export default {
         str: '',
         url: ''
       },
-      qrcodeRules: {
-        str: [{ required: true, message: '请输入文本内容', trigger: 'blur' }]
-      }
+      qrcodeRules: {}
     }
   },
   created() {},
@@ -47,7 +45,7 @@ export default {
       if (this.qrcodeModel.url) {
         window.open(this.qrcodeModel.url)
       } else {
-        this.$message({ message: '请生成二维码', type: 'error' })
+        this.$message.error('请生成二维码')
       }
     },
     qrcodeSubmit() {
