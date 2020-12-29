@@ -3,7 +3,7 @@
     <!-- 会员查询 -->
     <div class="filter-container">
       <el-row :gutter="0">
-        <el-col :xs="24" :sm="18">
+        <el-col :xs="24" :sm="23">
           <el-input v-model="memberQuery.username" class="filter-item" style="width: 150px;" placeholder="账号" clearable />
           <el-input v-model="memberQuery.nickname" class="filter-item" style="width: 150px;" placeholder="昵称" clearable />
           <el-input v-model="memberQuery.phone" class="filter-item" style="width: 150px;" placeholder="手机" clearable />
@@ -13,11 +13,18 @@
             <el-option key="login_time" label="登录时间" value="login_time" />
             <el-option key="update_time" label="更新时间" value="update_time" />
           </el-select>
-          <el-date-picker v-model="memberQuery.date_range" type="daterange" style="width: 240px;top: -4px;" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd" />
+          <el-date-picker
+            v-model="memberQuery.date_range"
+            type="daterange"
+            style="width: 240px;top: -4px;"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            value-format="yyyy-MM-dd"
+          />
           <el-button class="filter-item" type="primary" @click="memberSearch()">查询</el-button>
           <el-button class="filter-item" @click="memberReset()">重置</el-button>
         </el-col>
-        <el-col :xs="24" :sm="6" style="text-align:right;">
+        <el-col :xs="24" :sm="1" style="text-align:right;">
           <el-button class="filter-item" type="primary" @click="memberAddition()">添加</el-button>
         </el-col>
       </el-row>
@@ -57,10 +64,18 @@
           </el-col>
           <el-col class="line" :span="4" style="text-align:center" />
           <el-col :span="10">
-            <el-upload name="avatar_file" :show-file-list="false" :before-upload="uploadBefore" :action="uploadAction" :headers="uploadHeaders" :data="uploadData" :on-success="uploadSuccess">
+            <el-upload
+              name="avatar_file"
+              :show-file-list="false"
+              :before-upload="uploadBefore"
+              :action="uploadAction"
+              :headers="uploadHeaders"
+              :data="uploadData"
+              :on-success="uploadSuccess"
+            >
               <el-button>更换头像</el-button>
             </el-upload>
-            <span>jpg、png图片，小于100kb，宽高1:1</span>
+            <span>jpg、png图片，小于100KB，宽高1:1</span>
           </el-col>
         </el-form-item>
         <el-form-item label="账号" prop="username">

@@ -42,7 +42,16 @@
     <el-dialog :title="menuDialogTitle" :visible.sync="menuDialog" top="1vh" :before-close="menuCancel">
       <el-form ref="menuRef" :rules="menuRules" :model="menuModel" class="dialog-body" label-width="100px" :style="{height:height+30+'px'}">
         <el-form-item label="菜单父级" prop="menu_pid">
-          <el-cascader v-model="menuModel.menu_pid" :options="menuData" :props="menuProps" style="width:100%" clearable filterable placeholder="一级菜单" @change="menuPidChange" />
+          <el-cascader
+            v-model="menuModel.menu_pid"
+            :options="menuData"
+            :props="menuProps"
+            placeholder="一级菜单"
+            style="width:100%"
+            clearable
+            filterable
+            @change="menuPidChange"
+          />
         </el-form-item>
         <el-form-item label="菜单名称" prop="menu_name">
           <el-input v-model="menuModel.menu_name" clearable placeholder="请输入菜单名称" />

@@ -3,14 +3,14 @@
     <!-- 用户查询 -->
     <div class="filter-container">
       <el-row :gutter="0">
-        <el-col :xs="24" :sm="18">
+        <el-col :xs="24" :sm="23">
           <el-input v-model="userQuery.username" class="filter-item" style="width: 150px;" placeholder="账号" clearable />
           <el-input v-model="userQuery.nickname" class="filter-item" style="width: 150px;" placeholder="昵称" clearable />
           <el-input v-model="userQuery.email" class="filter-item" style="width: 250px;" placeholder="邮箱" clearable />
           <el-button class="filter-item" type="primary" @click="userSearch()">查询</el-button>
           <el-button class="filter-item" @click="userRefresh()">重置</el-button>
         </el-col>
-        <el-col :xs="24" :sm="6" style="text-align:right;">
+        <el-col :xs="24" :sm="1" style="text-align:right;">
           <el-button class="filter-item" type="primary" @click="userAddition()">添加</el-button>
         </el-col>
       </el-row>
@@ -55,7 +55,15 @@
           </el-col>
           <el-col class="line" :span="4" style="text-align:center" />
           <el-col :span="10">
-            <el-upload name="avatar_file" :show-file-list="false" :before-upload="uploadBefore" :action="uploadAction" :headers="uploadHeaders" :data="uploadData" :on-success="uploadSuccess">
+            <el-upload
+              name="avatar_file"
+              :show-file-list="false"
+              :before-upload="uploadBefore"
+              :action="uploadAction"
+              :headers="uploadHeaders"
+              :data="uploadData"
+              :on-success="uploadSuccess"
+            >
               <el-button>更换头像</el-button>
             </el-upload>
             <span>jpg、png图片，小于50kb，宽高1:1</span>

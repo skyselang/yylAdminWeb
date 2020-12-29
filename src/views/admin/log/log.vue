@@ -3,7 +3,7 @@
     <!-- 日志查询 -->
     <div class="filter-container">
       <el-row :gutter="0">
-        <el-col :xs="24" :sm="18">
+        <el-col :xs="24" :sm="23">
           <el-select v-model="logQuery.admin_log_type" class="filter-item" placeholder="日志类型" style="width:110px;" clearable>
             <el-option key="admin_log_type1" label="登录日志" :value="1" />
             <el-option key="admin_log_type2" label="操作日志" :value="2" />
@@ -11,11 +11,18 @@
           <el-input v-model="logQuery.user_keyword" class="filter-item" style="width: 135px;" placeholder="用户账号/昵称" clearable />
           <el-input v-model="logQuery.request_keyword" class="filter-item" style="width: 155px;" placeholder="请求IP/地区/ISP" clearable />
           <el-input v-model="logQuery.menu_keyword" class="filter-item" style="width: 280px;" placeholder="菜单链接/名称" clearable />
-          <el-date-picker v-model="logQuery.create_time" type="daterange" style="width: 240px;top: -4px;" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd" />
+          <el-date-picker
+            v-model="logQuery.create_time"
+            type="daterange"
+            style="width: 240px;top: -4px;"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            value-format="yyyy-MM-dd"
+          />
           <el-button class="filter-item" type="primary" @click="logSearch()">查询</el-button>
           <el-button class="filter-item" @click="logRefresh()">重置</el-button>
         </el-col>
-        <el-col :xs="24" :sm="6" style="text-align:right;">
+        <el-col :xs="24" :sm="1" style="text-align:right;">
           <el-button v-permission="['admin/AdminLog/logStatistic']" class="filter-item" type="primary" title="日志统计" @click="logStaRouter">统计</el-button>
         </el-col>
       </el-row>

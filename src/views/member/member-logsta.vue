@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="app-container">
-      <el-card class="box-card">
+      <el-card v-loading="loadNum" class="box-card">
         <el-row :gutter="10">
           <el-col :sm="24" :md="12">
             <el-card class="box-card">
@@ -132,10 +132,18 @@
       </el-card>
     </div>
     <div class="app-container">
-      <el-card class="box-card">
+      <el-card v-loading="loadDate" class="box-card">
         <el-row :gutter="0">
           <el-col :sm="24">
-            <el-date-picker v-model="date.date" type="daterange" value-format="yyyy-MM-dd" start-placeholder="开始日期" end-placeholder="结束日期" style="max-width:280px" @change="echartDateChange()" />
+            <el-date-picker
+              v-model="date.date"
+              type="daterange"
+              value-format="yyyy-MM-dd"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              style="max-width:280px"
+              @change="echartDateChange()"
+            />
           </el-col>
         </el-row>
         <el-row :gutter="0">
@@ -149,7 +157,15 @@
       <el-card class="box-card">
         <el-row :gutter="0">
           <el-col :sm="24" :md="8">
-            <el-date-picker v-model="region.date" type="daterange" value-format="yyyy-MM-dd" start-placeholder="开始日期" end-placeholder="结束日期" style="max-width:280px" @change="echartRegionChange()" />
+            <el-date-picker
+              v-model="region.date"
+              type="daterange"
+              value-format="yyyy-MM-dd"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              style="max-width:280px"
+              @change="echartRegionChange()"
+            />
           </el-col>
           <el-col :sm="24" :md="16">
             <el-select v-model="regionValue" placeholder="请选择" @change="echartRegionChange()">
@@ -158,13 +174,13 @@
           </el-col>
         </el-row>
         <el-divider />
-        <el-row :gutter="0">
+        <el-row v-loading="loadRegion" :gutter="0">
           <el-col :sm="24">
             <div id="echartRegionLine" :style="{height:height+'px'}" />
           </el-col>
         </el-row>
         <el-divider />
-        <el-row :gutter="0">
+        <el-row v-loading="loadRegion" :gutter="0">
           <el-col :sm="24">
             <div id="echartRegionPie" :style="{height:height+'px'}" />
           </el-col>
@@ -193,6 +209,9 @@ export default {
   data() {
     return {
       height: 680,
+      loadNum: false,
+      loadDate: false,
+      loadRegion: false,
       number: {
         total: '--',
         today: '--',
@@ -241,6 +260,7 @@ export default {
   mounted() {},
   methods: {
     memberLogSta() {
+      this.loadNum = true
       memberLogSta().then(res => {
         this.number = res.data.number
         this.date = res.data.date
@@ -248,13 +268,34 @@ export default {
         this.echartDate(res.data.date)
         this.echartRegionLine(res.data.region)
         this.echartRegionPie(res.data.region)
+        this.loadNum = false
+      }).catch(() => {
+        this.loadNum = false
       })
     },
     echartDateChange() {
+      this.loadDate = true
       memberLogSta({
         type: 'date', date: this.date.date
       }).then(res => {
         this.echartDate(res.data.date)
+        this.loadDate = false
+      }).catch(() => {
+        this.loadDate = false
+      })
+    },
+    echartRegionChange(value) {
+      this.loadRegion = true
+      memberLogSta({
+        type: 'region',
+        date: this.region.date,
+        region: this.regionValue
+      }).then(res => {
+        this.echartRegionLine(res.data.region)
+        this.echartRegionPie(res.data.region)
+        this.loadRegion = false
+      }).catch(() => {
+        this.loadRegion = false
       })
     },
     echartDate(data) {
@@ -298,16 +339,6 @@ export default {
         ]
       }
       echart.setOption(option)
-    },
-    echartRegionChange(value) {
-      memberLogSta({
-        type: 'region',
-        date: this.region.date,
-        region: this.regionValue
-      }).then(res => {
-        this.echartRegionLine(res.data.region)
-        this.echartRegionPie(res.data.region)
-      })
     },
     echartRegionLine(data) {
       var echart = echarts.init(document.getElementById('echartRegionLine'))

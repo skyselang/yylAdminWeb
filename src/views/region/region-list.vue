@@ -2,14 +2,13 @@
   <div class="app-container">
     <div class="filter-container">
       <el-row>
-        <el-col :xm="24" :sm="18">
+        <el-col :xm="24" :sm="23">
           <el-input v-model="regionQuery.region_name" class="filter-item" style="width: 200px;" placeholder="名称" clearable />
           <el-input v-model="regionQuery.region_pinyin" class="filter-item" style="width: 200px;" placeholder="拼音" clearable />
           <el-button class="filter-item" type="primary" @click="regionSearch()">查询</el-button>
           <el-button class="filter-item" @click="regionRefresh()">重置</el-button>
         </el-col>
-        <el-col :xm="24" :sm="6" style="text-align:right;">
-          <el-button class="filter-item" @click="regionRefresh()">刷新</el-button>
+        <el-col :xm="24" :sm="1" style="text-align:right;">
           <el-button class="filter-item" type="primary" @click="regionAddition('')">添加</el-button>
         </el-col>
       </el-row>
@@ -45,9 +44,18 @@
     </el-table>
     <!-- 地区添加、修改 -->
     <el-dialog :title="regionDialogTitle" :visible.sync="regionDialog" top="1vh" :before-close="regionCancel">
-      <el-form ref="regionRef" v-loading="regionDialogLoad" :rules="regionRules" :model="regionModel" class="dialog-body" label-width="100px" :style="{height:height+30+'px'}">
+      <el-form ref="regionRef" :rules="regionRules" :model="regionModel" class="dialog-body" label-width="100px" :style="{height:height+30+'px'}">
         <el-form-item label="父级" prop="region_pid">
-          <el-cascader v-model="regionModel.region_pid" :options="regionTree" :props="regionProps" style="width:100%" clearable filterable placeholder="一级" @change="regionPidChange" />
+          <el-cascader
+            v-model="regionModel.region_pid"
+            :options="regionTree"
+            :props="regionProps"
+            style="width:100%"
+            clearable
+            filterable
+            placeholder="一级"
+            @change="regionPidChange"
+          />
         </el-form-item>
         <el-form-item label="名称" prop="region_name">
           <el-input v-model="regionModel.region_name" clearable placeholder="请输入名称：北京市" />
@@ -122,7 +130,6 @@ export default {
       regionCount: 0,
       regionQuery: {},
       regionDialog: false,
-      regionDialogLoad: false,
       regionDialogTitle: '',
       regionProps: {
         expandTrigger: 'click',
@@ -200,10 +207,8 @@ export default {
     // 地区添加
     regionAddition(row) {
       this.regionDialog = true
-      this.regionDialogLoad = false
       this.regionDialogTitle = '地区添加'
       regionAdd().then(res => {
-        this.regionDialogLoad = false
         if (row) {
           this.regionModel = this.$options.data().regionModel
           this.regionModel.region_pid = row.region_id
@@ -216,12 +221,10 @@ export default {
     // 地区修改
     regionModify(row) {
       this.regionDialog = true
-      this.regionDialogLoad = false
       this.regionDialogTitle = '地区修改：' + row.region_name
       regionEdit({
         region_id: row.region_id
       }).then(res => {
-        this.regionDialogLoad = false
         this.regionModel = res.data.region_info
         this.regionTree = res.data.region_tree
       })
@@ -241,7 +244,6 @@ export default {
         }).then(res => {
           this.regionList()
           this.regionReset()
-          this.loading = false
           this.$message.success(res.msg)
         }).catch(() => {
           this.loading = false

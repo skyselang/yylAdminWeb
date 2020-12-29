@@ -3,7 +3,7 @@
     <!-- 会员日志查询 -->
     <div class="filter-container">
       <el-row :gutter="0">
-        <el-col :xs="24" :sm="18">
+        <el-col :xs="24" :sm="23">
           <el-select v-model="memberLogQuery.member_log_type" class="filter-item" placeholder="日志类型" style="width:110px;" clearable>
             <el-option key="member_log_type1" label="登录日志" :value="1" />
             <el-option key="member_log_type2" label="操作日志" :value="2" />
@@ -11,11 +11,18 @@
           <el-input v-model="memberLogQuery.member_keyword" class="filter-item" style="width: 135px;" placeholder="会员账号/昵称" clearable />
           <el-input v-model="memberLogQuery.request_keyword" class="filter-item" style="width: 155px;" placeholder="请求IP/地区/ISP" clearable />
           <el-input v-model="memberLogQuery.api_keyword" class="filter-item" style="width: 280px;" placeholder="接口链接/名称" clearable />
-          <el-date-picker v-model="memberLogQuery.create_time" type="daterange" style="width: 240px;top: -4px;" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd" />
+          <el-date-picker
+            v-model="memberLogQuery.create_time"
+            type="daterange"
+            style="width: 240px;top: -4px;"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            value-format="yyyy-MM-dd"
+          />
           <el-button class="filter-item" type="primary" @click="memberLogSearch()">查询</el-button>
           <el-button class="filter-item" @click="memberLogReset()">重置</el-button>
         </el-col>
-        <el-col :xs="24" :sm="6" style="text-align:right;">
+        <el-col :xs="24" :sm="1" style="text-align:right;">
           <el-button v-permission="['admin/MemberLog/memberLogSta']" class="filter-item" type="primary" title="会员日志统计" @click="memberLogStaRouter">统计</el-button>
         </el-col>
       </el-row>
@@ -173,12 +180,12 @@ export default {
     // 会员日志详情
     memberLogDetail(row) {
       this.loading = true
+      this.memberLogDialog = true
       this.memberLogDialogTitle = '会员日志详情：' + row.member_log_id
       memberLogInfo({
         member_log_id: row.member_log_id
       }).then(res => {
         this.memberLogModelReset(res.data)
-        this.memberLogDialog = true
         this.loading = false
       }).catch(() => {
         this.loading = false

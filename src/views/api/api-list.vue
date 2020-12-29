@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <!-- 接口添加 -->
-    <div class="filter-container" style="text-align:right">
+    <div class="filter-container">
       <el-row :gutter="0">
         <el-col :xs="24" :sm="24" style="text-align:right;">
           <el-button class="filter-item" @click="apiRefresh()">刷新</el-button>
@@ -40,10 +40,19 @@
     <el-dialog :title="apiDialogTitle" :visible.sync="apiDialog" top="1vh" :before-close="apiCancel">
       <el-form ref="apiRef" :rules="apiRules" :model="apiModel" class="dialog-body" label-width="100px" :style="{height:height+30+'px'}">
         <el-form-item label="接口父级" prop="api_pid">
-          <el-cascader v-model="apiModel.api_pid" :options="apiData" :props="apiProps" style="width:100%" clearable filterable placeholder="一级接口" @change="apiPidChange" />
+          <el-cascader
+            v-model="apiModel.api_pid"
+            :options="apiData"
+            :props="apiProps"
+            style="width:100%"
+            clearable
+            filterable
+            placeholder="一级接口"
+            @change="apiPidChange"
+          />
         </el-form-item>
         <el-form-item label="接口名称" prop="api_name">
-          <el-input v-model="apiModel.api_name" clearable placeholder="请输入接口名称" />
+          <el-input v-model="apiModel.api_name" placeholder="请输入接口名称" clearable />
         </el-form-item>
         <el-form-item label="接口链接" prop="api_url">
           <el-input v-model="apiModel.api_url" clearable />
@@ -203,8 +212,8 @@ export default {
     },
     // 接口添加、修改取消
     apiCancel() {
-      this.apiReset()
       this.apiDialog = false
+      this.apiReset()
     },
     // 接口添加、修改提交
     apiSubmit() {
