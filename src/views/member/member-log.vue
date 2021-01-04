@@ -4,9 +4,9 @@
     <div class="filter-container">
       <el-row :gutter="0">
         <el-col :xs="24" :sm="23">
-          <el-select v-model="memberLogQuery.member_log_type" class="filter-item" placeholder="日志类型" style="width:110px;" clearable>
-            <el-option key="member_log_type1" label="登录日志" :value="1" />
-            <el-option key="member_log_type2" label="操作日志" :value="2" />
+          <el-select v-model="memberLogQuery.log_type" class="filter-item" placeholder="日志类型" style="width:110px;" clearable>
+            <el-option key="log_type1" label="登录日志" :value="1" />
+            <el-option key="log_type2" label="操作日志" :value="2" />
           </el-select>
           <el-input v-model="memberLogQuery.member_keyword" class="filter-item" style="width: 135px;" placeholder="会员账号/昵称" clearable />
           <el-input v-model="memberLogQuery.request_keyword" class="filter-item" style="width: 155px;" placeholder="请求IP/地区/ISP" clearable />
