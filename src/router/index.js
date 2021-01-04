@@ -137,7 +137,7 @@ export const asyncRoutes = [
           icon: 'el-icon-s-grid',
           roles: ['admin/MemberLog/memberLogList']
         },
-        component: () => import('@/views/member/member-log')
+        component: () => import('@/views/member-log/member-log')
       },
       {
         path: 'member-logsta',
@@ -148,7 +148,7 @@ export const asyncRoutes = [
           roles: ['admin/MemberLog/memberLogSta'],
           activeMenu: '/member/member-log'
         },
-        component: () => import('@/views/member/member-logsta'),
+        component: () => import('@/views/member-log/member-logsta'),
         hidden: true
       }
     ]

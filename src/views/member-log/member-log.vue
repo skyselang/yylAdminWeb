@@ -23,7 +23,7 @@
           <el-button class="filter-item" @click="memberLogReset()">重置</el-button>
         </el-col>
         <el-col :xs="24" :sm="1" style="text-align:right;">
-          <el-button v-permission="['admin/MemberLog/memberLogSta']" class="filter-item" type="primary" title="会员日志统计" @click="memberLogStaRouter">统计</el-button>
+          <el-button v-permission="['admin/MemberLog/memberLogSta']" class="filter-item" type="primary" title="会员日志统计" @click="memberLogSta">统计</el-button>
         </el-col>
       </el-row>
     </div>
@@ -174,8 +174,8 @@ export default {
       }
     },
     // 会员日志统计
-    memberLogStaRouter() {
-      this.$router.push('/member/member-logsta')
+    memberLogSta() {
+      this.$router.push('/member-log/member-logsta')
     },
     // 会员日志详情
     memberLogDetail(row) {
