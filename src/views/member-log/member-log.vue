@@ -9,8 +9,8 @@
             <el-option key="log_type2" label="操作日志" :value="2" />
           </el-select>
           <el-input v-model="memberLogQuery.member_keyword" class="filter-item" style="width: 135px;" placeholder="会员账号/昵称" clearable />
+          <el-input v-model="memberLogQuery.api_keyword" class="filter-item" style="width: 235px;" placeholder="接口链接/名称" clearable />
           <el-input v-model="memberLogQuery.request_keyword" class="filter-item" style="width: 155px;" placeholder="请求IP/地区/ISP" clearable />
-          <el-input v-model="memberLogQuery.api_keyword" class="filter-item" style="width: 280px;" placeholder="接口链接/名称" clearable />
           <el-date-picker
             v-model="memberLogQuery.create_time"
             type="daterange"
