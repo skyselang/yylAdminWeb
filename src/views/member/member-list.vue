@@ -4,8 +4,8 @@
     <div class="filter-container">
       <el-row :gutter="0">
         <el-col :xs="24" :sm="23">
+          <el-input v-model="memberQuery.member_id" class="filter-item" style="width: 150px;" placeholder="会员ID" clearable />
           <el-input v-model="memberQuery.username" class="filter-item" style="width: 150px;" placeholder="账号" clearable />
-          <el-input v-model="memberQuery.nickname" class="filter-item" style="width: 150px;" placeholder="昵称" clearable />
           <el-input v-model="memberQuery.phone" class="filter-item" style="width: 150px;" placeholder="手机" clearable />
           <el-input v-model="memberQuery.email" class="filter-item" style="width: 250px;" placeholder="邮箱" clearable />
           <el-select v-model="memberQuery.date_type" class="filter-item" placeholder="日期类型" style="width:110px;" clearable>
@@ -35,7 +35,7 @@
       <el-table-column prop="username" label="账号" min-width="120" sortable="custom" />
       <el-table-column prop="nickname" label="昵称" min-width="120" sortable="custom" />
       <el-table-column prop="phone" label="手机" min-width="120" sortable="custom" />
-      <el-table-column prop="email" label="邮箱" min-width="200" sortable="custom" show-overflow-tooltip />
+      <el-table-column prop="email" label="邮箱" min-width="220" sortable="custom" show-overflow-tooltip />
       <el-table-column prop="create_time" label="注册时间" min-width="160" sortable="custom" />
       <el-table-column prop="login_time" label="登录时间" min-width="160" sortable="custom" />
       <el-table-column prop="remark" label="备注" min-width="110" />
