@@ -32,7 +32,7 @@
               <el-input v-model="userModel.logout_time" placeholder="" />
             </el-form-item>
             <el-form-item>
-              <el-button @click="userReset()">刷新</el-button>
+              <el-button @click="userRefresh">刷新</el-button>
             </el-form-item>
           </el-form>
         </el-col>
@@ -82,7 +82,7 @@ export default {
         this.loading = false
       })
     },
-    userReset() {
+    userRefresh() {
       this.myInfo(true)
     }
   }

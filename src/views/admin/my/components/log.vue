@@ -57,7 +57,7 @@ export default {
     this.myLogList()
   },
   methods: {
-    // 用户列表
+    // 日志列表
     myLogList() {
       this.loading = true
       myLog(this.logQuery).then(res => {
@@ -68,17 +68,17 @@ export default {
         this.loading = false
       })
     },
-    // 用户查询
+    // 日志查询
     logSearch() {
       this.logQuery.page = 1
       this.myLogList()
     },
-    // 用户重置
+    // 日志重置
     logRefresh() {
       this.logQuery = this.$options.data().logQuery
       this.myLogList()
     },
-    // 用户排序
+    // 日志排序
     logSort(sort) {
       this.logQuery.sort_field = sort.prop
       this.logQuery.sort_type = ''

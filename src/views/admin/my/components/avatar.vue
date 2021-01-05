@@ -3,7 +3,7 @@
     <el-card v-loading="loading" class="box-card">
       <el-row :gutter="0">
         <el-col :xs="24" :sm="12">
-          <el-form ref="usersRef" label-width="100px">
+          <el-form ref="userRef" label-width="100px">
             <el-form-item label="头像">
               <el-avatar v-if="avatar" shape="circle" fit="contain" :size="100" :src="avatar" />
             </el-form-item>
@@ -32,9 +32,9 @@
 </template>
 
 <script>
-import store from '@/store'
-import { mapGetters } from 'vuex'
 import { getAdminToken, getAdminUserId } from '@/utils/auth'
+import { mapGetters } from 'vuex'
+import store from '@/store'
 
 export default {
   name: 'MyAvatar',

@@ -14,7 +14,7 @@
               <el-input v-model="userModel.email" placeholder="请输入邮箱" clearable />
             </el-form-item>
             <el-form-item>
-              <el-button @click="userReset">刷新</el-button>
+              <el-button @click="userRefresh">刷新</el-button>
               <el-button type="primary" @click="userSubmit">提交</el-button>
             </el-form-item>
           </el-form>
@@ -25,9 +25,9 @@
 </template>
 
 <script>
-import store from '@/store'
-import { myEdit } from '@/api/admin'
 import { getAdminUserId } from '@/utils/auth'
+import { myEdit } from '@/api/admin'
+import store from '@/store'
 
 export default {
   name: 'MyEdit',
@@ -59,7 +59,7 @@ export default {
         this.userModel = res.data
       })
     },
-    userReset() {
+    userRefresh() {
       this.loading = true
       this.myEdit()
       this.loading = false
@@ -69,7 +69,7 @@ export default {
         if (valid) {
           this.loading = true
           myEdit(this.userModel, 'post').then(res => {
-            this.userReset()
+            this.userRefresh()
             store.commit('user/SET_NICKNAME', res.data.nickname)
             store.commit('user/SET_USERNAME', res.data.username)
             this.loading = false

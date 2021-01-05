@@ -5,10 +5,10 @@
         <el-col :xs="24" :sm="12">
           <el-form ref="userRef" :rules="userRules" :model="userModel" label-width="100px">
             <el-form-item label="旧密码" prop="password_old">
-              <el-input v-model="userModel.password_old" type="password_old" autocomplete="off" placeholder="请输入旧密码" clearable show-password />
+              <el-input v-model="userModel.password_old" type="password" placeholder="请输入旧密码" autocomplete="off" clearable show-password />
             </el-form-item>
             <el-form-item label="新密码" prop="password_new">
-              <el-input v-model="userModel.password_new" type="password" autocomplete="off" placeholder="请输入新密码" clearable show-password />
+              <el-input v-model="userModel.password_new" type="password" placeholder="请输入新密码" autocomplete="off" clearable show-password />
             </el-form-item>
             <el-form-item>
               <el-button @click="userReset">重置</el-button>

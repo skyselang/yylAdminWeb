@@ -57,7 +57,7 @@ export default {
         })
       }
     },
-    // Logo标题
+    // Logo名称
     sidebarLogo: {
       get() {
         return this.$store.state.settings.sidebarLogo
