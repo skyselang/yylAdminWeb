@@ -154,36 +154,12 @@ export const asyncRoutes = [
     ]
   },
   {
-    path: '/region',
-    name: 'Region',
-    meta: {
-      title: '地区管理',
-      icon: 'el-icon-menu',
-      roles: ['admin/Region/regionList']
-    },
-    redirect: 'noRedirect',
-    component: Layout,
-    alwaysShow: true,
-    children: [
-      {
-        path: 'region-list',
-        name: 'RegionList',
-        meta: {
-          title: '地区列表',
-          icon: 'el-icon-s-grid',
-          roles: ['admin/Region/regionList']
-        },
-        component: () => import('@/views/region/region-list')
-      }
-    ]
-  },
-  {
     path: '/index',
     name: 'Index',
     meta: {
       title: '应用管理',
       icon: 'el-icon-menu',
-      roles: ['admin/Api/apiList']
+      roles: ['admin/Api/apiList', 'admin/Region/regionList']
     },
     redirect: 'noRedirect',
     component: Layout,
@@ -198,6 +174,16 @@ export const asyncRoutes = [
           roles: ['admin/Api/apiList']
         },
         component: () => import('@/views/api/api-list')
+      },
+      {
+        path: 'region-list',
+        name: 'RegionList',
+        meta: {
+          title: '地区管理',
+          icon: 'el-icon-s-grid',
+          roles: ['admin/Region/regionList']
+        },
+        component: () => import('@/views/region/region-list')
       }
     ]
   },
