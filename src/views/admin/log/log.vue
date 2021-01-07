@@ -22,7 +22,7 @@
             end-placeholder="结束日期"
           />
           <el-button class="filter-item" type="primary" @click="logSearch()">查询</el-button>
-          <el-button class="filter-item" @click="logRefresh()">重置</el-button>
+          <el-button class="filter-item" @click="logRefresh()">刷新</el-button>
         </el-col>
         <el-col :xs="24" :sm="2" style="text-align:right;">
           <el-button v-permission="['admin/AdminLog/logStatistic']" class="filter-item" type="primary" title="日志统计" @click="logStaRouter">统计</el-button>
@@ -169,14 +169,14 @@ export default {
       this.logQuery.page = 1
       this.logLists()
     },
-    // 日志统计
-    logStaRouter() {
-      this.$router.push('/rule/log-sta')
-    },
-    // 日志重置
+    // 日志刷新
     logRefresh() {
       this.logQuery = this.$options.data().logQuery
       this.logLists()
+    },
+    // 日志统计
+    logStaRouter() {
+      this.$router.push('/rule/log-sta')
     },
     // 日志详情
     logDetail(row) {
@@ -190,6 +190,20 @@ export default {
       }).catch(() => {
         this.loading = false
       })
+    },
+    // 日志详情取消
+    logCancel() {
+      this.logReset()
+      this.logDialog = false
+    },
+    // 日志详情确认
+    logSubmit() {
+      this.logReset()
+      this.logDialog = false
+    },
+    // 日志详情重置
+    logReset(row = '') {
+      this.logModel = row
     },
     // 日志删除
     logDelete(row) {
@@ -212,20 +226,6 @@ export default {
           this.loading = false
         })
       })
-    },
-    // 日志详情重置
-    logReset(row = {}) {
-      this.logModel = row
-    },
-    // 日志详情取消
-    logCancel() {
-      this.logReset()
-      this.logDialog = false
-    },
-    // 日志详情确认
-    logSubmit() {
-      this.logReset()
-      this.logDialog = false
     }
   }
 }
