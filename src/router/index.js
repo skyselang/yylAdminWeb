@@ -105,8 +105,8 @@ export const constantRoutes = [
  */
 export const asyncRoutes = [
   {
-    path: '/member',
-    name: 'Member',
+    path: '/members',
+    name: 'Members',
     meta: {
       title: '会员管理',
       icon: 'el-icon-menu',
@@ -120,14 +120,14 @@ export const asyncRoutes = [
     alwaysShow: true,
     children: [
       {
-        path: 'member-list',
-        name: 'MemberList',
+        path: 'member',
+        name: 'Member',
         meta: {
           title: '会员管理',
           icon: 'el-icon-s-grid',
           roles: ['admin/Member/memberList']
         },
-        component: () => import('@/views/member/member-list')
+        component: () => import('@/views/member/member')
       },
       {
         path: 'member-log',
@@ -166,24 +166,24 @@ export const asyncRoutes = [
     alwaysShow: true,
     children: [
       {
-        path: 'api-list',
-        name: 'ApiList',
+        path: 'api',
+        name: 'Api',
         meta: {
           title: '接口管理',
           icon: 'el-icon-s-grid',
           roles: ['admin/Api/apiList']
         },
-        component: () => import('@/views/api/api-list')
+        component: () => import('@/views/api/api')
       },
       {
-        path: 'region-list',
-        name: 'RegionList',
+        path: 'region',
+        name: 'Region',
         meta: {
           title: '地区管理',
           icon: 'el-icon-s-grid',
           roles: ['admin/Region/regionList']
         },
-        component: () => import('@/views/region/region-list')
+        component: () => import('@/views/region/region')
       }
     ]
   },

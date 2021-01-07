@@ -3,14 +3,14 @@
     <!-- 用户查询 -->
     <div class="filter-container">
       <el-row :gutter="0">
-        <el-col :xs="24" :sm="23">
+        <el-col :xs="24" :sm="22">
           <el-input v-model="userQuery.username" class="filter-item" style="width: 150px;" placeholder="账号" clearable />
           <el-input v-model="userQuery.nickname" class="filter-item" style="width: 150px;" placeholder="昵称" clearable />
           <el-input v-model="userQuery.email" class="filter-item" style="width: 250px;" placeholder="邮箱" clearable />
           <el-button class="filter-item" type="primary" @click="userSearch()">查询</el-button>
-          <el-button class="filter-item" @click="userRefresh()">重置</el-button>
+          <el-button class="filter-item" @click="userRefresh()">刷新</el-button>
         </el-col>
-        <el-col :xs="24" :sm="1" style="text-align:right;">
+        <el-col :xs="24" :sm="2" style="text-align:right;">
           <el-button class="filter-item" type="primary" @click="userAddition()">添加</el-button>
         </el-col>
       </el-row>
@@ -274,7 +274,7 @@ export default {
       this.userQuery.page = 1
       this.userList()
     },
-    // 用户重置
+    // 用户刷新
     userRefresh() {
       this.userQuery = this.$options.data().userQuery
       this.userList()

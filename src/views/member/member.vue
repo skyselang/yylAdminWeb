@@ -8,21 +8,23 @@
           <el-input v-model="memberQuery.username" class="filter-item" style="width: 150px;" placeholder="账号" clearable />
           <el-input v-model="memberQuery.phone" class="filter-item" style="width: 150px;" placeholder="手机" clearable />
           <el-input v-model="memberQuery.email" class="filter-item" style="width: 250px;" placeholder="邮箱" clearable />
-          <el-select v-model="memberQuery.date_type" class="filter-item" placeholder="日期类型" style="width:110px;" clearable>
-            <el-option key="create_time" label="注册时间" value="create_time" />
-            <el-option key="login_time" label="登录时间" value="login_time" />
-            <el-option key="update_time" label="更新时间" value="update_time" />
+          <el-select v-model="memberQuery.date_type" class="filter-item" style="width:110px;" placeholder="日期类型" clearable>
+            <el-option value="create_time" label="注册时间" />
+            <el-option value="login_time" label="登录时间" />
+            <el-option value="update_time" label="更新时间" />
           </el-select>
           <el-date-picker
             v-model="memberQuery.date_range"
             type="daterange"
-            style="width: 240px;top: -4px;"
+            class="filter-item"
+            style="width: 240px;"
+            range-separator="-"
+            value-format="yyyy-MM-dd"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-            value-format="yyyy-MM-dd"
           />
           <el-button class="filter-item" type="primary" @click="memberSearch()">查询</el-button>
-          <el-button class="filter-item" @click="memberReset()">重置</el-button>
+          <el-button class="filter-item" @click="memberRefresh()">刷新</el-button>
         </el-col>
         <el-col :xs="24" :sm="1" style="text-align:right;">
           <el-button class="filter-item" type="primary" @click="memberAddition()">添加</el-button>
@@ -161,7 +163,7 @@ import {
 } from '@/api/member'
 
 export default {
-  name: 'MemberList',
+  name: 'Member',
   components: { Pagination },
   data() {
     return {
@@ -232,8 +234,8 @@ export default {
       this.memberQuery.page = 1
       this.memberList()
     },
-    // 会员重置
-    memberReset() {
+    // 会员刷新
+    memberRefresh() {
       this.memberQuery = this.$options.data().memberQuery
       this.memberList()
     },

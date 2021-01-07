@@ -5,17 +5,17 @@
         <h3 class="title">{{ systemName }}</h3>
       </div>
       <el-form-item prop="username">
-        <el-input v-model="loginModel.username" type="text" name="username" placeholder="请输入账号" prefix-icon="el-icon-user" autocomplete="on" clearable />
+        <el-input v-model="loginModel.username" type="text" placeholder="请输入账号" prefix-icon="el-icon-user" autocomplete="on" clearable />
       </el-form-item>
       <el-form-item prop="password">
-        <el-input v-model="loginModel.password" type="password" name="password" placeholder="请输入密码" prefix-icon="el-icon-lock" autocomplete="on" clearable show-password />
+        <el-input v-model="loginModel.password" type="password" placeholder="请输入密码" prefix-icon="el-icon-lock" autocomplete="on" clearable show-password />
       </el-form-item>
       <el-form-item v-if="verifyShow" prop="verify_code">
         <el-col :span="13">
-          <el-input ref="verify_code_ipt" v-model="loginModel.verify_code" placeholder="请输入验证码" name="verify_code" type="text" prefix-icon="el-icon-picture" autocomplete="off" clearable style="height:50px;line-height:50px;" />
+          <el-input ref="verify_code_ipt" v-model="loginModel.verify_code" type="text" placeholder="请输入验证码" prefix-icon="el-icon-picture" autocomplete="off" style="height:50px;line-height:50px;" clearable />
         </el-col>
         <el-col :span="11">
-          <el-image style="width:200px;height:50px;float:right" :src="verifySrc" fit="fill" alt="验证码" title="点击刷新验证码" @click="verifyRefresh" />
+          <el-image :src="verifySrc" fit="fill" alt="验证码" title="点击刷新验证码" style="width:200px;height:50px;float:right" @click="verifyRefresh" />
         </el-col>
       </el-form-item>
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>

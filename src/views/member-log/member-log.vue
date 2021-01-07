@@ -3,10 +3,10 @@
     <!-- 会员日志查询 -->
     <div class="filter-container">
       <el-row :gutter="0">
-        <el-col :xs="24" :sm="23">
-          <el-select v-model="memberLogQuery.log_type" class="filter-item" placeholder="日志类型" style="width:110px;" clearable>
-            <el-option key="log_type1" label="登录日志" :value="1" />
-            <el-option key="log_type2" label="操作日志" :value="2" />
+        <el-col :xs="24" :sm="22">
+          <el-select v-model="memberLogQuery.log_type" class="filter-item" style="width:110px;" placeholder="日志类型" clearable>
+            <el-option :value="1" label="登录日志" />
+            <el-option :value="2" label="操作日志" />
           </el-select>
           <el-input v-model="memberLogQuery.member_keyword" class="filter-item" style="width: 135px;" placeholder="会员账号/昵称" clearable />
           <el-input v-model="memberLogQuery.api_keyword" class="filter-item" style="width: 235px;" placeholder="接口链接/名称" clearable />
@@ -14,15 +14,17 @@
           <el-date-picker
             v-model="memberLogQuery.create_time"
             type="daterange"
-            style="width: 240px;top: -4px;"
+            class="filter-item"
+            style="width: 240px;"
+            range-separator="-"
+            value-format="yyyy-MM-dd"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-            value-format="yyyy-MM-dd"
           />
           <el-button class="filter-item" type="primary" @click="memberLogSearch()">查询</el-button>
-          <el-button class="filter-item" @click="memberLogReset()">重置</el-button>
+          <el-button class="filter-item" @click="memberLogRefresh()">刷新</el-button>
         </el-col>
-        <el-col :xs="24" :sm="1" style="text-align:right;">
+        <el-col :xs="24" :sm="2" style="text-align:right;">
           <el-button v-permission="['admin/MemberLog/memberLogSta']" class="filter-item" type="primary" title="会员日志统计" @click="memberLogSta">统计</el-button>
         </el-col>
       </el-row>
@@ -155,8 +157,8 @@ export default {
       this.memberLogQuery.page = 1
       this.memberLogList()
     },
-    // 会员日志重置
-    memberLogReset() {
+    // 会员日志刷新
+    memberLogRefresh() {
       this.memberLogQuery = this.$options.data().memberLogQuery
       this.memberLogList()
     },

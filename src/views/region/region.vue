@@ -1,14 +1,15 @@
 <template>
   <div class="app-container">
+    <!-- 地区查询 -->
     <div class="filter-container">
       <el-row>
-        <el-col :xm="24" :sm="23">
+        <el-col :xm="24" :sm="22">
           <el-input v-model="regionQuery.region_name" class="filter-item" style="width: 200px;" placeholder="名称" clearable />
           <el-input v-model="regionQuery.region_pinyin" class="filter-item" style="width: 200px;" placeholder="拼音" clearable />
           <el-button class="filter-item" type="primary" @click="regionSearch()">查询</el-button>
-          <el-button class="filter-item" @click="regionRefresh()">重置</el-button>
+          <el-button class="filter-item" @click="regionRefresh()">刷新</el-button>
         </el-col>
-        <el-col :xm="24" :sm="1" style="text-align:right;">
+        <el-col :xm="24" :sm="2" style="text-align:right;">
           <el-button class="filter-item" type="primary" @click="regionAddition('')">添加</el-button>
         </el-col>
       </el-row>
@@ -120,7 +121,7 @@ import {
 } from '@/api/region'
 
 export default {
-  name: 'RegionList',
+  name: 'Region',
   components: { },
   data() {
     return {

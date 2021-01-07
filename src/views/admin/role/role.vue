@@ -3,13 +3,13 @@
     <!-- 角色查询 -->
     <div class="filter-container">
       <el-row :gutter="0">
-        <el-col :xs="24" :sm="23">
+        <el-col :xs="24" :sm="22">
           <el-input v-model="roleQuery.role_name" class="filter-item" style="width: 200px;" placeholder="角色" clearable />
           <el-input v-model="roleQuery.role_desc" class="filter-item" style="width: 200px;" placeholder="描述" clearable />
           <el-button class="filter-item" type="primary" @click="roleSearch()">查询</el-button>
-          <el-button class="filter-item" @click="roleRefresh()">重置</el-button>
+          <el-button class="filter-item" @click="roleRefresh()">刷新</el-button>
         </el-col>
-        <el-col :xs="24" :sm="1" style="text-align:right;">
+        <el-col :xs="24" :sm="2" style="text-align:right;">
           <el-button class="filter-item" type="primary" @click="roleAddition()">添加</el-button>
         </el-col>
       </el-row>

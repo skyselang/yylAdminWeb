@@ -81,7 +81,7 @@ import {
 } from '@/api/api'
 
 export default {
-  name: 'ApiList',
+  name: 'Api',
   components: { },
   data() {
     return {
