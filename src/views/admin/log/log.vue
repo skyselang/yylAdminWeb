@@ -203,7 +203,11 @@ export default {
     },
     // 日志详情重置
     logReset(row = '') {
-      this.logModel = row
+      if (row === '') {
+        this.logModel = this.$options.data().logModel
+      } else {
+        this.logModel = row
+      }
     },
     // 日志删除
     logDelete(row) {
