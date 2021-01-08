@@ -1,0 +1,6 @@
+# https://eslint.org/
+node_modules
+build/*.js
+src/assets
+public
+dist
