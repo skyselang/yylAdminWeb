@@ -1,7 +1,7 @@
 {
-  "name": "yyladmin",
-  "version": "2.1.1",
-  "description": "Minimalist background management system based on thinkphpp6 and Element2",
+  "name": "yyladminweb",
+  "version": "2.2.0",
+  "description": "Minimalist background management system based on ThinkPHP6 and Vue2",
   "author": "https://github.com/skyselang/",
   "scripts": {
     "dev": "vue-cli-service serve",
