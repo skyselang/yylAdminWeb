@@ -154,17 +154,27 @@ export const asyncRoutes = [
     ]
   },
   {
-    path: '/index',
-    name: 'Index',
+    path: '/apis',
+    name: 'Apis',
     meta: {
-      title: '应用管理',
+      title: '接口管理',
       icon: 'el-icon-menu',
-      roles: ['admin/Api/apiList', 'admin/Region/regionList']
+      roles: ['admin/ApiEnv/apiEnvList', 'admin/Api/apiList']
     },
     redirect: 'noRedirect',
     component: Layout,
     alwaysShow: true,
     children: [
+      {
+        path: 'api-env',
+        name: 'ApiEnv',
+        meta: {
+          title: '接口环境',
+          icon: 'el-icon-s-grid',
+          roles: ['admin/ApiEnv/apiEnvList']
+        },
+        component: () => import('@/views/api-env/api-env')
+      },
       {
         path: 'api',
         name: 'Api',
@@ -174,7 +184,21 @@ export const asyncRoutes = [
           roles: ['admin/Api/apiList']
         },
         component: () => import('@/views/api/api')
-      },
+      }
+    ]
+  },
+  {
+    path: '/index',
+    name: 'Index',
+    meta: {
+      title: '应用管理',
+      icon: 'el-icon-menu',
+      roles: ['admin/Region/regionList']
+    },
+    redirect: 'noRedirect',
+    component: Layout,
+    alwaysShow: true,
+    children: [
       {
         path: 'region',
         name: 'Region',
