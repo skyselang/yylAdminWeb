@@ -23,7 +23,8 @@
     "screenfull": "5.1.0",
     "vue": "2.6.12",
     "vue-router": "^3.4.9",
-    "vuex": "^3.6.0"
+    "vuex": "^3.6.0",
+    "wangeditor": "^4.6.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "4.5.10",
