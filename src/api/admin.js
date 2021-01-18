@@ -12,6 +12,17 @@ export function menuList() {
   })
 }
 /**
+ * 菜单信息
+ * @param {array} params 请求参数
+ */
+export function menuInfo(params) {
+  return request({
+    url: '/admin/AdminMenu/menuInfo',
+    method: 'get',
+    params: params
+  })
+}
+/**
  * 菜单添加
  * @param {array} data 请求数据
  */
@@ -20,17 +31,6 @@ export function menuAdd(data) {
     url: '/admin/AdminMenu/menuAdd',
     method: 'post',
     data
-  })
-}
-/**
- * 菜单信息
- * @param {array} data 请求数据
- */
-export function menuInfo(data) {
-  return request({
-    url: '/admin/AdminMenu/menuInfo',
-    method: 'get',
-    params: data
   })
 }
 /**
@@ -61,6 +61,17 @@ export function menuDele(data) {
     url: '/admin/AdminMenu/menuDele',
     method: 'post',
     data
+  })
+}
+/**
+ * 菜单文档
+ * @param {array} data 请求参数
+ */
+export function menuDoc(params) {
+  return request({
+    url: '/admin/AdminMenu/menuDoc',
+    method: 'get',
+    params: params
   })
 }
 /**
