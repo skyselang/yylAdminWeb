@@ -12,20 +12,20 @@ export function apiList() {
   })
 }
 /**
-   * 接口信息
-   * @param {array} data 请求数据
-   */
-export function apiInfo(data) {
+ * 接口信息
+ * @param {array} params 请求参数
+ */
+export function apiInfo(params) {
   return request({
     url: '/admin/Api/apiInfo',
     method: 'get',
-    params: data
+    params: params
   })
 }
 /**
-   * 接口添加
-   * @param {array} data 请求数据
-   */
+ * 接口添加
+ * @param {array} data 请求数据
+ */
 export function apiAdd(data) {
   return request({
     url: '/admin/Api/apiAdd',
@@ -34,9 +34,9 @@ export function apiAdd(data) {
   })
 }
 /**
-   * 接口修改
-   * @param {array} data 请求数据
-   */
+ * 接口修改
+ * @param {array} data 请求数据
+ */
 export function apiEdit(data, method = 'get') {
   if (method === 'get') {
     return request({
@@ -53,9 +53,9 @@ export function apiEdit(data, method = 'get') {
   }
 }
 /**
-   * 接口删除
-   * @param {array} data 请求数据
-   */
+ * 接口删除
+ * @param {array} data 请求数据
+ */
 export function apiDele(data) {
   return request({
     url: '/admin/Api/apiDele',
@@ -64,9 +64,20 @@ export function apiDele(data) {
   })
 }
 /**
-   * 接口是否禁用
-   * @param {array} data 请求数据
-   */
+ * 接口文档
+ * @param {array} params 请求参数
+ */
+export function apiDoc(params) {
+  return request({
+    url: '/admin/Api/apiDoc',
+    method: 'get',
+    params: params
+  })
+}
+/**
+ * 接口是否禁用
+ * @param {array} data 请求数据
+ */
 export function apiDisable(data) {
   return request({
     url: '/admin/Api/apiDisable',
@@ -75,9 +86,9 @@ export function apiDisable(data) {
   })
 }
 /**
-   * 接口是否无需权限
-   * @param {array} data 请求数据
-   */
+ * 接口是否无需权限
+ * @param {array} data 请求数据
+ */
 export function apiUnauth(data) {
   return request({
     url: '/admin/Api/apiUnauth',

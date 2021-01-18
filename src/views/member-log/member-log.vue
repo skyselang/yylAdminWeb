@@ -177,7 +177,7 @@ export default {
     },
     // 会员日志统计
     memberLogSta() {
-      this.$router.push('/member/member-logsta')
+      this.$router.push('/members/member-logsta')
     },
     // 会员日志详情
     memberLogDetail(row) {
