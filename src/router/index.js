@@ -146,7 +146,7 @@ export const asyncRoutes = [
           title: '会员日志统计',
           icon: 'el-icon-s-grid',
           roles: ['admin/MemberLog/memberLogSta'],
-          activeMenu: '/member/member-log'
+          activeMenu: '/members/member-log'
         },
         component: () => import('@/views/member-log/member-logsta'),
         hidden: true
