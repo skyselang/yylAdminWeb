@@ -22,9 +22,6 @@
             <el-form-item label="ThinkPHP">
               <el-input v-model="serverModel.thinkphp" />
             </el-form-item>
-            <el-form-item label="Redis">
-              <el-input v-model="serverModel.redis" />
-            </el-form-item>
             <el-form-item label="IP">
               <el-input v-model="serverModel.ip" />
             </el-form-item>
