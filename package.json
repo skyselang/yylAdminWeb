@@ -1,6 +1,6 @@
 {
   "name": "yyladminweb",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "description": "Minimalist background management system based on ThinkPHP6 and Vue2",
   "author": "https://github.com/skyselang/",
   "scripts": {
