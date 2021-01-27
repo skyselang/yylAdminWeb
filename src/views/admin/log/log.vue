@@ -21,6 +21,7 @@
             start-placeholder="开始日期"
             end-placeholder="结束日期"
           />
+          <el-input v-model="logQuery.response_code" class="filter-item" style="width: 100px;" placeholder="返回码" clearable />
           <el-button class="filter-item" type="primary" @click="logSearch()">查询</el-button>
           <el-button class="filter-item" @click="logRefresh()">刷新</el-button>
         </el-col>
@@ -32,15 +33,37 @@
     <!-- 日志列表 -->
     <el-table v-loading="loading" :data="logData" :height="height" style="width: 100%" border @sort-change="logSort">
       <el-table-column prop="admin_log_id" label="日志ID" min-width="100" sortable="custom" fixed="left" />
-      <el-table-column prop="username" label="用户账号" min-width="110" />
-      <el-table-column prop="nickname" label="用户昵称" min-width="110" />
-      <el-table-column prop="menu_url" label="菜单链接" min-width="240" />
+      <el-table-column prop="nickname" label="用户昵称" min-width="110">
+        <template slot-scope="scope">
+          <el-popover trigger="hover" placement="top">
+            <p>用户ID: {{ scope.row.admin_user_id }}</p>
+            <p>用户账号: {{ scope.row.username }}</p>
+            <p>用户昵称: {{ scope.row.nickname }}</p>
+            <div slot="reference" class="name-wrapper">
+              <el-tag>{{ scope.row.nickname }}</el-tag>
+            </div>
+          </el-popover>
+        </template>
+      </el-table-column>
+      <el-table-column prop="menu_url" label="菜单链接" min-width="240">
+        <template slot-scope="scope">
+          <el-popover trigger="hover" placement="top">
+            <p>菜单ID: {{ scope.row.admin_menu_id }}</p>
+            <p>菜单链接: {{ scope.row.menu_url }}</p>
+            <div slot="reference" class="name-wrapper">
+              {{ scope.row.menu_url }}
+            </div>
+          </el-popover>
+        </template>
+      </el-table-column>
       <el-table-column prop="menu_name" label="菜单名称" min-width="130" />
       <el-table-column prop="request_method" label="请求方式 " min-width="110" sortable="custom" />
       <el-table-column prop="request_ip" label="请求IP" min-width="130" sortable="custom" />
       <el-table-column prop="request_region" label="请求地区" min-width="150" />
       <el-table-column prop="request_isp" label="请求ISP" min-width="110" />
       <el-table-column prop="create_time" label="请求时间" min-width="160" sortable="custom" />
+      <el-table-column prop="response_code" label="返回码" min-width="80" />
+      <el-table-column prop="response_msg" label="返回描述" min-width="130" show-overflow-tooltip />
       <el-table-column label="操作" min-width="150" align="right" fixed="right">
         <template slot-scope="{ row }">
           <el-button size="mini" type="primary" @click="logDetail(row)">详情</el-button>
@@ -100,6 +123,12 @@
         </el-form-item>
         <el-form-item label="请求参数" prop="request_param">
           <pre>{{ logModel.request_param }}</pre>
+        </el-form-item>
+        <el-form-item label="返回码" prop="response_code">
+          <el-input v-model="logModel.response_code" />
+        </el-form-item>
+        <el-form-item label="返回描述" prop="response_msg">
+          <el-input v-model="logModel.response_msg" type="textarea" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
