@@ -33,7 +33,7 @@
     <!-- 日志列表 -->
     <el-table v-loading="loading" :data="logData" :height="height" style="width: 100%" border @sort-change="logSort">
       <el-table-column prop="admin_log_id" label="日志ID" min-width="100" sortable="custom" fixed="left" />
-      <el-table-column prop="nickname" label="用户昵称" min-width="110" show-overflow-tooltip>
+      <el-table-column prop="nickname" label="用户昵称" min-width="110">
         <template slot-scope="scope">
           <el-popover trigger="hover" placement="top">
             <p>用户ID: {{ scope.row.admin_user_id }}</p>
@@ -45,7 +45,7 @@
           </el-popover>
         </template>
       </el-table-column>
-      <el-table-column prop="menu_url" label="菜单链接" min-width="240" show-overflow-tooltip>
+      <el-table-column prop="menu_url" label="菜单链接" min-width="240">
         <template slot-scope="scope">
           <el-popover trigger="hover" placement="top">
             <p>菜单ID: {{ scope.row.admin_menu_id }}</p>
