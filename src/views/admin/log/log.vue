@@ -33,7 +33,7 @@
     <!-- 日志列表 -->
     <el-table v-loading="loading" :data="logData" :height="height" style="width: 100%" border @sort-change="logSort">
       <el-table-column prop="admin_log_id" label="日志ID" min-width="100" sortable="custom" fixed="left" />
-      <el-table-column prop="nickname" label="用户昵称" min-width="110">
+      <el-table-column prop="nickname" label="用户昵称" min-width="110" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-popover trigger="hover" placement="top">
             <p>用户ID: {{ scope.row.admin_user_id }}</p>
@@ -45,7 +45,7 @@
           </el-popover>
         </template>
       </el-table-column>
-      <el-table-column prop="menu_url" label="菜单链接" min-width="240">
+      <el-table-column prop="menu_url" label="菜单链接" min-width="240" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-popover trigger="hover" placement="top">
             <p>菜单ID: {{ scope.row.admin_menu_id }}</p>
@@ -56,11 +56,11 @@
           </el-popover>
         </template>
       </el-table-column>
-      <el-table-column prop="menu_name" label="菜单名称" min-width="130" />
+      <el-table-column prop="menu_name" label="菜单名称" min-width="140" show-overflow-tooltip />
       <el-table-column prop="request_method" label="请求方式 " min-width="110" sortable="custom" />
       <el-table-column prop="request_ip" label="请求IP" min-width="130" sortable="custom" />
-      <el-table-column prop="request_region" label="请求地区" min-width="150" />
-      <el-table-column prop="request_isp" label="请求ISP" min-width="110" />
+      <el-table-column prop="request_region" label="请求地区" min-width="150" show-overflow-tooltip />
+      <el-table-column prop="request_isp" label="请求ISP" min-width="110" show-overflow-tooltip />
       <el-table-column prop="create_time" label="请求时间" min-width="160" sortable="custom" />
       <el-table-column prop="response_code" label="返回码" min-width="80" />
       <el-table-column prop="response_msg" label="返回描述" min-width="130" show-overflow-tooltip />

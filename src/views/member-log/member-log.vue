@@ -32,13 +32,13 @@
     <!-- 会员日志列表 -->
     <el-table v-loading="loading" :data="memberLogData" :height="height" style="width: 100%" border @sort-change="memberLogSort">
       <el-table-column prop="member_log_id" label="ID" min-width="100" sortable="custom" fixed="left" />
-      <el-table-column prop="username" label="会员账号" min-width="110" sortable="custom" />
-      <el-table-column prop="nickname" label="会员昵称" min-width="110" />
-      <el-table-column prop="api_url" label="接口链接" min-width="235" sortable="custom" />
-      <el-table-column prop="api_name" label="接口名称" min-width="130" />
+      <el-table-column prop="username" label="会员账号" min-width="110" sortable="custom" show-overflow-tooltip />
+      <el-table-column prop="nickname" label="会员昵称" min-width="110" show-overflow-tooltip />
+      <el-table-column prop="api_url" label="接口链接" min-width="235" sortable="custom" show-overflow-tooltip />
+      <el-table-column prop="api_name" label="接口名称" min-width="130" show-overflow-tooltip />
       <el-table-column prop="request_method" label="请求方式 " min-width="110" sortable="custom" />
       <el-table-column prop="request_ip" label="请求IP" min-width="130" sortable="custom" />
-      <el-table-column prop="request_region" label="请求地区" min-width="150" />
+      <el-table-column prop="request_region" label="请求地区" min-width="150" show-overflow-tooltip />
       <el-table-column prop="request_isp" label="请求ISP" min-width="110" />
       <el-table-column prop="create_time" label="请求时间" min-width="160" sortable="custom" />
       <el-table-column label="操作" min-width="150" align="right" fixed="right">

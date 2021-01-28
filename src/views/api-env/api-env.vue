@@ -18,7 +18,7 @@
     <el-table ref="apiEnvTableRef" v-loading="loading" :data="apiEnvData" :height="height" style="width: 100%" border @sort-change="apiEnvSort">
       <el-table-column prop="api_env_id" label="ID" min-width="100" sortable="custom" fixed="left" />
       <el-table-column prop="name" label="名称" min-width="180" />
-      <el-table-column prop="host" label="Host" min-width="320">
+      <el-table-column prop="host" label="Host" min-width="320" show-overflow-tooltip>
         <template slot="header">
           <span>Host </span>
           <el-tooltip placement="top">

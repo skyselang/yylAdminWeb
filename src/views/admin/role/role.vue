@@ -17,8 +17,8 @@
     <!-- 角色列表 -->
     <el-table ref="roleTableRef" v-loading="loading" :data="roleData" :height="height" style="width: 100%" border @sort-change="roleSort">
       <el-table-column prop="admin_role_id" label="角色ID" min-width="100" sortable="custom" fixed="left" />
-      <el-table-column prop="role_name" label="角色" min-width="120" />
-      <el-table-column prop="role_desc" label="描述" min-width="130" />
+      <el-table-column prop="role_name" label="角色" min-width="120" show-overflow-tooltip />
+      <el-table-column prop="role_desc" label="描述" min-width="130" show-overflow-tooltip />
       <el-table-column prop="role_sort" label="排序" min-width="100" sortable="custom" />
       <el-table-column prop="create_time" label="添加时间" min-width="160" sortable="custom" />
       <el-table-column prop="update_time" label="修改时间" min-width="160" sortable="custom" />

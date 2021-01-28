@@ -18,8 +18,8 @@
     <!-- 用户列表 -->
     <el-table v-loading="loading" :data="userData" :height="height" style="width: 100%" border @sort-change="userSort">
       <el-table-column prop="admin_user_id" label="用户ID" min-width="100" sortable="custom" fixed="left" />
-      <el-table-column prop="username" label="账号" min-width="120" sortable="custom" />
-      <el-table-column prop="nickname" label="昵称" min-width="120" sortable="custom" />
+      <el-table-column prop="username" label="账号" min-width="120" sortable="custom" show-overflow-tooltip />
+      <el-table-column prop="nickname" label="昵称" min-width="120" sortable="custom" show-overflow-tooltip />
       <el-table-column prop="email" label="邮箱" min-width="250" sortable="custom" show-overflow-tooltip />
       <el-table-column prop="login_ip" label="登录IP" min-width="130" sortable="custom" />
       <el-table-column prop="login_time" label="登录时间" min-width="160" sortable="custom" />

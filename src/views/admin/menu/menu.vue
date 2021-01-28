@@ -12,7 +12,7 @@
     <!-- 菜单列表 -->
     <el-table v-loading="loading" :data="menuData" :height="height+80" style="width: 100%" row-key="admin_menu_id" border>
       <el-table-column prop="menu_name" label="菜单名称" min-width="220" fixed="left" />
-      <el-table-column prop="menu_url" label="菜单链接" min-width="260" />
+      <el-table-column prop="menu_url" label="菜单链接" min-width="260" show-overflow-tooltip />
       <el-table-column prop="menu_sort" label="排序" min-width="60" />
       <el-table-column prop="admin_menu_id" label="ID" min-width="60" />
       <el-table-column prop="menu_pid" label="PID" min-width="60" />
