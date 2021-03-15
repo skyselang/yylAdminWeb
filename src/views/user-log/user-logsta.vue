@@ -201,10 +201,10 @@ require('echarts/lib/component/tooltip')
 require('echarts/lib/component/legend')
 require('echarts/lib/component/title')
 import BackToTop from '@/components/BackToTop'
-import { memberLogSta } from '@/api/member-log'
+import { userLogSta } from '@/api/user-log'
 
 export default {
-  name: 'MemberLogsta',
+  name: 'UserLogsta',
   components: { BackToTop },
   data() {
     return {
@@ -255,13 +255,13 @@ export default {
   },
   computed: {},
   created() {
-    this.memberLogSta()
+    this.userLogSta()
   },
   mounted() {},
   methods: {
-    memberLogSta() {
+    userLogSta() {
       this.loadNum = true
-      memberLogSta().then(res => {
+      userLogSta().then(res => {
         this.number = res.data.number
         this.date = res.data.date
         this.region = res.data.region
@@ -275,7 +275,7 @@ export default {
     },
     echartDateChange() {
       this.loadDate = true
-      memberLogSta({
+      userLogSta({
         type: 'date', date: this.date.date
       }).then(res => {
         this.echartDate(res.data.date)
@@ -286,7 +286,7 @@ export default {
     },
     echartRegionChange(value) {
       this.loadRegion = true
-      memberLogSta({
+      userLogSta({
         type: 'region',
         date: this.region.date,
         region: this.regionValue

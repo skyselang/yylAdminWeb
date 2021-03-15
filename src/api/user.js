@@ -1,95 +1,95 @@
 import request from '@/utils/request'
 
-// ----------------会员管理----------------
+// ----------------用户管理----------------
 /**
- * 会员列表
+ * 用户列表
  * @param {array} params 请求参数
  */
-export function memberList(params) {
+export function userList(params) {
   return request({
-    url: '/admin/Member/memberList',
+    url: '/admin/User/userList',
     method: 'get',
     params: params
   })
 }
 /**
-   * 会员信息
+   * 用户信息
    * @param {array} params 请求参数
    */
-export function memberInfo(params) {
+export function userInfo(params) {
   return request({
-    url: '/admin/Member/memberInfo',
+    url: '/admin/User/userInfo',
     method: 'get',
     params: params
   })
 }
 /**
-   * 会员添加
+   * 用户添加
    * @param {array} data 请求数据
    */
-export function memberAdd(data, method = 'get') {
+export function userAdd(data, method = 'get') {
   if (method === 'get') {
     return request({
-      url: '/admin/Member/memberAdd',
+      url: '/admin/User/userAdd',
       method: 'get',
       params: data
     })
   } else {
     return request({
-      url: '/admin/Member/memberAdd',
+      url: '/admin/User/userAdd',
       method: 'post',
       data
     })
   }
 }
 /**
-   * 会员修改
+   * 用户修改
    * @param {array} data 请求数据
    */
-export function memberEdit(data, method = 'get') {
+export function userEdit(data, method = 'get') {
   if (method === 'get') {
     return request({
-      url: '/admin/Member/memberEdit',
+      url: '/admin/User/userEdit',
       method: 'get',
       params: data
     })
   } else {
     return request({
-      url: '/admin/Member/memberEdit',
+      url: '/admin/User/userEdit',
       method: 'post',
       data
     })
   }
 }
 /**
-   * 会员删除
+   * 用户删除
    * @param {array} data 请求数据
    */
-export function memberDele(data) {
+export function userDele(data) {
   return request({
-    url: '/admin/Member/memberDele',
+    url: '/admin/User/userDele',
     method: 'post',
     data
   })
 }
 /**
-   * 会员密码重置
+   * 用户密码重置
    * @param {array} data 请求数据
    */
-export function memberPassword(data) {
+export function userPassword(data) {
   return request({
-    url: '/admin/Member/memberPassword',
+    url: '/admin/User/userPassword',
     method: 'post',
     data
   })
 }
 /**
-   * 会员是否禁用
+   * 用户是否禁用
    * @param {array} data 请求数据
    */
-export function memberDisable(data) {
+export function userDisable(data) {
   return request({
-    url: '/admin/Member/memberDisable',
+    url: '/admin/User/userDisable',
     method: 'post',
     data
   })

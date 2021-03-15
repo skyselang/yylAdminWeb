@@ -1,46 +1,46 @@
 import request from '@/utils/request'
 
-// ----------------会员日志----------------
+// ----------------用户日志----------------
 /**
- * 会员日志列表
+ * 用户日志列表
  * @param {array} params 请求参数
  */
-export function memberLogList(params) {
+export function userLogList(params) {
   return request({
-    url: '/admin/MemberLog/memberLogList',
+    url: '/admin/UserLog/userLogList',
     method: 'get',
     params: params
   })
 }
 /**
-   * 会员日志信息
+   * 用户日志信息
    * @param {array} params 请求参数
    */
-export function memberLogInfo(params) {
+export function userLogInfo(params) {
   return request({
-    url: '/admin/MemberLog/memberLogInfo',
+    url: '/admin/UserLog/userLogInfo',
     method: 'get',
     params: params
   })
 }
 /**
-   * 会员日志删除
+   * 用户日志删除
    * @param {array} data 请求数据
    */
-export function memberLogDele(data) {
+export function userLogDele(data) {
   return request({
-    url: '/admin/MemberLog/memberLogDele',
+    url: '/admin/UserLog/userLogDele',
     method: 'post',
     data
   })
 }
 /**
-   * 会员日志统计
+   * 用户日志统计
    * @param {array} data 请求数据
    */
-export function memberLogSta(data) {
+export function userLogSta(data) {
   return request({
-    url: '/admin/MemberLog/memberLogSta',
+    url: '/admin/UserLog/userLogSta',
     method: 'post',
     data
   })

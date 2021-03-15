@@ -65,12 +65,26 @@ service.interceptors.response.use(
   },
   error => {
     // 响应错误
-    Message({
-      showClose: true,
-      message: error.message,
-      type: 'error',
-      duration: 5000
-    })
+    console.log(error.response)
+    const res = error.response.data
+    if (res.code === 401) {
+      MessageBox.confirm(res.message, '提示', {
+        confirmButtonText: '重新登录',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        store.dispatch('user/resetAdminToken').then(() => {
+          location.reload()
+        })
+      }).catch(() => {})
+    } else {
+      Message({
+        showClose: true,
+        message: res.message || error.message,
+        type: 'error',
+        duration: 5000
+      })
+    }
     return Promise.reject(error)
   }
 )

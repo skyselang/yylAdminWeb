@@ -105,14 +105,14 @@ export const constantRoutes = [
  */
 export const asyncRoutes = [
   {
-    path: '/members',
-    name: 'Members',
+    path: '/users',
+    name: 'Users',
     meta: {
-      title: '会员管理',
+      title: '用户管理',
       icon: 'el-icon-menu',
       roles: [
-        'admin/Member/memberList',
-        'admin/MemberLog/memberLogList'
+        'admin/User/userList',
+        'admin/UserLog/userLogList'
       ]
     },
     redirect: 'noRedirect',
@@ -120,35 +120,35 @@ export const asyncRoutes = [
     alwaysShow: true,
     children: [
       {
-        path: 'member',
-        name: 'Member',
+        path: 'user-list',
+        name: 'UserList',
         meta: {
-          title: '会员管理',
+          title: '用户管理',
           icon: 'el-icon-s-grid',
-          roles: ['admin/Member/memberList']
+          roles: ['admin/User/userList']
         },
-        component: () => import('@/views/member/member')
+        component: () => import('@/views/user/user')
       },
       {
-        path: 'member-log',
-        name: 'MemberLog',
+        path: 'user-log',
+        name: 'UserLog',
         meta: {
-          title: '会员日志',
+          title: '用户日志',
           icon: 'el-icon-s-grid',
-          roles: ['admin/MemberLog/memberLogList']
+          roles: ['admin/UserLog/userLogList']
         },
-        component: () => import('@/views/member-log/member-log')
+        component: () => import('@/views/user-log/user-log')
       },
       {
-        path: 'member-logsta',
-        name: 'MemberLogsta',
+        path: 'user-logsta',
+        name: 'UserLogsta',
         meta: {
-          title: '会员日志统计',
+          title: '用户日志统计',
           icon: 'el-icon-s-grid',
-          roles: ['admin/MemberLog/memberLogSta'],
-          activeMenu: '/members/member-log'
+          roles: ['admin/UserLog/userLogSta'],
+          activeMenu: '/users/user-log'
         },
-        component: () => import('@/views/member-log/member-logsta'),
+        component: () => import('@/views/user-log/user-logsta'),
         hidden: true
       }
     ]
@@ -208,12 +208,32 @@ export const asyncRoutes = [
           roles: ['admin/Region/regionList']
         },
         component: () => import('@/views/region/region')
+      },
+      {
+        path: 'verify',
+        name: 'Verify',
+        meta: {
+          title: '验证码设置',
+          icon: 'el-icon-s-grid',
+          roles: ['admin/Setting/settingVerify']
+        },
+        component: () => import('@/views/setting/verify')
+      },
+      {
+        path: 'token',
+        name: 'Token',
+        meta: {
+          title: 'Token设置',
+          icon: 'el-icon-s-grid',
+          roles: ['admin/Setting/settingToken']
+        },
+        component: () => import('@/views/setting/token')
       }
     ]
   },
 
   {
-    path: '/rule',
+    path: '/admin/rule',
     name: 'Rule',
     meta: {
       title: '权限管理',
@@ -296,7 +316,7 @@ export const asyncRoutes = [
   },
 
   {
-    path: '/system',
+    path: '/admin/system',
     name: 'System',
     meta: {
       title: '系统管理',
