@@ -205,7 +205,7 @@ export default {
     },
     // 日志统计
     logStaRouter() {
-      this.$router.push('/rule/log-sta')
+      this.$router.push('/admin/rule/log-sta')
     },
     // 日志详情
     logDetail(row) {
