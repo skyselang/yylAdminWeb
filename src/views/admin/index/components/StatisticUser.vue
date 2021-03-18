@@ -273,11 +273,13 @@ export default {
           {
             name: '新增',
             type: 'line',
+            smooth: true,
             data: date_new.y_data
           },
           {
             name: '活跃',
             type: 'line',
+            smooth: true,
             data: date_act.y_data
           }
         ]
