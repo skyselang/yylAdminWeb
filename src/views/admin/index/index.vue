@@ -1,25 +1,36 @@
 <template>
   <div class="app-container">
-    <div class="filter-container">
-      <el-row :gutter="0">
-        <el-col :span="24" />
-      </el-row>
-      <back-to-top transition-name="fade" />
-    </div>
+    <el-row :gutter="0">
+      <el-col :span="24">
+        <statistic-user v-if="checkPermission(['admin/AdminIndex/statisticUser'])" />
+      </el-col>
+    </el-row>
   </div>
 </template>
 
 <script>
-import BackToTop from '@/components/BackToTop'
+import checkPermission from '@/utils/permission' // 权限判断函数
+import StatisticUser from './components/StatisticUser'
 
 export default {
-  name: 'Dashboard',
-  components: { BackToTop },
+  name: 'Index',
+  components: { StatisticUser },
   data() {
-    return {}
+    return {
+      MapAmap: false,
+      StatisticUser: true,
+      MapSogou: false,
+      MapTencent: false,
+      MapBeidou: false,
+      actTabName: 'StatisticUser'
+    }
   },
-  computed: {},
   created() { },
-  methods: {}
+  methods: {
+    checkPermission,
+    tabClick(tab) {
+      this[tab.name] = true
+    }
+  }
 }
 </script>

@@ -1,5 +1,18 @@
 import request from '@/utils/request'
 
+// ----------------控制台-----------------
+/**
+ * 数据统计（用户）
+ * @param {array} params 请求参数
+ */
+export function statisticUser(params) {
+  return request({
+    url: '/admin/AdminIndex/statisticUser',
+    method: 'get',
+    params: params
+  })
+}
+
 // ----------------菜单管理----------------
 /**
  * 菜单列表
