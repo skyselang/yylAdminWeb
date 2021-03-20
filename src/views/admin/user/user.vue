@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <!-- 用户查询 -->
+    <!-- 管理员查询 -->
     <div class="filter-container">
       <el-row :gutter="0">
         <el-col :xs="24" :sm="22">
@@ -15,9 +15,9 @@
         </el-col>
       </el-row>
     </div>
-    <!-- 用户列表 -->
+    <!-- 管理员列表 -->
     <el-table v-loading="loading" :data="userData" :height="height" style="width: 100%" border @sort-change="userSort">
-      <el-table-column prop="admin_user_id" label="用户ID" min-width="100" sortable="custom" fixed="left" />
+      <el-table-column prop="admin_user_id" label="管理员ID" min-width="100" sortable="custom" fixed="left" />
       <el-table-column prop="username" label="账号" min-width="120" sortable="custom" show-overflow-tooltip />
       <el-table-column prop="nickname" label="昵称" min-width="120" sortable="custom" show-overflow-tooltip />
       <el-table-column prop="email" label="邮箱" min-width="250" sortable="custom" show-overflow-tooltip />
@@ -25,7 +25,7 @@
       <el-table-column prop="login_time" label="登录时间" min-width="160" sortable="custom" />
       <el-table-column prop="login_num" label="登录次数" min-width="105" sortable="custom" />
       <el-table-column prop="sort" label="排序" width="80" sortable="custom" />
-      <el-table-column prop="is_admin" label="管理员" min-width="88" sortable="custom" align="center">
+      <el-table-column prop="is_admin" label="超管" min-width="80" sortable="custom" align="center">
         <template slot-scope="scope">
           <el-switch v-model="scope.row.is_admin" :active-value="1" :inactive-value="0" @change="userIsAdmin(scope.row)" />
         </template>
@@ -44,9 +44,9 @@
         </template>
       </el-table-column>
     </el-table>
-    <!-- 用户分页 -->
+    <!-- 管理员分页 -->
     <pagination v-show="userCount > 0" :total="userCount" :page.sync="userQuery.page" :limit.sync="userQuery.limit" @pagination="userList" />
-    <!-- 用户添加、修改 -->
+    <!-- 管理员添加、修改 -->
     <el-dialog :title="userDialogTitle" :visible.sync="userDialog" top="1vh" :before-close="userCancel">
       <el-form ref="userRef" :model="userModel" :rules="userRoles" class="dialog-body" label-width="100px" :style="{height:height+30+'px'}">
         <el-form-item v-if="userModel.admin_user_id && userModel.avatar" label="头像" prop="avatar">
@@ -120,7 +120,7 @@
         <el-button type="primary" @click="userSubmit">提交</el-button>
       </div>
     </el-dialog>
-    <!-- 用户权限分配 -->
+    <!-- 管理员权限分配 -->
     <el-dialog :title="'权限分配：'+userModel.username" :visible.sync="userDialogRole" top="1vh">
       <el-form ref="roleRef" :model="userModel" class="dialog-body" label-width="100px" :style="{height:height+30+'px'}">
         <el-form-item label="账号">
@@ -165,7 +165,7 @@
         <el-button type="primary" @click="userSubmitRule">提交</el-button>
       </div>
     </el-dialog>
-    <!-- 用户密码重置 -->
+    <!-- 管理员密码重置 -->
     <el-dialog :title="'密码重置：'+userModel.username" :visible.sync="userDialogPwd" top="1vh">
       <el-form ref="pwdRef" :rules="pwdRoles" :model="userModel" class="dialog-body" label-width="100px" :style="{height:height+30+'px'}">
         <el-form-item label="账号">
@@ -258,7 +258,7 @@ export default {
     this.userList()
   },
   methods: {
-    // 用户列表
+    // 管理员列表
     userList() {
       this.loading = true
       userList(this.userQuery).then(res => {
@@ -269,17 +269,17 @@ export default {
         this.loading = false
       })
     },
-    // 用户查询
+    // 管理员查询
     userSearch() {
       this.userQuery.page = 1
       this.userList()
     },
-    // 用户刷新
+    // 管理员刷新
     userRefresh() {
       this.userQuery = this.$options.data().userQuery
       this.userList()
     },
-    // 用户排序
+    // 管理员排序
     userSort(sort) {
       this.userQuery.sort_field = sort.prop
       this.userQuery.sort_type = ''
@@ -292,23 +292,23 @@ export default {
         this.userList()
       }
     },
-    // 用户数据重置
+    // 管理员数据重置
     userReset() {
       this.userModel = this.$options.data().userModel
       if (this.$refs['userRef'] !== undefined) {
         this.$refs['userRef'].resetFields()
       }
     },
-    // 用户添加打开
+    // 管理员添加打开
     userAddition() {
       this.userDialog = true
-      this.userDialogTitle = '用户添加'
+      this.userDialogTitle = '管理员添加'
       this.userReset()
     },
-    // 用户修改打开
+    // 管理员修改打开
     userModify(row) {
       this.userDialog = true
-      this.userDialogTitle = '用户修改：' + row.username
+      this.userDialogTitle = '管理员修改：' + row.username
       this.userReset()
       userEdit({
         admin_user_id: row.admin_user_id
@@ -316,7 +316,7 @@ export default {
         this.userModel = res.data.admin_user
       })
     },
-    // 用户修改头像
+    // 管理员修改头像
     uploadBefore(file) {
       this.uploadData.admin_user_id = this.userModel.admin_user_id
     },
@@ -328,10 +328,10 @@ export default {
         this.$message.error(res.msg)
       }
     },
-    // 用户删除
+    // 管理员删除
     userDelete(row) {
       this.$confirm(
-        '确定要删除用户 <span style="color:red">' + row.username + ' </span>吗？',
+        '确定要删除管理员 <span style="color:red">' + row.username + ' </span>吗？',
         '删除：' + row.admin_user_id,
         {
           type: 'warning',
@@ -349,7 +349,7 @@ export default {
         })
       }).catch(() => {})
     },
-    // 用户是否管理员
+    // 管理员是否超管
     userIsAdmin(row) {
       this.loading = true
       userAdmin({
@@ -362,7 +362,7 @@ export default {
         this.userList()
       })
     },
-    // 用户是否禁用
+    // 管理员是否禁用
     userIsProhibit(row) {
       this.loading = true
       userDisable({
@@ -375,7 +375,7 @@ export default {
         this.userList()
       })
     },
-    // 用户权限分配打开
+    // 管理员权限分配打开
     userEditRule(row) {
       this.userDialogRole = true
       userRule({
@@ -391,16 +391,16 @@ export default {
         this.userModel.menu_ids = res.data.menu_ids
       })
     },
-    // 用户权限分配取消
+    // 管理员权限分配取消
     userCancelRule() {
       this.userDialogRole = false
       this.userReset()
     },
-    // 用户权限分配按菜单
+    // 管理员权限分配按菜单
     menuCheck(data, node) {
       this.userModel.admin_menu_ids = node.checkedKeys
     },
-    // 用户权限分配提交
+    // 管理员权限分配提交
     userSubmitRule() {
       this.$refs['roleRef'].validate(valid => {
         if (valid) {
@@ -419,7 +419,7 @@ export default {
         }
       })
     },
-    // 用户密码重置打开
+    // 管理员密码重置打开
     userPassword(row) {
       this.userDialogPwd = true
       this.userModel.admin_user_id = row.admin_user_id
@@ -427,12 +427,12 @@ export default {
       this.userModel.nickname = row.nickname
       this.userModel.password = ''
     },
-    // 用户密码重置取消
+    // 管理员密码重置取消
     userCancelPwd() {
       this.userDialogPwd = false
       this.userReset()
     },
-    // 用户密码重置提交
+    // 管理员密码重置提交
     userSubmitPwd() {
       this.$refs['pwdRef'].validate(valid => {
         if (valid) {
@@ -450,12 +450,12 @@ export default {
         }
       })
     },
-    // 用户添加、修改取消
+    // 管理员添加、修改取消
     userCancel() {
       this.userReset()
       this.userDialog = false
     },
-    // 用户添加、修改提交
+    // 管理员添加、修改提交
     userSubmit() {
       this.$refs['userRef'].validate(valid => {
         if (valid) {

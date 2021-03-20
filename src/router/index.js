@@ -274,7 +274,7 @@ export const asyncRoutes = [
         path: 'user',
         name: 'User',
         meta: {
-          title: '用户管理',
+          title: '管理员管理',
           icon: 'el-icon-user',
           roles: ['admin/AdminUser/userList']
         },
@@ -284,7 +284,7 @@ export const asyncRoutes = [
         path: 'log',
         name: 'Log',
         meta: {
-          title: '日志管理',
+          title: '管理员日志',
           icon: 'el-icon-notebook-2',
           roles: ['admin/AdminLog/logList']
         },
@@ -294,7 +294,7 @@ export const asyncRoutes = [
         path: 'log-sta',
         name: 'LogSta',
         meta: {
-          title: '日志统计',
+          title: '管理员日志统计',
           icon: 'el-icon-s-data',
           roles: ['admin/AdminLog/logStatistic'],
           activeMenu: '/rule/log'

@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 // ----------------控制台-----------------
 /**
- * 数据统计（用户）
+ * 数据统计（管理员）
  * @param {array} params 请求参数
  */
 export function statisticUser(params) {
@@ -132,7 +132,7 @@ export function menuRoleRemove(data) {
   })
 }
 /**
- * 菜单用户
+ * 菜单管理员
  * @param {array} params 请求参数
  */
 export function menuUser(params) {
@@ -143,7 +143,7 @@ export function menuUser(params) {
   })
 }
 /**
- * 菜单用户解除
+ * 菜单管理员解除
  * @param {array} data 请求数据
  */
 export function menuUserRemove(data) {
@@ -237,7 +237,7 @@ export function roleDisable(data) {
   })
 }
 /**
- * 角色用户
+ * 角色管理员
  * @param {array} params 请求参数
  */
 export function roleUser(params) {
@@ -248,7 +248,7 @@ export function roleUser(params) {
   })
 }
 /**
- * 角色用户解除
+ * 角色管理员解除
  * @param {array} data 请求数据
  */
 export function roleUserRemove(data) {
@@ -259,9 +259,9 @@ export function roleUserRemove(data) {
   })
 }
 
-// ----------------用户管理----------------
+// ----------------管理员管理----------------
 /**
- * 用户列表
+ * 管理员列表
  * @param {array} params 请求参数
  */
 export function userList(params) {
@@ -272,7 +272,7 @@ export function userList(params) {
   })
 }
 /**
- * 用户信息
+ * 管理员信息
  * @param {array} params 请求参数
  */
 export function userInfo(params) {
@@ -283,7 +283,7 @@ export function userInfo(params) {
   })
 }
 /**
- * 用户添加
+ * 管理员添加
  * @param {array} data 请求数据
  */
 export function userAdd(data) {
@@ -294,7 +294,7 @@ export function userAdd(data) {
   })
 }
 /**
- * 用户修改
+ * 管理员修改
  * @param {array} data 请求数据
  */
 export function userEdit(data, method = 'get') {
@@ -313,7 +313,7 @@ export function userEdit(data, method = 'get') {
   }
 }
 /**
- * 用户删除
+ * 管理员删除
  * @param {array} data 请求数据
  */
 export function userDele(data) {
@@ -324,7 +324,7 @@ export function userDele(data) {
   })
 }
 /**
- * 用户密码重置
+ * 管理员密码重置
  * @param {array} data 请求数据
  */
 export function userPwd(data) {
@@ -335,7 +335,7 @@ export function userPwd(data) {
   })
 }
 /**
- * 用户权限分配
+ * 管理员权限分配
  * @param {array} data 请求数据
  */
 export function userRule(data, method = 'get') {
@@ -354,7 +354,7 @@ export function userRule(data, method = 'get') {
   }
 }
 /**
- * 用户是否禁用
+ * 管理员是否禁用
  * @param {array} data 请求数据
  */
 export function userDisable(data) {
@@ -365,7 +365,7 @@ export function userDisable(data) {
   })
 }
 /**
- * 用户是否管理员
+ * 管理员是否管理员
  * @param {array} data 请求数据
  */
 export function userAdmin(data) {

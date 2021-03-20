@@ -27,7 +27,7 @@
     </div>
     <!-- 日志列表 -->
     <el-table v-loading="loading" :data="logData" :height="height-50" style="width: 100%" border @sort-change="logSort">
-      <el-table-column prop="admin_log_id" label="ID" min-width="100" sortable="custom" fixed="left" />
+      <el-table-column prop="admin_log_id" label="日志ID" min-width="100" sortable="custom" fixed="left" />
       <el-table-column prop="menu_url" label="菜单链接" min-width="250" />
       <el-table-column prop="menu_name" label="菜单名称" min-width="150" />
       <el-table-column prop="request_method" label="请求方式 " min-width="110" sortable="custom" />

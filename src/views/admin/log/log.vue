@@ -8,7 +8,7 @@
             <el-option :value="1" label="登录日志" />
             <el-option :value="2" label="操作日志" />
           </el-select>
-          <el-input v-model="logQuery.user_keyword" class="filter-item" style="width: 135px;" placeholder="用户账号/昵称" clearable />
+          <el-input v-model="logQuery.user_keyword" class="filter-item" style="width: 135px;" placeholder="管理员账号/昵称" clearable />
           <el-input v-model="logQuery.request_keyword" class="filter-item" style="width: 155px;" placeholder="请求IP/地区/ISP" clearable />
           <el-input v-model="logQuery.menu_keyword" class="filter-item" style="width: 280px;" placeholder="菜单链接/名称" clearable />
           <el-date-picker
@@ -33,12 +33,12 @@
     <!-- 日志列表 -->
     <el-table v-loading="loading" :data="logData" :height="height" style="width: 100%" border @sort-change="logSort">
       <el-table-column prop="admin_log_id" label="日志ID" min-width="100" sortable="custom" fixed="left" />
-      <el-table-column prop="nickname" label="用户昵称" min-width="110">
+      <el-table-column prop="nickname" label="管理员昵称" min-width="110">
         <template slot-scope="scope">
           <el-popover trigger="hover" placement="top">
-            <p>用户ID: {{ scope.row.admin_user_id }}</p>
-            <p>用户账号: {{ scope.row.username }}</p>
-            <p>用户昵称: {{ scope.row.nickname }}</p>
+            <p>管理员ID: {{ scope.row.admin_user_id }}</p>
+            <p>管理员账号: {{ scope.row.username }}</p>
+            <p>管理员昵称: {{ scope.row.nickname }}</p>
             <div slot="reference" class="name-wrapper">
               <el-tag>{{ scope.row.nickname }}</el-tag>
             </div>
@@ -76,16 +76,16 @@
     <!-- 日志详情 -->
     <el-dialog :title="'日志详情：' + logModel.admin_log_id" :visible.sync="logDialog" top="1vh" :before-close="logCancel">
       <el-form ref="logRef" :rules="logRules" :model="logModel" label-width="100px" class="dialog-body" :style="{height:height+30+'px'}">
-        <el-form-item label="用户ID" prop="admin_user_id">
+        <el-form-item label="管理员ID" prop="admin_user_id">
           <el-col :span="10">
             <el-input v-model="logModel.admin_user_id" />
           </el-col>
-          <el-col class="line" :span="4" style="text-align:center">用户昵称</el-col>
+          <el-col class="line" :span="4" style="text-align:center">管理员昵称</el-col>
           <el-col :span="10">
             <el-input v-model="logModel.nickname" />
           </el-col>
         </el-form-item>
-        <el-form-item label="用户账号" prop="username">
+        <el-form-item label="管理员账号" prop="username">
           <el-input v-model="logModel.username" />
         </el-form-item>
         <el-form-item label="菜单ID" prop="admin_menu_id">

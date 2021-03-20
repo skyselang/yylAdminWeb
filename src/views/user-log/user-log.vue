@@ -5,8 +5,9 @@
       <el-row :gutter="0">
         <el-col :xs="24" :sm="22">
           <el-select v-model="userLogQuery.log_type" class="filter-item" style="width:110px;" placeholder="日志类型" clearable>
-            <el-option :value="1" label="登录日志" />
-            <el-option :value="2" label="操作日志" />
+            <el-option :value="1" label="注册日志" />
+            <el-option :value="2" label="登录日志" />
+            <el-option :value="3" label="操作日志" />
           </el-select>
           <el-input v-model="userLogQuery.user_keyword" class="filter-item" style="width: 135px;" placeholder="用户账号/昵称" clearable />
           <el-input v-model="userLogQuery.api_keyword" class="filter-item" style="width: 235px;" placeholder="接口链接/名称" clearable />

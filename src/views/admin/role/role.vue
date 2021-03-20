@@ -29,7 +29,7 @@
       </el-table-column>
       <el-table-column label="操作" min-width="220" align="right" fixed="right">
         <template slot-scope="{ row }">
-          <el-button size="mini" type="primary" @click="roleUserShow(row)">用户</el-button>
+          <el-button size="mini" type="primary" @click="roleUserShow(row)">管理员</el-button>
           <el-button size="mini" type="success" @click="roleModify(row)">修改</el-button>
           <el-button size="mini" type="danger" @click="roleDelete(row)">删除</el-button>
         </template>
@@ -80,7 +80,7 @@
         <el-button type="primary" @click="roleSubmit">提交</el-button>
       </div>
     </el-dialog>
-    <!-- 角色用户列表 -->
+    <!-- 角色管理员列表 -->
     <el-dialog :title="userTitle" :visible.sync="userDialog" width="65%" top="1vh">
       <el-table ref="userRef" v-loading="userLoad" :data="userData" :height="height+30" style="width: 100%" border @sort-change="userSort">
         <el-table-column prop="admin_user_id" label="ID" min-width="100" sortable="custom" fixed="left" />
@@ -88,7 +88,7 @@
         <el-table-column prop="nickname" label="昵称" min-width="120" />
         <el-table-column prop="email" label="邮箱" min-width="200" show-overflow-tooltip />
         <el-table-column prop="remark" label="备注" width="100" />
-        <el-table-column prop="is_admin" label="是否管理员" min-width="100" align="center">
+        <el-table-column prop="is_admin" label="是否超管" min-width="100" align="center">
           <template slot-scope="scope">
             <el-switch v-model="scope.row.is_admin" :active-value="1" :inactive-value="0" disabled />
           </template>
@@ -334,14 +334,14 @@ export default {
         }
       })
     },
-    // 角色用户显示
+    // 角色管理员显示
     roleUserShow(row) {
       this.userDialog = true
-      this.userTitle = '角色：' + row.role_name + ' > 用户'
+      this.userTitle = '角色：' + row.role_name + ' > 管理员'
       this.userQuery.admin_role_id = row.admin_role_id
       this.roleUser()
     },
-    // 角色用户列表
+    // 角色管理员列表
     roleUser() {
       this.userLoad = true
       roleUser(this.userQuery).then(res => {
@@ -355,7 +355,7 @@ export default {
         this.userLoad = false
       })
     },
-    // 角色用户排序
+    // 角色管理员排序
     userSort(sort) {
       this.userQuery.sort_field = sort.prop
       this.userQuery.sort_type = ''
@@ -368,10 +368,10 @@ export default {
         this.roleUser()
       }
     },
-    // 角色用户解除
+    // 角色管理员解除
     roleUserRemove(row) {
       this.$confirm(
-        '确定要解除该角色与用户 <span style="color:red">' + row.username + ' </span>的关联吗？',
+        '确定要解除该角色与管理员 <span style="color:red">' + row.username + ' </span>的关联吗？',
         '解除：' + row.admin_user_id,
         {
           type: 'warning',
