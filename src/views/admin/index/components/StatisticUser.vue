@@ -5,7 +5,7 @@
         <el-col :sm="4">
           <el-card class="box-card">
             <div slot="header" class="clearfix">
-              <span>管理员</span>
+              <span>用户</span>
             </div>
             <div class="text item">
               <el-row :gutter="0">
