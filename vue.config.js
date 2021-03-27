@@ -18,12 +18,12 @@ const port = process.env.port || process.env.npm_config_port || 9527 // 开发�
 // 所有配置项说明都可以在这里找到：https://cli.vuejs.org/config/
 module.exports = {
   /**
-  * 如果计划在子路径下部署站点，则需要设置publicPath，
-  * 例如GitHub页面。如果您计划将站点部署到https://foo.github.io/bar/,
-  * 然后publicPath应设置为“/bar/”。
-  * 在大多数情况下，请使用“/”！！！
-  * 详细信息：https://cli.vuejs.org/config/#publicpath
-  */
+   * 如果计划在子路径下部署站点，则需要设置publicPath，
+   * 例如GitHub页面。如果您计划将站点部署到https://foo.github.io/bar/,
+   * 然后publicPath应设置为“/bar/”。
+   * 在大多数情况下，请使用“/”！！！
+   * 详细信息：https://cli.vuejs.org/config/#publicpath
+   */
   publicPath: '/',
   outputDir: 'dist',
   assetsDir: 'static',
@@ -45,6 +45,18 @@ module.exports = {
       alias: {
         '@': resolve('src')
       }
+    },
+    // 警告 webpack 的性能提示
+    performance: {
+      hints: 'warning',
+      // 入口起点的最大体积
+      maxEntrypointSize: 50000000,
+      // 生成文件的最大体积
+      maxAssetSize: 30000000,
+      // 只给出 js 文件的性能提示
+      assetFilter: function(assetFilename) {
+        return assetFilename.endsWith('.js')
+      }
     }
   },
   chainWebpack(config) {
@@ -60,44 +72,43 @@ module.exports = {
     // 当有很多页面时，会导致太多无意义的请求
     config.plugins.delete('prefetch')
 
-    config
-      .when(process.env.NODE_ENV !== 'development',
-        config => {
-          config
-            .plugin('ScriptExtHtmlWebpackPlugin')
-            .after('html')
-            .use('script-ext-html-webpack-plugin', [{
-              // `runtime`必须与runtimeChunk名称相同。默认值为`runtime`
-              inline: /runtime\..*\.js$/
-            }])
-            .end()
-          config
-            .optimization.splitChunks({
-              chunks: 'all',
-              cacheGroups: {
-                libs: {
-                  name: 'chunk-libs',
-                  test: /[\\/]node_modules[\\/]/,
-                  priority: 10,
-                  chunks: 'initial' // 仅安装最初依赖的第三方
-                },
-                elementUI: {
-                  name: 'chunk-elementUI', // 将elementUI拆分为单个包
-                  priority: 20, // 权重需要大于libs和app，否则将打包成libs或app
-                  test: /[\\/]node_modules[\\/]_?element-ui(.*)/ // 为了适应cnpm
-                },
-                commons: {
-                  name: 'chunk-commons',
-                  test: resolve('src/components'), // 可以自定义您的规则
-                  minChunks: 3, // 最小公共数
-                  priority: 5,
-                  reuseExistingChunk: true
-                }
+    config.when(process.env.NODE_ENV !== 'development',
+      config => {
+        config
+          .plugin('ScriptExtHtmlWebpackPlugin')
+          .after('html')
+          .use('script-ext-html-webpack-plugin', [{
+            // `runtime`必须与runtimeChunk名称相同。默认值为`runtime`
+            inline: /runtime\..*\.js$/
+          }])
+          .end()
+        config
+          .optimization.splitChunks({
+            chunks: 'all',
+            cacheGroups: {
+              libs: {
+                name: 'chunk-libs',
+                test: /[\\/]node_modules[\\/]/,
+                priority: 10,
+                chunks: 'initial' // 仅安装最初依赖的第三方
+              },
+              elementUI: {
+                name: 'chunk-elementUI', // 将elementUI拆分为单个包
+                priority: 20, // 权重需要大于libs和app，否则将打包成libs或app
+                test: /[\\/]node_modules[\\/]_?element-ui(.*)/ // 为了适应cnpm
+              },
+              commons: {
+                name: 'chunk-commons',
+                test: resolve('src/components'), // 可以自定义您的规则
+                minChunks: 3, // 最小公共数
+                priority: 5,
+                reuseExistingChunk: true
               }
-            })
-          // https://webpack.js.org/configuration/optimization/#optimizationruntimechunk
-          config.optimization.runtimeChunk('single')
-        }
-      )
+            }
+          })
+        // https://webpack.js.org/configuration/optimization/#optimizationruntimechunk
+        config.optimization.runtimeChunk('single')
+      }
+    )
   }
 }
