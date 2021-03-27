@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import { getAdminToken, getAdminUserId } from '@/utils/auth'
+import { getAdminToken, getAdminAdminId } from '@/utils/auth'
 import { mapGetters } from 'vuex'
 import store from '@/store'
 
@@ -45,10 +45,10 @@ export default {
       uploadAction: process.env.VUE_APP_BASE_API + '/admin/AdminMy/myAvatar',
       uploadHeaders: {
         AdminToken: getAdminToken(),
-        AdminUserId: getAdminUserId()
+        AdminAdminId: getAdminAdminId()
       },
       uploadData: {
-        admin_user_id: getAdminUserId()
+        admin_admin_id: getAdminAdminId()
       }
     }
   },

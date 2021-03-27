@@ -95,7 +95,7 @@
         </el-col>
       </el-row>
     </el-card>
-    <el-card class="box-card" :body-style="cardBodyStyle">
+    <el-card class="box-card">
       <el-row :gutter="0">
         <el-col :sm="24">
           <el-date-picker
@@ -145,10 +145,10 @@ import { CanvasRenderer } from 'echarts/renderers'
 echarts.use([LegendComponent, TitleComponent, TooltipComponent, GridComponent, LineChart, BarChart, PieChart, CanvasRenderer])
 
 import BackToTop from '@/components/BackToTop'
-import { logStatistic } from '@/api/admin'
+import { userLogSta } from '@/api/user'
 
 export default {
-  name: 'Logsta',
+  name: 'UserLogsta',
   components: { BackToTop },
   data() {
     return {
@@ -202,13 +202,13 @@ export default {
   },
   computed: {},
   created() {
-    this.logStatistic()
+    this.userLogSta()
   },
   mounted() {},
   methods: {
-    logStatistic() {
+    userLogSta() {
       this.loadNum = true
-      logStatistic().then(res => {
+      userLogSta().then(res => {
         this.number = res.data.number
         this.date = res.data.date
         this.region = res.data.region
@@ -222,9 +222,8 @@ export default {
     },
     echartDateChange() {
       this.loadDate = true
-      logStatistic({
-        type: 'date',
-        date: this.date.date
+      userLogSta({
+        type: 'date', date: this.date.date
       }).then(res => {
         this.echartDate(res.data.date)
         this.loadDate = false
@@ -232,9 +231,9 @@ export default {
         this.loadDate = false
       })
     },
-    echartRegionChange() {
+    echartRegionChange(value) {
       this.loadRegion = true
-      logStatistic({
+      userLogSta({
         type: 'region',
         date: this.region.date,
         region: this.regionValue
@@ -272,7 +271,6 @@ export default {
         },
         series: [
           {
-            name: '',
             type: 'line',
             smooth: true,
             data: data.y_data

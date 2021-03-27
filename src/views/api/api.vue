@@ -102,7 +102,7 @@
 <script>
 import screenHeight from '@/utils/screen-height'
 import permission from '@/directive/permission/index.js' // 权限判断指令
-import { getAdminToken, getAdminUserId } from '@/utils/auth'
+import { getAdminToken, getAdminAdminId } from '@/utils/auth'
 import { apiList, apiDoc, apiAdd, apiEdit, apiDele, apiDisable, apiUnauth } from '@/api/api'
 import E from 'wangeditor'
 
@@ -139,7 +139,7 @@ export default {
       uploadAction: process.env.VUE_APP_BASE_API + '/admin/Api/apiUpload',
       uploadHeaders: {
         AdminToken: getAdminToken(),
-        AdminUserId: getAdminUserId()
+        AdminAdminId: getAdminAdminId()
       },
       apiRules: {
         api_name: [{ required: true, message: '请输入接口名称', trigger: 'blur' }]

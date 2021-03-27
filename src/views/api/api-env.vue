@@ -16,7 +16,7 @@
     </div>
     <!-- 接口环境列表 -->
     <el-table ref="apiEnvTableRef" v-loading="loading" :data="apiEnvData" :height="height" style="width: 100%" border @sort-change="apiEnvSort">
-      <el-table-column prop="api_env_id" label="ID" min-width="100" sortable="custom" fixed="left" />
+      <el-table-column prop="api_env_id" label="环境ID" min-width="100" sortable="custom" fixed="left" />
       <el-table-column prop="name" label="名称" min-width="180" />
       <el-table-column prop="host" label="Host" min-width="320" show-overflow-tooltip>
         <template slot="header">
@@ -41,7 +41,7 @@
         </template>
       </el-table-column>
       <el-table-column prop="remark" label="备注" min-width="180" show-overflow-tooltip />
-      <el-table-column prop="sort" label="排序" min-width="100" sortable="custom" />
+      <el-table-column prop="sort" label="排序" min-width="80" sortable="custom" />
       <el-table-column prop="create_time" label="添加时间" min-width="160" sortable="custom" />
       <el-table-column prop="update_time" label="修改时间" min-width="160" sortable="custom" />
       <el-table-column label="操作" min-width="160" align="right" fixed="right">
@@ -89,7 +89,7 @@
 <script>
 import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination'
-import { apiEnvList, apiEnvAdd, apiEnvEdit, apiEnvDele } from '@/api/api-env'
+import { apiEnvList, apiEnvAdd, apiEnvEdit, apiEnvDele } from '@/api/api'
 
 export default {
   name: 'ApiEnv',

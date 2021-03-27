@@ -20,7 +20,7 @@ export default {
   },
   watch: {
     $route(route) {
-      // if you go to the redirect page, do not update the breadcrumbs
+      // 如果转到重定向页面，请不要更新breadcrumbs
       if (route.path.startsWith('/redirect/')) {
         return
       }
@@ -32,7 +32,7 @@ export default {
   },
   methods: {
     getBreadcrumb() {
-      // only show routes with meta.title
+      // 仅显示带有meta.title
       let matched = this.$route.matched.filter(
         item => item.meta && item.meta.title
       )

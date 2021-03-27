@@ -5,7 +5,7 @@
         <h3 class="title">{{ systemName }}</h3>
       </div>
       <el-form-item prop="username">
-        <el-input v-model="loginModel.username" type="text" placeholder="请输入账号" prefix-icon="el-icon-user" autocomplete="on" clearable />
+        <el-input v-model="loginModel.username" type="text" placeholder="账号/邮箱/手机" prefix-icon="el-icon-user" autocomplete="on" clearable />
       </el-form-item>
       <el-form-item prop="password">
         <el-input v-model="loginModel.password" type="password" placeholder="请输入密码" prefix-icon="el-icon-lock" autocomplete="on" clearable show-password />

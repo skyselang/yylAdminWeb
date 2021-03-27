@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 // ----------------控制台-----------------
 /**
- * 数据统计（管理员）
+ * 数据统计（用户）
  * @param {array} params 请求参数
  */
 export function statisticUser(params) {
@@ -135,9 +135,9 @@ export function menuRoleRemove(data) {
  * 菜单管理员
  * @param {array} params 请求参数
  */
-export function menuUser(params) {
+export function menuAdmin(params) {
   return request({
-    url: '/admin/AdminMenu/menuUser',
+    url: '/admin/AdminMenu/menuAdmin',
     method: 'get',
     params: params
   })
@@ -146,9 +146,9 @@ export function menuUser(params) {
  * 菜单管理员解除
  * @param {array} data 请求数据
  */
-export function menuUserRemove(data) {
+export function menuAdminRemove(data) {
   return request({
-    url: '/admin/AdminMenu/menuUserRemove',
+    url: '/admin/AdminMenu/menuAdminRemove',
     method: 'post',
     data
   })
@@ -240,9 +240,9 @@ export function roleDisable(data) {
  * 角色管理员
  * @param {array} params 请求参数
  */
-export function roleUser(params) {
+export function roleAdmin(params) {
   return request({
-    url: '/admin/AdminRole/roleUser',
+    url: '/admin/AdminRole/roleAdmin',
     method: 'get',
     params: params
   })
@@ -251,9 +251,9 @@ export function roleUser(params) {
  * 角色管理员解除
  * @param {array} data 请求数据
  */
-export function roleUserRemove(data) {
+export function roleAdminRemove(data) {
   return request({
-    url: '/admin/AdminRole/roleUserRemove',
+    url: '/admin/AdminRole/roleAdminRemove',
     method: 'post',
     data
   })
@@ -264,9 +264,9 @@ export function roleUserRemove(data) {
  * 管理员列表
  * @param {array} params 请求参数
  */
-export function userList(params) {
+export function adminList(params) {
   return request({
-    url: '/admin/AdminUser/userList',
+    url: '/admin/AdminAdmin/adminList',
     method: 'get',
     params: params
   })
@@ -275,9 +275,9 @@ export function userList(params) {
  * 管理员信息
  * @param {array} params 请求参数
  */
-export function userInfo(params) {
+export function adminInfo(params) {
   return request({
-    url: '/admin/AdminUser/userInfo',
+    url: '/admin/AdminAdmin/adminInfo',
     method: 'get',
     params: params
   })
@@ -286,9 +286,9 @@ export function userInfo(params) {
  * 管理员添加
  * @param {array} data 请求数据
  */
-export function userAdd(data) {
+export function adminAdd(data) {
   return request({
-    url: '/admin/AdminUser/userAdd',
+    url: '/admin/AdminAdmin/adminAdd',
     method: 'post',
     data
   })
@@ -297,16 +297,16 @@ export function userAdd(data) {
  * 管理员修改
  * @param {array} data 请求数据
  */
-export function userEdit(data, method = 'get') {
+export function adminEdit(data, method = 'get') {
   if (method === 'get') {
     return request({
-      url: '/admin/AdminUser/userEdit',
+      url: '/admin/AdminAdmin/adminEdit',
       method: 'get',
       params: data
     })
   } else {
     return request({
-      url: '/admin/AdminUser/userEdit',
+      url: '/admin/AdminAdmin/adminEdit',
       method: 'post',
       data
     })
@@ -316,9 +316,9 @@ export function userEdit(data, method = 'get') {
  * 管理员删除
  * @param {array} data 请求数据
  */
-export function userDele(data) {
+export function adminDele(data) {
   return request({
-    url: '/admin/AdminUser/userDele',
+    url: '/admin/AdminAdmin/adminDele',
     method: 'post',
     data
   })
@@ -327,9 +327,9 @@ export function userDele(data) {
  * 管理员密码重置
  * @param {array} data 请求数据
  */
-export function userPwd(data) {
+export function adminPwd(data) {
   return request({
-    url: '/admin/AdminUser/userPwd',
+    url: '/admin/AdminAdmin/adminPwd',
     method: 'post',
     data
   })
@@ -338,16 +338,16 @@ export function userPwd(data) {
  * 管理员权限分配
  * @param {array} data 请求数据
  */
-export function userRule(data, method = 'get') {
+export function adminRule(data, method = 'get') {
   if (method === 'get') {
     return request({
-      url: '/admin/AdminUser/userRule',
+      url: '/admin/AdminAdmin/adminRule',
       method: 'get',
       params: data
     })
   } else {
     return request({
-      url: '/admin/AdminUser/userRule',
+      url: '/admin/AdminAdmin/adminRule',
       method: 'post',
       data
     })
@@ -357,9 +357,9 @@ export function userRule(data, method = 'get') {
  * 管理员是否禁用
  * @param {array} data 请求数据
  */
-export function userDisable(data) {
+export function adminDisable(data) {
   return request({
-    url: '/admin/AdminUser/userDisable',
+    url: '/admin/AdminAdmin/adminDisable',
     method: 'post',
     data
   })
@@ -368,9 +368,9 @@ export function userDisable(data) {
  * 管理员是否管理员
  * @param {array} data 请求数据
  */
-export function userAdmin(data) {
+export function adminAdmin(data) {
   return request({
-    url: '/admin/AdminUser/userAdmin',
+    url: '/admin/AdminAdmin/adminAdmin',
     method: 'post',
     data
   })

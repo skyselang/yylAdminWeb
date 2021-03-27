@@ -7,7 +7,7 @@
     <div class="right-menu">
       <template v-if="device !== 'mobile'">
         <span style="display:inline-block;float:left;margin-right:10px;color:#409eff" title="个人中心">
-          <router-link to="/rule/my">
+          <router-link to="/admin/rule/my">
             {{ nickname }}
           </router-link>
         </span>
@@ -26,7 +26,7 @@
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown" style="text-align:center">
-          <router-link to="/rule/my">
+          <router-link to="/admin/rule/my">
             <el-dropdown-item>个人中心</el-dropdown-item>
           </router-link>
           <router-link to="/">

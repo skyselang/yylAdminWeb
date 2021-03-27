@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { getAdminUserId } from '@/utils/auth'
+import { getAdminAdminId } from '@/utils/auth'
 import { myPwd } from '@/api/admin'
 
 export default {
@@ -32,7 +32,7 @@ export default {
     return {
       loading: false,
       userModel: {
-        admin_user_id: getAdminUserId(),
+        admin_admin_id: getAdminAdminId(),
         password_old: '',
         password_new: ''
       },

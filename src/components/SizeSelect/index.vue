@@ -39,7 +39,7 @@ export default {
       })
     },
     refreshView() {
-      // In order to make the cached page re-rendered
+      // 为了使缓存页重新呈现
       this.$store.dispatch('tagsView/delAllCachedViews', this.$route)
 
       const { fullPath } = this.$route

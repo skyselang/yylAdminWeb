@@ -9,7 +9,7 @@
             <el-option :value="2" label="登录日志" />
             <el-option :value="3" label="操作日志" />
           </el-select>
-          <el-input v-model="userLogQuery.user_keyword" class="filter-item" style="width: 135px;" placeholder="用户账号/昵称" clearable />
+          <el-input v-model="userLogQuery.user_keyword" class="filter-item" style="width: 135px;" placeholder="用户名/昵称" clearable />
           <el-input v-model="userLogQuery.api_keyword" class="filter-item" style="width: 235px;" placeholder="接口链接/名称" clearable />
           <el-input v-model="userLogQuery.request_keyword" class="filter-item" style="width: 155px;" placeholder="请求IP/地区/ISP" clearable />
           <el-date-picker
@@ -32,15 +32,38 @@
     </div>
     <!-- 用户日志列表 -->
     <el-table v-loading="loading" :data="userLogData" :height="height" style="width: 100%" border @sort-change="userLogSort">
-      <el-table-column prop="user_log_id" label="ID" min-width="100" sortable="custom" fixed="left" />
-      <el-table-column prop="username" label="用户账号" min-width="110" show-overflow-tooltip />
-      <el-table-column prop="nickname" label="用户昵称" min-width="110" show-overflow-tooltip />
-      <el-table-column prop="api_url" label="接口链接" min-width="235" sortable="custom" show-overflow-tooltip />
+      <el-table-column prop="user_log_id" label="日志ID" min-width="100" sortable="custom" fixed="left" />
+      <el-table-column prop="username" label="用户名" min-width="110" show-overflow-tooltip>
+        <template slot-scope="scope">
+          <el-popover trigger="hover" placement="top">
+            用户ID: {{ scope.row.user_id }} <br>
+            用户名: {{ scope.row.username }} <br>
+            用户昵称: {{ scope.row.nickname }}
+            <div slot="reference" class="name-wrapper">
+              <el-tag>{{ scope.row.nickname }}</el-tag>
+            </div>
+          </el-popover>
+        </template>
+      </el-table-column>
+      <el-table-column prop="api_url" label="接口链接" min-width="240" sortable="custom" show-overflow-tooltip>
+        <template slot-scope="scope">
+          <el-popover trigger="hover" placement="top">
+            接口ID: {{ scope.row.api_id }} <br>
+            接口名称: {{ scope.row.api_name }} <br>
+            接口链接: {{ scope.row.api_url }}
+            <div slot="reference" class="name-wrapper">
+              {{ scope.row.api_url }}
+            </div>
+          </el-popover>
+        </template>
+      </el-table-column>
       <el-table-column prop="api_name" label="接口名称" min-width="130" show-overflow-tooltip />
       <el-table-column prop="request_method" label="请求方式 " min-width="110" sortable="custom" />
       <el-table-column prop="request_ip" label="请求IP" min-width="130" sortable="custom" />
       <el-table-column prop="request_region" label="请求地区" min-width="150" show-overflow-tooltip />
       <el-table-column prop="request_isp" label="请求ISP" min-width="110" />
+      <el-table-column prop="response_code" label="返回码" min-width="80" />
+      <el-table-column prop="response_msg" label="返回描述" min-width="130" show-overflow-tooltip />
       <el-table-column prop="create_time" label="请求时间" min-width="160" sortable="custom" />
       <el-table-column label="操作" min-width="150" align="right" fixed="right">
         <template slot-scope="{ row }">
@@ -63,7 +86,7 @@
             <el-input v-model="userLogModel.nickname" />
           </el-col>
         </el-form-item>
-        <el-form-item label="用户账号" prop="username">
+        <el-form-item label="用户名" prop="username">
           <el-input v-model="userLogModel.username" />
         </el-form-item>
         <el-form-item label="接口ID" prop="api_id">
@@ -102,6 +125,12 @@
         <el-form-item label="请求参数" prop="request_param">
           <pre>{{ userLogModel.request_param }}</pre>
         </el-form-item>
+        <el-form-item label="返回码" prop="response_code">
+          <el-input v-model="userLogModel.response_code" />
+        </el-form-item>
+        <el-form-item label="返回描述" prop="response_msg">
+          <el-input v-model="userLogModel.response_msg" type="textarea" />
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="userLogCancel">取消</el-button>
@@ -115,7 +144,7 @@
 import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination'
 import permission from '@/directive/permission/index.js' // 权限判断指令
-import { userLogList, userLogInfo, userLogDele } from '@/api/user-log'
+import { userLogList, userLogInfo, userLogDele } from '@/api/user'
 
 export default {
   name: 'UserLog',

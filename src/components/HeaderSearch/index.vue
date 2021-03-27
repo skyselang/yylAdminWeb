@@ -18,8 +18,8 @@
 </template>
 
 <script>
-// fuse is a lightweight fuzzy-search module
-// make search results more in line with expectations
+// fuse是一个轻量级的模糊搜索模块
+// 使搜索结果更符合预期
 import Fuse from 'fuse.js'
 import path from 'path'
 
@@ -94,13 +94,13 @@ export default {
         }]
       })
     },
-    // Filter out the routes that can be displayed in the sidebar
-    // And generate the internationalized title
+    // 筛选出可以在侧边栏中显示的路由
+    // 并生成国际化标题
     generateRoutes(routes, basePath = '/', prefixTitle = []) {
       let res = []
 
       for (const router of routes) {
-        // skip hidden router
+        // 跳过隐藏的路由
         if (router.hidden) { continue }
 
         const data = {
@@ -112,13 +112,13 @@ export default {
           data.title = [...data.title, router.meta.title]
 
           if (router.redirect !== 'noRedirect') {
-            // only push the routes with title
-            // special case: need to exclude parent router without redirect
+            // 只推有标题的路由
+            // 特殊情况：需要排除没有重定向的父级路由
             res.push(data)
           }
         }
 
-        // recursive child routes
+        // 递归子路由
         if (router.children) {
           const tempRoutes = this.generateRoutes(router.children, data.path, data.title)
           if (tempRoutes.length >= 1) {

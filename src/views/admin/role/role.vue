@@ -29,7 +29,7 @@
       </el-table-column>
       <el-table-column label="操作" min-width="220" align="right" fixed="right">
         <template slot-scope="{ row }">
-          <el-button size="mini" type="primary" @click="roleUserShow(row)">管理员</el-button>
+          <el-button size="mini" type="primary" @click="roleAdminShow(row)">管理员</el-button>
           <el-button size="mini" type="success" @click="roleModify(row)">修改</el-button>
           <el-button size="mini" type="danger" @click="roleDelete(row)">删除</el-button>
         </template>
@@ -83,7 +83,7 @@
     <!-- 角色管理员列表 -->
     <el-dialog :title="userTitle" :visible.sync="userDialog" width="65%" top="1vh">
       <el-table ref="userRef" v-loading="userLoad" :data="userData" :height="height+30" style="width: 100%" border @sort-change="userSort">
-        <el-table-column prop="admin_user_id" label="ID" min-width="100" sortable="custom" fixed="left" />
+        <el-table-column prop="admin_admin_id" label="管理员ID" min-width="105" sortable="custom" fixed="left" />
         <el-table-column prop="username" label="账号" min-width="120" sortable="custom" />
         <el-table-column prop="nickname" label="昵称" min-width="120" />
         <el-table-column prop="email" label="邮箱" min-width="200" show-overflow-tooltip />
@@ -100,11 +100,11 @@
         </el-table-column>
         <el-table-column label="操作" min-width="100" align="right" class-name="small-padding fixed-width" fixed="right">
           <template slot-scope="{ row }">
-            <el-button size="mini" type="danger" @click="roleUserRemove(row)">解除</el-button>
+            <el-button size="mini" type="danger" @click="roleAdminRemove(row)">解除</el-button>
           </template>
         </el-table-column>
       </el-table>
-      <pagination v-show="userCount > 0" :total="userCount" :page.sync="userQuery.page" :limit.sync="userQuery.limit" @pagination="roleUser" />
+      <pagination v-show="userCount > 0" :total="userCount" :page.sync="userQuery.page" :limit.sync="userQuery.limit" @pagination="roleAdmin" />
     </el-dialog>
   </div>
 </template>
@@ -118,8 +118,8 @@ import {
   roleEdit,
   roleDele,
   roleDisable,
-  roleUser,
-  roleUserRemove
+  roleAdmin,
+  roleAdminRemove
 } from '@/api/admin'
 
 export default {
@@ -335,16 +335,16 @@ export default {
       })
     },
     // 角色管理员显示
-    roleUserShow(row) {
+    roleAdminShow(row) {
       this.userDialog = true
       this.userTitle = '角色：' + row.role_name + ' > 管理员'
       this.userQuery.admin_role_id = row.admin_role_id
-      this.roleUser()
+      this.roleAdmin()
     },
     // 角色管理员列表
-    roleUser() {
+    roleAdmin() {
       this.userLoad = true
-      roleUser(this.userQuery).then(res => {
+      roleAdmin(this.userQuery).then(res => {
         this.userData = res.data.list
         this.userCount = res.data.count
         this.userLoad = false
@@ -361,29 +361,29 @@ export default {
       this.userQuery.sort_type = ''
       if (sort.order === 'ascending') {
         this.userQuery.sort_type = 'asc'
-        this.roleUser()
+        this.roleAdmin()
       }
       if (sort.order === 'descending') {
         this.userQuery.sort_type = 'desc'
-        this.roleUser()
+        this.roleAdmin()
       }
     },
     // 角色管理员解除
-    roleUserRemove(row) {
+    roleAdminRemove(row) {
       this.$confirm(
         '确定要解除该角色与管理员 <span style="color:red">' + row.username + ' </span>的关联吗？',
-        '解除：' + row.admin_user_id,
+        '解除：' + row.admin_admin_id,
         {
           type: 'warning',
           dangerouslyUseHTMLString: true
         }
       ).then(() => {
         this.userLoad = true
-        roleUserRemove({
+        roleAdminRemove({
           admin_role_id: this.userQuery.admin_role_id,
-          admin_user_id: row.admin_user_id
+          admin_admin_id: row.admin_admin_id
         }).then(res => {
-          this.roleUser()
+          this.roleAdmin()
           this.$message.success(res.msg)
         }).catch(() => {
           this.userLoad = false

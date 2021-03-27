@@ -4,8 +4,8 @@
     <div class="filter-container">
       <el-row :gutter="0">
         <el-col :xs="24" :sm="23">
-          <el-input v-model="userQuery.user_id" class="filter-item" style="width: 150px;" placeholder="用户ID" clearable />
-          <el-input v-model="userQuery.username" class="filter-item" style="width: 150px;" placeholder="账号" clearable />
+          <el-input v-model="userQuery.user_id" class="filter-item" style="width: 110px;" placeholder="用户ID" clearable />
+          <el-input v-model="userQuery.username" class="filter-item" style="width: 140px;" placeholder="用户名" clearable />
           <el-input v-model="userQuery.phone" class="filter-item" style="width: 150px;" placeholder="手机" clearable />
           <el-input v-model="userQuery.email" class="filter-item" style="width: 250px;" placeholder="邮箱" clearable />
           <el-select v-model="userQuery.date_type" class="filter-item" style="width:110px;" placeholder="日期类型" clearable>
@@ -34,7 +34,7 @@
     <!-- 用户列表 -->
     <el-table v-loading="loading" :data="userData" :height="height" style="width: 100%" border @sort-change="userSort">
       <el-table-column prop="user_id" label="用户ID" min-width="100" sortable="custom" fixed="left" />
-      <el-table-column prop="username" label="账号" min-width="120" sortable="custom" show-overflow-tooltip />
+      <el-table-column prop="username" label="用户名" min-width="120" sortable="custom" show-overflow-tooltip />
       <el-table-column prop="nickname" label="昵称" min-width="120" sortable="custom" show-overflow-tooltip />
       <el-table-column prop="phone" label="手机" min-width="120" sortable="custom" show-overflow-tooltip />
       <el-table-column prop="email" label="邮箱" min-width="220" sortable="custom" show-overflow-tooltip />
@@ -80,8 +80,8 @@
             <span>jpg、png图片，小于100KB，宽高1:1</span>
           </el-col>
         </el-form-item>
-        <el-form-item label="账号" prop="username">
-          <el-input key="username" v-model="userModel.username" placeholder="请输入账号" clearable />
+        <el-form-item label="用户名" prop="username">
+          <el-input key="username" v-model="userModel.username" placeholder="请输入用户名" clearable />
         </el-form-item>
         <el-form-item label="昵称" prop="nickname">
           <el-input key="nickname" v-model="userModel.nickname" placeholder="请输入昵称" clearable />
@@ -89,11 +89,11 @@
         <el-form-item v-if="userModel.user_id == ''" label="密码" prop="password">
           <el-input key="password" v-model="userModel.password" placeholder="请输入密码" clearable show-password />
         </el-form-item>
-        <el-form-item label="邮箱" prop="email">
-          <el-input v-model="userModel.email" clearable />
-        </el-form-item>
         <el-form-item label="手机" prop="phone">
           <el-input v-model="userModel.phone" clearable />
+        </el-form-item>
+        <el-form-item label="邮箱" prop="email">
+          <el-input v-model="userModel.email" clearable />
         </el-form-item>
         <el-form-item label="地区" prop="region_id">
           <el-cascader v-model="userModel.region_id" :options="regionTree" :props="regionProps" placeholder="" style="width:100%" @change="regionChange" />
@@ -129,9 +129,9 @@
       </div>
     </el-dialog>
     <!-- 用户密码重置 -->
-    <el-dialog :title="'密码重置：'+userModel.username" :visible.sync="userPwdDialog" top="1vh" :before-close="userCancelPwd">
+    <el-dialog :title="'用户密码重置'" :visible.sync="userPwdDialog" top="1vh" :before-close="userCancelPwd">
       <el-form ref="userPwdRef" :rules="userPwdRules" :model="userModel" label-width="100px" class="dialog-body" :style="{height:height+30+'px'}">
-        <el-form-item label="账号">
+        <el-form-item label="用户名">
           <el-input v-model="userModel.username" clearable disabled />
         </el-form-item>
         <el-form-item label="昵称">
@@ -152,7 +152,7 @@
 <script>
 import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination'
-import { getAdminUserId, getAdminToken } from '@/utils/auth'
+import { getAdminAdminId, getAdminToken } from '@/utils/auth'
 import {
   userList,
   userAdd,
@@ -201,11 +201,11 @@ export default {
       uploadAction: process.env.VUE_APP_BASE_API + '/admin/User/userAvatar',
       uploadHeaders: {
         AdminToken: getAdminToken(),
-        AdminUserId: getAdminUserId()
+        AdminAdminId: getAdminAdminId()
       },
       uploadData: { user_id: '' },
       userRules: {
-        username: [{ required: true, message: '请输入账号', trigger: 'blur' }],
+        username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
         password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
       },
       userPwdRules: {
@@ -301,7 +301,7 @@ export default {
     userDelete(row) {
       this.$confirm(
         '确定要删除用户 <span style="color:red">' + row.username + ' </span>吗？',
-        '删除：' + row.user_id,
+        '用户删除：' + row.user_id,
         {
           type: 'warning',
           dangerouslyUseHTMLString: true

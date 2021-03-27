@@ -120,8 +120,8 @@ export const asyncRoutes = [
     alwaysShow: true,
     children: [
       {
-        path: 'user-list',
-        name: 'UserList',
+        path: 'user',
+        name: 'User',
         meta: {
           title: '用户管理',
           icon: 'el-icon-s-grid',
@@ -137,7 +137,7 @@ export const asyncRoutes = [
           icon: 'el-icon-s-grid',
           roles: ['admin/UserLog/userLogList']
         },
-        component: () => import('@/views/user-log/user-log')
+        component: () => import('@/views/user/user-log')
       },
       {
         path: 'user-logsta',
@@ -148,7 +148,7 @@ export const asyncRoutes = [
           roles: ['admin/UserLog/userLogSta'],
           activeMenu: '/users/user-log'
         },
-        component: () => import('@/views/user-log/user-logsta'),
+        component: () => import('@/views/user/user-logsta'),
         hidden: true
       }
     ]
@@ -173,7 +173,7 @@ export const asyncRoutes = [
           icon: 'el-icon-s-grid',
           roles: ['admin/ApiEnv/apiEnvList']
         },
-        component: () => import('@/views/api-env/api-env')
+        component: () => import('@/views/api/api-env')
       },
       {
         path: 'api',
@@ -241,7 +241,7 @@ export const asyncRoutes = [
       roles: [
         'admin/AdminMenu/menuList',
         'admin/AdminRole/roleList',
-        'admin/AdminUser/userList',
+        'admin/AdminAdmin/adminList',
         'admin/AdminLog/logList',
         'admin/AdminMy/myInfo'
       ]
@@ -271,14 +271,14 @@ export const asyncRoutes = [
         component: () => import('@/views/admin/role/role')
       },
       {
-        path: 'user',
-        name: 'User',
+        path: 'admin',
+        name: 'Admin',
         meta: {
           title: '管理员管理',
           icon: 'el-icon-user',
-          roles: ['admin/AdminUser/userList']
+          roles: ['admin/AdminAdmin/adminList']
         },
-        component: () => import('@/views/admin/user/user')
+        component: () => import('@/views/admin/admin/admin')
       },
       {
         path: 'log',
@@ -297,7 +297,7 @@ export const asyncRoutes = [
           title: '管理员日志统计',
           icon: 'el-icon-s-data',
           roles: ['admin/AdminLog/logStatistic'],
-          activeMenu: '/rule/log'
+          activeMenu: '/admin/rule/log'
         },
         component: () => import('@/views/admin/log/logsta'),
         hidden: true

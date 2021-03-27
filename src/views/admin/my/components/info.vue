@@ -4,7 +4,7 @@
       <el-row :gutter="0">
         <el-col :xs="24" :sm="12">
           <el-form ref="userRef" :rules="userRules" :model="userModel" class="dialog-body" label-width="100px">
-            <el-form-item v-if="userModel.admin_user_id && userModel.avatar" label="头像">
+            <el-form-item v-if="userModel.admin_admin_id && userModel.avatar" label="头像">
               <el-avatar shape="circle" fit="contain" :size="100" :src="userModel.avatar" />
             </el-form-item>
             <el-form-item label="账号" prop="username">
@@ -13,22 +13,25 @@
             <el-form-item label="昵称" prop="nickname">
               <el-input v-model="userModel.nickname" placeholder="请输入昵称" clearable />
             </el-form-item>
-            <el-form-item v-if="userModel.admin_user_id == ''" label="密码" prop="password">
+            <el-form-item v-if="userModel.admin_admin_id == ''" label="密码" prop="password">
               <el-input v-model="userModel.password" placeholder="请输入密码" clearable show-password />
             </el-form-item>
             <el-form-item label="邮箱" prop="email">
               <el-input v-model="userModel.email" clearable />
             </el-form-item>
-            <el-form-item v-if="userModel.admin_user_id" label="添加时间" prop="create_time">
+            <el-form-item label="手机" prop="phone">
+              <el-input v-model="userModel.phone" clearable />
+            </el-form-item>
+            <el-form-item v-if="userModel.admin_admin_id" label="添加时间" prop="create_time">
               <el-input v-model="userModel.create_time" placeholder="" />
             </el-form-item>
-            <el-form-item v-if="userModel.admin_user_id" label="更新时间" prop="update_time">
+            <el-form-item v-if="userModel.admin_admin_id" label="更新时间" prop="update_time">
               <el-input v-model="userModel.update_time" placeholder="" />
             </el-form-item>
-            <el-form-item v-if="userModel.admin_user_id" label="登录时间" prop="update_time">
+            <el-form-item v-if="userModel.admin_admin_id" label="登录时间" prop="update_time">
               <el-input v-model="userModel.login_time" placeholder="" />
             </el-form-item>
-            <el-form-item v-if="userModel.admin_user_id" label="退出时间" prop="logout_time">
+            <el-form-item v-if="userModel.admin_admin_id" label="退出时间" prop="logout_time">
               <el-input v-model="userModel.logout_time" placeholder="" />
             </el-form-item>
             <el-form-item>
@@ -42,7 +45,7 @@
 </template>
 
 <script>
-import { getAdminUserId } from '@/utils/auth'
+import { getAdminAdminId } from '@/utils/auth'
 import { myInfo } from '@/api/admin'
 
 export default {
@@ -52,7 +55,7 @@ export default {
     return {
       loading: false,
       userModel: {
-        admin_user_id: getAdminUserId(),
+        admin_admin_id: getAdminAdminId(),
         username: '',
         nickname: '',
         email: '',
@@ -71,7 +74,7 @@ export default {
     myInfo(msg = false) {
       this.loading = true
       myInfo({
-        admin_user_id: this.userModel.admin_user_id
+        admin_admin_id: this.userModel.admin_admin_id
       }).then(res => {
         this.userModel = res.data
         this.loading = false
