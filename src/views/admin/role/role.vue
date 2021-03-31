@@ -27,7 +27,7 @@
           <el-switch v-model="scope.row.is_disable" :active-value="1" :inactive-value="0" @change="roleIsDisable(scope.row)" />
         </template>
       </el-table-column>
-      <el-table-column label="操作" min-width="220" align="right" fixed="right">
+      <el-table-column label="操作" min-width="225" align="right" fixed="right">
         <template slot-scope="{ row }">
           <el-button size="mini" type="primary" @click="roleAdminShow(row)">管理员</el-button>
           <el-button size="mini" type="success" @click="roleModify(row)">修改</el-button>
