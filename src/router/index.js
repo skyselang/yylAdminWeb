@@ -322,6 +322,7 @@ export const asyncRoutes = [
       title: '系统管理',
       icon: 'el-icon-setting',
       roles: [
+        'admin/AdminTool/toolForm',
         'admin/AdminSetting/settingCache',
         'admin/AdminSetting/settingVerify',
         'admin/AdminSetting/settingToken',
@@ -334,6 +335,16 @@ export const asyncRoutes = [
     component: Layout,
     alwaysShow: true,
     children: [
+      {
+        path: 'tool-form',
+        name: 'ToolForm',
+        meta: {
+          title: '表单构建',
+          icon: 'el-icon-tickets',
+          roles: ['admin/AdminTool/toolForm']
+        },
+        component: () => import('@/views/admin/tool/build/index')
+      },
       {
         path: 'setting-cache',
         name: 'SettingCache',
