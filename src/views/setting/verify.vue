@@ -3,7 +3,7 @@
     <el-card v-loading="verifyLoad" class="box-card">
       <el-row :gutter="0">
         <el-col :xs="24" :sm="12">
-          <el-form ref="verifyRef" :model="verifyModel" :rules="verifyRules" label-width="120px">
+          <el-form ref="verifyRef" :model="verifyModel" :rules="verifyRules" label-width="130px">
             <el-form-item v-if="verifyModel.verify_switch" label="验证码" prop="verify_code">
               <el-image style="width:200px;height:50px;" :src="verifyModel.verify_src" fit="fill" alt="验证码" title="点击刷新验证码" @click="settingVerify()" />
             </el-form-item>
