@@ -1,21 +1,21 @@
 <template>
   <div class="login-container">
-    <el-form ref="loginRef" :model="loginModel" :rules="loginRules" class="login-form" label-position="left">
+    <el-form ref="ref" :model="model" :rules="rules" class="login-form" label-position="left">
       <div class="title-container">
         <h3 class="title">{{ systemName }}</h3>
       </div>
       <el-form-item prop="username">
-        <el-input v-model="loginModel.username" type="text" placeholder="账号/邮箱/手机" prefix-icon="el-icon-user" autocomplete="on" clearable />
+        <el-input v-model="model.username" type="text" placeholder="账号/手机/邮箱" prefix-icon="el-icon-user" autocomplete="on" clearable />
       </el-form-item>
       <el-form-item prop="password">
-        <el-input v-model="loginModel.password" type="password" placeholder="请输入密码" prefix-icon="el-icon-lock" autocomplete="on" clearable show-password />
+        <el-input v-model="model.password" type="password" placeholder="请输入密码" prefix-icon="el-icon-lock" autocomplete="on" clearable show-password />
       </el-form-item>
-      <el-form-item v-if="verifyShow" prop="verify_code">
+      <el-form-item v-if="model.verify_switch" prop="verify_code">
         <el-col :span="13">
-          <el-input ref="verify_code_ipt" v-model="loginModel.verify_code" type="text" placeholder="请输入验证码" prefix-icon="el-icon-picture" autocomplete="off" style="height:50px;line-height:50px;" clearable />
+          <el-input v-model="model.verify_code" placeholder="请输入验证码" prefix-icon="el-icon-picture" autocomplete="off" clearable />
         </el-col>
         <el-col :span="11">
-          <el-image :src="verifySrc" fit="fill" alt="验证码" title="点击刷新验证码" style="width:200px;height:50px;float:right" @click="verifyRefresh" />
+          <el-image :src="model.verify_src" fit="fill" alt="验证码" title="点击刷新验证码" style="width:200px;height:36px;float:right" @click="verify" />
         </el-col>
       </el-form-item>
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
@@ -24,27 +24,27 @@
 </template>
 
 <script>
-import defaultSettings from '@/settings'
-import { verify } from '@/api/admin'
+import setting from '@/settings'
+import { verify } from '@/api/admin-login'
 
 export default {
   name: 'Login',
   components: {},
   data() {
     return {
-      systemName: defaultSettings.systemName,
+      systemName: setting.systemName,
       loading: false,
       redirect: undefined,
       otherQuery: {},
-      verifyShow: false,
-      verifySrc: '',
-      loginModel: {
+      model: {
         username: '',
         password: '',
         verify_id: '',
-        verify_code: ''
+        verify_code: '',
+        verify_src: '',
+        verify_switch: false
       },
-      loginRules: {
+      rules: {
         username: [{ required: true, message: '请输入账号', trigger: 'blur' }],
         password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
         verify_code: [{ required: true, message: '请输入验证码', trigger: 'blur' }]
@@ -64,34 +64,27 @@ export default {
     }
   },
   created() {
-    this.getVerify()
+    this.verify()
   },
   mounted() { },
   destroyed() { },
   methods: {
-    // 验证码配置
-    getVerify() {
+    // 验证码
+    verify() {
+      this.model.verify_id = ''
+      this.model.verify_code = ''
       verify().then(res => {
-        this.verifyShow = res.data.verify_switch
-        if (res.data.verify_switch) {
-          this.verifySrc = res.data.verify_src
-          this.loginModel.verify_id = res.data.verify_id
-        }
+        this.model.verify_id = res.data.verify_id
+        this.model.verify_src = res.data.verify_src
+        this.model.verify_switch = res.data.verify_switch
       })
-    },
-    // 验证码刷新
-    verifyRefresh() {
-      this.loginModel.verify_id = ''
-      this.loginModel.verify_code = ''
-      this.getVerify()
-      // this.$refs.verify_code_ipt.focus()
     },
     // 登录
     handleLogin() {
-      this.$refs['loginRef'].validate(valid => {
+      this.$refs['ref'].validate(valid => {
         if (valid) {
           this.loading = true
-          this.$store.dispatch('user/login', this.loginModel).then(() => {
+          this.$store.dispatch('user/login', this.model).then(() => {
             this.$router.push({
               path: this.redirect || '/',
               query: this.otherQuery

@@ -1,57 +1,57 @@
 import request from '@/utils/request'
 
-// ----------------地区管理----------------
+// ----------------管理员日志----------------
 /**
- * 地区列表
+ * 管理员日志列表
  * @param {array} params 请求参数
  */
 export function list(params) {
   return request({
-    url: '/admin/Region/list',
+    url: '/admin/AdminUserLog/list',
     method: 'get',
     params: params
   })
 }
 /**
- * 地区信息
+ * 管理员日志信息
  * @param {array} params 请求参数
  */
 export function info(params) {
   return request({
-    url: '/admin/Region/info',
+    url: '/admin/AdminUserLog/info',
     method: 'get',
     params: params
   })
 }
 /**
- * 地区添加
- * @param {array} data 请求数据
- */
-export function add(data) {
-  return request({
-    url: '/admin/Region/add',
-    method: 'post',
-    data
-  })
-}
-/**
- * 地区修改
- * @param {array} data 请求数据
- */
-export function edit(data) {
-  return request({
-    url: '/admin/Region/edit',
-    method: 'post',
-    data
-  })
-}
-/**
- * 地区删除
+ * 管理员日志删除
  * @param {array} data 请求数据
  */
 export function dele(data) {
   return request({
-    url: '/admin/Region/dele',
+    url: '/admin/AdminUserLog/dele',
+    method: 'post',
+    data
+  })
+}
+/**
+ * 管理员日志清除
+ * @param {array} data 请求数据
+ */
+ export function clear(data) {
+  return request({
+    url: '/admin/AdminUserLog/clear',
+    method: 'post',
+    data
+  })
+}
+/**
+ * 管理员日志统计
+ * @param {array} data 请求数据
+ */
+export function stat(data) {
+  return request({
+    url: '/admin/AdminUserLog/stat',
     method: 'post',
     data
   })

@@ -1,8 +1,9 @@
-import { login, logout, myInfo } from '@/api/admin'
+import { login, logout } from '@/api/admin-login'
+import { info as userInfo } from '@/api/admin-user-center'
 import {
-  setAdminAdminId,
-  getAdminAdminId,
-  delAdminAdminId,
+  setAdminUserId,
+  getAdminUserId,
+  delAdminUserId,
   setAdminToken,
   getAdminToken,
   delAdminToken,
@@ -65,9 +66,9 @@ const actions = {
         verify_code: verify_code
       }).then(response => {
         const { data } = response
-        commit('SET_ADMINUSERID', data.admin_admin_id)
+        commit('SET_ADMINUSERID', data.admin_user_id)
         commit('SET_ADMINTOKEN', data.admin_token)
-        setAdminAdminId(data.admin_admin_id)
+        setAdminUserId(data.admin_user_id)
         setAdminToken(data.admin_token)
         resolve()
       }).catch(error => {
@@ -76,11 +77,11 @@ const actions = {
     })
   },
 
-  // 获取用户信息
+  // 获取管理员信息
   userInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-      myInfo({
-        admin_admin_id: getAdminAdminId()
+      userInfo({
+        admin_user_id: getAdminUserId()
       }).then(response => {
         const { data } = response
 
@@ -89,7 +90,7 @@ const actions = {
         }
 
         const {
-          admin_admin_id,
+          admin_user_id,
           username,
           nickname,
           avatar,
@@ -101,7 +102,7 @@ const actions = {
           reject('获取权限失败, 请重新登录！')
         }
 
-        commit('SET_ADMINUSERID', admin_admin_id)
+        commit('SET_ADMINUSERID', admin_user_id)
         commit('SET_USERNAME', username)
         commit('SET_NICKNAME', nickname)
         commit('SET_AVATAR', avatar)
@@ -120,11 +121,11 @@ const actions = {
   logout({ commit, state, dispatch }) {
     return new Promise((resolve, reject) => {
       logout({
-        admin_admin_id: getAdminAdminId()
+        admin_user_id: getAdminUserId()
       }).then(() => {
         commit('SET_ADMINTOKEN', '')
         commit('SET_ROLES', [])
-        delAdminAdminId()
+        delAdminUserId()
         delAdminToken()
         delUsername()
         delNickname()
@@ -146,7 +147,7 @@ const actions = {
     return new Promise(resolve => {
       commit('SET_ADMINTOKEN', '')
       commit('SET_ROLES', [])
-      delAdminAdminId()
+      delAdminUserId()
       delAdminToken()
       resolve()
     })

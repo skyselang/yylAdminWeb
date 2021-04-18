@@ -1,7 +1,7 @@
 import axios from 'axios'
 import store from '@/store'
 import { Message, MessageBox } from 'element-ui'
-import { getAdminToken, getAdminAdminId } from '@/utils/auth'
+import { getAdminUserId, getAdminToken } from '@/utils/auth'
 
 // 创建axios实例
 const service = axios.create({
@@ -15,8 +15,8 @@ service.interceptors.request.use(
   config => {
     // 发送请求之前
     if (store.getters.adminToken) {
-      // 让每个请求头部带上AdminAdminId、AdminToken
-      config.headers['AdminAdminId'] = getAdminAdminId()
+      // 让每个请求头部带上AdminUserId、AdminToken
+      config.headers['AdminUserId'] = getAdminUserId()
       config.headers['AdminToken'] = getAdminToken()
     }
     return config

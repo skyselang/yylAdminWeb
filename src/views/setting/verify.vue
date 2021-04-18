@@ -1,33 +1,33 @@
 <template>
   <div class="app-container">
-    <el-card v-loading="verifyLoad" class="box-card">
+    <el-card v-loading="loading" class="box-card">
       <el-row :gutter="0">
         <el-col :xs="24" :sm="12">
-          <el-form ref="verifyRef" :model="verifyModel" :rules="verifyRules" label-width="130px">
-            <el-form-item v-if="verifyModel.verify_switch" label="验证码" prop="verify_code">
-              <el-image style="width:200px;height:50px;" :src="verifyModel.verify_src" fit="fill" alt="验证码" title="点击刷新验证码" @click="settingVerify()" />
+          <el-form ref="ref" :model="model" :rules="rules" label-width="130px">
+            <el-form-item v-if="model.verify_switch" label="验证码" prop="verify_code">
+              <el-image style="width:200px;height:50px;" :src="model.verify_src" fit="fill" alt="验证码" title="点击刷新验证码" @click="refresh()" />
             </el-form-item>
             <el-form-item label="验证码开关" prop="switch">
-              <el-switch v-model="verifyModel.switch" />
+              <el-switch v-model="model.switch" />
             </el-form-item>
             <el-form-item label="验证码曲线" prop="curve">
-              <el-switch v-model="verifyModel.curve" />
+              <el-switch v-model="model.curve" />
             </el-form-item>
             <el-form-item label="验证码杂点" prop="noise">
-              <el-switch v-model="verifyModel.noise" />
+              <el-switch v-model="model.noise" />
             </el-form-item>
             <el-form-item label="验证码背景图" prop="bgimg">
-              <el-switch v-model="verifyModel.bgimg" />
+              <el-switch v-model="model.bgimg" />
             </el-form-item>
             <el-form-item label="验证码类型" prop="type">
-              <el-select v-model="verifyModel.type" filterable placeholder="请选择">
+              <el-select v-model="model.type" filterable placeholder="请选择">
                 <el-option v-for="item in verify_type_arr" :key="item.value" :label="item.label" :value="item.value">
                   {{ item.label }}
                 </el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="验证码位数" prop="length">
-              <el-select v-model="verifyModel.length" filterable placeholder="请选择">
+              <el-select v-model="model.length" filterable placeholder="请选择">
                 <el-option v-for="item in verify_length_arr" :key="item.value" :label="item.label" :value="item.value">
                   {{ item.label }}
                 </el-option>
@@ -35,14 +35,14 @@
             </el-form-item>
             <el-form-item label="验证码有效时间" prop="expire">
               <el-col :xs="24" :sm="8">
-                <el-input v-model="verifyModel.expire" type="number">
+                <el-input v-model="model.expire" type="number">
                   <template slot="append">秒</template>
                 </el-input>
               </el-col>
             </el-form-item>
             <el-form-item>
-              <el-button @click="verifyRefresh()">刷新</el-button>
-              <el-button type="primary" @click="verifySubmit()">提交</el-button>
+              <el-button @click="refresh()">刷新</el-button>
+              <el-button type="primary" @click="submit()">提交</el-button>
             </el-form-item>
           </el-form>
         </el-col>
@@ -52,14 +52,14 @@
 </template>
 
 <script>
-import { settingVerify } from '@/api/setting'
+import { info, verify } from '@/api/setting'
 
 export default {
   name: 'Verify',
   components: {},
   data() {
     return {
-      verifyLoad: false,
+      loading: false,
       verify_type_arr: [
         { value: 1, label: '数字' },
         { value: 2, label: '字母' },
@@ -73,7 +73,7 @@ export default {
         { value: 5, label: '5位' },
         { value: 6, label: '6位' }
       ],
-      verifyModel: {
+      model: {
         switch: false,
         curve: false,
         noise: false,
@@ -85,55 +85,49 @@ export default {
         verify_src: '',
         verify_switch: false
       },
-      verifyRules: {
-        type: [
-          { required: true, message: '请选择验证码类型', trigger: 'blur' }
-        ],
-        length: [
-          { required: true, message: '请选择验证码位数', trigger: 'blur' }
-        ],
-        expire: [
-          { required: true, message: '请输入验证码有效时间', trigger: 'blur' }
-        ]
+      rules: {
+        type: [{ required: true, message: '请选择验证码类型', trigger: 'blur' }],
+        length: [{ required: true, message: '请选择验证码位数', trigger: 'blur' }],
+        expire: [{ required: true, message: '请输入验证码有效时间', trigger: 'blur' }]
       }
     }
   },
   created() {
-    this.settingVerify()
+    this.info()
   },
   methods: {
-    // 获取
-    settingVerify() {
-      settingVerify().then((res) => {
-        this.verifyModel = res.data
+    // 信息
+    info() {
+      info().then((res) => {
+        this.model = res.data.verify
       })
     },
     // 刷新
-    verifyRefresh() {
-      this.verifyLoad = true
-      settingVerify()
+    refresh() {
+      this.loading = true
+      info()
         .then((res) => {
-          this.verifyModel = res.data
-          this.verifyLoad = false
+          this.model = res.data.verify
+          this.loading = false
           this.$message.success(res.msg)
         })
         .catch(() => {
-          this.verifyLoad = false
+          this.loading = false
         })
     },
     // 提交
-    verifySubmit() {
-      this.$refs['verifyRef'].validate((valid) => {
+    submit() {
+      this.$refs['ref'].validate((valid) => {
         if (valid) {
-          this.verifyLoad = true
-          settingVerify(this.verifyModel)
+          this.loading = true
+          verify(this.model)
             .then((res) => {
-              this.verifyModel = res.data
-              this.verifyLoad = false
+              this.model = res.data
+              this.loading = false
               this.$message.success(res.msg)
             })
             .catch(() => {
-              this.verifyLoad = false
+              this.loading = false
             })
         }
       })

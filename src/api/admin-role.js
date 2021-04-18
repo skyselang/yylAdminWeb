@@ -1,78 +1,90 @@
 import request from '@/utils/request'
 
-// ----------------接口管理----------------
+// ----------------角色管理----------------
 /**
- * 接口列表
+ * 角色列表
  * @param {array} params 请求参数
  */
-export function list() {
+export function list(params) {
   return request({
-    url: '/admin/Api/list',
-    method: 'get'
-  })
-}
-/**
- * 接口信息
- * @param {array} params 请求参数
- */
-export function info(params) {
-  return request({
-    url: '/admin/Api/info',
+    url: '/admin/AdminRole/list',
     method: 'get',
     params: params
   })
 }
 /**
- * 接口添加
+ * 角色信息
+ * @param {array} params 请求参数
+ */
+export function info(params) {
+  return request({
+    url: '/admin/AdminRole/info',
+    method: 'get',
+    params: params
+  })
+}
+/**
+ * 角色添加
  * @param {array} data 请求数据
  */
 export function add(data) {
   return request({
-    url: '/admin/Api/add',
+    url: '/admin/AdminRole/add',
     method: 'post',
     data
   })
 }
 /**
- * 接口修改
+ * 角色修改
  * @param {array} data 请求数据
  */
 export function edit(data) {
   return request({
-    url: '/admin/Api/edit',
+    url: '/admin/AdminRole/edit',
     method: 'post',
     data
   })
 }
 /**
- * 接口删除
+ * 角色删除
  * @param {array} data 请求数据
  */
 export function dele(data) {
   return request({
-    url: '/admin/Api/dele',
+    url: '/admin/AdminRole/dele',
     method: 'post',
     data
   })
 }
 /**
- * 接口是否禁用
+ * 角色禁用
  * @param {array} data 请求数据
  */
 export function disable(data) {
   return request({
-    url: '/admin/Api/disable',
+    url: '/admin/AdminRole/disable',
     method: 'post',
     data
   })
 }
 /**
- * 接口是否无需权限
+ * 角色管理员
+ * @param {array} params 请求参数
+ */
+export function user(params) {
+  return request({
+    url: '/admin/AdminRole/user',
+    method: 'get',
+    params: params
+  })
+}
+/**
+ * 角色管理员解除
  * @param {array} data 请求数据
  */
-export function unauth(data) {
+export function userRemove(data) {
   return request({
-    url: '/admin/Api/unauth',
+    url: '/admin/AdminRole/userRemove',
     method: 'post',
     data
   })

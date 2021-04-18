@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-row :gutter="0">
       <el-col :span="24">
-        <statistic-user v-if="checkPermission(['admin/AdminIndex/statisticUser'])" />
+        <member v-if="checkPermission(['admin/AdminIndex/member'])" />
       </el-col>
     </el-row>
   </div>
@@ -10,27 +10,17 @@
 
 <script>
 import checkPermission from '@/utils/permission' // 权限判断函数
-import StatisticUser from './components/StatisticUser'
+import Member from './components/Member'
 
 export default {
   name: 'Index',
-  components: { StatisticUser },
+  components: { Member },
   data() {
-    return {
-      MapAmap: false,
-      StatisticUser: true,
-      MapSogou: false,
-      MapTencent: false,
-      MapBeidou: false,
-      actTabName: 'StatisticUser'
-    }
+    return {}
   },
   created() { },
   methods: {
-    checkPermission,
-    tabClick(tab) {
-      this[tab.name] = true
-    }
+    checkPermission
   }
 }
 </script>

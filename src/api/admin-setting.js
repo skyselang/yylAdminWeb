@@ -1,15 +1,26 @@
 import request from '@/utils/request'
 
-// ----------------设置-------------------
+// ----------------系统管理----------------
 /**
  * 设置信息
- * @param {array} params 请求参数
+ * @param {array} params 请求数据
  */
 export function info(params) {
   return request({
-    url: '/admin/Setting/info',
+    url: '/admin/AdminSetting/info',
     method: 'get',
     params: params
+  })
+}
+/**
+ * 缓存设置
+ * @param {array} data 请求数据
+ */
+export function cache(data) {
+  return request({
+    url: '/admin/AdminSetting/cache',
+    method: 'post',
+    data
   })
 }
 /**
@@ -18,7 +29,7 @@ export function info(params) {
  */
 export function verify(data) {
   return request({
-    url: '/admin/Setting/verify',
+    url: '/admin/AdminSetting/verify',
     method: 'post',
     data
   })
@@ -29,7 +40,7 @@ export function verify(data) {
  */
 export function token(data) {
   return request({
-    url: '/admin/Setting/token',
+    url: '/admin/AdminSetting/token',
     method: 'post',
     data
   })

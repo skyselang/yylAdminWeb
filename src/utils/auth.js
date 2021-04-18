@@ -1,14 +1,14 @@
 import Cookies from 'js-cookie'
 
-const AdminAdminIdKey = 'AdminAdminId'
-export function setAdminAdminId(AdminAdminId) {
-  return Cookies.set(AdminAdminIdKey, AdminAdminId)
+const AdminUserIdKey = 'AdminUserId'
+export function setAdminUserId(AdminUserId) {
+  return Cookies.set(AdminUserIdKey, AdminUserId)
 }
-export function getAdminAdminId() {
-  return Cookies.get(AdminAdminIdKey)
+export function getAdminUserId() {
+  return Cookies.get(AdminUserIdKey)
 }
-export function delAdminAdminId() {
-  return Cookies.remove(AdminAdminIdKey)
+export function delAdminUserId() {
+  return Cookies.remove(AdminUserIdKey)
 }
 
 const TokenKey = 'AdminToken'
