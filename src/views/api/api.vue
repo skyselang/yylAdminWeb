@@ -226,6 +226,7 @@ export default {
         this.list()
         this.$message.success(res.msg)
       }).catch(() => {
+        this.list()
         this.loading = false
       })
     },
@@ -239,6 +240,7 @@ export default {
         this.list()
         this.$message.success(res.msg)
       }).catch(() => {
+        this.list()
         this.loading = false
       })
     },
