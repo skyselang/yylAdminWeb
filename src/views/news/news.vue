@@ -47,22 +47,22 @@
       <el-table-column prop="time" label="时间" min-width="160" sortable="custom" />
       <el-table-column prop="sort" label="排序" min-width="75" sortable="custom" />
       <el-table-column prop="hits" label="点击量" min-width="90" sortable="custom" />
-      <el-table-column prop="is_top" label="是否置顶" min-width="105" sortable="custom" align="center">
+      <el-table-column prop="is_top" label="置顶" min-width="100" sortable="custom" align="center">
         <template slot-scope="scope">
           <el-switch v-model="scope.row.is_top" :active-value="1" :inactive-value="0" @change="istop(scope.row)" />
         </template>
       </el-table-column>
-      <el-table-column prop="is_hot" label="是否热门" min-width="105" sortable="custom" align="center">
+      <el-table-column prop="is_hot" label="热门" min-width="100" sortable="custom" align="center">
         <template slot-scope="scope">
           <el-switch v-model="scope.row.is_hot" :active-value="1" :inactive-value="0" @change="ishot(scope.row)" />
         </template>
       </el-table-column>
-      <el-table-column prop="is_rec" label="是否推荐" min-width="105" sortable="custom" align="center">
+      <el-table-column prop="is_rec" label="推荐" min-width="100" sortable="custom" align="center">
         <template slot-scope="scope">
           <el-switch v-model="scope.row.is_rec" :active-value="1" :inactive-value="0" @change="isrec(scope.row)" />
         </template>
       </el-table-column>
-      <el-table-column prop="is_hide" label="是否隐藏" min-width="105" sortable="custom" align="center">
+      <el-table-column prop="is_hide" label="隐藏" min-width="100" sortable="custom" align="center">
         <template slot-scope="scope">
           <el-switch v-model="scope.row.is_hide" :active-value="1" :inactive-value="0" @change="ishide(scope.row)" />
         </template>

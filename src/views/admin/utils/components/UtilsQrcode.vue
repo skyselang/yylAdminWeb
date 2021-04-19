@@ -39,7 +39,9 @@ export default {
         value: '',
         size: 200
       },
-      rules: {}
+      rules: {
+        str: [{ required: true, message: '请输入文本内容', trigger: 'blur' }]
+      }
     }
   },
   created() {},

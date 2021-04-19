@@ -59,7 +59,7 @@
         </template>
       </el-table-column>
       <el-table-column prop="menu_name" label="菜单名称" min-width="140" show-overflow-tooltip />
-      <el-table-column prop="request_method" label="请求方式 " min-width="110" />
+      <el-table-column prop="request_method" label="请求方式 " min-width="90" />
       <el-table-column prop="request_ip" label="请求IP" min-width="130" />
       <el-table-column prop="request_region" label="请求地区" min-width="150" show-overflow-tooltip />
       <el-table-column prop="request_isp" label="请求ISP" min-width="110" show-overflow-tooltip />
