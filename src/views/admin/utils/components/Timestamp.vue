@@ -24,7 +24,7 @@
 import { timestamp } from '@/api/admin-utils'
 
 export default {
-  name: 'UtilsTimestamp',
+  name: 'Timestamp',
   components: {},
   data() {
     return {
@@ -56,7 +56,4 @@ export default {
 </script>
 
 <style scoped>
-.item {
-  height: 410px;
-}
 </style>

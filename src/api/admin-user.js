@@ -1,8 +1,8 @@
 import request from '@/utils/request'
 
-// ----------------管理员管理----------------
+// ----------------用户管理----------------
 /**
- * 管理员列表
+ * 用户列表
  * @param {array} params 请求参数
  */
 export function list(params) {
@@ -13,7 +13,7 @@ export function list(params) {
   })
 }
 /**
- * 管理员信息
+ * 用户信息
  * @param {array} params 请求参数
  */
 export function info(params) {
@@ -24,7 +24,7 @@ export function info(params) {
   })
 }
 /**
- * 管理员添加
+ * 用户添加
  * @param {array} data 请求数据
  */
 export function add(data) {
@@ -35,7 +35,7 @@ export function add(data) {
   })
 }
 /**
- * 管理员修改
+ * 用户修改
  * @param {array} data 请求数据
  */
 export function edit(data) {
@@ -46,7 +46,7 @@ export function edit(data) {
   })
 }
 /**
- * 管理员删除
+ * 用户删除
  * @param {array} data 请求数据
  */
 export function dele(data) {
@@ -57,7 +57,7 @@ export function dele(data) {
   })
 }
 /**
- * 管理员重置密码
+ * 用户重置密码
  * @param {array} data 请求数据
  */
 export function pwd(data) {
@@ -68,7 +68,7 @@ export function pwd(data) {
   })
 }
 /**
- * 管理员分配权限
+ * 用户分配权限
  * @param {array} data 请求数据
  */
 export function rule(data, method = 'get') {
@@ -87,7 +87,7 @@ export function rule(data, method = 'get') {
   }
 }
 /**
- * 管理员是否禁用
+ * 用户是否禁用
  * @param {array} data 请求数据
  */
 export function disable(data) {
@@ -98,7 +98,7 @@ export function disable(data) {
   })
 }
 /**
- * 管理员是否超管
+ * 用户是否超管
  * @param {array} data 请求数据
  */
 export function issuper(data) {

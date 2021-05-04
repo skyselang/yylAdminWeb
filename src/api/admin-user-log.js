@@ -1,8 +1,8 @@
 import request from '@/utils/request'
 
-// ----------------管理员日志----------------
+// ----------------日志管理----------------
 /**
- * 管理员日志列表
+ * 日志管理列表
  * @param {array} params 请求参数
  */
 export function list(params) {
@@ -13,7 +13,7 @@ export function list(params) {
   })
 }
 /**
- * 管理员日志信息
+ * 日志管理信息
  * @param {array} params 请求参数
  */
 export function info(params) {
@@ -24,7 +24,7 @@ export function info(params) {
   })
 }
 /**
- * 管理员日志删除
+ * 日志管理删除
  * @param {array} data 请求数据
  */
 export function dele(data) {
@@ -35,7 +35,7 @@ export function dele(data) {
   })
 }
 /**
- * 管理员日志清除
+ * 日志管理清除
  * @param {array} data 请求数据
  */
  export function clear(data) {
@@ -46,7 +46,7 @@ export function dele(data) {
   })
 }
 /**
- * 管理员日志统计
+ * 日志统计
  * @param {array} data 请求数据
  */
 export function stat(data) {

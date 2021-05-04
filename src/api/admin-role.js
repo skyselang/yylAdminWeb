@@ -68,7 +68,7 @@ export function disable(data) {
   })
 }
 /**
- * 角色管理员
+ * 角色用户
  * @param {array} params 请求参数
  */
 export function user(params) {
@@ -79,7 +79,7 @@ export function user(params) {
   })
 }
 /**
- * 角色管理员解除
+ * 角色用户解除
  * @param {array} data 请求数据
  */
 export function userRemove(data) {

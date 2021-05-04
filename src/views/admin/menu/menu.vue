@@ -10,7 +10,7 @@
       </el-row>
     </div>
     <!-- 列表 -->
-    <el-table v-loading="loading" :data="data" :height="height+80" style="width: 100%" row-key="admin_menu_id" border>
+    <el-table v-loading="loading" :data="data" :height="height+80" style="width: 100%" row-key="admin_menu_id" border stripe>
       <el-table-column prop="menu_name" label="菜单名称" min-width="220" show-overflow-tooltip fixed="left" />
       <el-table-column prop="menu_url" label="菜单链接" min-width="250" show-overflow-tooltip />
       <el-table-column prop="menu_sort" label="排序" min-width="60" />
@@ -31,7 +31,7 @@
       <el-table-column label="操作" min-width="355" align="right" fixed="right">
         <template slot-scope="{ row }">
           <el-button size="mini" type="primary" @click="roleShow(row)">角色</el-button>
-          <el-button size="mini" type="primary" @click="userShow(row,'admin_menu_id')">管理员</el-button>
+          <el-button size="mini" type="primary" @click="userShow(row,'admin_menu_id')">用户</el-button>
           <el-button size="mini" type="primary" @click="add(row)">添加</el-button>
           <el-button size="mini" type="success" @click="edit(row)">修改</el-button>
           <el-button size="mini" type="danger" @click="dele(row)">删除</el-button>
@@ -39,7 +39,7 @@
       </el-table-column>
     </el-table>
     <!-- 添加、修改 -->
-    <el-dialog :title="dialogTitle" :visible.sync="dialog" top="1vh" width="65%" :before-close="cancel">
+    <el-dialog :title="dialogTitle" :visible.sync="dialog" top="1vh" width="50%" :before-close="cancel">
       <el-form ref="ref" :rules="rules" :model="model" class="dialog-body" label-width="100px" :style="{height:height+30+'px'}">
         <el-form-item label="菜单父级" prop="menu_pid">
           <el-cascader
@@ -57,19 +57,16 @@
           <el-input v-model="model.menu_name" clearable placeholder="请输入菜单名称" />
         </el-form-item>
         <el-form-item label="菜单链接" prop="menu_url">
-          <el-input v-model="model.menu_url" clearable placeholder="应用/控制器/操作" />
+          <el-input v-model="model.menu_url" clearable placeholder="应用/控制器/操作，区分大小写" />
         </el-form-item>
         <el-form-item label="菜单排序" prop="menu_sort">
           <el-input v-model="model.menu_sort" type="number" placeholder="200" />
         </el-form-item>
         <el-form-item v-if="model.admin_menu_id" label="添加时间" prop="create_time">
-          <el-col :span="10">
-            <el-input v-model="model.create_time" disabled />
-          </el-col>
-          <el-col class="line" :span="4" style="text-align:center">修改时间</el-col>
-          <el-col :span="10">
-            <el-input v-model="model.update_time" disabled />
-          </el-col>
+          <el-input v-model="model.create_time" disabled />
+        </el-form-item>
+        <el-form-item v-if="model.admin_menu_id" label="修改时间" prop="update_time">
+          <el-input v-model="model.update_time" disabled />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -90,17 +87,17 @@
         </el-table-column>
         <el-table-column label="操作" min-width="120" align="right" class-name="small-padding fixed-width" fixed="right">
           <template slot-scope="{ row }">
-            <el-button size="mini" type="primary" @click="userShow(row)">管理员</el-button>
+            <el-button size="mini" type="primary" @click="userShow(row)">用户</el-button>
             <el-button size="mini" type="danger" @click="roleRemove(row)">解除</el-button>
           </template>
         </el-table-column>
       </el-table>
       <pagination v-show="roleCount > 0" :total="roleCount" :page.sync="roleQuery.page" :limit.sync="roleQuery.limit" @pagination="roleList" />
     </el-dialog>
-    <!-- 管理员 -->
+    <!-- 用户 -->
     <el-dialog :title="userDialogTitle" :visible.sync="userDialog" width="65%" top="1vh">
       <el-table ref="userRef" v-loading="userLoad" :data="userData" :height="height+30" style="width: 100%" border @sort-change="userSort">
-        <el-table-column prop="admin_user_id" label="管理员ID" min-width="105" sortable="custom" fixed="left" />
+        <el-table-column prop="admin_user_id" label="用户ID" min-width="105" sortable="custom" fixed="left" />
         <el-table-column prop="username" label="账号" min-width="120" sortable="custom" />
         <el-table-column prop="nickname" label="昵称" min-width="120" />
         <el-table-column prop="remark" label="备注" width="100" />
@@ -366,21 +363,21 @@ export default {
         })
       }).catch(() => {})
     },
-    // 管理员显示
+    // 用户显示
     userShow(row, type = 'admin_role_id') {
       this.userDialog = true
       if (type === 'admin_menu_id') {
-        this.userTDialogitle = '菜单管理员（按菜单）：' + row.menu_name
+        this.userDialogTitle = '菜单用户（按菜单）：' + row.menu_name
         this.userQuery.admin_menu_id = row.admin_menu_id
         this.userQuery.admin_role_id = ''
       } else {
-        this.userTDialogitle = '菜单管理员（按角色）：' + row.role_name
+        this.userDialogTitle = '菜单用户（按角色）：' + row.role_name
         this.userQuery.admin_menu_id = ''
         this.userQuery.admin_role_id = row.admin_role_id
       }
       this.userList()
     },
-    // 管理员列表
+    // 用户列表
     userList() {
       this.userLoad = true
       user(this.userQuery).then(res => {
@@ -394,7 +391,7 @@ export default {
         this.userLoad = false
       })
     },
-    // 管理员排序
+    // 用户排序
     userSort(sort) {
       this.userQuery.sort_field = sort.prop
       this.userQuery.sort_type = ''
@@ -407,11 +404,11 @@ export default {
         this.userList()
       }
     },
-    // 管理员解除
+    // 用户解除
     userRemove(row) {
       this.$confirm(
-        '确定要解除菜单与管理员 <span style="color:red">' + row.username + ' </span>的关联吗？',
-        '解除管理员：' + row.admin_user_id,
+        '确定要解除菜单与用户 <span style="color:red">' + row.username + ' </span>的关联吗？',
+        '解除用户：' + row.admin_user_id,
         { type: 'warning', dangerouslyUseHTMLString: true }
       ).then(() => {
         this.userLoad = true

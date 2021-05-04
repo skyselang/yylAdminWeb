@@ -29,7 +29,7 @@
       </el-table-column>
       <el-table-column label="操作" min-width="225" align="right" fixed="right">
         <template slot-scope="{ row }">
-          <el-button size="mini" type="primary" @click="userShow(row)">管理员</el-button>
+          <el-button size="mini" type="primary" @click="userShow(row)">用户</el-button>
           <el-button size="mini" type="success" @click="edit(row)">修改</el-button>
           <el-button size="mini" type="danger" @click="dele(row)">删除</el-button>
         </template>
@@ -80,10 +80,10 @@
         <el-button type="primary" @click="submit">提交</el-button>
       </div>
     </el-dialog>
-    <!-- 管理员列表 -->
+    <!-- 用户列表 -->
     <el-dialog :title="userDialogTitle" :visible.sync="userDialog" width="65%" top="1vh">
       <el-table ref="userRef" v-loading="userLoad" :data="userData" :height="height+30" style="width: 100%" border @sort-change="userSort">
-        <el-table-column prop="admin_user_id" label="管理员ID" min-width="105" sortable="custom" fixed="left" />
+        <el-table-column prop="admin_user_id" label="用户ID" min-width="105" sortable="custom" fixed="left" />
         <el-table-column prop="username" label="账号" min-width="120" sortable="custom" />
         <el-table-column prop="nickname" label="昵称" min-width="120" />
         <el-table-column prop="remark" label="备注" width="100" />
@@ -318,14 +318,14 @@ export default {
         this.$refs.menuRef.setCheckedKeys(admin_menu_ids_temp)
       }
     },
-    // 管理员显示
+    // 用户显示
     userShow(row) {
       this.userDialog = true
-      this.userDialogTitle = '角色管理员：' + row.role_name
+      this.userDialogTitle = '角色用户：' + row.role_name
       this.userQuery.admin_role_id = row.admin_role_id
       this.user()
     },
-    // 管理员列表
+    // 用户列表
     user() {
       this.userLoad = true
       user(this.userQuery).then(res => {
@@ -339,7 +339,7 @@ export default {
         this.userLoad = false
       })
     },
-    // 管理员排序
+    // 用户排序
     userSort(sort) {
       this.userQuery.sort_field = sort.prop
       this.userQuery.sort_type = ''
@@ -352,11 +352,11 @@ export default {
         this.user()
       }
     },
-    // 管理员解除
+    // 用户解除
     userRemove(row) {
       this.$confirm(
-        '确定要解除该角色与管理员 <span style="color:red">' + row.username + ' </span>的关联吗？',
-        '解除管理员：' + row.admin_user_id,
+        '确定要解除该角色与用户 <span style="color:red">' + row.username + ' </span>的关联吗？',
+        '解除用户：' + row.admin_user_id,
         { type: 'warning', dangerouslyUseHTMLString: true }
       ).then(() => {
         this.userLoad = true

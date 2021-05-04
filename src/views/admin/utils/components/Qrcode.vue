@@ -17,6 +17,7 @@
           </el-image>
         </el-form-item>
         <el-form-item>
+          <el-button @click="clear()">清空</el-button>
           <el-button id="download" @click="download()">下载</el-button>
           <el-button type="primary" @click="submit()">生成</el-button>
         </el-form-item>
@@ -29,7 +30,7 @@
 import QrcodeVue from 'qrcode.vue'
 
 export default {
-  name: 'UtilsQrcode',
+  name: 'Qrcode',
   components: { QrcodeVue },
   data() {
     return {
@@ -39,13 +40,15 @@ export default {
         value: '',
         size: 200
       },
-      rules: {
-        str: [{ required: true, message: '请输入文本内容', trigger: 'blur' }]
-      }
+      rules: {}
     }
   },
   created() {},
   methods: {
+    clear() {
+      this.model.str = ''
+      this.model.value = ''
+    },
     download() {
       if (this.model.value) {
         const canvas = document.getElementById('qrcode').getElementsByTagName('canvas')
@@ -61,7 +64,8 @@ export default {
       if (this.model.str) {
         this.model.value = this.model.str
       } else {
-        this.$message.error('请输入文本内容')
+        this.model.str = 'https://gitee.com/skyselang/yylAdmin'
+        this.model.value = this.model.str
       }
     }
   }
@@ -69,7 +73,4 @@ export default {
 </script>
 
 <style scoped>
-.item {
-  height: 410px;
-}
 </style>

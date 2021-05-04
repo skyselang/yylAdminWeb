@@ -241,16 +241,6 @@ export const asyncRoutes = [
     alwaysShow: true,
     children: [
       {
-        path: 'api-env',
-        name: 'ApiEnv',
-        meta: {
-          title: '接口环境',
-          icon: 'el-icon-s-grid',
-          roles: ['admin/ApiEnv/list']
-        },
-        component: () => import('@/views/api/api-env')
-      },
-      {
         path: 'api',
         name: 'Api',
         meta: {
@@ -259,6 +249,16 @@ export const asyncRoutes = [
           roles: ['admin/Api/list']
         },
         component: () => import('@/views/api/api')
+      },
+      {
+        path: 'api-env',
+        name: 'ApiEnv',
+        meta: {
+          title: '接口环境',
+          icon: 'el-icon-s-grid',
+          roles: ['admin/ApiEnv/list']
+        },
+        component: () => import('@/views/api/api-env')
       }
     ]
   },
@@ -305,7 +305,7 @@ export const asyncRoutes = [
         path: 'user',
         name: 'User',
         meta: {
-          title: '管理员管理',
+          title: '用户管理',
           icon: 'el-icon-user',
           roles: ['admin/AdminUser/list']
         },
@@ -315,7 +315,7 @@ export const asyncRoutes = [
         path: 'user-log',
         name: 'UserLog',
         meta: {
-          title: '管理员日志',
+          title: '日志管理',
           icon: 'el-icon-notebook-2',
           roles: ['admin/AdminUserLog/list']
         },
@@ -325,7 +325,7 @@ export const asyncRoutes = [
         path: 'user-log-stat',
         name: 'UserLogStat',
         meta: {
-          title: '管理员日志统计',
+          title: '日志统计',
           icon: 'el-icon-s-data',
           roles: ['admin/AdminUserLog/stat'],
           activeMenu: '/admin/rule/user-log'
@@ -338,7 +338,7 @@ export const asyncRoutes = [
         name: 'UserCenter',
         meta: {
           title: '个人中心',
-          icon: 'el-icon-warning-outline',
+          icon: 'el-icon-user-solid',
           roles: ['admin/AdminUserCenter/info']
         },
         component: () => import('@/views/admin/user/user-center')
@@ -375,7 +375,7 @@ export const asyncRoutes = [
           icon: 'el-icon-document',
           roles: ['admin/AdminUtils/apidoc']
         },
-        component: () => import('@/views/admin/utils/apidoc')
+        component: () => import('@/views/admin/apidoc/apidoc')
       },
       {
         path: 'form',
@@ -385,7 +385,7 @@ export const asyncRoutes = [
           icon: 'el-icon-tickets',
           roles: ['admin/AdminUtils/form']
         },
-        component: () => import('@/views/admin/utils/form/index')
+        component: () => import('@/views/admin/form/index')
       },
       {
         path: 'setting-cache',
@@ -418,34 +418,14 @@ export const asyncRoutes = [
         component: () => import('@/views/admin/setting/token')
       },
       {
-        path: 'server-info',
-        name: 'ServerInfo',
-        meta: {
-          title: '服务器信息',
-          icon: 'el-icon-info',
-          roles: ['admin/AdminUtils/server']
-        },
-        component: () => import('@/views/admin/utils/server')
-      },
-      {
         path: 'tools',
         name: 'Tools',
         meta: {
-          title: '实用工具合集',
+          title: '实用工具',
           icon: 'el-icon-help',
-          roles: ['admin/AdminUtils/tools']
+          roles: ['admin/AdminUtils/utils']
         },
-        component: () => import('@/views/admin/utils/tools')
-      },
-      {
-        path: 'mapp',
-        name: 'Map',
-        meta: {
-          title: '地图坐标拾取',
-          icon: 'el-icon-map-location',
-          roles: ['admin/AdminUtils/map']
-        },
-        component: () => import('@/views/admin/utils/map')
+        component: () => import('@/views/admin/utils/utils')
       }
     ]
   },

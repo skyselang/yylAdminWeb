@@ -125,7 +125,7 @@
       </div>
     </el-dialog>
     <!-- 分配权限 -->
-    <el-dialog :title="'管理员分配权限：'+model.admin_user_id" :visible.sync="ruleDialog" top="1vh">
+    <el-dialog :title="'用户分配权限：'+model.admin_user_id" :visible.sync="ruleDialog" top="1vh">
       <el-form ref="roleRef" :model="model" class="dialog-body" label-width="100px" :style="{height:height+30+'px'}">
         <el-form-item label="账号">
           <el-col :span="10">
@@ -173,7 +173,7 @@
       </div>
     </el-dialog>
     <!-- 重置密码 -->
-    <el-dialog :title="'管理员重置密码：'+model.admin_user_id" :visible.sync="pwdDialog" top="1vh">
+    <el-dialog :title="'用户重置密码：'+model.admin_user_id" :visible.sync="pwdDialog" top="1vh">
       <el-form ref="pwdRef" :rules="pwdRules" :model="model" class="dialog-body" label-width="100px" :style="{height:height+30+'px'}">
         <el-form-item label="账号">
           <el-input v-model="model.username" clearable disabled />
@@ -273,13 +273,13 @@ export default {
     // 添加
     add() {
       this.dialog = true
-      this.dialogTitle = '管理员添加'
+      this.dialogTitle = '用户添加'
       this.reset()
     },
     // 修改
     edit(row) {
       this.dialog = true
-      this.dialogTitle = '管理员修改：' + row.admin_user_id
+      this.dialogTitle = '用户修改：' + row.admin_user_id
       this.reset()
       info({
         admin_user_id: row.admin_user_id
@@ -290,8 +290,8 @@ export default {
     // 删除
     dele(row) {
       this.$confirm(
-        '确定要删除管理员 <span style="color:red">' + row.username + ' </span>吗？',
-        '删除管理员：' + row.admin_user_id,
+        '确定要删除用户 <span style="color:red">' + row.username + ' </span>吗？',
+        '删除用户：' + row.admin_user_id,
         { type: 'warning', dangerouslyUseHTMLString: true }
       ).then(() => {
         this.loading = true

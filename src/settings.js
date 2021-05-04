@@ -9,7 +9,7 @@ module.exports = {
    * @type {string}
    * @description 页面标题
    */
-  pageTitle: 'yylAdmin后台',
+  pageTitle: 'yylAdmin管理系统',
 
   /**
    * @type {boolean} true | false

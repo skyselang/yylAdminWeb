@@ -6,11 +6,12 @@
           <i class="el-icon-copy-document" title="复制密码" @click="apidocCopy(apidocModel.apidoc_pwd, $event)" />
         </span>
         <span class="padding-right">AdminUserId：{{ apidocModel.admin_user_id }}
-          <i class="el-icon-copy-document" title="复制管理员id" @click="apidocCopy(apidocModel.admin_user_id, $event)" />
+          <i class="el-icon-copy-document" title="复制用户id" @click="apidocCopy(apidocModel.admin_user_id, $event)" />
         </span>
         <span class="padding-right">AdminToken：{{ apidocModel.admin_token_sub }}
           <i class="el-icon-copy-document" title="复制Token" @click="apidocCopy(apidocModel.admin_token, $event)" />
         </span>
+        <el-button class="filter-item" size="mini" @click="apidoc()">刷新</el-button>
       </el-col>
       <el-col :span="24">
         <iframe :src="apidocModel.apidoc_url" frameborder="0" width="100%" :height="height" />

@@ -77,7 +77,7 @@ const actions = {
     })
   },
 
-  // 获取管理员信息
+  // 获取用户信息
   userInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
       userInfo({

@@ -36,7 +36,7 @@
 import { strtran } from '@/api/admin-utils'
 
 export default {
-  name: 'UtilsStrtran',
+  name: 'Strtran',
   components: {},
   data() {
     return {
@@ -72,7 +72,4 @@ export default {
 </script>
 
 <style scoped>
-.item {
-  height: 410px;
-}
 </style>

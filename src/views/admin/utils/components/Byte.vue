@@ -36,7 +36,7 @@
 import { bytetran } from '@/api/admin-utils'
 
 export default {
-  name: 'UtilsBytetran',
+  name: 'Byte',
   components: {},
   data() {
     return {
@@ -79,7 +79,4 @@ export default {
 </script>
 
 <style scoped>
-.item {
-  height: 410px;
-}
 </style>

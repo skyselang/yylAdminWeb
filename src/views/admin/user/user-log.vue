@@ -8,7 +8,7 @@
             <el-option :value="1" label="登录日志" />
             <el-option :value="2" label="操作日志" />
           </el-select>
-          <el-input v-model="query.user_keyword" class="filter-item" style="width: 150px;" placeholder="管理员账号/昵称" clearable />
+          <el-input v-model="query.user_keyword" class="filter-item" style="width: 150px;" placeholder="用户账号/昵称" clearable />
           <el-input v-model="query.request_keyword" class="filter-item" style="width: 155px;" placeholder="请求IP/地区/ISP" clearable />
           <el-input v-model="query.menu_keyword" class="filter-item" style="width: 250px;" placeholder="菜单链接/名称" clearable />
           <el-date-picker
@@ -34,12 +34,12 @@
     <!-- 列表 -->
     <el-table v-loading="loading" :data="data" :height="height" style="width: 100%" border @sort-change="sort">
       <el-table-column prop="admin_user_log_id" label="ID" min-width="100" sortable="custom" fixed="left" />
-      <el-table-column prop="nickname" label="管理员昵称" min-width="110">
+      <el-table-column prop="nickname" label="用户昵称" min-width="110">
         <template slot-scope="scope">
           <el-popover trigger="hover" placement="top">
-            管理员ID: {{ scope.row.admin_user_id }} <br>
-            管理员账号: {{ scope.row.username }} <br>
-            管理员昵称: {{ scope.row.nickname }}
+            用户ID: {{ scope.row.admin_user_id }} <br>
+            用户账号: {{ scope.row.username }} <br>
+            用户昵称: {{ scope.row.nickname }}
             <div slot="reference" class="name-wrapper">
               <el-tag>{{ scope.row.nickname }}</el-tag>
             </div>
@@ -78,16 +78,16 @@
     <!-- 详情 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialog" top="1vh" :before-close="cancel">
       <el-form ref="ref" :rules="rules" :model="model" label-width="100px" class="dialog-body" :style="{height:height+30+'px'}">
-        <el-form-item label="管理员ID" prop="admin_user_id">
+        <el-form-item label="用户ID" prop="admin_user_id">
           <el-col :span="10">
             <el-input v-model="model.admin_user_id" />
           </el-col>
-          <el-col class="line" :span="4" style="text-align:center">管理员昵称</el-col>
+          <el-col class="line" :span="4" style="text-align:center">用户昵称</el-col>
           <el-col :span="10">
             <el-input v-model="model.nickname" />
           </el-col>
         </el-form-item>
-        <el-form-item label="管理员账号" prop="username">
+        <el-form-item label="用户账号" prop="username">
           <el-input v-model="model.username" />
         </el-form-item>
         <el-form-item label="菜单ID" prop="admin_menu_id">
@@ -141,7 +141,7 @@
     <!-- 清除 -->
     <el-dialog :title="clearDialogTitle" :visible.sync="clearDialog" :before-close="clearCancel">
       <el-form ref="clearRef" :rules="clearRules" :model="clearModel" label-width="100px" class="dialog-body">
-        <el-form-item label="管理员ID" prop="admin_user_id">
+        <el-form-item label="用户ID" prop="admin_user_id">
           <el-input v-model="clearModel.admin_user_id" type="number" clearable />
         </el-form-item>
         <el-form-item label="菜单ID" prop="admin_menu_id">
@@ -226,7 +226,7 @@ export default {
     info(row) {
       this.loading = true
       this.dialog = true
-      this.dialogTitle = '管理员日志详情：' + row.admin_user_log_id
+      this.dialogTitle = '日志管理详情：' + row.admin_user_log_id
       info({
         admin_user_log_id: row.admin_user_log_id
       }).then(res => {
@@ -239,8 +239,8 @@ export default {
     // 删除
     dele(row) {
       this.$confirm(
-        '确定要删除管理员日志 <span style="color:red">' + row.admin_user_log_id + ' </span>吗？',
-        '删除管理员日志：' + row.admin_user_log_id,
+        '确定要删除日志管理 <span style="color:red">' + row.admin_user_log_id + ' </span>吗？',
+        '删除日志管理：' + row.admin_user_log_id,
         { type: 'warning', dangerouslyUseHTMLString: true }
       ).then(() => {
         this.loading = true
@@ -299,7 +299,7 @@ export default {
     // 清除
     clear() {
       this.clearDialog = true
-      this.clearDialogTitle = '管理员日志清除'
+      this.clearDialogTitle = '日志管理清除'
     },
     clearCancel() {
       this.clearDialog = false

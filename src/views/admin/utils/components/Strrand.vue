@@ -36,7 +36,7 @@ import clip from '@/utils/clipboard'
 import { strrand } from '@/api/admin-utils'
 
 export default {
-  name: 'UtilsStrrand',
+  name: 'Strrand',
   components: {},
   data() {
     return {
@@ -94,7 +94,4 @@ export default {
 </script>
 
 <style scoped>
-.item {
-  height: 410px;
-}
 </style>

@@ -100,7 +100,7 @@ export function roleRemove(data) {
   })
 }
 /**
- * 菜单管理员
+ * 菜单用户
  * @param {array} params 请求参数
  */
 export function user(params) {
@@ -111,7 +111,7 @@ export function user(params) {
   })
 }
 /**
- * 菜单管理员解除
+ * 菜单用户解除
  * @param {array} data 请求数据
  */
 export function userRemove(data) {
