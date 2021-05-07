@@ -16,18 +16,18 @@
     </div>
     <!-- 列表 -->
     <el-table v-loading="loading" :data="datas" :height="height" style="width: 100%" border @sort-change="sort">
-      <el-table-column prop="admin_role_id" label="ID" min-width="100" sortable="custom" fixed="left" />
+      <el-table-column prop="admin_role_id" label="角色ID" min-width="100" sortable="custom" fixed="left" />
       <el-table-column prop="role_name" label="名称" min-width="120" show-overflow-tooltip />
       <el-table-column prop="role_desc" label="描述" min-width="130" show-overflow-tooltip />
       <el-table-column prop="role_sort" label="排序" min-width="100" sortable="custom" />
       <el-table-column prop="create_time" label="添加时间" min-width="160" sortable="custom" />
       <el-table-column prop="update_time" label="修改时间" min-width="160" sortable="custom" />
-      <el-table-column prop="is_disable" label="是否禁用" min-width="110" align="center" fixed="right" sortable="custom">
+      <el-table-column prop="is_disable" label="是否禁用" min-width="110" align="center" sortable="custom">
         <template slot-scope="scope">
           <el-switch v-model="scope.row.is_disable" :active-value="1" :inactive-value="0" @change="isDisable(scope.row)" />
         </template>
       </el-table-column>
-      <el-table-column label="操作" min-width="225" align="right" fixed="right">
+      <el-table-column label="操作" min-width="210" align="right" fixed="right">
         <template slot-scope="{ row }">
           <el-button size="mini" type="primary" @click="userShow(row)">用户</el-button>
           <el-button size="mini" type="success" @click="edit(row)">修改</el-button>
@@ -38,7 +38,7 @@
     <!-- 分页 -->
     <pagination v-show="count > 0" :total="count" :page.sync="query.page" :limit.sync="query.limit" @pagination="list" />
     <!-- 添加、修改 -->
-    <el-dialog :title="dialogTitle" :visible.sync="dialog" top="1vh" :before-close="cancel">
+    <el-dialog :title="dialogTitle" :visible.sync="dialog" top="1vh" width="50%" :before-close="cancel">
       <el-form ref="ref" :rules="rules" :model="model" label-width="100px" class="dialog-body" :style="{height:height+30+'px'}">
         <el-form-item label="名称" prop="role_name">
           <el-input v-model="model.role_name" placeholder="请输入角色名称" clearable />
@@ -83,21 +83,21 @@
     <!-- 用户列表 -->
     <el-dialog :title="userDialogTitle" :visible.sync="userDialog" width="65%" top="1vh">
       <el-table ref="userRef" v-loading="userLoad" :data="userData" :height="height+30" style="width: 100%" border @sort-change="userSort">
-        <el-table-column prop="admin_user_id" label="用户ID" min-width="105" sortable="custom" fixed="left" />
+        <el-table-column prop="admin_user_id" label="用户ID" min-width="100" sortable="custom" fixed="left" />
         <el-table-column prop="username" label="账号" min-width="120" sortable="custom" />
         <el-table-column prop="nickname" label="昵称" min-width="120" />
         <el-table-column prop="remark" label="备注" width="100" />
-        <el-table-column prop="is_admin" label="是否超管" min-width="100" align="center">
+        <el-table-column prop="is_admin" label="超管" min-width="80" align="center">
           <template slot-scope="scope">
             <el-switch v-model="scope.row.is_admin" :active-value="1" :inactive-value="0" disabled />
           </template>
         </el-table-column>
-        <el-table-column prop="is_disable" label="是否禁用" min-width="80" align="center">
+        <el-table-column prop="is_disable" label="禁用" min-width="80" align="center">
           <template slot-scope="scope">
             <el-switch v-model="scope.row.is_disable" :active-value="1" :inactive-value="0" disabled />
           </template>
         </el-table-column>
-        <el-table-column label="操作" min-width="90" align="right" class-name="small-padding fixed-width" fixed="right">
+        <el-table-column label="操作" min-width="80" align="right" fixed="right">
           <template slot-scope="{ row }">
             <el-button size="mini" type="danger" @click="userRemove(row)">解除</el-button>
           </template>

@@ -15,7 +15,7 @@
       <el-table-column prop="menu_url" label="菜单链接" min-width="250" show-overflow-tooltip />
       <el-table-column prop="menu_sort" label="排序" min-width="60" />
       <el-table-column prop="admin_menu_id" label="菜单ID" min-width="65" />
-      <el-table-column prop="menu_pid" label="PID" min-width="60" />
+      <el-table-column prop="menu_pid" label="PID" min-width="65" />
       <el-table-column prop="create_time" label="添加时间" min-width="160" />
       <el-table-column prop="update_time" label="修改时间" min-width="160" />
       <el-table-column prop="is_disable" label="是否禁用" min-width="80" align="center">
@@ -28,7 +28,7 @@
           <el-switch v-if="scope.row.menu_url" v-model="scope.row.is_unauth" :active-value="1" :inactive-value="0" @change="isUnauth(scope.row)" />
         </template>
       </el-table-column>
-      <el-table-column label="操作" min-width="355" align="right" fixed="right">
+      <el-table-column label="操作" min-width="345" align="right" fixed="right">
         <template slot-scope="{ row }">
           <el-button size="mini" type="primary" @click="roleShow(row)">角色</el-button>
           <el-button size="mini" type="primary" @click="userShow(row,'admin_menu_id')">用户</el-button>
@@ -80,12 +80,12 @@
         <el-table-column prop="admin_role_id" label="角色ID" min-width="100" sortable="custom" fixed="left" />
         <el-table-column prop="role_name" label="角色" min-width="120" sortable="custom" />
         <el-table-column prop="role_desc" label="描述" min-width="130" />
-        <el-table-column prop="is_disable" label="是否禁用" min-width="110" align="center" sortable="custom">
+        <el-table-column prop="is_disable" label="禁用" min-width="80" align="center" sortable="custom">
           <template slot-scope="scope">
             <el-switch v-model="scope.row.is_disable" :active-value="1" :inactive-value="0" disabled />
           </template>
         </el-table-column>
-        <el-table-column label="操作" min-width="120" align="right" class-name="small-padding fixed-width" fixed="right">
+        <el-table-column label="操作" min-width="145" align="right" fixed="right">
           <template slot-scope="{ row }">
             <el-button size="mini" type="primary" @click="userShow(row)">用户</el-button>
             <el-button size="mini" type="danger" @click="roleRemove(row)">解除</el-button>
@@ -97,21 +97,21 @@
     <!-- 用户 -->
     <el-dialog :title="userDialogTitle" :visible.sync="userDialog" width="65%" top="1vh">
       <el-table ref="userRef" v-loading="userLoad" :data="userData" :height="height+30" style="width: 100%" border @sort-change="userSort">
-        <el-table-column prop="admin_user_id" label="用户ID" min-width="105" sortable="custom" fixed="left" />
+        <el-table-column prop="admin_user_id" label="用户ID" min-width="100" sortable="custom" fixed="left" />
         <el-table-column prop="username" label="账号" min-width="120" sortable="custom" />
         <el-table-column prop="nickname" label="昵称" min-width="120" />
-        <el-table-column prop="remark" label="备注" width="100" />
-        <el-table-column prop="is_admin" label="是否超管" min-width="96" align="center">
+        <el-table-column prop="remark" label="备注" min-width="100" />
+        <el-table-column prop="is_admin" label="超管" min-width="80" align="center">
           <template slot-scope="scope">
             <el-switch v-model="scope.row.is_admin" :active-value="1" :inactive-value="0" disabled />
           </template>
         </el-table-column>
-        <el-table-column prop="is_disable" label="是否禁用" min-width="80" align="center">
+        <el-table-column prop="is_disable" label="禁用" min-width="80" align="center">
           <template slot-scope="scope">
             <el-switch v-model="scope.row.is_disable" :active-value="1" :inactive-value="0" disabled />
           </template>
         </el-table-column>
-        <el-table-column label="操作" min-width="90" align="right" class-name="small-padding fixed-width" fixed="right">
+        <el-table-column label="操作" min-width="80" align="right" fixed="right">
           <template slot-scope="{ row }">
             <el-button v-if="userQuery.admin_menu_id" size="mini" type="danger" @click="userRemove(row)">解除</el-button>
           </template>

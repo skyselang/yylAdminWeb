@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-tabs v-model="tabName" @tab-click="tabClick">
+    <el-tabs v-model="actTabName" @tab-click="tabClick">
       <el-tab-pane v-if="checkPermission(['admin/AdminUserCenter/info'])" label="我的信息" name="info">
         <user-center-info v-if="info" />
       </el-tab-pane>
@@ -43,7 +43,7 @@ export default {
       avatar: false,
       log: false,
       setting: false,
-      tabName: 'info'
+      actTabName: 'info'
     }
   },
   methods: {

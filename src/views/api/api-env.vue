@@ -16,7 +16,7 @@
     </div>
     <!-- 列表 -->
     <el-table v-loading="loading" :data="data" :height="height" style="width: 100%" border @sort-change="sort">
-      <el-table-column prop="api_env_id" label="ID" min-width="100" sortable="custom" fixed="left" />
+      <el-table-column prop="api_env_id" label="环境ID" min-width="100" sortable="custom" fixed="left" />
       <el-table-column prop="env_name" label="名称" min-width="150" />
       <el-table-column prop="env_host" label="Host" min-width="300" show-overflow-tooltip>
         <template slot="header">
@@ -44,7 +44,7 @@
       <el-table-column prop="env_sort" label="排序" min-width="80" sortable="custom" />
       <el-table-column prop="create_time" label="添加时间" min-width="160" sortable="custom" />
       <el-table-column prop="update_time" label="修改时间" min-width="160" sortable="custom" />
-      <el-table-column label="操作" min-width="150" align="right" fixed="right">
+      <el-table-column label="操作" min-width="145" align="right" fixed="right">
         <template slot-scope="{ row }">
           <el-button size="mini" type="success" @click="edit(row)">修改</el-button>
           <el-button size="mini" type="danger" @click="dele(row)">删除</el-button>
@@ -54,7 +54,7 @@
     <!-- 分页 -->
     <pagination v-show="count > 0" :total="count" :page.sync="query.page" :limit.sync="query.limit" @pagination="list" />
     <!-- 添加、修改 -->
-    <el-dialog :title="dialogTitle" :visible.sync="dialog" top="1vh" :before-close="cancel">
+    <el-dialog :title="dialogTitle" :visible.sync="dialog" top="1vh" width="50%" :before-close="cancel">
       <el-form ref="ref" :rules="rules" :model="model" label-width="100px" class="dialog-body" :style="{height:height+30+'px'}">
         <el-form-item label="名称" prop="env_name">
           <el-input v-model="model.env_name" placeholder="请输入名称" clearable />

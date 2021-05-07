@@ -34,9 +34,9 @@
       <el-table-column prop="region_citycode" label="区号" min-width="80" sortable="custom" />
       <el-table-column prop="region_zipcode" label="邮编" min-width="80" sortable="custom" />
       <el-table-column prop="region_sort" label="排序" min-width="80" sortable="custom" />
-      <el-table-column prop="region_id" label="ID" min-width="100" sortable="custom" />
-      <el-table-column prop="region_pid" label="PID" min-width="100" />
-      <el-table-column label="操作" width="215" fixed="right" align="right">
+      <el-table-column prop="region_id" label="地区ID" min-width="90" sortable="custom" />
+      <el-table-column prop="region_pid" label="PID" min-width="90" />
+      <el-table-column label="操作" width="210" fixed="right" align="right">
         <template slot-scope="{ row }">
           <el-button size="mini" type="primary" @click="add(row)">添加</el-button>
           <el-button size="mini" type="success" @click="edit(row)">修改</el-button>
@@ -45,7 +45,7 @@
       </el-table-column>
     </el-table>
     <!-- 添加、修改 -->
-    <el-dialog :title="dialogTitle" :visible.sync="dialog" top="1vh" :before-close="cancel">
+    <el-dialog :title="dialogTitle" :visible.sync="dialog" top="1vh" width="50%" :before-close="cancel">
       <el-form ref="ref" :rules="rules" :model="model" class="dialog-body" label-width="100px" :style="{height:height+30+'px'}">
         <el-form-item label="父级" prop="region_pid">
           <el-cascader
@@ -86,7 +86,7 @@
         <el-form-item label="纬度" prop="region_latitude">
           <el-input v-model="model.region_latitude" clearable placeholder="请输入纬度：39.915156" />
         </el-form-item>
-        <el-form-item label="添加时间" prop="">
+        <el-form-item v-if="model.region_id" label="添加时间" prop="">
           <el-col :span="10">
             <el-input v-model="model.create_time" clearable placeholder="" disabled />
           </el-col>

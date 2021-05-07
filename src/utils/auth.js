@@ -11,15 +11,15 @@ export function delAdminUserId() {
   return Cookies.remove(AdminUserIdKey)
 }
 
-const TokenKey = 'AdminToken'
+const AdminTokenKey = 'AdminToken'
 export function setAdminToken(AdminToken) {
-  return Cookies.set(TokenKey, AdminToken)
+  return Cookies.set(AdminTokenKey, AdminToken)
 }
 export function getAdminToken() {
-  return Cookies.get(TokenKey)
+  return Cookies.get(AdminTokenKey)
 }
 export function delAdminToken() {
-  return Cookies.remove(TokenKey)
+  return Cookies.remove(AdminTokenKey)
 }
 
 const UsernameKey = 'AdminUsername'

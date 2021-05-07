@@ -9,7 +9,7 @@
             <el-option :value="2" label="登录日志" />
             <el-option :value="3" label="操作日志" />
           </el-select>
-          <el-input v-model="query.member_keyword" class="filter-item" style="width: 135px;" placeholder="会员名/昵称" clearable />
+          <el-input v-model="query.member_keyword" class="filter-item" style="width: 135px;" placeholder="账号/昵称" clearable />
           <el-input v-model="query.api_keyword" class="filter-item" style="width: 235px;" placeholder="接口链接/名称" clearable />
           <el-input v-model="query.request_keyword" class="filter-item" style="width: 155px;" placeholder="请求IP/地区/ISP" clearable />
           <el-date-picker
@@ -32,13 +32,13 @@
     </div>
     <!-- 列表 -->
     <el-table v-loading="loading" :data="data" :height="height" style="width: 100%" border @sort-change="sort">
-      <el-table-column prop="member_log_id" label="ID" min-width="100" sortable="custom" fixed="left" />
-      <el-table-column prop="username" label="会员名" min-width="110" show-overflow-tooltip>
+      <el-table-column prop="member_log_id" label="日志ID" min-width="100" sortable="custom" fixed="left" />
+      <el-table-column prop="username" label="账号" min-width="110" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-popover trigger="hover" placement="top">
             会员ID: {{ scope.row.member_id }} <br>
-            会员名: {{ scope.row.username }} <br>
-            会员昵称: {{ scope.row.nickname }}
+            账号: {{ scope.row.username }} <br>
+            昵称: {{ scope.row.nickname }}
             <div slot="reference" class="name-wrapper">
               <el-tag>{{ scope.row.username }}</el-tag>
             </div>
@@ -65,7 +65,7 @@
       <el-table-column prop="response_code" label="返回码" min-width="80" />
       <el-table-column prop="response_msg" label="返回描述" min-width="130" show-overflow-tooltip />
       <el-table-column prop="create_time" label="请求时间" min-width="160" sortable="custom" />
-      <el-table-column label="操作" min-width="150" align="right" fixed="right">
+      <el-table-column label="操作" min-width="145" align="right" fixed="right">
         <template slot-scope="{ row }">
           <el-button size="mini" type="primary" @click="info(row)">详情</el-button>
           <el-button size="mini" type="danger" @click="dele(row)">删除</el-button>
@@ -75,7 +75,7 @@
     <!-- 分页 -->
     <pagination v-show="count > 0" :total="count" :page.sync="query.page" :limit.sync="query.limit" @pagination="list" />
     <!-- 详情 -->
-    <el-dialog :title="dialogTitle" :visible.sync="dialog" top="1vh" :before-close="cancel">
+    <el-dialog :title="dialogTitle" :visible.sync="dialog" top="1vh" width="50%" :before-close="cancel">
       <el-form ref="ref" :rules="rules" :model="model" label-width="100px" class="dialog-body" :style="{height:height+30+'px'}">
         <el-form-item label="会员ID" prop="member_id">
           <el-col :span="10">
@@ -86,7 +86,7 @@
             <el-input v-model="model.nickname" />
           </el-col>
         </el-form-item>
-        <el-form-item label="会员名" prop="username">
+        <el-form-item label="账号" prop="username">
           <el-input v-model="model.username" />
         </el-form-item>
         <el-form-item label="接口ID" prop="api_id">

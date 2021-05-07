@@ -5,7 +5,7 @@
       <el-row :gutter="0">
         <el-col :xs="24" :sm="22">
           <el-input v-model="query.member_id" class="filter-item" style="width: 110px;" placeholder="会员ID" clearable />
-          <el-input v-model="query.username" class="filter-item" style="width: 140px;" placeholder="会员名" clearable />
+          <el-input v-model="query.username" class="filter-item" style="width: 140px;" placeholder="账号" clearable />
           <el-input v-model="query.phone" class="filter-item" style="width: 150px;" placeholder="手机" clearable />
           <el-input v-model="query.email" class="filter-item" style="width: 250px;" placeholder="邮箱" clearable />
           <el-select v-model="query.date_type" class="filter-item" style="width:110px;" placeholder="日期类型" clearable>
@@ -45,7 +45,7 @@
           />
         </template>
       </el-table-column>
-      <el-table-column prop="username" label="会员名" min-width="120" sortable="custom" show-overflow-tooltip />
+      <el-table-column prop="username" label="账号" min-width="120" sortable="custom" show-overflow-tooltip />
       <el-table-column prop="nickname" label="昵称" min-width="120" sortable="custom" show-overflow-tooltip />
       <el-table-column prop="phone" label="手机" min-width="120" sortable="custom" show-overflow-tooltip />
       <el-table-column prop="email" label="邮箱" min-width="220" sortable="custom" show-overflow-tooltip />
@@ -69,31 +69,26 @@
     <!-- 分页 -->
     <pagination v-show="count > 0" :total="count" :page.sync="query.page" :limit.sync="query.limit" @pagination="list" />
     <!-- 添加、修改 -->
-    <el-dialog :title="dialogTitle" :visible.sync="dialog" top="1vh" :before-close="cancel">
+    <el-dialog :title="dialogTitle" :visible.sync="dialog" top="1vh" width="50%" :before-close="cancel">
       <el-form ref="ref" :model="model" :rules="rules" class="dialog-body" label-width="100px" :style="{height:height+30+'px'}">
         <el-form-item v-if="model.member_id" label="头像" prop="avatar">
-          <el-col :span="10">
-            <el-avatar shape="circle" fit="contain" :size="100" :src="model.avatar" />
-          </el-col>
-          <el-col class="line" :span="4" style="text-align:center" />
-          <el-col :span="10">
-            <el-upload
-              name="avatar_file"
-              :show-file-list="false"
-              :before-upload="uploadBefore"
-              :action="uploadAction"
-              :headers="uploadHeaders"
-              :data="uploadData"
-              :on-success="uploadSuccess"
-              :on-error="uploadError"
-            >
-              <el-button>更换头像</el-button>
-            </el-upload>
-            <span>jpg、png图片，小于100KB，宽高1:1</span>
-          </el-col>
+          <el-avatar shape="circle" fit="contain" :size="100" :src="model.avatar" />
+          <el-upload
+            name="avatar_file"
+            :show-file-list="false"
+            :before-upload="uploadBefore"
+            :action="uploadAction"
+            :headers="uploadHeaders"
+            :data="uploadData"
+            :on-success="uploadSuccess"
+            :on-error="uploadError"
+          >
+            <el-button size="mini">更换头像</el-button>
+          </el-upload>
+          <span>jpg、png图片，小于100KB，宽高1:1</span>
         </el-form-item>
-        <el-form-item label="会员名" prop="username">
-          <el-input key="username" v-model="model.username" placeholder="请输入会员名" clearable />
+        <el-form-item label="账号" prop="username">
+          <el-input key="username" v-model="model.username" placeholder="请输入账号" clearable />
         </el-form-item>
         <el-form-item label="昵称" prop="nickname">
           <el-input key="nickname" v-model="model.nickname" placeholder="请输入昵称" clearable />
@@ -143,7 +138,7 @@
     <!-- 重置密码 -->
     <el-dialog :title="pwdDialogTitle" :visible.sync="pwdDialog" top="1vh" :before-close="pwdCancel">
       <el-form ref="refPwd" :rules="pwdRules" :model="model" label-width="100px" class="dialog-body" :style="{height:height+30+'px'}">
-        <el-form-item label="会员名">
+        <el-form-item label="账号">
           <el-input v-model="model.username" clearable disabled />
         </el-form-item>
         <el-form-item label="昵称">
@@ -196,7 +191,7 @@ export default {
         sort: 10000
       },
       rules: {
-        username: [{ required: true, message: '请输入会员名', trigger: 'blur' }],
+        username: [{ required: true, message: '请输入账号', trigger: 'blur' }],
         password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
       },
       regionTree: [],

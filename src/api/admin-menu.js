@@ -5,10 +5,11 @@ import request from '@/utils/request'
  * 菜单列表
  * @param {array} params 请求参数
  */
-export function list() {
+export function list(params) {
   return request({
     url: '/admin/AdminMenu/list',
-    method: 'get'
+    method: 'get',
+    params: params
   })
 }
 /**

@@ -33,7 +33,7 @@
     </div>
     <!-- 列表 -->
     <el-table v-loading="loading" :data="data" :height="height" style="width: 100%" border @sort-change="sort">
-      <el-table-column prop="admin_user_log_id" label="ID" min-width="100" sortable="custom" fixed="left" />
+      <el-table-column prop="admin_user_log_id" label="日志ID" min-width="100" sortable="custom" fixed="left" />
       <el-table-column prop="nickname" label="用户昵称" min-width="110">
         <template slot-scope="scope">
           <el-popover trigger="hover" placement="top">
@@ -59,14 +59,14 @@
         </template>
       </el-table-column>
       <el-table-column prop="menu_name" label="菜单名称" min-width="140" show-overflow-tooltip />
-      <el-table-column prop="request_method" label="请求方式 " min-width="90" />
+      <el-table-column prop="request_method" label="请求方式" min-width="90" />
       <el-table-column prop="request_ip" label="请求IP" min-width="130" />
       <el-table-column prop="request_region" label="请求地区" min-width="150" show-overflow-tooltip />
       <el-table-column prop="request_isp" label="请求ISP" min-width="110" show-overflow-tooltip />
       <el-table-column prop="create_time" label="请求时间" min-width="160" sortable="custom" />
       <el-table-column prop="response_code" label="返回码" min-width="80" />
       <el-table-column prop="response_msg" label="返回描述" min-width="130" show-overflow-tooltip />
-      <el-table-column label="操作" min-width="150" align="right" fixed="right">
+      <el-table-column label="操作" min-width="145" align="right" fixed="right">
         <template slot-scope="{ row }">
           <el-button size="mini" type="primary" @click="info(row)">详情</el-button>
           <el-button size="mini" type="danger" @click="dele(row)">删除</el-button>
@@ -76,7 +76,7 @@
     <!-- 分页 -->
     <pagination v-show="count > 0" :total="count" :page.sync="query.page" :limit.sync="query.limit" @pagination="lists" />
     <!-- 详情 -->
-    <el-dialog :title="dialogTitle" :visible.sync="dialog" top="1vh" :before-close="cancel">
+    <el-dialog :title="dialogTitle" :visible.sync="dialog" top="1vh" width="50%" :before-close="cancel">
       <el-form ref="ref" :rules="rules" :model="model" label-width="100px" class="dialog-body" :style="{height:height+30+'px'}">
         <el-form-item label="用户ID" prop="admin_user_id">
           <el-col :span="10">

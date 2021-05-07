@@ -35,7 +35,7 @@ export function pwd(data) {
   })
 }
 /**
- * 修改头像
+ * 更换头像
  * @param {array} data 请求数据
  */
 export function avatar(data) {

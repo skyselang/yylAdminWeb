@@ -5,28 +5,28 @@ export { parseTime, formatTime } from '@/utils'
  * 如果时间是复数，则显示复数标签
  * @param {number} time
  * @param {string} label
- * @return {string}
  */
 function pluralize(time, label) {
   if (time === 1) {
     return time + label
+  } else {
+    return time + label + 's'
   }
-  return time + label + 's'
 }
 
 /**
  * 几 分钟/小时/天 前
- * 1 day
+ * 1 天
  * @param {number} time
  */
 export function timeAgo(time) {
   const between = Date.now() / 1000 - Number(time)
   if (between < 3600) {
-    return pluralize(~~(between / 60), ' minute')
+    return pluralize(~~(between / 60), ' 分钟')
   } else if (between < 86400) {
-    return pluralize(~~(between / 3600), ' hour')
+    return pluralize(~~(between / 3600), ' 小时')
   } else {
-    return pluralize(~~(between / 86400), ' day')
+    return pluralize(~~(between / 86400), ' 天')
   }
 }
 
@@ -63,7 +63,7 @@ export function toThousandFilter(num) {
 }
 
 /**
- * 大写第一字符
+ * 首字母大写
  * str => Str
  * @param {String} string
  */

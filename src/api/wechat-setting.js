@@ -1,13 +1,13 @@
 import request from '@/utils/request'
 
-// ----------------微信配置-------------------
+// ----------------微信设置-------------------
 /**
  * 公众号信息
  * @param {array} params 请求参数
  */
 export function offiInfo(params) {
   return request({
-    url: '/admin/WechatConfig/offiInfo',
+    url: '/admin/WechatSetting/offiInfo',
     method: 'get',
     params: params
   })
@@ -18,7 +18,7 @@ export function offiInfo(params) {
  */
 export function offiEdit(data) {
   return request({
-    url: '/admin/WechatConfig/offiEdit',
+    url: '/admin/WechatSetting/offiEdit',
     method: 'post',
     data
   })
@@ -29,7 +29,7 @@ export function offiEdit(data) {
  */
 export function miniInfo(params) {
   return request({
-    url: '/admin/WechatConfig/miniInfo',
+    url: '/admin/WechatSetting/miniInfo',
     method: 'get',
     params: params
   })
@@ -40,7 +40,7 @@ export function miniInfo(params) {
  */
 export function miniEdit(data) {
   return request({
-    url: '/admin/WechatConfig/miniEdit',
+    url: '/admin/WechatSetting/miniEdit',
     method: 'post',
     data
   })

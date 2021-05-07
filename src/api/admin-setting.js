@@ -1,46 +1,68 @@
 import request from '@/utils/request'
 
-// ----------------系统管理----------------
+// ----------------设置管理----------------
 /**
- * 设置信息
+ * 缓存信息
  * @param {array} params 请求数据
  */
-export function info(params) {
+export function cacheInfo(params) {
   return request({
-    url: '/admin/AdminSetting/info',
+    url: '/admin/AdminSetting/cacheInfo',
     method: 'get',
     params: params
   })
 }
 /**
- * 缓存设置
+ * 缓存清除
  * @param {array} data 请求数据
  */
-export function cache(data) {
+export function cacheClear(data) {
   return request({
-    url: '/admin/AdminSetting/cache',
+    url: '/admin/AdminSetting/cacheClear',
     method: 'post',
     data
   })
 }
 /**
- * 验证码设置
+ * Token信息
+ * @param {array} params 请求数据
+ */
+export function tokenInfo(params) {
+  return request({
+    url: '/admin/AdminSetting/tokenInfo',
+    method: 'get',
+    params: params
+  })
+}
+/**
+ * Token修改
  * @param {array} data 请求数据
  */
-export function verify(data) {
+export function tokenEdit(data) {
   return request({
-    url: '/admin/AdminSetting/verify',
+    url: '/admin/AdminSetting/tokenEdit',
     method: 'post',
     data
   })
 }
 /**
- * Token设置
+ * 验证码信息
+ * @param {array} params 请求数据
+ */
+export function verifyInfo(params) {
+  return request({
+    url: '/admin/AdminSetting/verifyInfo',
+    method: 'get',
+    params: params
+  })
+}
+/**
+ * 验证码修改
  * @param {array} data 请求数据
  */
-export function token(data) {
+export function verifyEdit(data) {
   return request({
-    url: '/admin/AdminSetting/token',
+    url: '/admin/AdminSetting/verifyEdit',
     method: 'post',
     data
   })

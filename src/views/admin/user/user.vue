@@ -17,11 +17,11 @@
     </div>
     <!-- 列表 -->
     <el-table v-loading="loading" :data="datas" :height="height" style="width: 100%" border @sort-change="sort">
-      <el-table-column prop="admin_user_id" label="ID" min-width="100" sortable="custom" fixed="left" />
+      <el-table-column prop="admin_user_id" label="用户ID" min-width="100" sortable="custom" fixed="left" />
       <el-table-column prop="username" label="账号" min-width="120" sortable="custom" show-overflow-tooltip />
       <el-table-column prop="nickname" label="昵称" min-width="120" sortable="custom" show-overflow-tooltip />
       <el-table-column prop="email" label="邮箱" min-width="250" sortable="custom" show-overflow-tooltip />
-      <el-table-column prop="login_ip" label="登录IP" min-width="130" sortable="custom" />
+      <el-table-column prop="create_tie" label="添加时间" min-width="160" sortable="custom" />
       <el-table-column prop="login_time" label="登录时间" min-width="160" sortable="custom" />
       <el-table-column prop="login_num" label="登录次数" min-width="105" sortable="custom" />
       <el-table-column prop="sort" label="排序" width="75" sortable="custom" />
@@ -47,7 +47,7 @@
     <!-- 分页 -->
     <pagination v-show="count > 0" :total="count" :page.sync="query.page" :limit.sync="query.limit" @pagination="list" />
     <!-- 添加、修改 -->
-    <el-dialog :title="dialogTitle" :visible.sync="dialog" top="1vh" :before-close="cancel">
+    <el-dialog :title="dialogTitle" :visible.sync="dialog" top="1vh" width="50%" :before-close="cancel">
       <el-form ref="ref" :model="model" :rules="rules" class="dialog-body" label-width="100px" :style="{height:height+30+'px'}">
         <el-form-item v-if="model.admin_user_id && model.avatar" label="头像" prop="avatar">
           <el-col :span="10">
@@ -67,7 +67,7 @@
             >
               <el-button>更换头像</el-button>
             </el-upload>
-            <span>jpg、png图片，小于50kb，宽高1:1</span>
+            <span>jpg、png图片，小于100kb，宽高1:1</span>
           </el-col>
         </el-form-item>
         <el-form-item label="账号" prop="username">
@@ -125,7 +125,7 @@
       </div>
     </el-dialog>
     <!-- 分配权限 -->
-    <el-dialog :title="'用户分配权限：'+model.admin_user_id" :visible.sync="ruleDialog" top="1vh">
+    <el-dialog :title="'用户分配权限：'+model.admin_user_id" :visible.sync="ruleDialog" top="1vh" width="50%">
       <el-form ref="roleRef" :model="model" class="dialog-body" label-width="100px" :style="{height:height+30+'px'}">
         <el-form-item label="账号">
           <el-col :span="10">
@@ -173,7 +173,7 @@
       </div>
     </el-dialog>
     <!-- 重置密码 -->
-    <el-dialog :title="'用户重置密码：'+model.admin_user_id" :visible.sync="pwdDialog" top="1vh">
+    <el-dialog :title="'用户重置密码：'+model.admin_user_id" :visible.sync="pwdDialog" top="1vh" width="50%">
       <el-form ref="pwdRef" :rules="pwdRules" :model="model" class="dialog-body" label-width="100px" :style="{height:height+30+'px'}">
         <el-form-item label="账号">
           <el-input v-model="model.username" clearable disabled />
@@ -365,7 +365,7 @@ export default {
         this.list()
       }
     },
-    // 修改头像
+    // 更换头像
     uploadBefore() {
       this.uploadData.admin_user_id = this.model.admin_user_id
     },

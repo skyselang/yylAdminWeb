@@ -62,7 +62,7 @@
       </el-tab-pane>
       <el-tab-pane v-if="checkPermission(['admin/AdminUtils/server'])" label="服务器" name="server">
         <el-row :gutter="8">
-          <el-col :sm="24" :md="12">
+          <el-col :sm="24" :md="24">
             <div class="filter-container">
               <Server v-if="server" />
             </div>

@@ -35,7 +35,7 @@ export function dele(data) {
   })
 }
 /**
- * 会员日志管理
+ * 会员日志统计
  * @param {array} data 请求数据
  */
 export function stat(data) {

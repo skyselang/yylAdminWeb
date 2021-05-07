@@ -8,7 +8,7 @@
               <el-avatar v-if="avatar" shape="circle" fit="contain" :size="100" :src="avatar" />
             </el-form-item>
             <el-form-item label="">
-              <div>jpg、png图片，小于50kb，宽高1:1</div>
+              <div>jpg、png图片，小于100kb，宽高1:1</div>
             </el-form-item>
             <el-form-item>
               <el-upload

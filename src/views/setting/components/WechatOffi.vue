@@ -10,27 +10,23 @@
             <el-input v-model="model.origin_id" />
           </el-form-item>
           <el-form-item label="二维码" prop="qrcode">
-            <el-col :span="12">
-              <el-image shape="circle" fit="contain" style="height: 100px" :src="model.qrcode_url" :preview-src-list="[model.qrcode_url]">
-                <div slot="error" class="image-slot">
-                  <i class="el-icon-picture-outline" />
-                </div>
-              </el-image>
-            </el-col>
-            <el-col :span="12">
-              <el-upload
-                name="file"
-                :show-file-list="false"
-                :action="uploadAction"
-                :headers="uploadHeaders"
-                :data="uploadData"
-                :on-success="uploadSuccess"
-                :on-error="uploadError"
-              >
-                <el-button>上传</el-button>
-              </el-upload>
-              <span>jpg、png图片，小于200KB，宽高1:1</span>
-            </el-col>
+            <el-image shape="circle" fit="contain" style="height: 100px" :src="model.qrcode_url" :preview-src-list="[model.qrcode_url]">
+              <div slot="error" class="image-slot">
+                <i class="el-icon-picture-outline" />
+              </div>
+            </el-image>
+            <el-upload
+              name="file"
+              :show-file-list="false"
+              :action="uploadAction"
+              :headers="uploadHeaders"
+              :data="uploadData"
+              :on-success="uploadSuccess"
+              :on-error="uploadError"
+            >
+              <el-button size="mini">上传</el-button>
+            </el-upload>
+            <span>jpg、png图片，小于200KB，宽高1:1</span>
           </el-form-item>
           <el-form-item label="AppID" prop="appid">
             <el-input v-model="model.appid" />
@@ -63,7 +59,7 @@
 </template>
 
 <script>
-import { offiInfo, offiEdit } from '@/api/wechat-config'
+import { offiInfo, offiEdit } from '@/api/wechat-setting'
 import { getAdminUserId, getAdminToken } from '@/utils/auth'
 
 export default {
@@ -88,7 +84,7 @@ export default {
         encoding_aes_type: 1,
         qrcode_url: ''
       },
-      uploadAction: process.env.VUE_APP_BASE_API + '/admin/WechatConfig/qrcode',
+      uploadAction: process.env.VUE_APP_BASE_API + '/admin/WechatSetting/qrcode',
       uploadHeaders: { AdminUserId: getAdminUserId(), AdminToken: getAdminToken() },
       uploadData: { type: 'offi' },
       rules: {

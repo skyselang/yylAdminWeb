@@ -31,8 +31,8 @@
     </div>
     <!-- 列表 -->
     <el-table v-loading="loading" :data="data" :height="height+80" style="width: 100%" border @sort-change="sort">
-      <el-table-column prop="news_id" label="ID" min-width="80" sortable="custom" />
-      <el-table-column prop="image" label="图片" min-width="100" align="center">
+      <el-table-column prop="news_id" label="新闻ID" min-width="100" sortable="custom" />
+      <el-table-column prop="image" label="图片" min-width="90" align="center">
         <template slot-scope="scope">
           <el-image
             v-if="scope.row.img_url"
@@ -43,33 +43,33 @@
           />
         </template>
       </el-table-column>
-      <el-table-column prop="title" label="标题" min-width="220" show-overflow-tooltip />
+      <el-table-column prop="title" label="标题" min-width="250" show-overflow-tooltip />
       <el-table-column prop="time" label="时间" min-width="160" sortable="custom" />
-      <el-table-column prop="sort" label="排序" min-width="75" sortable="custom" />
       <el-table-column prop="hits" label="点击量" min-width="90" sortable="custom" />
+      <el-table-column prop="sort" label="排序" min-width="80" sortable="custom" />
       <el-table-column prop="is_top" label="置顶" min-width="100" sortable="custom" align="center">
         <template slot-scope="scope">
           <el-switch v-model="scope.row.is_top" :active-value="1" :inactive-value="0" @change="istop(scope.row)" />
         </template>
       </el-table-column>
-      <el-table-column prop="is_hot" label="热门" min-width="100" sortable="custom" align="center">
+      <el-table-column prop="is_hot" label="热门" min-width="80" sortable="custom" align="center">
         <template slot-scope="scope">
           <el-switch v-model="scope.row.is_hot" :active-value="1" :inactive-value="0" @change="ishot(scope.row)" />
         </template>
       </el-table-column>
-      <el-table-column prop="is_rec" label="推荐" min-width="100" sortable="custom" align="center">
+      <el-table-column prop="is_rec" label="推荐" min-width="80" sortable="custom" align="center">
         <template slot-scope="scope">
           <el-switch v-model="scope.row.is_rec" :active-value="1" :inactive-value="0" @change="isrec(scope.row)" />
         </template>
       </el-table-column>
-      <el-table-column prop="is_hide" label="隐藏" min-width="100" sortable="custom" align="center">
+      <el-table-column prop="is_hide" label="隐藏" min-width="80" sortable="custom" align="center">
         <template slot-scope="scope">
           <el-switch v-model="scope.row.is_hide" :active-value="1" :inactive-value="0" @change="ishide(scope.row)" />
         </template>
       </el-table-column>
       <el-table-column prop="create_time" label="添加时间" min-width="160" sortable="custom" />
       <el-table-column prop="update_time" label="修改时间" min-width="160" sortable="custom" />
-      <el-table-column label="操作" min-width="150" align="right" fixed="right">
+      <el-table-column label="操作" min-width="145" align="right" fixed="right">
         <template slot-scope="{ row }">
           <el-button size="mini" type="success" @click="edit(row)">修改</el-button>
           <el-button size="mini" type="danger" @click="dele(row)">删除</el-button>

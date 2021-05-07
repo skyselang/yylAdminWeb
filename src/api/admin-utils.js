@@ -2,39 +2,6 @@ import request from '@/utils/request'
 
 // ----------------实用工具----------------
 /**
- * 接口文档
- * @param {array} data 请求数据
- */
-export function apidoc(data) {
-  return request({
-    url: '/admin/AdminUtils/apidoc',
-    method: 'get',
-    params: data
-  })
-}
-/**
- * 表单构建
- * @param {array} data 请求数据
- */
-export function formbuild(data) {
-  return request({
-    url: '/admin/AdminUtils/form',
-    method: 'get',
-    params: data
-  })
-}
-/**
- * 服务器信息
- * @param {array} data 请求数据
- */
-export function server(data) {
-  return request({
-    url: '/admin/AdminUtils/server',
-    method: 'get',
-    params: data
-  })
-}
-/**
  * 随机字符串
  * @param {array} data 请求数据
  */
@@ -68,17 +35,6 @@ export function timestamp(data) {
   })
 }
 /**
- * 生成二维码
- * @param {array} data 请求数据
- */
-export function qrcode(data) {
-  return request({
-    url: '/admin/AdminUtils/qrcode',
-    method: 'post',
-    data
-  })
-}
-/**
  * 字节转换
  * @param {array} data 请求数据
  */
@@ -98,5 +54,16 @@ export function ipinfo(data) {
     url: '/admin/AdminUtils/ipinfo',
     method: 'post',
     data
+  })
+}
+/**
+ * 服务器信息
+ * @param {array} params 请求参数
+ */
+export function server(params) {
+  return request({
+    url: '/admin/AdminUtils/server',
+    method: 'get',
+    params: params
   })
 }

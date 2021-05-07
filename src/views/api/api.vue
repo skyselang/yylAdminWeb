@@ -15,20 +15,20 @@
       <el-table-column prop="api_url" label="接口链接" min-width="260" show-overflow-tooltip />
       <el-table-column prop="api_sort" label="接口排序" min-width="90" />
       <el-table-column prop="api_id" label="接口ID" min-width="80" />
-      <el-table-column prop="api_pid" label="接口PID" min-width="80" />
+      <el-table-column prop="api_pid" label="PID" min-width="80" />
       <el-table-column prop="create_time" label="添加时间" min-width="160" />
       <el-table-column prop="update_time" label="修改时间" min-width="160" />
-      <el-table-column prop="is_disable" label="是否禁用" min-width="80" align="center" fixed="right">
+      <el-table-column prop="is_disable" label="是否禁用" min-width="80" align="center">
         <template slot-scope="scope">
           <el-switch v-if="scope.row.api_url" v-model="scope.row.is_disable" :active-value="1" :inactive-value="0" @change="disable(scope.row)" />
         </template>
       </el-table-column>
-      <el-table-column prop="is_unauth" label="无需权限" min-width="80" align="center" fixed="right">
+      <el-table-column prop="is_unauth" label="无需权限" min-width="80" align="center">
         <template slot-scope="scope">
           <el-switch v-if="scope.row.api_url" v-model="scope.row.is_unauth" :active-value="1" :inactive-value="0" @change="unauth(scope.row)" />
         </template>
       </el-table-column>
-      <el-table-column label="操作" min-width="215" align="right" fixed="right">
+      <el-table-column label="操作" min-width="210" align="right" fixed="right">
         <template slot-scope="{ row }">
           <el-button size="mini" type="primary" @click="add(row)">添加</el-button>
           <el-button size="mini" type="success" @click="edit(row)">修改</el-button>

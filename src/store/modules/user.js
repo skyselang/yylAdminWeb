@@ -24,7 +24,6 @@ const state = {
   username: '',
   nickname: '',
   avatar: '',
-  remark: '',
   roles: []
 }
 

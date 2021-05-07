@@ -175,60 +175,6 @@ export const asyncRoutes = [
     ]
   },
   {
-    path: '/index',
-    name: 'Index',
-    meta: {
-      title: '应用管理',
-      icon: 'el-icon-menu',
-      roles: ['admin/Region/list']
-    },
-    redirect: 'noRedirect',
-    component: Layout,
-    alwaysShow: true,
-    children: [
-      {
-        path: 'region',
-        name: 'Region',
-        meta: {
-          title: '地区管理',
-          icon: 'el-icon-s-grid',
-          roles: ['admin/Region/list']
-        },
-        component: () => import('@/views/region/region')
-      },
-      {
-        path: 'verify',
-        name: 'Verify',
-        meta: {
-          title: '验证码设置',
-          icon: 'el-icon-s-grid',
-          roles: ['admin/Setting/verify']
-        },
-        component: () => import('@/views/setting/verify')
-      },
-      {
-        path: 'token',
-        name: 'Token',
-        meta: {
-          title: 'Token设置',
-          icon: 'el-icon-s-grid',
-          roles: ['admin/Setting/token']
-        },
-        component: () => import('@/views/setting/token')
-      },
-      {
-        path: 'wechat',
-        name: 'wechat',
-        meta: {
-          title: '微信设置',
-          icon: 'el-icon-s-grid',
-          roles: ['admin/WechatConfig/offiInfo', 'admin/WechatConfig/miniInfo']
-        },
-        component: () => import('@/views/setting/setting')
-      }
-    ]
-  },
-  {
     path: '/apis',
     name: 'Apis',
     meta: {
@@ -259,6 +205,56 @@ export const asyncRoutes = [
           roles: ['admin/ApiEnv/list']
         },
         component: () => import('@/views/api/api-env')
+      }
+    ]
+  },
+  {
+    path: '/settings',
+    name: 'Settings',
+    meta: {
+      title: '设置管理',
+      icon: 'el-icon-menu',
+      roles: [
+        'admin/Setting/tokenInfo',
+        'admin/Setting/verifyInfo',
+        'admin/WechatSetting/offiInfo',
+        'admin/WechatSetting/miniInfo',
+        'admin/Region/list'
+      ]
+    },
+    redirect: 'noRedirect',
+    component: Layout,
+    alwaysShow: true,
+    children: [
+      {
+        path: 'base',
+        name: 'Base',
+        meta: {
+          title: '基础设置',
+          icon: 'el-icon-s-grid',
+          roles: ['admin/Setting/tokenInfo', 'admin/Setting/verifyInfo']
+        },
+        component: () => import('@/views/setting/base')
+      },
+      {
+        path: 'wechat',
+        name: 'Wechat',
+        meta: {
+          title: '微信设置',
+          icon: 'el-icon-s-grid',
+          roles: ['admin/WechatSetting/offiInfo', 'admin/WechatSetting/miniInfo']
+        },
+        component: () => import('@/views/setting/wechat')
+      },
+      {
+        path: 'region',
+        name: 'Region',
+        meta: {
+          title: '地区管理',
+          icon: 'el-icon-s-grid',
+          roles: ['admin/Region/list']
+        },
+        component: () => import('@/views/region/region')
       }
     ]
   },
@@ -353,14 +349,11 @@ export const asyncRoutes = [
       title: '系统管理',
       icon: 'el-icon-setting',
       roles: [
-        'admin/AdminUtils/apidoc',
-        'admin/AdminUtils/form',
-        'admin/AdminUtils/server',
-        'admin/AdminUtils/tools',
-        'admin/AdminUtils/map',
-        'admin/AdminSetting/cache',
-        'admin/AdminSetting/verify',
-        'admin/AdminSetting/token'
+        'admin/AdminApidoc/apidoc',
+        'admin/AdminSetting/cacheInfo',
+        'admin/AdminSetting/tokenInfo',
+        'admin/AdminSetting/verifyInfo',
+        'admin/AdminUtils/utils'
       ]
     },
     redirect: 'noRedirect',
@@ -373,53 +366,27 @@ export const asyncRoutes = [
         meta: {
           title: '接口文档',
           icon: 'el-icon-document',
-          roles: ['admin/AdminUtils/apidoc']
+          roles: ['admin/AdminApidoc/apidoc']
         },
         component: () => import('@/views/admin/apidoc/apidoc')
       },
       {
-        path: 'form',
-        name: 'Form',
+        path: 'setting',
+        name: 'Setting',
         meta: {
-          title: '表单构建',
-          icon: 'el-icon-tickets',
-          roles: ['admin/AdminUtils/form']
+          title: '设置管理',
+          icon: 'el-icon-s-tools',
+          roles: [
+            'admin/AdminSetting/cacheInfo',
+            'admin/AdminSetting/tokenInfo',
+            'admin/AdminSetting/verifyInfo'
+          ]
         },
-        component: () => import('@/views/admin/form/index')
+        component: () => import('@/views/admin/setting/setting')
       },
       {
-        path: 'setting-cache',
-        name: 'SettingCache',
-        meta: {
-          title: '缓存设置',
-          icon: 'el-icon-coin',
-          roles: ['admin/AdminSetting/cache']
-        },
-        component: () => import('@/views/admin/setting/cache')
-      },
-      {
-        path: 'setting-verify',
-        name: 'SettingVerify',
-        meta: {
-          title: '验证码设置',
-          icon: 'el-icon-picture-outline',
-          roles: ['admin/AdminSetting/verify']
-        },
-        component: () => import('@/views/admin/setting/verify')
-      },
-      {
-        path: 'setting-token',
-        name: 'SettingToken',
-        meta: {
-          title: 'Token设置',
-          icon: 'el-icon-key',
-          roles: ['admin/AdminSetting/token']
-        },
-        component: () => import('@/views/admin/setting/token')
-      },
-      {
-        path: 'tools',
-        name: 'Tools',
+        path: 'utils',
+        name: 'Utils',
         meta: {
           title: '实用工具',
           icon: 'el-icon-help',
