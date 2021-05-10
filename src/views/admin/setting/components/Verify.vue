@@ -4,6 +4,9 @@
       <el-form-item label="验证码开关" prop="verify_switch">
         <el-switch v-model="model.verify_switch" :active-value="1" :inactive-value="0" />
       </el-form-item>
+      <el-form-item label="" prop="">
+        <span>开启后，后台登录需要输入验证码。</span>
+      </el-form-item>
       <el-form-item>
         <el-button :loading="loading" type="primary" @click="submit()">提交</el-button>
       </el-form-item>

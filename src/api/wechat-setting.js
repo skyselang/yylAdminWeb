@@ -7,7 +7,7 @@ import request from '@/utils/request'
  */
 export function offiInfo(params) {
   return request({
-    url: '/admin/WechatSetting/offiInfo',
+    url: '/admin/SettingWechat/offiInfo',
     method: 'get',
     params: params
   })
@@ -18,7 +18,7 @@ export function offiInfo(params) {
  */
 export function offiEdit(data) {
   return request({
-    url: '/admin/WechatSetting/offiEdit',
+    url: '/admin/SettingWechat/offiEdit',
     method: 'post',
     data
   })
@@ -29,7 +29,7 @@ export function offiEdit(data) {
  */
 export function miniInfo(params) {
   return request({
-    url: '/admin/WechatSetting/miniInfo',
+    url: '/admin/SettingWechat/miniInfo',
     method: 'get',
     params: params
   })
@@ -40,7 +40,7 @@ export function miniInfo(params) {
  */
 export function miniEdit(data) {
   return request({
-    url: '/admin/WechatSetting/miniEdit',
+    url: '/admin/SettingWechat/miniEdit',
     method: 'post',
     data
   })

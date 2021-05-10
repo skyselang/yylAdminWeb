@@ -4,6 +4,9 @@
       <el-form-item label="缓存类型" prop="type">
         <el-input v-model="model.type" />
       </el-form-item>
+      <el-form-item label="" prop="">
+        <span>手动清除所有缓存（后台登录状态不会清除）。</span>
+      </el-form-item>
       <el-form-item label="">
         <el-button :loading="loading" type="primary" title="清除缓存" @click="submit()">清除</el-button>
       </el-form-item>

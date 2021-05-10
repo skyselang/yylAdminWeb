@@ -84,7 +84,7 @@ export default {
         encoding_aes_type: 1,
         qrcode_url: ''
       },
-      uploadAction: process.env.VUE_APP_BASE_API + '/admin/WechatSetting/qrcode',
+      uploadAction: process.env.VUE_APP_BASE_API + '/admin/SettingWechat/qrcode',
       uploadHeaders: { AdminUserId: getAdminUserId(), AdminToken: getAdminToken() },
       uploadData: { type: 'offi' },
       rules: {

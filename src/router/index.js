@@ -217,8 +217,8 @@ export const asyncRoutes = [
       roles: [
         'admin/Setting/tokenInfo',
         'admin/Setting/verifyInfo',
-        'admin/WechatSetting/offiInfo',
-        'admin/WechatSetting/miniInfo',
+        'admin/SettingWechat/offiInfo',
+        'admin/SettingWechat/miniInfo',
         'admin/Region/list'
       ]
     },
@@ -242,7 +242,7 @@ export const asyncRoutes = [
         meta: {
           title: '微信设置',
           icon: 'el-icon-s-grid',
-          roles: ['admin/WechatSetting/offiInfo', 'admin/WechatSetting/miniInfo']
+          roles: ['admin/SettingWechat/offiInfo', 'admin/SettingWechat/miniInfo']
         },
         component: () => import('@/views/setting/wechat')
       },

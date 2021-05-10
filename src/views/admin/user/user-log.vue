@@ -34,30 +34,8 @@
     <!-- 列表 -->
     <el-table v-loading="loading" :data="data" :height="height" style="width: 100%" border @sort-change="sort">
       <el-table-column prop="admin_user_log_id" label="日志ID" min-width="100" sortable="custom" fixed="left" />
-      <el-table-column prop="nickname" label="用户昵称" min-width="110">
-        <template slot-scope="scope">
-          <el-popover trigger="hover" placement="top">
-            用户ID: {{ scope.row.admin_user_id }} <br>
-            用户账号: {{ scope.row.username }} <br>
-            用户昵称: {{ scope.row.nickname }}
-            <div slot="reference" class="name-wrapper">
-              <el-tag>{{ scope.row.nickname }}</el-tag>
-            </div>
-          </el-popover>
-        </template>
-      </el-table-column>
-      <el-table-column prop="menu_url" label="菜单链接" min-width="240">
-        <template slot-scope="scope">
-          <el-popover trigger="hover" placement="top">
-            菜单ID: {{ scope.row.admin_menu_id }} <br>
-            菜单名称: {{ scope.row.menu_name }} <br>
-            菜单链接: {{ scope.row.menu_url }}
-            <div slot="reference" class="name-wrapper">
-              {{ scope.row.menu_url }}
-            </div>
-          </el-popover>
-        </template>
-      </el-table-column>
+      <el-table-column prop="username" label="用户账号" min-width="110" show-overflow-tooltip />
+      <el-table-column prop="menu_url" label="菜单链接" min-width="240" show-overflow-tooltip />
       <el-table-column prop="menu_name" label="菜单名称" min-width="140" show-overflow-tooltip />
       <el-table-column prop="request_method" label="请求方式" min-width="90" />
       <el-table-column prop="request_ip" label="请求IP" min-width="130" />

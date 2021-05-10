@@ -6,6 +6,9 @@
           <template slot="append">小时</template>
         </el-input>
       </el-form-item>
+      <el-form-item label="" prop="">
+        <span>后台登录状态有效时间，过期需重新登录。</span>
+      </el-form-item>
       <el-form-item>
         <el-button :loading="loading" type="primary" @click="submit()">提交</el-button>
       </el-form-item>
