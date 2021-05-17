@@ -33,30 +33,8 @@
     <!-- 列表 -->
     <el-table v-loading="loading" :data="data" :height="height" style="width: 100%" border @sort-change="sort">
       <el-table-column prop="member_log_id" label="日志ID" min-width="100" sortable="custom" fixed="left" />
-      <el-table-column prop="username" label="账号" min-width="110" show-overflow-tooltip>
-        <template slot-scope="scope">
-          <el-popover trigger="hover" placement="top">
-            会员ID: {{ scope.row.member_id }} <br>
-            账号: {{ scope.row.username }} <br>
-            昵称: {{ scope.row.nickname }}
-            <div slot="reference" class="name-wrapper">
-              <el-tag>{{ scope.row.username }}</el-tag>
-            </div>
-          </el-popover>
-        </template>
-      </el-table-column>
-      <el-table-column prop="api_url" label="接口链接" min-width="240" show-overflow-tooltip>
-        <template slot-scope="scope">
-          <el-popover trigger="hover" placement="top">
-            接口ID: {{ scope.row.api_id }} <br>
-            接口名称: {{ scope.row.api_name }} <br>
-            接口链接: {{ scope.row.api_url }}
-            <div slot="reference" class="name-wrapper">
-              {{ scope.row.api_url }}
-            </div>
-          </el-popover>
-        </template>
-      </el-table-column>
+      <el-table-column prop="username" label="账号" min-width="110" show-overflow-tooltip />
+      <el-table-column prop="api_url" label="接口链接" min-width="240" show-overflow-tooltip />
       <el-table-column prop="api_name" label="接口名称" min-width="130" show-overflow-tooltip />
       <el-table-column prop="request_method" label="请求方式 " min-width="110" />
       <el-table-column prop="request_ip" label="请求IP" min-width="130" />
