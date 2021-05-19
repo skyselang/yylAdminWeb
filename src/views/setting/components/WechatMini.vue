@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import { miniInfo, miniEdit } from '@/api/wechat-setting'
+import { miniInfo, miniEdit } from '@/api/setting-wechat'
 import { getAdminUserId, getAdminToken } from '@/utils/auth'
 
 export default {

@@ -4,8 +4,12 @@
     <div class="filter-container">
       <el-row :gutter="0">
         <el-col :xs="24" :sm="22">
-          <el-input v-model="query.news_id" class="filter-item" style="width: 110px;" placeholder="ID" clearable />
+          <el-input v-model="query.news_id" class="filter-item" style="width: 110px;" placeholder="新闻ID" clearable />
           <el-input v-model="query.title" class="filter-item" style="width: 200px;" placeholder="标题" clearable />
+          <el-select v-model="query.news_category_id" class="filter-item" style="width:130px;" clearable placeholder="分类">
+            <el-option :key="0" label="未分类" value="0" />
+            <el-option v-for="item in newsCategory" :key="item.news_category_id" :label="item.category_name" :value="item.news_category_id" />
+          </el-select>
           <el-select v-model="query.date_type" class="filter-item" style="width:110px;" placeholder="时间类型" clearable>
             <el-option value="time" label="时间" />
             <el-option value="create_time" label="添加时间" />
@@ -31,8 +35,8 @@
     </div>
     <!-- 列表 -->
     <el-table v-loading="loading" :data="data" :height="height+80" style="width: 100%" border @sort-change="sort">
-      <el-table-column prop="news_id" label="新闻ID" min-width="100" sortable="custom" />
-      <el-table-column prop="image" label="图片" min-width="90" align="center">
+      <el-table-column prop="news_id" label="新闻ID" min-width="90" sortable="custom" />
+      <el-table-column prop="image" label="图片" min-width="80" align="center">
         <template slot-scope="scope">
           <el-image
             v-if="scope.row.img_url"
@@ -43,11 +47,12 @@
           />
         </template>
       </el-table-column>
-      <el-table-column prop="title" label="标题" min-width="250" show-overflow-tooltip />
-      <el-table-column prop="time" label="时间" min-width="160" sortable="custom" />
+      <el-table-column prop="title" label="标题" min-width="240" show-overflow-tooltip />
+      <el-table-column prop="category_name" label="分类" min-width="90" show-overflow-tooltip />
+      <el-table-column prop="time" label="时间" min-width="155" sortable="custom" />
       <el-table-column prop="hits" label="点击量" min-width="90" sortable="custom" />
       <el-table-column prop="sort" label="排序" min-width="80" sortable="custom" />
-      <el-table-column prop="is_top" label="置顶" min-width="100" sortable="custom" align="center">
+      <el-table-column prop="is_top" label="置顶" min-width="80" sortable="custom" align="center">
         <template slot-scope="scope">
           <el-switch v-model="scope.row.is_top" :active-value="1" :inactive-value="0" @change="istop(scope.row)" />
         </template>
@@ -67,8 +72,8 @@
           <el-switch v-model="scope.row.is_hide" :active-value="1" :inactive-value="0" @change="ishide(scope.row)" />
         </template>
       </el-table-column>
-      <el-table-column prop="create_time" label="添加时间" min-width="160" sortable="custom" />
-      <el-table-column prop="update_time" label="修改时间" min-width="160" sortable="custom" />
+      <el-table-column prop="create_time" label="添加时间" min-width="155" sortable="custom" />
+      <el-table-column prop="update_time" label="修改时间" min-width="155" sortable="custom" />
       <el-table-column label="操作" min-width="145" align="right" fixed="right">
         <template slot-scope="{ row }">
           <el-button size="mini" type="success" @click="edit(row)">修改</el-button>
@@ -107,6 +112,16 @@
         </el-form-item>
         <el-form-item label="标题" prop="title">
           <el-input v-model="model.title" clearable placeholder="请输入标题" />
+        </el-form-item>
+        <el-form-item label="分类">
+          <el-select v-model="model.news_category_id" clearable placeholder="请选择">
+            <el-option
+              v-for="item in newsCategory"
+              :key="item.news_category_id"
+              :label="item.category_name"
+              :value="item.news_category_id"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="简介" prop="intro">
           <el-input v-model="model.intro" type="textarea" clearable placeholder="" />
@@ -160,7 +175,7 @@ import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination'
 import permission from '@/directive/permission/index.js' // 权限判断指令
 import { getAdminUserId, getAdminToken } from '@/utils/auth'
-import { list, info, add, edit, dele, istop, ishot, isrec, ishide } from '@/api/news'
+import { list, category, info, add, edit, dele, istop, ishot, isrec, ishide } from '@/api/news'
 import E from 'wangeditor'
 
 export default {
@@ -181,6 +196,7 @@ export default {
       dialogTitle: '',
       model: {
         news_id: '',
+        news_category_id: '',
         img: '',
         img_url: '',
         title: '',
@@ -201,12 +217,14 @@ export default {
         title: [{ required: true, message: '请输入标题', trigger: 'blur' }],
         time: [{ required: true, message: '请选择发布时间', trigger: 'blur' }],
         content: [{ required: true, message: '请输入内容', trigger: 'blur' }]
-      }
+      },
+      newsCategory: []
     }
   },
   created() {
     this.height = screenHeight()
     this.list()
+    this.category()
   },
   methods: {
     // 列表
@@ -224,6 +242,7 @@ export default {
       this.dialog = true
       this.dialogTitle = '新闻添加'
       this.model = this.$options.data().model
+      this.category()
     },
     // 修改
     edit(row) {
@@ -238,6 +257,7 @@ export default {
       }).catch(() => {
         this.loading = false
       })
+      this.category()
     },
     // 删除
     dele(row) {
@@ -294,6 +314,9 @@ export default {
     reset(row) {
       if (row) {
         this.model = row
+        if (this.model.news_category_id === 0) {
+          this.model.news_category_id = ''
+        }
       } else {
         this.model = this.$options.data().model
       }
@@ -453,6 +476,11 @@ export default {
     dialogClosed() {
       this.editor.destroy()
       this.editor = null
+    },
+    category() {
+      category().then(res => {
+        this.newsCategory = res.data.list
+      }).catch(() => {})
     }
   }
 }

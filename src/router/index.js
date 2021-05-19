@@ -156,7 +156,7 @@ export const asyncRoutes = [
     meta: {
       title: '新闻管理',
       icon: 'el-icon-menu',
-      roles: ['admin/News/list']
+      roles: ['admin/News/list', 'admin/NewsCategory/list']
     },
     redirect: 'noRedirect',
     component: Layout,
@@ -171,6 +171,16 @@ export const asyncRoutes = [
           roles: ['admin/News/list']
         },
         component: () => import('@/views/news/news')
+      },
+      {
+        path: 'news-category',
+        name: 'NewsCategory',
+        meta: {
+          title: '新闻分类',
+          icon: 'el-icon-s-grid',
+          roles: ['admin/NewsCategory/list']
+        },
+        component: () => import('@/views/news/news-category')
       }
     ]
   },

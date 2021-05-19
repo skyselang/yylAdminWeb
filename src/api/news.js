@@ -13,6 +13,17 @@ export function list(params) {
   })
 }
 /**
+ * 新闻分类列表
+ * @param {array} params 请求参数
+ */
+export function category(params) {
+  return request({
+    url: '/admin/News/category',
+    method: 'get',
+    params: params
+  })
+}
+/**
  * 新闻信息
  * @param {array} params 请求参数
  */

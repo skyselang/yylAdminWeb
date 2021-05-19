@@ -59,7 +59,7 @@
 </template>
 
 <script>
-import { offiInfo, offiEdit } from '@/api/wechat-setting'
+import { offiInfo, offiEdit } from '@/api/setting-wechat'
 import { getAdminUserId, getAdminToken } from '@/utils/auth'
 
 export default {
