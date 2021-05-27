@@ -1,14 +1,9 @@
 import { login, logout } from '@/api/admin-login'
 import { info as userInfo } from '@/api/admin-user-center'
 import {
-  setAdminUserId,
-  getAdminUserId,
-  delAdminUserId,
   setAdminToken,
   getAdminToken,
   delAdminToken,
-  setUsername,
-  delUsername,
   setNickname,
   delNickname,
   setAvatar,
@@ -19,7 +14,6 @@ import router, {
 } from '@/router'
 
 const state = {
-  adminUserId: '',
   adminToken: getAdminToken(),
   username: '',
   nickname: '',
@@ -28,14 +22,8 @@ const state = {
 }
 
 const mutations = {
-  SET_ADMINUSERID: (state, adminUserId) => {
-    state.adminUserId = adminUserId
-  },
   SET_ADMINTOKEN: (state, adminToken) => {
     state.adminToken = adminToken
-  },
-  SET_USERNAME: (state, username) => {
-    state.username = username
   },
   SET_NICKNAME: (state, nickname) => {
     state.nickname = nickname
@@ -54,20 +42,18 @@ const actions = {
     const {
       username,
       password,
-      verify_id,
-      verify_code
+      captcha_id,
+      captcha_code
     } = userInfo
     return new Promise((resolve, reject) => {
       login({
         username: username,
         password: password,
-        verify_id: verify_id,
-        verify_code: verify_code
+        captcha_id: captcha_id,
+        captcha_code: captcha_code
       }).then(response => {
         const { data } = response
-        commit('SET_ADMINUSERID', data.admin_user_id)
         commit('SET_ADMINTOKEN', data.admin_token)
-        setAdminUserId(data.admin_user_id)
         setAdminToken(data.admin_token)
         resolve()
       }).catch(error => {
@@ -79,9 +65,7 @@ const actions = {
   // 获取用户信息
   userInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-      userInfo({
-        admin_user_id: getAdminUserId()
-      }).then(response => {
+      userInfo().then(response => {
         const { data } = response
 
         if (!data) {
@@ -89,8 +73,6 @@ const actions = {
         }
 
         const {
-          admin_user_id,
-          username,
           nickname,
           avatar,
           roles
@@ -101,12 +83,9 @@ const actions = {
           reject('获取权限失败, 请重新登录！')
         }
 
-        commit('SET_ADMINUSERID', admin_user_id)
-        commit('SET_USERNAME', username)
         commit('SET_NICKNAME', nickname)
         commit('SET_AVATAR', avatar)
         commit('SET_ROLES', roles)
-        setUsername(data.username)
         setNickname(data.nickname)
         setAvatar(data.avatar)
         resolve(data)
@@ -119,14 +98,10 @@ const actions = {
   // 退出
   logout({ commit, state, dispatch }) {
     return new Promise((resolve, reject) => {
-      logout({
-        admin_user_id: getAdminUserId()
-      }).then(() => {
+      logout().then(() => {
         commit('SET_ADMINTOKEN', '')
         commit('SET_ROLES', [])
-        delAdminUserId()
         delAdminToken()
-        delUsername()
         delNickname()
         delAvatar()
         resetRouter()
@@ -146,7 +121,6 @@ const actions = {
     return new Promise(resolve => {
       commit('SET_ADMINTOKEN', '')
       commit('SET_ROLES', [])
-      delAdminUserId()
       delAdminToken()
       resolve()
     })

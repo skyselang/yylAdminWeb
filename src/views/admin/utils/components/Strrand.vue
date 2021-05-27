@@ -70,13 +70,6 @@ export default {
       }
       this.model.lens = lens
     },
-    copy(text, event) {
-      if (text) {
-        clip(text, event)
-      } else {
-        this.$message.error('请生成随机字符串')
-      }
-    },
     submit() {
       this.$refs['ref'].validate(valid => {
         if (valid) {
@@ -88,6 +81,13 @@ export default {
           })
         }
       })
+    },
+    copy(text, event) {
+      if (text) {
+        clip(text, event)
+      } else {
+        this.$message.error('请生成随机字符串')
+      }
     }
   }
 }

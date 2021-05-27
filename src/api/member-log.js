@@ -35,6 +35,17 @@ export function dele(data) {
   })
 }
 /**
+ * 会员日志清除
+ * @param {array} data 请求数据
+ */
+export function clear(data) {
+  return request({
+    url: '/admin/MemberLog/clear',
+    method: 'post',
+    data
+  })
+}
+/**
  * 会员日志统计
  * @param {array} data 请求数据
  */

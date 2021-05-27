@@ -10,7 +10,7 @@
       </el-row>
     </div>
     <!-- 列表 -->
-    <el-table v-loading="loading" :data="data" :height="height+80" style="width: 100%" row-key="api_id" border>
+    <el-table v-loading="loading" :data="data" :height="height+50" style="width: 100%" row-key="api_id" border>
       <el-table-column prop="api_name" label="接口名称" min-width="200" fixed="left" />
       <el-table-column prop="api_url" label="接口链接" min-width="260" show-overflow-tooltip />
       <el-table-column prop="api_sort" label="接口排序" min-width="90" />
@@ -18,14 +18,32 @@
       <el-table-column prop="api_pid" label="PID" min-width="80" />
       <el-table-column prop="create_time" label="添加时间" min-width="160" />
       <el-table-column prop="update_time" label="修改时间" min-width="160" />
-      <el-table-column prop="is_disable" label="是否禁用" min-width="80" align="center">
+      <el-table-column prop="is_disable" label="是否禁用" min-width="95" align="center">
+        <template slot="header">
+          <span>是否禁用 </span>
+          <el-tooltip placement="top">
+            <div slot="content">
+              开启后无法访问<br>
+            </div>
+            <i class="el-icon-info" title="" />
+          </el-tooltip>
+        </template>
         <template slot-scope="scope">
           <el-switch v-if="scope.row.api_url" v-model="scope.row.is_disable" :active-value="1" :inactive-value="0" @change="disable(scope.row)" />
         </template>
       </el-table-column>
-      <el-table-column prop="is_unauth" label="无需权限" min-width="80" align="center">
+      <el-table-column prop="is_unlogin" label="无需登录" min-width="95" align="center">
+        <template slot="header">
+          <span>无需登录 </span>
+          <el-tooltip placement="top">
+            <div slot="content">
+              开启后不用登录也可以访问，如登录注册等<br>
+            </div>
+            <i class="el-icon-info" title="" />
+          </el-tooltip>
+        </template>
         <template slot-scope="scope">
-          <el-switch v-if="scope.row.api_url" v-model="scope.row.is_unauth" :active-value="1" :inactive-value="0" @change="unauth(scope.row)" />
+          <el-switch v-if="scope.row.api_url" v-model="scope.row.is_unlogin" :active-value="1" :inactive-value="0" @change="unlogin(scope.row)" />
         </template>
       </el-table-column>
       <el-table-column label="操作" min-width="210" align="right" fixed="right">
@@ -37,8 +55,8 @@
       </el-table-column>
     </el-table>
     <!-- 添加、修改 -->
-    <el-dialog :title="dialogTitle" :visible.sync="dialog" width="65%" top="1vh" :before-close="cancel">
-      <el-form ref="ref" :rules="rules" :model="model" class="dialog-body" label-width="100px" :style="{height:height+30+'px'}">
+    <el-dialog :title="dialogTitle" :visible.sync="dialog" width="50%" top="1vh" :before-close="cancel">
+      <el-form ref="ref" :rules="rules" :model="model" class="dialog-body" label-width="100px" :style="{height:height+'px'}">
         <el-form-item label="接口父级" prop="api_pid">
           <el-cascader
             v-model="model.api_pid"
@@ -55,19 +73,16 @@
           <el-input v-model="model.api_name" placeholder="请输入接口名称" clearable />
         </el-form-item>
         <el-form-item label="接口链接" prop="api_url">
-          <el-input v-model="model.api_url" />
+          <el-input v-model="model.api_url" placeholder="应用/控制器/操作，区分大小写" />
         </el-form-item>
         <el-form-item label="接口排序" prop="api_sort">
           <el-input v-model="model.api_sort" type="number" placeholder="200" />
         </el-form-item>
         <el-form-item v-if="model.api_id" label="添加时间" prop="create_time">
-          <el-col :span="10">
-            <el-input v-model="model.create_time" disabled />
-          </el-col>
-          <el-col class="line" :span="4" style="text-align:center">修改时间</el-col>
-          <el-col :span="10">
-            <el-input v-model="model.update_time" disabled />
-          </el-col>
+          <el-input v-model="model.create_time" disabled />
+        </el-form-item>
+        <el-form-item v-if="model.api_id" label="修改时间" prop="update_time">
+          <el-input v-model="model.update_time" disabled />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -81,7 +96,7 @@
 <script>
 import screenHeight from '@/utils/screen-height'
 import permission from '@/directive/permission/index.js' // 权限判断指令
-import { list, info, add, edit, dele, disable, unauth } from '@/api/api'
+import { list, info, add, edit, dele, disable, unlogin } from '@/api/api'
 
 export default {
   name: 'Api',
@@ -230,12 +245,12 @@ export default {
         this.loading = false
       })
     },
-    // 是否无需权限
-    unauth(row) {
+    // 是否无需登录
+    unlogin(row) {
       this.loading = true
-      unauth({
+      unlogin({
         api_id: row.api_id,
-        is_unauth: row.is_unauth
+        is_unlogin: row.is_unlogin
       }).then(res => {
         this.list()
         this.$message.success(res.msg)

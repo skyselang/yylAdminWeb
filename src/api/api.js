@@ -67,12 +67,12 @@ export function disable(data) {
   })
 }
 /**
- * 接口是否无需权限
+ * 接口是否无需登录
  * @param {array} data 请求数据
  */
-export function unauth(data) {
+export function unlogin(data) {
   return request({
-    url: '/admin/Api/unauth',
+    url: '/admin/Api/unlogin',
     method: 'post',
     data
   })

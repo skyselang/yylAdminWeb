@@ -79,6 +79,17 @@ export function unauth(data) {
   })
 }
 /**
+ * 菜单是否无需登录
+ * @param {array} data 请求数据
+ */
+export function unlogin(data) {
+  return request({
+    url: '/admin/AdminMenu/unlogin',
+    method: 'post',
+    data
+  })
+}
+/**
  * 菜单角色
  * @param {array} params 请求参数
  */

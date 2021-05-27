@@ -55,7 +55,7 @@
     <pagination v-show="count > 0" :total="count" :page.sync="query.page" :limit.sync="query.limit" @pagination="list" />
     <!-- 添加、修改 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialog" top="1vh" width="50%" :before-close="cancel">
-      <el-form ref="ref" :rules="rules" :model="model" label-width="100px" class="dialog-body" :style="{height:height+30+'px'}">
+      <el-form ref="ref" :rules="rules" :model="model" label-width="100px" class="dialog-body" :style="{height:height+'px'}">
         <el-form-item label="名称" prop="env_name">
           <el-input v-model="model.env_name" placeholder="请输入名称" clearable />
         </el-form-item>
@@ -104,7 +104,7 @@ export default {
       count: 0,
       query: {
         page: 1,
-        limit: 13
+        limit: 12
       },
       model: {
         api_env_id: '',

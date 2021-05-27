@@ -10,18 +10,23 @@
         </el-form-item>
         <el-form-item label="长度" prop="len">
           <el-input v-model="model.len" clearable />
+          <el-button icon="el-icon-document-copy" @click="copy(model.len, $event)" />
         </el-form-item>
         <el-form-item label="小写" prop="lower">
           <el-input v-model="model.lower" clearable />
+          <el-button icon="el-icon-document-copy" @click="copy(model.lower, $event)" />
         </el-form-item>
         <el-form-item label="大写" prop="upper">
           <el-input v-model="model.upper" clearable />
+          <el-button icon="el-icon-document-copy" @click="copy(model.upper, $event)" />
         </el-form-item>
         <el-form-item label="反转" prop="rev">
           <el-input v-model="model.rev" clearable />
+          <el-button icon="el-icon-document-copy" @click="copy(model.rev, $event)" />
         </el-form-item>
         <el-form-item label="MD5" prop="md5">
           <el-input v-model="model.md5" clearable />
+          <el-button icon="el-icon-document-copy" @click="copy(model.md5, $event)" />
         </el-form-item>
         <el-form-item>
           <el-button @click="clear()">清空</el-button>
@@ -33,6 +38,7 @@
 </template>
 
 <script>
+import clip from '@/utils/clipboard'
 import { strtran } from '@/api/admin-utils'
 
 export default {
@@ -66,10 +72,18 @@ export default {
           })
         }
       })
+    },
+    copy(text, event) {
+      if (text) {
+        clip(text, event)
+      } else {
+        this.$message.error('请转换字符串')
+      }
     }
   }
 }
 </script>
 
 <style scoped>
+  .el-input{width: 90%;}
 </style>

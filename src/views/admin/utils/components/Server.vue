@@ -146,7 +146,6 @@ import { server } from '@/api/admin-utils'
 
 export default {
   name: 'Server',
-  components: {},
   data() {
     return {
       loading: false,

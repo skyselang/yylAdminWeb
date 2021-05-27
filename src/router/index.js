@@ -226,7 +226,9 @@ export const asyncRoutes = [
       icon: 'el-icon-menu',
       roles: [
         'admin/Setting/tokenInfo',
-        'admin/Setting/verifyInfo',
+        'admin/Setting/captchaInfo',
+        'admin/Setting/logInfo',
+        'admin/Setting/apiInfo',
         'admin/SettingWechat/offiInfo',
         'admin/SettingWechat/miniInfo',
         'admin/Region/list'
@@ -242,7 +244,12 @@ export const asyncRoutes = [
         meta: {
           title: '基础设置',
           icon: 'el-icon-s-grid',
-          roles: ['admin/Setting/tokenInfo', 'admin/Setting/verifyInfo']
+          roles: [
+            'admin/Setting/tokenInfo',
+            'admin/Setting/captchaInfo',
+            'admin/Setting/logInfo',
+            'admin/Setting/apiInfo'
+          ]
         },
         component: () => import('@/views/setting/base')
       },
@@ -331,7 +338,7 @@ export const asyncRoutes = [
         path: 'user-log-stat',
         name: 'UserLogStat',
         meta: {
-          title: '日志统计',
+          title: '日志管理统计',
           icon: 'el-icon-s-data',
           roles: ['admin/AdminUserLog/stat'],
           activeMenu: '/admin/rule/user-log'
@@ -359,10 +366,12 @@ export const asyncRoutes = [
       title: '系统管理',
       icon: 'el-icon-setting',
       roles: [
-        'admin/AdminApidoc/apidoc',
         'admin/AdminSetting/cacheInfo',
         'admin/AdminSetting/tokenInfo',
-        'admin/AdminSetting/verifyInfo',
+        'admin/AdminSetting/captchaInfo',
+        'admin/AdminSetting/logInfo',
+        'admin/AdminSetting/apiInfo',
+        'admin/AdminApidoc/apidoc',
         'admin/AdminUtils/utils'
       ]
     },
@@ -370,16 +379,6 @@ export const asyncRoutes = [
     component: Layout,
     alwaysShow: true,
     children: [
-      {
-        path: 'apidoc',
-        name: 'Apidoc',
-        meta: {
-          title: '接口文档',
-          icon: 'el-icon-document',
-          roles: ['admin/AdminApidoc/apidoc']
-        },
-        component: () => import('@/views/admin/apidoc/apidoc')
-      },
       {
         path: 'setting',
         name: 'Setting',
@@ -389,10 +388,22 @@ export const asyncRoutes = [
           roles: [
             'admin/AdminSetting/cacheInfo',
             'admin/AdminSetting/tokenInfo',
-            'admin/AdminSetting/verifyInfo'
+            'admin/AdminSetting/captchaInfo',
+            'admin/AdminSetting/logInfo',
+            'admin/AdminSetting/apiInfo'
           ]
         },
         component: () => import('@/views/admin/setting/setting')
+      },
+      {
+        path: 'apidoc',
+        name: 'Apidoc',
+        meta: {
+          title: '接口文档',
+          icon: 'el-icon-document',
+          roles: ['admin/AdminApidoc/apidoc']
+        },
+        component: () => import('@/views/admin/apidoc/apidoc')
       },
       {
         path: 'utils',

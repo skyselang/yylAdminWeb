@@ -5,9 +5,9 @@ import request from '@/utils/request'
  * 验证码
  *  @param {array} params 请求参数
  */
-export function verify(params) {
+export function captcha(params) {
   return request({
-    url: '/admin/AdminLogin/verify',
+    url: '/admin/AdminLogin/captcha',
     method: 'get',
     params: params
   })

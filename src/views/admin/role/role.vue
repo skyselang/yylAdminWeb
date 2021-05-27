@@ -39,7 +39,7 @@
     <pagination v-show="count > 0" :total="count" :page.sync="query.page" :limit.sync="query.limit" @pagination="list" />
     <!-- 添加、修改 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialog" top="1vh" width="50%" :before-close="cancel">
-      <el-form ref="ref" :rules="rules" :model="model" label-width="100px" class="dialog-body" :style="{height:height+30+'px'}">
+      <el-form ref="ref" :rules="rules" :model="model" label-width="100px" class="dialog-body" :style="{height:height+'px'}">
         <el-form-item label="名称" prop="role_name">
           <el-input v-model="model.role_name" placeholder="请输入角色名称" clearable />
         </el-form-item>
@@ -70,6 +70,10 @@
                 <el-button v-if="data.children[0]" type="text" size="mini" @click="() => menuChildrenAllCheck(data, true)">反选</el-button>
                 <i v-if="data.menu_url" class="el-icon-link" style="margin-left:10px;" :title="data.menu_url" />
                 <i v-else class="el-icon-link" style="margin-left:10px;color:#fff" />
+                <i v-if="data.is_unauth" class="el-icon-unlock" style="margin-left:10px;" title="无需权限" />
+                <i v-else class="el-icon-unlock" style="margin-left:10px;color:#fff" />
+                <i v-if="data.is_unlogin" class="el-icon-user" style="margin-left:10px;" title="无需登录" />
+                <i v-else class="el-icon-user" style="margin-left:10px;color:#fff" />
               </span>
             </span>
           </el-tree>
@@ -125,7 +129,7 @@ export default {
       count: 0,
       query: {
         page: 1,
-        limit: 13
+        limit: 12
       },
       dialog: false,
       dialogTitle: '',
@@ -281,7 +285,8 @@ export default {
         this.list()
         this.$message.success(res.msg)
       }).catch(() => {
-        this.loading = true
+        this.list()
+        this.loading = false
       })
     },
     // 菜单选择

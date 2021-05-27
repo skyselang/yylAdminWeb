@@ -28,7 +28,6 @@
 </template>
 
 <script>
-import { getAdminUserId } from '@/utils/auth'
 import { info, edit } from '@/api/admin-user-center'
 import store from '@/store'
 
@@ -39,7 +38,6 @@ export default {
     return {
       loading: false,
       model: {
-        admin_user_id: getAdminUserId(),
         username: '',
         nickname: '',
         phone: '',

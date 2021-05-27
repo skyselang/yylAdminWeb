@@ -10,22 +10,54 @@
       </el-row>
     </div>
     <!-- 列表 -->
-    <el-table v-loading="loading" :data="data" :height="height+80" style="width: 100%" row-key="admin_menu_id" border stripe>
+    <el-table v-loading="loading" :data="data" :height="height+50" style="width: 100%" row-key="admin_menu_id" border stripe>
       <el-table-column prop="menu_name" label="菜单名称" min-width="220" show-overflow-tooltip fixed="left" />
-      <el-table-column prop="menu_url" label="菜单链接" min-width="250" show-overflow-tooltip />
+      <el-table-column prop="menu_url" label="菜单链接(roles)" min-width="225" show-overflow-tooltip />
       <el-table-column prop="menu_sort" label="排序" min-width="60" />
       <el-table-column prop="admin_menu_id" label="菜单ID" min-width="65" />
-      <el-table-column prop="menu_pid" label="PID" min-width="65" />
-      <el-table-column prop="create_time" label="添加时间" min-width="160" />
-      <el-table-column prop="update_time" label="修改时间" min-width="160" />
-      <el-table-column prop="is_disable" label="是否禁用" min-width="80" align="center">
+      <el-table-column prop="menu_pid" label="PID" min-width="60" />
+      <el-table-column prop="create_time" label="添加时间" min-width="155" />
+      <el-table-column prop="update_time" label="修改时间" min-width="155" />
+      <el-table-column prop="is_disable" label="是否禁用" min-width="95" align="center">
+        <template slot="header">
+          <span>是否禁用 </span>
+          <el-tooltip placement="top">
+            <div slot="content">
+              开启后无法访问<br>
+            </div>
+            <i class="el-icon-info" title="" />
+          </el-tooltip>
+        </template>
         <template slot-scope="scope">
-          <el-switch v-if="scope.row.menu_url" v-model="scope.row.is_disable" :active-value="1" :inactive-value="0" @change="isProhibit(scope.row)" />
+          <el-switch v-if="scope.row.menu_url" v-model="scope.row.is_disable" :active-value="1" :inactive-value="0" @change="disable(scope.row)" />
         </template>
       </el-table-column>
-      <el-table-column prop="is_unauth" label="无需权限" min-width="80" align="center">
+      <el-table-column prop="is_unauth" label="无需权限" min-width="95" align="center">
+        <template slot="header">
+          <span>无需权限 </span>
+          <el-tooltip placement="top">
+            <div slot="content">
+              开启后不用分配权限也可以访问<br>
+            </div>
+            <i class="el-icon-info" title="" />
+          </el-tooltip>
+        </template>
         <template slot-scope="scope">
-          <el-switch v-if="scope.row.menu_url" v-model="scope.row.is_unauth" :active-value="1" :inactive-value="0" @change="isUnauth(scope.row)" />
+          <el-switch v-if="scope.row.menu_url" v-model="scope.row.is_unauth" :active-value="1" :inactive-value="0" @change="unauth(scope.row)" />
+        </template>
+      </el-table-column>
+      <el-table-column prop="is_unlogin" label="无需登录" min-width="95" align="center">
+        <template slot="header">
+          <span>无需登录 </span>
+          <el-tooltip placement="top">
+            <div slot="content">
+              开启后不用登录就可以访问，如验证码登录等<br>
+            </div>
+            <i class="el-icon-info" title="" />
+          </el-tooltip>
+        </template>
+        <template slot-scope="scope">
+          <el-switch v-if="scope.row.menu_url" v-model="scope.row.is_unlogin" :active-value="1" :inactive-value="0" @change="unlogin(scope.row)" />
         </template>
       </el-table-column>
       <el-table-column label="操作" min-width="345" align="right" fixed="right">
@@ -40,7 +72,7 @@
     </el-table>
     <!-- 添加、修改 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialog" top="1vh" width="50%" :before-close="cancel">
-      <el-form ref="ref" :rules="rules" :model="model" class="dialog-body" label-width="100px" :style="{height:height+30+'px'}">
+      <el-form ref="ref" :rules="rules" :model="model" class="dialog-body" label-width="100px" :style="{height:height+'px'}">
         <el-form-item label="菜单父级" prop="menu_pid">
           <el-cascader
             v-model="model.menu_pid"
@@ -126,7 +158,7 @@
 import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination'
 import permission from '@/directive/permission/index.js' // 权限判断指令
-import { list, info, add, edit, dele, disable, unauth, role, roleRemove, user, userRemove } from '@/api/admin-menu'
+import { list, info, add, edit, dele, disable, unauth, unlogin, role, roleRemove, user, userRemove } from '@/api/admin-menu'
 
 export default {
   name: 'Menu',
@@ -279,7 +311,7 @@ export default {
       this.list()
     },
     // 是否禁用
-    isProhibit(row) {
+    disable(row) {
       this.loading = true
       disable({
         admin_menu_id: row.admin_menu_id,
@@ -288,11 +320,12 @@ export default {
         this.list()
         this.$message.success(res.msg)
       }).catch(() => {
+        this.list()
         this.loading = false
       })
     },
     // 无需权限
-    isUnauth(row) {
+    unauth(row) {
       this.loading = true
       unauth({
         admin_menu_id: row.admin_menu_id,
@@ -301,8 +334,45 @@ export default {
         this.list()
         this.$message.success(res.msg)
       }).catch(() => {
+        this.list()
         this.loading = false
       })
+    },
+    // 无需登录
+    unlogin(row) {
+      if (row.is_unlogin === 1) {
+        this.$confirm(
+          '确定要设置菜单 <span style="color:red">' + row.menu_name + ' </span>为无需登录吗？<br>开启后不用登录就可以访问！请根据需求设置！',
+          '无需登录：' + row.admin_menu_id,
+          { type: 'warning', dangerouslyUseHTMLString: true }
+        ).then(() => {
+          this.loading = true
+          unlogin({
+            admin_menu_id: row.admin_menu_id,
+            is_unlogin: row.is_unlogin
+          }).then(res => {
+            this.list()
+            this.$message.success(res.msg)
+          }).catch(() => {
+            this.list()
+            this.loading = false
+          })
+        }).catch(() => {
+          this.list()
+        })
+      } else {
+        this.loading = true
+        unlogin({
+          admin_menu_id: row.admin_menu_id,
+          is_unlogin: row.is_unlogin
+        }).then(res => {
+          this.list()
+          this.$message.success(res.msg)
+        }).catch(() => {
+          this.list()
+          this.loading = false
+        })
+      }
     },
     // 父级选择
     pidChange(value) {

@@ -3,13 +3,13 @@
     <!-- 查询 -->
     <div class="filter-container">
       <el-row :gutter="0">
-        <el-col :xs="24" :sm="22">
+        <el-col :xs="24" :sm="21">
           <el-select v-model="query.log_type" class="filter-item" style="width:110px;" placeholder="日志类型" clearable>
             <el-option :value="1" label="注册日志" />
             <el-option :value="2" label="登录日志" />
             <el-option :value="3" label="操作日志" />
           </el-select>
-          <el-input v-model="query.member_keyword" class="filter-item" style="width: 135px;" placeholder="账号/昵称" clearable />
+          <el-input v-model="query.member_keyword" class="filter-item" style="width: 135px;" placeholder="会员账号/昵称" clearable />
           <el-input v-model="query.api_keyword" class="filter-item" style="width: 235px;" placeholder="接口链接/名称" clearable />
           <el-input v-model="query.request_keyword" class="filter-item" style="width: 155px;" placeholder="请求IP/地区/ISP" clearable />
           <el-date-picker
@@ -25,7 +25,8 @@
           <el-button class="filter-item" type="primary" @click="search()">查询</el-button>
           <el-button class="filter-item" @click="refresh()">刷新</el-button>
         </el-col>
-        <el-col :xs="24" :sm="2" style="text-align:right;">
+        <el-col :xs="24" :sm="3" style="text-align:right;">
+          <el-button v-permission="['admin/MemberLog/clear']" class="filter-item" title="日志清除" @click="clear()">清除</el-button>
           <el-button v-permission="['admin/MemberLog/stat']" class="filter-item" type="primary" title="日志统计" @click="stat">统计</el-button>
         </el-col>
       </el-row>
@@ -33,10 +34,10 @@
     <!-- 列表 -->
     <el-table v-loading="loading" :data="data" :height="height" style="width: 100%" border @sort-change="sort">
       <el-table-column prop="member_log_id" label="日志ID" min-width="100" sortable="custom" fixed="left" />
-      <el-table-column prop="username" label="账号" min-width="110" show-overflow-tooltip />
-      <el-table-column prop="api_url" label="接口链接" min-width="240" show-overflow-tooltip />
+      <el-table-column prop="username" label="会员账号" min-width="110" show-overflow-tooltip />
+      <el-table-column prop="api_url" label="接口链接" min-width="220" show-overflow-tooltip />
       <el-table-column prop="api_name" label="接口名称" min-width="130" show-overflow-tooltip />
-      <el-table-column prop="request_method" label="请求方式 " min-width="110" />
+      <el-table-column prop="request_method" label="请求方式 " min-width="100" />
       <el-table-column prop="request_ip" label="请求IP" min-width="130" />
       <el-table-column prop="request_region" label="请求地区" min-width="150" show-overflow-tooltip />
       <el-table-column prop="request_isp" label="请求ISP" min-width="110" />
@@ -54,7 +55,7 @@
     <pagination v-show="count > 0" :total="count" :page.sync="query.page" :limit.sync="query.limit" @pagination="list" />
     <!-- 详情 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialog" top="1vh" width="50%" :before-close="cancel">
-      <el-form ref="ref" :rules="rules" :model="model" label-width="100px" class="dialog-body" :style="{height:height+30+'px'}">
+      <el-form ref="ref" :rules="rules" :model="model" label-width="100px" class="dialog-body" :style="{height:height+'px'}">
         <el-form-item label="会员ID" prop="member_id">
           <el-col :span="10">
             <el-input v-model="model.member_id" />
@@ -64,7 +65,7 @@
             <el-input v-model="model.nickname" />
           </el-col>
         </el-form-item>
-        <el-form-item label="账号" prop="username">
+        <el-form-item label="会员账号" prop="username">
           <el-input v-model="model.username" />
         </el-form-item>
         <el-form-item label="接口ID" prop="api_id">
@@ -115,6 +116,43 @@
         <el-button type="primary" @click="submit">确定</el-button>
       </div>
     </el-dialog>
+    <!-- 清除 -->
+    <el-dialog :title="clearDialogTitle" :visible.sync="clearDialog" :before-close="clearCancel">
+      <el-form ref="clearRef" :rules="clearRules" :model="clearModel" label-width="100px" class="dialog-body">
+        <el-form-item label="会员ID" prop="member_id">
+          <el-input v-model="clearModel.member_id" type="number" clearable />
+        </el-form-item>
+        <el-form-item label="会员账号" prop="username">
+          <el-input v-model="clearModel.username" type="text" clearable />
+        </el-form-item>
+        <el-form-item label="接口ID" prop="api_id">
+          <el-input v-model="clearModel.api_id" type="number" clearable />
+        </el-form-item>
+        <el-form-item label="接口链接" prop="api_url">
+          <el-input v-model="clearModel.api_url" type="text" clearable />
+        </el-form-item>
+        <el-form-item label="日期范围" prop="date_range">
+          <el-date-picker
+            v-model="clearModel.date_range"
+            type="daterange"
+            class="filter-item"
+            range-separator="-"
+            value-format="yyyy-MM-dd"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          />
+        </el-form-item>
+        <el-form-item label="">
+          <p>*清除后不可恢复</p>
+          <p>*根据填写的条件清除</p>
+          <p>*不填写清除条件将清空所有</p>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="clearCancel()">取消</el-button>
+        <el-button type="primary" @click="clearSubmit()">确定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -122,7 +160,7 @@
 import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination'
 import permission from '@/directive/permission/index.js' // 权限判断指令
-import { list, info, dele } from '@/api/member-log'
+import { list, info, dele, clear } from '@/api/member-log'
 
 export default {
   name: 'MemberLog',
@@ -136,12 +174,22 @@ export default {
       count: 0,
       query: {
         page: 1,
-        limit: 13
+        limit: 12
       },
       dialog: false,
       dialogTitle: '',
       model: {},
-      rules: {}
+      rules: {},
+      clearDialog: false,
+      clearDialogTitle: '',
+      clearModel: {
+        member_id: '',
+        username: '',
+        api_id: '',
+        api_url: '',
+        date_range: []
+      },
+      clearRules: {}
     }
   },
   created() {
@@ -177,7 +225,7 @@ export default {
     // 删除
     dele(row) {
       this.$confirm(
-        '确定要删除会员日志 <span style="color:red">' + row.member_log_id + ' </span>吗？',
+        '确定要删除会员日志ID： <span style="color:red">' + row.member_log_id + ' </span>吗？',
         '删除会员日志：' + row.member_log_id,
         { type: 'warning', dangerouslyUseHTMLString: true }
       ).then(() => {
@@ -229,6 +277,25 @@ export default {
         this.query.sort_type = 'desc'
         this.list()
       }
+    },
+    // 清除
+    clear() {
+      this.clearDialog = true
+      this.clearDialogTitle = '会员日志清除'
+    },
+    clearCancel() {
+      this.clearDialog = false
+    },
+    clearSubmit() {
+      this.loading = true
+      clear(this.clearModel).then(res => {
+        this.list()
+        this.clearDialog = false
+        this.clearModel = this.$options.data().clearModel
+        this.$message.success('已清除日志记录 ' + res.data.count + ' 条')
+      }).catch(() => {
+        this.loading = false
+      })
     },
     // 统计
     stat() {

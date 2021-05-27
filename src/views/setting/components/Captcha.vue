@@ -2,16 +2,16 @@
   <el-card class="box-card">
     <el-row :gutter="0">
       <el-col :xs="24" :sm="12">
-        <el-form ref="ref" :model="model" label-width="120px">
-          <el-form-item label="" prop="">
-            <span>手动清除所有缓存（后台登录状态不会清除）。</span>
+        <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
+          <el-form-item label="注册验证码" prop="captcha_register">
+            <el-switch v-model="model.captcha_register" :active-value="1" :inactive-value="0" />
           </el-form-item>
-          <el-form-item label="缓存类型" prop="type">
-            <el-input v-model="model.type" />
+          <el-form-item label="登录验证码" prop="captcha_login">
+            <el-switch v-model="model.captcha_login" :active-value="1" :inactive-value="0" />
           </el-form-item>
-          <el-form-item label="">
+          <el-form-item>
             <el-button :loading="loading" @click="refresh()">刷新</el-button>
-            <el-button :loading="loading" type="primary" title="清除缓存" @click="submit()">清除</el-button>
+            <el-button :loading="loading" type="primary" @click="submit()">提交</el-button>
           </el-form-item>
         </el-form>
       </el-col>
@@ -20,16 +20,17 @@
 </template>
 
 <script>
-import { cacheInfo, cacheClear } from '@/api/admin-setting'
+import { captchaInfo, captchaEdit } from '@/api/setting'
 
 export default {
-  name: 'Cache',
+  name: 'Captcha',
   components: {},
   data() {
     return {
       loading: false,
       model: {
-        type: ''
+        captcha_register: 0,
+        captcha_login: 0
       },
       rules: {}
     }
@@ -40,14 +41,14 @@ export default {
   methods: {
     // 信息
     info() {
-      cacheInfo().then(res => {
+      captchaInfo().then(res => {
         this.model = res.data
       })
     },
     // 刷新
     refresh() {
       this.loading = true
-      cacheInfo()
+      captchaInfo()
         .then((res) => {
           this.model = res.data
           this.loading = false
@@ -57,12 +58,12 @@ export default {
           this.loading = false
         })
     },
-    // 清空
+    // 提交
     submit() {
       this.$refs['ref'].validate(valid => {
         if (valid) {
           this.loading = true
-          cacheClear().then(res => {
+          captchaEdit(this.model).then(res => {
             this.info()
             this.loading = false
             this.$message.success(res.msg)

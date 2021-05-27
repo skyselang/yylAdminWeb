@@ -11,7 +11,7 @@
             <el-option v-for="item in newsCategory" :key="item.news_category_id" :label="item.category_name" :value="item.news_category_id" />
           </el-select>
           <el-select v-model="query.date_type" class="filter-item" style="width:110px;" placeholder="时间类型" clearable>
-            <el-option value="time" label="时间" />
+            <el-option value="time" label="发布时间" />
             <el-option value="create_time" label="添加时间" />
             <el-option value="update_time" label="修改时间" />
           </el-select>
@@ -34,9 +34,9 @@
       </el-row>
     </div>
     <!-- 列表 -->
-    <el-table v-loading="loading" :data="data" :height="height+80" style="width: 100%" border @sort-change="sort">
+    <el-table v-loading="loading" :data="data" :height="height" style="width: 100%" border @sort-change="sort">
       <el-table-column prop="news_id" label="新闻ID" min-width="90" sortable="custom" />
-      <el-table-column prop="image" label="图片" min-width="80" align="center">
+      <el-table-column prop="image" label="图片" min-width="70" align="center">
         <template slot-scope="scope">
           <el-image
             v-if="scope.row.img_url"
@@ -47,9 +47,8 @@
           />
         </template>
       </el-table-column>
-      <el-table-column prop="title" label="标题" min-width="240" show-overflow-tooltip />
-      <el-table-column prop="category_name" label="分类" min-width="90" show-overflow-tooltip />
-      <el-table-column prop="time" label="时间" min-width="155" sortable="custom" />
+      <el-table-column prop="title" label="标题" min-width="230" show-overflow-tooltip />
+      <el-table-column prop="category_name" label="分类" min-width="95" show-overflow-tooltip />
       <el-table-column prop="hits" label="点击量" min-width="90" sortable="custom" />
       <el-table-column prop="sort" label="排序" min-width="80" sortable="custom" />
       <el-table-column prop="is_top" label="置顶" min-width="80" sortable="custom" align="center">
@@ -72,6 +71,7 @@
           <el-switch v-model="scope.row.is_hide" :active-value="1" :inactive-value="0" @change="ishide(scope.row)" />
         </template>
       </el-table-column>
+      <el-table-column prop="time" label="发布时间" min-width="155" sortable="custom" />
       <el-table-column prop="create_time" label="添加时间" min-width="155" sortable="custom" />
       <el-table-column prop="update_time" label="修改时间" min-width="155" sortable="custom" />
       <el-table-column label="操作" min-width="145" align="right" fixed="right">
@@ -84,8 +84,8 @@
     <!-- 分页 -->
     <pagination v-show="count > 0" :total="count" :page.sync="query.page" :limit.sync="query.limit" @pagination="list" />
     <!-- 添加、修改 -->
-    <el-dialog :title="dialogTitle" :visible.sync="dialog" top="1vh" width="65%" :before-close="cancel" @opened="dialogOpened()" @closed="dialogClosed()" @close-on-click-modal="false">
-      <el-form ref="ref" :rules="rules" :model="model" class="dialog-body" label-width="100px" :style="{height:height+30+'px'}">
+    <el-dialog :title="dialogTitle" :visible.sync="dialog" width="50%" top="1vh" :before-close="cancel" @opened="dialogOpened()" @closed="dialogClosed()" @close-on-click-modal="false">
+      <el-form ref="ref" :rules="rules" :model="model" class="dialog-body" label-width="100px" :style="{height:height+'px'}">
         <el-form-item label="图片" prop="img">
           <el-col :span="10">
             <el-image shape="circle" fit="contain" style="height: 100px" :src="model.img_url">
@@ -105,13 +105,24 @@
               :on-success="uploadSuccess"
               :on-error="uploadError"
             >
-              <el-button>上传图片</el-button>
+              <el-button size="mini">上传图片</el-button>
             </el-upload>
             <span>jpg、png、gif图片，小于200KB，宽高1:1</span>
           </el-col>
         </el-form-item>
         <el-form-item label="标题" prop="title">
           <el-input v-model="model.title" clearable placeholder="请输入标题" />
+        </el-form-item>
+        <el-form-item label="发布时间" prop="time">
+          <el-date-picker
+            v-model="model.time"
+            type="datetime"
+            class="filter-item"
+            style="width: 240px;"
+            range-separator="-"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            placeholder="请选择发布时间"
+          />
         </el-form-item>
         <el-form-item label="分类">
           <el-select v-model="model.news_category_id" clearable placeholder="请选择">
@@ -129,28 +140,17 @@
         <el-form-item label="作者" prop="author">
           <el-input v-model="model.author" clearable placeholder="" />
         </el-form-item>
-        <el-form-item label="时间" prop="time">
-          <el-date-picker
-            v-model="model.time"
-            type="datetime"
-            class="filter-item"
-            style="width: 240px;"
-            range-separator="-"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            placeholder="请选择发布时间"
-          />
-        </el-form-item>
         <el-form-item label="来源" prop="source">
           <el-input v-model="model.source" clearable placeholder="" />
         </el-form-item>
         <el-form-item label="来源链接" prop="source_url">
           <el-input v-model="model.source_url" clearable placeholder="" />
         </el-form-item>
-        <el-form-item label="排序" prop="sort">
-          <el-input v-model="model.sort" clearable placeholder="" />
-        </el-form-item>
         <el-form-item label="内容" prop="content">
           <div id="content" />
+        </el-form-item>
+        <el-form-item label="排序" prop="sort">
+          <el-input v-model="model.sort" clearable placeholder="" />
         </el-form-item>
         <el-form-item v-if="model.news_id" label="添加时间" prop="create_time">
           <el-col :span="10">
@@ -174,7 +174,7 @@
 import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination'
 import permission from '@/directive/permission/index.js' // 权限判断指令
-import { getAdminUserId, getAdminToken } from '@/utils/auth'
+import { getAdminToken } from '@/utils/auth'
 import { list, category, info, add, edit, dele, istop, ishot, isrec, ishide } from '@/api/news'
 import E from 'wangeditor'
 
@@ -188,7 +188,7 @@ export default {
       loading: false,
       query: {
         page: 1,
-        limit: 13
+        limit: 12
       },
       data: [],
       count: 0,
@@ -209,11 +209,10 @@ export default {
         content: ''
       },
       uploadAction: process.env.VUE_APP_BASE_API + '/admin/News/upload',
-      uploadHeaders: { AdminUserId: getAdminUserId(), AdminToken: getAdminToken() },
+      uploadHeaders: { AdminToken: getAdminToken() },
       uploadData: { type: 'image' },
       editor: null,
       rules: {
-        img: [{ required: true, message: '请上传图片', trigger: 'blur' }],
         title: [{ required: true, message: '请输入标题', trigger: 'blur' }],
         time: [{ required: true, message: '请选择发布时间', trigger: 'blur' }],
         content: [{ required: true, message: '请输入内容', trigger: 'blur' }]
@@ -232,6 +231,7 @@ export default {
       this.loading = true
       list(this.query).then(res => {
         this.data = res.data.list
+        this.count = res.data.count
         this.loading = false
       }).catch(() => {
         this.loading = false

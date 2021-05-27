@@ -29,7 +29,7 @@
       </el-row>
     </div>
     <!-- 列表 -->
-    <el-table v-loading="loading" :data="data" :height="height+80" style="width: 100%" border @sort-change="sort">
+    <el-table v-loading="loading" :data="data" :height="height" style="width: 100%" border @sort-change="sort">
       <el-table-column prop="news_category_id" label="分类ID" min-width="100" sortable="custom" />
       <el-table-column prop="category_name" label="分类名称" min-width="250" show-overflow-tooltip />
       <el-table-column prop="category_sort" label="分类排序" min-width="110" sortable="custom" />
@@ -51,7 +51,7 @@
     <pagination v-show="count > 0" :total="count" :page.sync="query.page" :limit.sync="query.limit" @pagination="list" />
     <!-- 添加、修改 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialog" top="1vh" width="50%" :before-close="cancel" @opened="dialogOpened()" @closed="dialogClosed()" @close-on-click-modal="false">
-      <el-form ref="ref" :rules="rules" :model="model" class="dialog-body" label-width="100px" :style="{height:height+30+'px'}">
+      <el-form ref="ref" :rules="rules" :model="model" class="dialog-body" label-width="100px" :style="{height:height+'px'}">
         <el-form-item label="分类名称" prop="category_name">
           <el-input v-model="model.category_name" clearable placeholder="请输入分类名称" />
         </el-form-item>
@@ -91,7 +91,7 @@ export default {
       loading: false,
       query: {
         page: 1,
-        limit: 13
+        limit: 12
       },
       data: [],
       count: 0,
@@ -117,6 +117,7 @@ export default {
       this.loading = true
       list(this.query).then(res => {
         this.data = res.data.list
+        this.count = res.data.count
         this.loading = false
       }).catch(() => {
         this.loading = false

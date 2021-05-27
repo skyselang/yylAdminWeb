@@ -3,7 +3,7 @@
  * @param {number} height 要减去的高度
  * @return {number}
  */
-export default function screenHeight(height = 250) {
+export default function screenHeight(height = 230) {
   var defaultHeight = 880
   var clientHeight = document.documentElement.clientHeight || document.body.clientHeight
   if (clientHeight) {

@@ -45,7 +45,6 @@
 </template>
 
 <script>
-import { getAdminUserId } from '@/utils/auth'
 import { info } from '@/api/admin-user-center'
 
 export default {
@@ -55,7 +54,6 @@ export default {
     return {
       loading: false,
       model: {
-        admin_user_id: getAdminUserId(),
         username: '',
         nickname: '',
         phone: '',

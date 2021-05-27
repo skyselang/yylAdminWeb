@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <div class="app-container dialog-body" :style="{height:height+120+'px'}">
     <el-card v-loading="loadNum" class="box-card">
       <el-row :gutter="10">
         <el-col :sm="4">
@@ -8,7 +8,7 @@
               <span>总计</span>
             </div>
             <div class="text color-tot">
-              {{ number.total }}
+              {{ num.total }}
             </div>
           </el-card>
         </el-col>
@@ -18,7 +18,7 @@
               <span>今天</span>
             </div>
             <div class="text">
-              {{ number.today }}
+              {{ num.today }}
             </div>
           </el-card>
         </el-col>
@@ -28,7 +28,7 @@
               <span>昨天</span>
             </div>
             <div class="text">
-              {{ number.yesterday }}
+              {{ num.yesterday }}
             </div>
           </el-card>
         </el-col>
@@ -38,7 +38,7 @@
               <span>本周</span>
             </div>
             <div class="text">
-              {{ number.thisweek }}
+              {{ num.thisweek }}
             </div>
           </el-card>
         </el-col>
@@ -48,7 +48,7 @@
               <span>上周</span>
             </div>
             <div class="text">
-              {{ number.lastweek }}
+              {{ num.lastweek }}
             </div>
           </el-card>
         </el-col>
@@ -58,7 +58,7 @@
               <span>本月</span>
             </div>
             <div class="text">
-              {{ number.thismonth }}
+              {{ num.thismonth }}
             </div>
           </el-card>
         </el-col>
@@ -68,7 +68,7 @@
               <span>上月</span>
             </div>
             <div class="text">
-              {{ number.lastmonth }}
+              {{ num.lastmonth }}
             </div>
           </el-card>
         </el-col>
@@ -91,7 +91,7 @@
       </el-row>
       <el-row :gutter="0">
         <el-col :sm="24">
-          <div id="echartDate" :style="{height:height+'px'}" />
+          <div id="echartDate" :style="{height:height-100+'px'}" />
         </el-col>
       </el-row>
     </el-card>
@@ -99,30 +99,30 @@
       <el-row :gutter="0">
         <el-col :sm="24">
           <el-date-picker
-            v-model="region.date"
+            v-model="field.date"
             type="daterange"
             range-separator="-"
             value-format="yyyy-MM-dd"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             style="max-width:280px"
-            @change="echartRegionChange()"
+            @change="echartFieldChange()"
           />
-          <el-select v-model="regionValue" placeholder="请选择" @change="echartRegionChange()">
-            <el-option v-for="item in regionType" :key="item.value" :label="item.label" :value="item.value" />
+          <el-select v-model="fieldValue" placeholder="请选择" @change="echartFieldChange()">
+            <el-option v-for="item in fieldType" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
         </el-col>
       </el-row>
       <el-divider />
-      <el-row v-loading="loadRegion" :gutter="0">
+      <el-row v-loading="loadField" :gutter="0">
         <el-col :sm="24">
-          <div id="echartRegionLine" :style="{height:height+'px'}" />
+          <div id="echartFieldLine" :style="{height:height+'px'}" />
         </el-col>
       </el-row>
       <el-divider />
-      <el-row v-loading="loadRegion" :gutter="0">
+      <el-row v-loading="loadField" :gutter="0">
         <el-col :sm="24">
-          <div id="echartRegionPie" :style="{height:height+'px'}" />
+          <div id="echartFieldPie" :style="{height:height+'px'}" />
         </el-col>
       </el-row>
     </el-card>
@@ -144,6 +144,7 @@ import { CanvasRenderer } from 'echarts/renderers'
 // 注册必须的组件
 echarts.use([LegendComponent, TitleComponent, TooltipComponent, GridComponent, LineChart, BarChart, PieChart, CanvasRenderer])
 
+import screenHeight from '@/utils/screen-height'
 import BackToTop from '@/components/BackToTop'
 import { stat } from '@/api/admin-user-log'
 
@@ -155,8 +156,8 @@ export default {
       height: 600,
       loadNum: false,
       loadDate: false,
-      loadRegion: false,
-      number: {
+      loadField: false,
+      num: {
         total: '--',
         today: '--',
         yesterday: '--',
@@ -170,12 +171,12 @@ export default {
         y_data: [],
         date: []
       },
-      region: {
+      field: {
         x_data: [],
         y_data: [],
         date: []
       },
-      regionType: [
+      fieldType: [
         {
           value: 'country',
           label: '国家'
@@ -191,10 +192,14 @@ export default {
         {
           value: 'isp',
           label: 'ISP'
+        },
+        {
+          value: 'user',
+          label: '用户'
         }
       ],
-      regionValue: 'city',
-      regionLabel: '城市',
+      fieldValue: 'user',
+      fieldLabel: '用户',
       cardBodyStyle: {
         padding: '10px 0px 0px 0px'
       }
@@ -202,6 +207,7 @@ export default {
   },
   computed: {},
   created() {
+    this.height = screenHeight()
     this.stat()
   },
   mounted() {},
@@ -209,12 +215,12 @@ export default {
     stat() {
       this.loadNum = true
       stat().then(res => {
-        this.number = res.data.number
+        this.num = res.data.num
         this.date = res.data.date
-        this.region = res.data.region
+        this.field = res.data.field
         this.echartDate(res.data.date)
-        this.echartRegionLine(res.data.region)
-        this.echartRegionPie(res.data.region)
+        this.echartFieldLine(res.data.field)
+        this.echartFieldPie(res.data.field)
         this.loadNum = false
       }).catch(() => {
         this.loadNum = false
@@ -232,18 +238,18 @@ export default {
         this.loadDate = false
       })
     },
-    echartRegionChange() {
-      this.loadRegion = true
+    echartFieldChange() {
+      this.loadField = true
       stat({
-        type: 'region',
-        date: this.region.date,
-        region: this.regionValue
+        type: 'field',
+        date: this.field.date,
+        field: this.fieldValue
       }).then(res => {
-        this.echartRegionLine(res.data.region)
-        this.echartRegionPie(res.data.region)
-        this.loadRegion = false
+        this.echartFieldLine(res.data.field)
+        this.echartFieldPie(res.data.field)
+        this.loadField = false
       }).catch(() => {
-        this.loadRegion = false
+        this.loadField = false
       })
     },
     echartDate(data) {
@@ -281,8 +287,8 @@ export default {
       }
       echart.setOption(option)
     },
-    echartRegionLine(data) {
-      var echart = echarts.init(document.getElementById('echartRegionLine'))
+    echartFieldLine(data) {
+      var echart = echarts.init(document.getElementById('echartFieldLine'))
       var option = {
         title: {
           text: ''
@@ -303,11 +309,7 @@ export default {
         xAxis: [
           {
             type: 'category',
-            boundaryGap: false,
-            data: data.x_data,
-            axisTick: {
-              alignWithLabel: true
-            }
+            data: data.x_data
           }
         ],
         yAxis: [
@@ -317,17 +319,15 @@ export default {
         ],
         series: [
           {
-            name: '',
             type: 'bar',
-            barWidth: '60%',
             data: data.y_data
           }
         ]
       }
       echart.setOption(option)
     },
-    echartRegionPie(data) {
-      var echart = echarts.init(document.getElementById('echartRegionPie'))
+    echartFieldPie(data) {
+      var echart = echarts.init(document.getElementById('echartFieldPie'))
       var option = {
         title: {
           text: ''

@@ -2,16 +2,17 @@
   <div class="app-container">
     <el-tabs v-model="actTabName" @tab-click="tabClick">
       <el-tab-pane v-if="checkPermission(['admin/SettingWechat/offiInfo'])" label="公众号" name="WechatOffi">
-        <wechat-offi v-if="WechatOffi" />
+        <WechatOffi v-if="WechatOffi" class="dialog-body" :style="{height:height+50+'px'}" />
       </el-tab-pane>
       <el-tab-pane v-if="checkPermission(['admin/SettingWechat/miniInfo'])" label="小程序" name="WechatMini">
-        <wechat-mini v-if="WechatMini" />
+        <WechatMini v-if="WechatMini" />
       </el-tab-pane>
     </el-tabs>
   </div>
 </template>
 
 <script>
+import screenHeight from '@/utils/screen-height'
 import checkPermission from '@/utils/permission' // 权限判断函数
 import WechatOffi from './components/WechatOffi'
 import WechatMini from './components/WechatMini'
@@ -26,7 +27,9 @@ export default {
       actTabName: 'WechatOffi'
     }
   },
-  created() { },
+  created() {
+    this.height = screenHeight()
+  },
   methods: {
     checkPermission,
     tabClick(tab) {

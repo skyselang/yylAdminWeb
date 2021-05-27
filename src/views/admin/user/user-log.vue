@@ -27,7 +27,7 @@
         </el-col>
         <el-col :xs="24" :sm="3" style="text-align:right;">
           <el-button v-permission="['admin/AdminUserLog/clear']" class="filter-item" title="日志清除" @click="clear()">清除</el-button>
-          <el-button v-permission="['admin/AdminUserLog/stat']" class="filter-item" type="primary" title="日志统计" @click="stat">统计</el-button>
+          <el-button v-permission="['admin/AdminUserLog/stat']" class="filter-item" type="primary" title="日志管理统计" @click="stat">统计</el-button>
         </el-col>
       </el-row>
     </div>
@@ -52,10 +52,10 @@
       </el-table-column>
     </el-table>
     <!-- 分页 -->
-    <pagination v-show="count > 0" :total="count" :page.sync="query.page" :limit.sync="query.limit" @pagination="lists" />
+    <pagination v-show="count > 0" :total="count" :page.sync="query.page" :limit.sync="query.limit" @pagination="list" />
     <!-- 详情 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialog" top="1vh" width="50%" :before-close="cancel">
-      <el-form ref="ref" :rules="rules" :model="model" label-width="100px" class="dialog-body" :style="{height:height+30+'px'}">
+      <el-form ref="ref" :rules="rules" :model="model" label-width="100px" class="dialog-body" :style="{height:height+'px'}">
         <el-form-item label="用户ID" prop="admin_user_id">
           <el-col :span="10">
             <el-input v-model="model.admin_user_id" />
@@ -122,12 +122,18 @@
         <el-form-item label="用户ID" prop="admin_user_id">
           <el-input v-model="clearModel.admin_user_id" type="number" clearable />
         </el-form-item>
+        <el-form-item label="用户账号" prop="username">
+          <el-input v-model="clearModel.username" type="text" clearable />
+        </el-form-item>
         <el-form-item label="菜单ID" prop="admin_menu_id">
           <el-input v-model="clearModel.admin_menu_id" type="number" clearable />
         </el-form-item>
-        <el-form-item label="日期范围" prop="clear_date">
+        <el-form-item label="菜单链接" prop="menu_url">
+          <el-input v-model="clearModel.menu_url" type="text" clearable />
+        </el-form-item>
+        <el-form-item label="日期范围" prop="date_range">
           <el-date-picker
-            v-model="clearModel.clear_date"
+            v-model="clearModel.date_range"
             type="daterange"
             class="filter-item"
             range-separator="-"
@@ -168,7 +174,7 @@ export default {
       count: 0,
       query: {
         page: 1,
-        limit: 13
+        limit: 12
       },
       dialog: false,
       dialogTitle: '',
@@ -178,19 +184,21 @@ export default {
       clearDialogTitle: '',
       clearModel: {
         admin_user_id: '',
+        username: '',
         admin_menu_id: '',
-        clear_date: []
+        menu_url: '',
+        date_range: []
       },
       clearRules: {}
     }
   },
   created() {
     this.height = screenHeight()
-    this.lists()
+    this.list()
   },
   methods: {
     // 列表
-    lists() {
+    list() {
       this.loading = true
       list(this.query).then(res => {
         this.data = res.data.list
@@ -217,15 +225,15 @@ export default {
     // 删除
     dele(row) {
       this.$confirm(
-        '确定要删除日志管理 <span style="color:red">' + row.admin_user_log_id + ' </span>吗？',
-        '删除日志管理：' + row.admin_user_log_id,
+        '确定要删除日志ID：<span style="color:red">' + row.admin_user_log_id + ' </span>吗？',
+        '删除日志：' + row.admin_user_log_id,
         { type: 'warning', dangerouslyUseHTMLString: true }
       ).then(() => {
         this.loading = true
         dele({
           admin_user_log_id: row.admin_user_log_id
         }).then(res => {
-          this.lists()
+          this.list()
           this.reset()
           this.$message.success(res.msg)
         }).catch(() => {
@@ -254,12 +262,12 @@ export default {
     // 查询
     search() {
       this.query.page = 1
-      this.lists()
+      this.list()
     },
     // 刷新
     refresh() {
       this.query = this.$options.data().query
-      this.lists()
+      this.list()
     },
     // 排序
     sort(sort) {
@@ -267,11 +275,11 @@ export default {
       this.query.sort_type = ''
       if (sort.order === 'ascending') {
         this.query.sort_type = 'asc'
-        this.lists()
+        this.list()
       }
       if (sort.order === 'descending') {
         this.query.sort_type = 'desc'
-        this.lists()
+        this.list()
       }
     },
     // 清除
@@ -285,8 +293,9 @@ export default {
     clearSubmit() {
       this.loading = true
       clear(this.clearModel).then(res => {
-        this.lists()
+        this.list()
         this.clearDialog = false
+        this.clearModel = this.$options.data().clearModel
         this.$message.success('已清除日志记录 ' + res.data.count + ' 条')
       }).catch(() => {
         this.loading = false

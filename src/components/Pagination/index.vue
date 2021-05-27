@@ -35,7 +35,7 @@ export default {
     pageSizes: {
       type: Array,
       default() {
-        return [10, 13, 20, 30, 50, 80, 100, 150, 200, 300]
+        return [10, 12, 20, 30, 50, 80, 100, 150, 200, 300, 500, 800, 1000]
       }
     },
     layout: {
@@ -94,6 +94,7 @@ export default {
 .pagination-container {
   text-align: right;
   padding-top: 0;
+  margin-top: 20px;
 }
 .pagination-container.hidden {
   display: none;

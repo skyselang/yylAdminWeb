@@ -70,7 +70,7 @@
     <pagination v-show="count > 0" :total="count" :page.sync="query.page" :limit.sync="query.limit" @pagination="list" />
     <!-- 添加、修改 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialog" top="1vh" width="50%" :before-close="cancel">
-      <el-form ref="ref" :model="model" :rules="rules" class="dialog-body" label-width="100px" :style="{height:height+30+'px'}">
+      <el-form ref="ref" :model="model" :rules="rules" class="dialog-body" label-width="100px" :style="{height:height+'px'}">
         <el-form-item v-if="model.member_id" label="头像" prop="avatar">
           <el-avatar shape="circle" fit="contain" :size="100" :src="model.avatar" />
           <el-upload
@@ -137,7 +137,7 @@
     </el-dialog>
     <!-- 重置密码 -->
     <el-dialog :title="pwdDialogTitle" :visible.sync="pwdDialog" top="1vh" :before-close="pwdCancel">
-      <el-form ref="refPwd" :rules="pwdRules" :model="model" label-width="100px" class="dialog-body" :style="{height:height+30+'px'}">
+      <el-form ref="refPwd" :rules="pwdRules" :model="model" label-width="100px" class="dialog-body" :style="{height:height+'px'}">
         <el-form-item label="账号">
           <el-input v-model="model.username" clearable disabled />
         </el-form-item>
@@ -159,7 +159,7 @@
 <script>
 import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination'
-import { getAdminUserId, getAdminToken } from '@/utils/auth'
+import { getAdminToken } from '@/utils/auth'
 import { list as regionList } from '@/api/region'
 import { list, info, add, edit, dele, pwd, disable } from '@/api/member'
 
@@ -174,7 +174,7 @@ export default {
       count: 0,
       query: {
         page: 1,
-        limit: 13
+        limit: 12
       },
       dialog: false,
       dialogTitle: '',
@@ -202,7 +202,7 @@ export default {
         label: 'region_name'
       },
       uploadAction: process.env.VUE_APP_BASE_API + '/admin/Member/avatar',
-      uploadHeaders: { AdminUserId: getAdminUserId(), AdminToken: getAdminToken() },
+      uploadHeaders: { AdminToken: getAdminToken() },
       uploadData: { member_id: '' },
       pwdDialog: false,
       pwdDialogTitle: '',

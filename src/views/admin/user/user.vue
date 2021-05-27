@@ -48,7 +48,7 @@
     <pagination v-show="count > 0" :total="count" :page.sync="query.page" :limit.sync="query.limit" @pagination="list" />
     <!-- 添加、修改 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialog" top="1vh" width="50%" :before-close="cancel">
-      <el-form ref="ref" :model="model" :rules="rules" class="dialog-body" label-width="100px" :style="{height:height+30+'px'}">
+      <el-form ref="ref" :model="model" :rules="rules" class="dialog-body" label-width="100px" :style="{height:height+'px'}">
         <el-form-item v-if="model.admin_user_id && model.avatar" label="头像" prop="avatar">
           <el-col :span="10">
             <el-avatar shape="circle" fit="contain" :size="100" :src="model.avatar" />
@@ -126,7 +126,7 @@
     </el-dialog>
     <!-- 分配权限 -->
     <el-dialog :title="'用户分配权限：'+model.admin_user_id" :visible.sync="ruleDialog" top="1vh" width="50%">
-      <el-form ref="roleRef" :model="model" class="dialog-body" label-width="100px" :style="{height:height+30+'px'}">
+      <el-form ref="roleRef" :model="model" class="dialog-body" label-width="100px" :style="{height:height+'px'}">
         <el-form-item label="账号">
           <el-col :span="10">
             <el-input v-model="model.username" disabled />
@@ -162,6 +162,10 @@
                 <i v-if="data.is_menu" class="el-icon-menu" style="margin-left:10px" title="按菜单" />
                 <i v-if="data.menu_url" class="el-icon-link" style="margin-left:10px" :title="data.menu_url" />
                 <i v-else class="el-icon-link" style="margin-left:10px;color:#fff" />
+                <i v-if="data.is_unauth" class="el-icon-unlock" style="margin-left:10px;" title="无需权限" />
+                <i v-else class="el-icon-unlock" style="margin-left:10px;color:#fff" />
+                <i v-if="data.is_unlogin" class="el-icon-user" style="margin-left:10px;" title="无需登录" />
+                <i v-else class="el-icon-user" style="margin-left:10px;color:#fff" />
               </span>
             </span>
           </el-tree>
@@ -174,7 +178,7 @@
     </el-dialog>
     <!-- 重置密码 -->
     <el-dialog :title="'用户重置密码：'+model.admin_user_id" :visible.sync="pwdDialog" top="1vh" width="50%">
-      <el-form ref="pwdRef" :rules="pwdRules" :model="model" class="dialog-body" label-width="100px" :style="{height:height+30+'px'}">
+      <el-form ref="pwdRef" :rules="pwdRules" :model="model" class="dialog-body" label-width="100px" :style="{height:height+'px'}">
         <el-form-item label="账号">
           <el-input v-model="model.username" clearable disabled />
         </el-form-item>
@@ -196,7 +200,7 @@
 <script>
 import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination'
-import { getAdminUserId, getAdminToken } from '@/utils/auth'
+import { getAdminToken } from '@/utils/auth'
 import { list, info, add, edit, dele, issuper, disable, rule, pwd } from '@/api/admin-user'
 
 export default {
@@ -210,7 +214,7 @@ export default {
       count: 0,
       query: {
         page: 1,
-        limit: 13
+        limit: 12
       },
       dialog: false,
       dialogTitle: '',
@@ -234,7 +238,7 @@ export default {
         update_time: ''
       },
       uploadAction: process.env.VUE_APP_BASE_API + '/admin/AdminUser/avatar',
-      uploadHeaders: { AdminUserId: getAdminUserId(), AdminToken: getAdminToken() },
+      uploadHeaders: { AdminToken: getAdminToken() },
       uploadData: { admin_user_id: '' },
       ruleDialog: false,
       roleData: [],

@@ -1,5 +1,5 @@
 <template>
-  <el-card v-loading="loading" class="box-card">
+  <el-card class="box-card">
     <el-row :gutter="0">
       <el-col :xs="24" :sm="12">
         <el-form ref="ref" :model="model" :rules="rules" label-width="130px">
@@ -35,8 +35,8 @@
             <el-input v-model="model.appsecret" />
           </el-form-item>
           <el-form-item>
-            <el-button @click="refresh()">刷新</el-button>
-            <el-button type="primary" @click="submit()">提交</el-button>
+            <el-button :loading="loading" @click="refresh()">刷新</el-button>
+            <el-button :loading="loading" type="primary" @click="submit()">提交</el-button>
           </el-form-item>
         </el-form>
       </el-col>
@@ -46,7 +46,7 @@
 
 <script>
 import { miniInfo, miniEdit } from '@/api/setting-wechat'
-import { getAdminUserId, getAdminToken } from '@/utils/auth'
+import { getAdminToken } from '@/utils/auth'
 
 export default {
   components: {},
@@ -62,7 +62,7 @@ export default {
         qrcode_url: ''
       },
       uploadAction: process.env.VUE_APP_BASE_API + '/admin/SettingWechat/qrcode',
-      uploadHeaders: { AdminUserId: getAdminUserId(), AdminToken: getAdminToken() },
+      uploadHeaders: { AdminToken: getAdminToken() },
       uploadData: { type: 'mini' },
       rules: {
         appid: [{ required: true, message: '请输入appid', trigger: 'blur' }],

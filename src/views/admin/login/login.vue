@@ -10,12 +10,12 @@
       <el-form-item prop="password">
         <el-input v-model="model.password" type="password" placeholder="请输入密码" prefix-icon="el-icon-lock" autocomplete="on" clearable show-password />
       </el-form-item>
-      <el-form-item v-if="verify_switch" prop="verify_code">
+      <el-form-item v-if="captcha_switch" prop="captcha_code">
         <el-col :span="13">
-          <el-input v-model="model.verify_code" placeholder="请输入验证码" prefix-icon="el-icon-picture" autocomplete="off" clearable />
+          <el-input v-model="model.captcha_code" placeholder="请输入验证码" prefix-icon="el-icon-picture" autocomplete="off" clearable />
         </el-col>
         <el-col :span="11">
-          <el-image :src="verify_src" fit="fill" alt="验证码" title="点击刷新验证码" style="width:200px;height:36px;float:right" @click="verify" />
+          <el-image :src="captcha_src" fit="fill" alt="验证码" title="点击刷新验证码" style="width:200px;height:36px;float:right" @click="captcha" />
         </el-col>
       </el-form-item>
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
@@ -25,7 +25,7 @@
 
 <script>
 import setting from '@/settings'
-import { verify } from '@/api/admin-login'
+import { captcha } from '@/api/admin-login'
 
 export default {
   name: 'Login',
@@ -36,18 +36,18 @@ export default {
       loading: false,
       redirect: undefined,
       otherQuery: {},
-      verify_src: '',
-      verify_switch: 0,
+      captcha_src: '',
+      captcha_switch: 0,
       model: {
         username: '',
         password: '',
-        verify_id: '',
-        verify_code: ''
+        captcha_id: '',
+        captcha_code: ''
       },
       rules: {
         username: [{ required: true, message: '请输入账号', trigger: 'blur' }],
         password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
-        verify_code: [{ required: true, message: '请输入验证码', trigger: 'blur' }]
+        captcha_code: [{ required: true, message: '请输入验证码', trigger: 'blur' }]
       }
     }
   },
@@ -64,19 +64,19 @@ export default {
     }
   },
   created() {
-    this.verify()
+    this.captcha()
   },
   mounted() { },
   destroyed() { },
   methods: {
     // 验证码
-    verify() {
-      this.model.verify_id = ''
-      this.model.verify_code = ''
-      verify().then(res => {
-        this.model.verify_id = res.data.verify_id
-        this.verify_src = res.data.verify_src
-        this.verify_switch = res.data.verify_switch
+    captcha() {
+      this.model.captcha_id = ''
+      this.model.captcha_code = ''
+      captcha().then(res => {
+        this.model.captcha_id = res.data.captcha_id
+        this.captcha_src = res.data.captcha_src
+        this.captcha_switch = res.data.captcha_switch
       })
     },
     // 登录

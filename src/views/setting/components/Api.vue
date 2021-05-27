@@ -2,16 +2,24 @@
   <el-card class="box-card">
     <el-row :gutter="0">
       <el-col :xs="24" :sm="12">
-        <el-form ref="ref" :model="model" label-width="120px">
+        <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
           <el-form-item label="" prop="">
-            <span>手动清除所有缓存（后台登录状态不会清除）。</span>
+            <span>次数/时间；3/1：3次1秒；次数设置为 0 则不限制。</span>
           </el-form-item>
-          <el-form-item label="缓存类型" prop="type">
-            <el-input v-model="model.type" />
+          <el-form-item label="接口速率">
+            <el-col :span="11">
+              <el-input v-model="model.api_rate_num" type="number" placeholder="次数" />
+            </el-col>
+            <el-col class="line" :span="2" style="text-align:center">/</el-col>
+            <el-col :span="11">
+              <el-input v-model="model.api_rate_time" type="number" placeholder="时间">
+                <template slot="append">秒</template>
+              </el-input>
+            </el-col>
           </el-form-item>
-          <el-form-item label="">
+          <el-form-item>
             <el-button :loading="loading" @click="refresh()">刷新</el-button>
-            <el-button :loading="loading" type="primary" title="清除缓存" @click="submit()">清除</el-button>
+            <el-button :loading="loading" type="primary" @click="submit()">提交</el-button>
           </el-form-item>
         </el-form>
       </el-col>
@@ -20,16 +28,17 @@
 </template>
 
 <script>
-import { cacheInfo, cacheClear } from '@/api/admin-setting'
+import { apiInfo, apiEdit } from '@/api/setting'
 
 export default {
-  name: 'Cache',
+  name: 'Api',
   components: {},
   data() {
     return {
       loading: false,
       model: {
-        type: ''
+        api_rate_num: 3,
+        api_rate_time: 1
       },
       rules: {}
     }
@@ -40,14 +49,14 @@ export default {
   methods: {
     // 信息
     info() {
-      cacheInfo().then(res => {
+      apiInfo().then(res => {
         this.model = res.data
       })
     },
     // 刷新
     refresh() {
       this.loading = true
-      cacheInfo()
+      apiInfo()
         .then((res) => {
           this.model = res.data
           this.loading = false
@@ -57,12 +66,12 @@ export default {
           this.loading = false
         })
     },
-    // 清空
+    // 提交
     submit() {
       this.$refs['ref'].validate(valid => {
         if (valid) {
           this.loading = true
-          cacheClear().then(res => {
+          apiEdit(this.model).then(res => {
             this.info()
             this.loading = false
             this.$message.success(res.msg)

@@ -61,10 +61,19 @@
         </el-row>
       </el-tab-pane>
       <el-tab-pane v-if="checkPermission(['admin/AdminUtils/server'])" label="服务器" name="server">
-        <el-row :gutter="8">
+        <el-row :gutter="8" class="dialog-body" :style="{height:height+60+'px'}">
           <el-col :sm="24" :md="24">
             <div class="filter-container">
               <Server v-if="server" />
+            </div>
+          </el-col>
+        </el-row>
+      </el-tab-pane>
+      <el-tab-pane v-if="checkPermission(['admin/AdminUtils/toollu'])" label="在线工具" name="toollu">
+        <el-row :gutter="8" class="dialog-body" :style="{height:height+60+'px'}">
+          <el-col :sm="24" :md="24">
+            <div class="filter-container">
+              <Toollu v-if="toollu" />
             </div>
           </el-col>
         </el-row>
@@ -74,6 +83,7 @@
 </template>
 
 <script>
+import screenHeight from '@/utils/screen-height'
 import checkPermission from '@/utils/permission' // 权限判断函数
 import permission from '@/directive/permission/index.js' // 权限判断指令
 import Strtran from './components/Strtran'
@@ -84,13 +94,15 @@ import Byte from './components/Byte'
 import Ip from './components/Ip'
 import Map from './components/Map'
 import Server from './components/Server'
+import Toollu from './components/Toollu'
 
 export default {
   name: 'Utils',
   directives: { permission },
-  components: { Strtran, Strrand, Timestamp, Qrcode, Byte, Ip, Map, Server },
+  components: { Strtran, Strrand, Timestamp, Qrcode, Byte, Ip, Map, Server, Toollu },
   data() {
     return {
+      height: 680,
       str: true,
       timestamp: false,
       qrcode: false,
@@ -98,10 +110,13 @@ export default {
       ip: false,
       map: false,
       server: false,
+      toollu: false,
       actTabName: 'str'
     }
   },
-  created() { },
+  created() {
+    this.height = screenHeight()
+  },
   methods: {
     checkPermission,
     tabClick(tab) {

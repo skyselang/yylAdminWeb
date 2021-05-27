@@ -27,7 +27,7 @@
     </div>
     <!-- 列表 -->
     <el-table v-loading="loading" :data="data" :height="height-50" style="width: 100%" border @sort-change="sort">
-      <el-table-column prop="admin_user_log_id" label="ID" min-width="100" sortable="custom" fixed="left" />
+      <el-table-column prop="admin_user_log_id" label="日志ID" min-width="100" sortable="custom" fixed="left" />
       <el-table-column prop="menu_url" label="菜单链接" min-width="250" />
       <el-table-column prop="menu_name" label="菜单名称" min-width="150" />
       <el-table-column prop="request_method" label="请求方式 " min-width="110" />
@@ -57,7 +57,7 @@ export default {
       count: 0,
       query: {
         page: 1,
-        limit: 13
+        limit: 12
       }
     }
   },

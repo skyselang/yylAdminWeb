@@ -17,7 +17,6 @@
                 :before-upload="uploadBefore"
                 :action="uploadAction"
                 :headers="uploadHeaders"
-                :data="uploadData"
                 :on-success="uploadSuccess"
                 :on-error="uploadError"
               >
@@ -32,7 +31,7 @@
 </template>
 
 <script>
-import { getAdminUserId, getAdminToken } from '@/utils/auth'
+import { getAdminToken } from '@/utils/auth'
 import { mapGetters } from 'vuex'
 import store from '@/store'
 
@@ -43,8 +42,7 @@ export default {
     return {
       loading: false,
       uploadAction: process.env.VUE_APP_BASE_API + '/admin/AdminUserCenter/avatar',
-      uploadHeaders: { AdminUserId: getAdminUserId(), AdminToken: getAdminToken() },
-      uploadData: { admin_user_id: getAdminUserId() }
+      uploadHeaders: { AdminToken: getAdminToken() }
     }
   },
   computed: {

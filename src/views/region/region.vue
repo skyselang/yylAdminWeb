@@ -4,7 +4,7 @@
     <div class="filter-container">
       <el-row>
         <el-col :xm="24" :sm="22">
-          <el-input v-model="query.region_id" class="filter-item" style="width: 200px;" placeholder="ID" clearable />
+          <el-input v-model="query.region_id" class="filter-item" style="width: 200px;" placeholder="地区ID" clearable />
           <el-input v-model="query.region_name" class="filter-item" style="width: 200px;" placeholder="名称" clearable />
           <el-input v-model="query.region_pinyin" class="filter-item" style="width: 200px;" placeholder="拼音" clearable />
           <el-button class="filter-item" type="primary" @click="search()">查询</el-button>
@@ -19,7 +19,7 @@
     <el-table
       v-loading="loading"
       :data="data"
-      :height="height+80"
+      :height="height+50"
       style="width: 100%"
       row-key="region_id"
       border
@@ -46,7 +46,7 @@
     </el-table>
     <!-- 添加、修改 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialog" top="1vh" width="50%" :before-close="cancel">
-      <el-form ref="ref" :rules="rules" :model="model" class="dialog-body" label-width="100px" :style="{height:height+30+'px'}">
+      <el-form ref="ref" :rules="rules" :model="model" class="dialog-body" label-width="100px" :style="{height:height+'px'}">
         <el-form-item label="父级" prop="region_pid">
           <el-cascader
             v-model="model.region_pid"

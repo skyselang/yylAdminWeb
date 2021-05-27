@@ -16,6 +16,8 @@ const name = defaultSettings.title || 'yylAdmin' // 页面标题
 const port = process.env.port || process.env.npm_config_port || 9527 // 开发端口
 
 // 所有配置项说明都可以在这里找到：https://cli.vuejs.org/config/
+const publicPath = process.env.VUE_APP_PUBLICPATH ? process.env.VUE_APP_PUBLICPATH : '/'
+const outputDir = process.env.VUE_APP_OUTPUTDIR ? process.env.VUE_APP_OUTPUTDIR : 'dist'
 module.exports = {
   /**
    * 如果计划在子路径下部署站点，则需要设置publicPath，
@@ -24,8 +26,8 @@ module.exports = {
    * 在大多数情况下，请使用“/”！！！
    * 详细信息：https://cli.vuejs.org/config/#publicpath
    */
-  publicPath: '/',
-  outputDir: 'dist',
+  publicPath: publicPath,
+  outputDir: outputDir,
   assetsDir: 'static',
   lintOnSave: process.env.NODE_ENV === 'development',
   productionSourceMap: false,
