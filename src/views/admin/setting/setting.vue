@@ -1,20 +1,20 @@
 <template>
   <div class="app-container">
-    <el-tabs v-model="actTabName" @tab-click="tabClick">
-      <el-tab-pane v-if="checkPermission(['admin/AdminSetting/cacheInfo'])" label="缓存设置" name="cache">
-        <Cache v-if="cache" />
+    <el-tabs>
+      <el-tab-pane v-if="checkPermission(['admin/AdminSetting/cacheInfo'])" label="缓存设置" lazy>
+        <Cache />
       </el-tab-pane>
-      <el-tab-pane v-if="checkPermission(['admin/AdminSetting/tokenInfo'])" label="Token设置" name="token">
-        <Token v-if="token" />
+      <el-tab-pane v-if="checkPermission(['admin/AdminSetting/tokenInfo'])" label="Token设置" lazy>
+        <Token />
       </el-tab-pane>
-      <el-tab-pane v-if="checkPermission(['admin/AdminSetting/captchaInfo'])" label="验证码设置" name="captcha">
-        <Captcha v-if="captcha" />
+      <el-tab-pane v-if="checkPermission(['admin/AdminSetting/captchaInfo'])" label="验证码设置" lazy>
+        <Captcha />
       </el-tab-pane>
-      <el-tab-pane v-if="checkPermission(['admin/AdminSetting/logInfo'])" label="日志设置" name="log">
-        <Log v-if="log" />
+      <el-tab-pane v-if="checkPermission(['admin/AdminSetting/logInfo'])" label="日志设置" lazy>
+        <Log />
       </el-tab-pane>
-      <el-tab-pane v-if="checkPermission(['admin/AdminSetting/apiInfo'])" label="接口设置" name="api">
-        <Api v-if="api" />
+      <el-tab-pane v-if="checkPermission(['admin/AdminSetting/apiInfo'])" label="接口设置" lazy>
+        <Api />
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -34,21 +34,11 @@ export default {
   directives: { permission },
   components: { Cache, Token, Captcha, Log, Api },
   data() {
-    return {
-      cache: true,
-      token: false,
-      captcha: false,
-      log: false,
-      api: false,
-      actTabName: 'cache'
-    }
+    return {}
   },
   created() { },
   methods: {
-    checkPermission,
-    tabClick(tab) {
-      this[tab.name] = true
-    }
+    checkPermission
   }
 }
 </script>

@@ -1,17 +1,17 @@
 <template>
   <div class="app-container">
-    <el-tabs v-model="actTabName" @tab-click="tabClick">
-      <el-tab-pane v-if="checkPermission(['admin/Setting/tokenInfo'])" label="Token设置" name="token">
-        <Token v-if="token" />
+    <el-tabs>
+      <el-tab-pane v-if="checkPermission(['admin/Setting/tokenInfo'])" label="Token设置" lazy>
+        <Token />
       </el-tab-pane>
-      <el-tab-pane v-if="checkPermission(['admin/Setting/captchaInfo'])" label="验证码设置" name="captcha">
-        <Captcha v-if="captcha" />
+      <el-tab-pane v-if="checkPermission(['admin/Setting/captchaInfo'])" label="验证码设置" lazy>
+        <Captcha />
       </el-tab-pane>
-      <el-tab-pane v-if="checkPermission(['admin/Setting/logInfo'])" label="日志设置" name="log">
-        <Log v-if="log" />
+      <el-tab-pane v-if="checkPermission(['admin/Setting/logInfo'])" label="日志设置" lazy>
+        <Log />
       </el-tab-pane>
-      <el-tab-pane v-if="checkPermission(['admin/Setting/apiInfo'])" label="接口设置" name="api">
-        <Api v-if="api" />
+      <el-tab-pane v-if="checkPermission(['admin/Setting/apiInfo'])" label="接口设置" lazy>
+        <Api />
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -29,22 +29,14 @@ export default {
   components: { Token, Captcha, Log, Api },
   data() {
     return {
-      height: 600,
-      token: true,
-      captcha: false,
-      log: false,
-      api: false,
-      actTabName: 'token'
+      height: 600
     }
   },
   created() {
 
   },
   methods: {
-    checkPermission,
-    tabClick(tab) {
-      this[tab.name] = true
-    }
+    checkPermission
   }
 }
 </script>

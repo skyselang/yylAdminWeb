@@ -42,7 +42,7 @@ import Layout from '@/layout'
 /**
  * constantRoutes
  * 不需要动态判断权限的路由，如登录、404、401等页面
- * 所有会员都可以访问
+ * 所有用户都可以访问
  */
 export const constantRoutes = [
   {
@@ -185,40 +185,6 @@ export const asyncRoutes = [
     ]
   },
   {
-    path: '/apis',
-    name: 'Apis',
-    meta: {
-      title: '接口管理',
-      icon: 'el-icon-menu',
-      roles: ['admin/ApiEnv/list', 'admin/Api/list']
-    },
-    redirect: 'noRedirect',
-    component: Layout,
-    alwaysShow: true,
-    children: [
-      {
-        path: 'api',
-        name: 'Api',
-        meta: {
-          title: '接口管理',
-          icon: 'el-icon-s-grid',
-          roles: ['admin/Api/list']
-        },
-        component: () => import('@/views/api/api')
-      },
-      {
-        path: 'api-env',
-        name: 'ApiEnv',
-        meta: {
-          title: '接口环境',
-          icon: 'el-icon-s-grid',
-          roles: ['admin/ApiEnv/list']
-        },
-        component: () => import('@/views/api/api-env')
-      }
-    ]
-  },
-  {
     path: '/settings',
     name: 'Settings',
     meta: {
@@ -229,6 +195,7 @@ export const asyncRoutes = [
         'admin/Setting/captchaInfo',
         'admin/Setting/logInfo',
         'admin/Setting/apiInfo',
+        'admin/Api/list',
         'admin/SettingWechat/offiInfo',
         'admin/SettingWechat/miniInfo',
         'admin/Region/list'
@@ -252,6 +219,16 @@ export const asyncRoutes = [
           ]
         },
         component: () => import('@/views/setting/base')
+      },
+      {
+        path: 'api',
+        name: 'Api',
+        meta: {
+          title: '接口管理',
+          icon: 'el-icon-s-grid',
+          roles: ['admin/Api/list']
+        },
+        component: () => import('@/views/api/api')
       },
       {
         path: 'wechat',
