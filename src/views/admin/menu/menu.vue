@@ -94,6 +94,23 @@
         <el-form-item label="菜单排序" prop="menu_sort">
           <el-input v-model="model.menu_sort" type="number" placeholder="200" />
         </el-form-item>
+        <el-form-item label="快速添加" prop="">
+          <el-checkbox v-model="model.add_list">列表</el-checkbox>
+          <el-checkbox v-model="model.add_info">信息</el-checkbox>
+          <el-checkbox v-model="model.add_add">添加</el-checkbox>
+          <el-checkbox v-model="model.add_edit">修改</el-checkbox>
+          <el-checkbox v-model="model.add_dele">删除</el-checkbox>
+        </el-form-item>
+        <el-form-item v-if="model.admin_menu_id" label="快速修改" prop="">
+          <el-checkbox v-model="model.edit_list">列表</el-checkbox>
+          <el-checkbox v-model="model.edit_info">信息</el-checkbox>
+          <el-checkbox v-model="model.edit_add">添加</el-checkbox>
+          <el-checkbox v-model="model.edit_edit">修改</el-checkbox>
+          <el-checkbox v-model="model.edit_dele">删除</el-checkbox>
+        </el-form-item>
+        <el-form-item label="" prop="">
+          <span>快速添加<span v-if="model.admin_menu_id">、修改</span>，需要输入菜单链接：应用/控制器，不含操作</span>
+        </el-form-item>
         <el-form-item v-if="model.admin_menu_id" label="添加时间" prop="create_time">
           <el-input v-model="model.create_time" disabled />
         </el-form-item>
@@ -181,7 +198,17 @@ export default {
         menu_pid: 0,
         menu_name: '',
         menu_url: '',
-        menu_sort: 200
+        menu_sort: 200,
+        add_list: false,
+        add_info: false,
+        add_add: false,
+        add_edit: false,
+        add_dele: false,
+        edit_list: false,
+        edit_info: false,
+        edit_add: false,
+        edit_edit: false,
+        edit_dele: false
       },
       rules: {
         menu_name: [{ required: true, message: '请输入菜单名称', trigger: 'blur' }]
@@ -299,6 +326,11 @@ export default {
     reset(row) {
       if (row) {
         this.model = row
+        this.model.add_list = false
+        this.model.add_info = false
+        this.model.add_add = false
+        this.model.add_edit = false
+        this.model.add_dele = false
       } else {
         this.model = this.$options.data().model
       }
