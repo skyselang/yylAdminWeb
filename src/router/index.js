@@ -151,17 +151,74 @@ export const asyncRoutes = [
     ]
   },
   {
-    path: '/newss',
-    name: 'Newss',
+    path: '/cms',
+    name: 'cms',
     meta: {
-      title: '新闻管理',
-      icon: 'el-icon-menu',
-      roles: ['admin/News/list', 'admin/NewsCategory/list']
+      title: '内容管理',
+      icon: 'el-icon-reading',
+      roles: [
+        'admin/Article/list',
+        'admin/ArticleCategory/list',
+        'admin/Carousel/list',
+        'admin/Download/list',
+        'admin/DownloadCategory/list',
+        'admin/News/list',
+        'admin/NewsCategory/list',
+        'admin/Product/list',
+        'admin/ProductCategory/list',
+        'admin/Project/list',
+        'admin/ProjectCategory/list',
+        'admin/Video/list',
+        'admin/VideoCategory/list',
+        'admin/Links/list',
+        'admin/Comment/list',
+        'admin/SettingCms/cmsInfo'
+      ]
     },
     redirect: 'noRedirect',
     component: Layout,
     alwaysShow: true,
     children: [
+      {
+        path: 'article',
+        name: 'Article',
+        meta: {
+          title: '文章管理',
+          icon: 'el-icon-s-grid',
+          roles: ['admin/Article/list']
+        },
+        component: () => import('@/views/cms/article/article')
+      },
+      {
+        path: 'article-category',
+        name: 'ArticleCategory',
+        meta: {
+          title: '文章分类',
+          icon: 'el-icon-menu',
+          roles: ['admin/ArticleCategory/list']
+        },
+        component: () => import('@/views/cms/article/article-category')
+      },
+      {
+        path: 'download',
+        name: 'Download',
+        meta: {
+          title: '下载管理',
+          icon: 'el-icon-s-grid',
+          roles: ['admin/Download/list']
+        },
+        component: () => import('@/views/cms/download/download')
+      },
+      {
+        path: 'download-category',
+        name: 'DownloadCategory',
+        meta: {
+          title: '下载分类',
+          icon: 'el-icon-menu',
+          roles: ['admin/DownloadCategory/list']
+        },
+        component: () => import('@/views/cms/download/download-category')
+      },
       {
         path: 'news',
         name: 'News',
@@ -170,17 +227,120 @@ export const asyncRoutes = [
           icon: 'el-icon-s-grid',
           roles: ['admin/News/list']
         },
-        component: () => import('@/views/news/news')
+        component: () => import('@/views/cms/news/news')
       },
       {
         path: 'news-category',
         name: 'NewsCategory',
         meta: {
           title: '新闻分类',
-          icon: 'el-icon-s-grid',
+          icon: 'el-icon-menu',
           roles: ['admin/NewsCategory/list']
         },
-        component: () => import('@/views/news/news-category')
+        component: () => import('@/views/cms/news/news-category')
+      },
+      {
+        path: 'product',
+        name: 'Product',
+        meta: {
+          title: '产品管理',
+          icon: 'el-icon-s-grid',
+          roles: ['admin/Product/list']
+        },
+        component: () => import('@/views/cms/product/product')
+      },
+      {
+        path: 'product-category',
+        name: 'ProductCategory',
+        meta: {
+          title: '产品分类',
+          icon: 'el-icon-menu',
+          roles: ['admin/ProductCategory/list']
+        },
+        component: () => import('@/views/cms/product/product-category')
+      },
+      {
+        path: 'project',
+        name: 'Project',
+        meta: {
+          title: '案例管理',
+          icon: 'el-icon-s-grid',
+          roles: ['admin/Project/list']
+        },
+        component: () => import('@/views/cms/project/project')
+      },
+      {
+        path: 'project-category',
+        name: 'ProjectCategory',
+        meta: {
+          title: '案例分类',
+          icon: 'el-icon-menu',
+          roles: ['admin/ProjectCategory/list']
+        },
+        component: () => import('@/views/cms/project/project-category')
+      },
+      {
+        path: 'video',
+        name: 'Video',
+        meta: {
+          title: '视频管理',
+          icon: 'el-icon-s-grid',
+          roles: ['admin/Video/list']
+        },
+        component: () => import('@/views/cms/video/video')
+      },
+      {
+        path: 'video-category',
+        name: 'VideoCategory',
+        meta: {
+          title: '视频分类',
+          icon: 'el-icon-menu',
+          roles: ['admin/VideoCategory/list']
+        },
+        component: () => import('@/views/cms/video/video-category')
+      },
+      {
+        path: 'links',
+        name: 'Links',
+        meta: {
+          title: '友链管理',
+          icon: 'el-icon-s-grid',
+          roles: ['admin/Links/list']
+        },
+        component: () => import('@/views/cms/links/links')
+      },
+      {
+        path: 'carousel',
+        name: 'Carousel',
+        meta: {
+          title: '轮播管理',
+          icon: 'el-icon-s-grid',
+          roles: ['admin/Carousel/list']
+        },
+        component: () => import('@/views/cms/carousel/carousel')
+      },
+      {
+        path: 'comment',
+        name: 'Comment',
+        meta: {
+          title: '留言管理',
+          icon: 'el-icon-s-grid',
+          roles: ['admin/Comment/list']
+        },
+        component: () => import('@/views/cms/comment/comment')
+      },
+      {
+        path: 'setting-cms',
+        name: 'SettingCms',
+        meta: {
+          title: '内容设置',
+          icon: 'el-icon-setting',
+          roles: [
+            'admin/SettingCms/cmsInfo',
+            'admin/SettingCms/cmsEdit'
+          ]
+        },
+        component: () => import('@/views/cms/setting/cms')
       }
     ]
   },

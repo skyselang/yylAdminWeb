@@ -37,11 +37,17 @@
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
+
+      <span style="display:inline-block;float:right;margin-right:10px;color:#409eff">
+        <el-button v-if="checkPermission(['admin/AdminSetting/cacheClear'])" v-loading="loading" icon="el-icon-delete" circle title="清除缓存" @click="clearCache" />
+      </span>
     </div>
   </div>
 </template>
 
 <script>
+import checkPermission from '@/utils/permission' // 权限判断函数
+import { cacheClear } from '@/api/admin-setting'
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
@@ -60,6 +66,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       userCenter: '/admin/rule/user-center'
     }
   },
@@ -67,6 +74,7 @@ export default {
     ...mapGetters(['sidebar', 'device', 'nickname', 'avatar'])
   },
   methods: {
+    checkPermission,
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')
     },
@@ -74,6 +82,16 @@ export default {
       await this.$store.dispatch('user/logout')
       // this.$router.push('/login')
       this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+    },
+    // 清除缓存
+    clearCache() {
+      this.loading = true
+      cacheClear().then(res => {
+        this.loading = false
+        this.$message.success(res.msg)
+      }).catch(() => {
+        this.loading = false
+      })
     }
   }
 }
@@ -108,7 +126,7 @@ export default {
     float: right;
     height: 100%;
     line-height: 50px;
-    margin-right: 50px;
+    margin-right: 0px;
 
     &:focus {
       outline: none;
@@ -136,7 +154,7 @@ export default {
       margin-right: 30px;
 
       .avatar-wrapper {
-        margin-top: 5px;
+        margin-top: 0px;
         position: relative;
 
         .user-avatar {

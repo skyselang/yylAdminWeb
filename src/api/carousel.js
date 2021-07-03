@@ -1,145 +1,134 @@
 import request from '@/utils/request'
 
-// ----------------新闻管理----------------
+// ----------------轮播管理----------------
 /**
- * 新闻列表
+ * 轮播列表
  * @param {array} params 请求参数
  */
 export function list(params) {
   return request({
-    url: '/admin/News/list',
+    url: '/admin/Carousel/list',
     method: 'get',
     params: params
   })
 }
 /**
- * 新闻分类列表
- * @param {array} params 请求参数
- */
-export function category(params) {
-  return request({
-    url: '/admin/News/category',
-    method: 'get',
-    params: params
-  })
-}
-/**
- * 新闻信息
+ * 轮播信息
  * @param {array} params 请求参数
  */
 export function info(params) {
   return request({
-    url: '/admin/News/info',
+    url: '/admin/Carousel/info',
     method: 'get',
     params: params
   })
 }
 /**
- * 新闻添加
+ * 轮播添加
  * @param {array} data 请求数据
  */
 export function add(data) {
   return request({
-    url: '/admin/News/add',
+    url: '/admin/Carousel/add',
     method: 'post',
     data
   })
 }
 /**
- * 新闻修改
+ * 轮播修改
  * @param {array} data 请求数据
  */
 export function edit(data) {
   return request({
-    url: '/admin/News/edit',
+    url: '/admin/Carousel/edit',
     method: 'post',
     data
   })
 }
 /**
- * 新闻删除
+ * 轮播删除
  * @param {array} data 请求数据
  */
 export function dele(data) {
   return request({
-    url: '/admin/News/dele',
+    url: '/admin/Carousel/dele',
     method: 'post',
     data
   })
 }
 /**
- * 新闻是否置顶
+ * 轮播是否置顶
  * @param {array} data 请求数据
  */
 export function istop(data) {
   return request({
-    url: '/admin/News/istop',
+    url: '/admin/Carousel/istop',
     method: 'post',
     data
   })
 }
 /**
- * 新闻是否热门
+ * 轮播是否热门
  * @param {array} data 请求数据
  */
 export function ishot(data) {
   return request({
-    url: '/admin/News/ishot',
+    url: '/admin/Carousel/ishot',
     method: 'post',
     data
   })
 }
 /**
- * 新闻是否推荐
+ * 轮播是否推荐
  * @param {array} data 请求数据
  */
 export function isrec(data) {
   return request({
-    url: '/admin/News/isrec',
+    url: '/admin/Carousel/isrec',
     method: 'post',
     data
   })
 }
 /**
- * 新闻是否隐藏
+ * 轮播是否隐藏
  * @param {array} data 请求数据
  */
 export function ishide(data) {
   return request({
-    url: '/admin/News/ishide',
+    url: '/admin/Carousel/ishide',
     method: 'post',
     data
   })
 }
 /**
- * 新闻回收站
+ * 轮播回收站
  * @param {array} data 请求参数
  */
 export function recover(params) {
   return request({
-    url: '/admin/News/recover',
+    url: '/admin/Carousel/recover',
     method: 'get',
     params: params
   })
 }
 /**
- * 新闻回收站恢复
+ * 轮播回收站恢复
  * @param {array} data 请求数据
  */
 export function recoverReco(data) {
   return request({
-    url: '/admin/News/recoverReco',
+    url: '/admin/Carousel/recoverReco',
     method: 'post',
     data
   })
 }
 /**
- * 新闻回收站删除
+ * 轮播回收站删除
  * @param {array} data 请求数据
  */
 export function recoverDele(data) {
   return request({
-    url: '/admin/News/recoverDele',
+    url: '/admin/Carousel/recoverDele',
     method: 'post',
     data
   })

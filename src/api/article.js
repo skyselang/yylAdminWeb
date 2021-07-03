@@ -1,145 +1,145 @@
 import request from '@/utils/request'
 
-// ----------------新闻管理----------------
+// ----------------文章管理----------------
 /**
- * 新闻列表
+ * 文章列表
  * @param {array} params 请求参数
  */
 export function list(params) {
   return request({
-    url: '/admin/News/list',
+    url: '/admin/Article/list',
     method: 'get',
     params: params
   })
 }
 /**
- * 新闻分类列表
+ * 文章分类列表
  * @param {array} params 请求参数
  */
 export function category(params) {
   return request({
-    url: '/admin/News/category',
+    url: '/admin/Article/category',
     method: 'get',
     params: params
   })
 }
 /**
- * 新闻信息
+ * 文章信息
  * @param {array} params 请求参数
  */
 export function info(params) {
   return request({
-    url: '/admin/News/info',
+    url: '/admin/Article/info',
     method: 'get',
     params: params
   })
 }
 /**
- * 新闻添加
+ * 文章添加
  * @param {array} data 请求数据
  */
 export function add(data) {
   return request({
-    url: '/admin/News/add',
+    url: '/admin/Article/add',
     method: 'post',
     data
   })
 }
 /**
- * 新闻修改
+ * 文章修改
  * @param {array} data 请求数据
  */
 export function edit(data) {
   return request({
-    url: '/admin/News/edit',
+    url: '/admin/Article/edit',
     method: 'post',
     data
   })
 }
 /**
- * 新闻删除
+ * 文章删除
  * @param {array} data 请求数据
  */
 export function dele(data) {
   return request({
-    url: '/admin/News/dele',
+    url: '/admin/Article/dele',
     method: 'post',
     data
   })
 }
 /**
- * 新闻是否置顶
+ * 文章是否置顶
  * @param {array} data 请求数据
  */
 export function istop(data) {
   return request({
-    url: '/admin/News/istop',
+    url: '/admin/Article/istop',
     method: 'post',
     data
   })
 }
 /**
- * 新闻是否热门
+ * 文章是否热门
  * @param {array} data 请求数据
  */
 export function ishot(data) {
   return request({
-    url: '/admin/News/ishot',
+    url: '/admin/Article/ishot',
     method: 'post',
     data
   })
 }
 /**
- * 新闻是否推荐
+ * 文章是否推荐
  * @param {array} data 请求数据
  */
 export function isrec(data) {
   return request({
-    url: '/admin/News/isrec',
+    url: '/admin/Article/isrec',
     method: 'post',
     data
   })
 }
 /**
- * 新闻是否隐藏
+ * 文章是否隐藏
  * @param {array} data 请求数据
  */
 export function ishide(data) {
   return request({
-    url: '/admin/News/ishide',
+    url: '/admin/Article/ishide',
     method: 'post',
     data
   })
 }
 /**
- * 新闻回收站
+ * 文章回收站
  * @param {array} data 请求参数
  */
 export function recover(params) {
   return request({
-    url: '/admin/News/recover',
+    url: '/admin/Article/recover',
     method: 'get',
     params: params
   })
 }
 /**
- * 新闻回收站恢复
+ * 文章回收站恢复
  * @param {array} data 请求数据
  */
 export function recoverReco(data) {
   return request({
-    url: '/admin/News/recoverReco',
+    url: '/admin/Article/recoverReco',
     method: 'post',
     data
   })
 }
 /**
- * 新闻回收站删除
+ * 文章回收站删除
  * @param {array} data 请求数据
  */
 export function recoverDele(data) {
   return request({
-    url: '/admin/News/recoverDele',
+    url: '/admin/Article/recoverDele',
     method: 'post',
     data
   })
