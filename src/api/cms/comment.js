@@ -7,7 +7,7 @@ import request from '@/utils/request'
  */
 export function list(params) {
   return request({
-    url: '/admin/Comment/list',
+    url: '/admin/CmsComment/list',
     method: 'get',
     params: params
   })
@@ -18,7 +18,7 @@ export function list(params) {
  */
 export function info(params) {
   return request({
-    url: '/admin/Comment/info',
+    url: '/admin/CmsComment/info',
     method: 'get',
     params: params
   })
@@ -29,7 +29,7 @@ export function info(params) {
  */
 export function edit(data) {
   return request({
-    url: '/admin/Comment/edit',
+    url: '/admin/CmsComment/edit',
     method: 'post',
     data
   })
@@ -40,7 +40,7 @@ export function edit(data) {
  */
 export function dele(data) {
   return request({
-    url: '/admin/Comment/dele',
+    url: '/admin/CmsComment/dele',
     method: 'post',
     data
   })
@@ -51,7 +51,7 @@ export function dele(data) {
  */
 export function isread(data) {
   return request({
-    url: '/admin/Comment/isread',
+    url: '/admin/CmsComment/isread',
     method: 'post',
     data
   })
@@ -62,7 +62,7 @@ export function isread(data) {
  */
 export function recover(params) {
   return request({
-    url: '/admin/Comment/recover',
+    url: '/admin/CmsComment/recover',
     method: 'get',
     params: params
   })
@@ -73,7 +73,7 @@ export function recover(params) {
  */
 export function recoverReco(data) {
   return request({
-    url: '/admin/Comment/recoverReco',
+    url: '/admin/CmsComment/recoverReco',
     method: 'post',
     data
   })
@@ -84,7 +84,7 @@ export function recoverReco(data) {
  */
 export function recoverDele(data) {
   return request({
-    url: '/admin/Comment/recoverDele',
+    url: '/admin/CmsComment/recoverDele',
     method: 'post',
     data
   })

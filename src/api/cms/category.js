@@ -1,68 +1,68 @@
 import request from '@/utils/request'
 
-// ---------------新闻分类-----------------
+// ---------------内容分类-----------------
 /**
- * 新闻分类列表
+ * 内容分类列表
  * @param {array} params 请求参数
  */
 export function list(params) {
   return request({
-    url: '/admin/NewsCategory/list',
+    url: '/admin/CmsCategory/list',
     method: 'get',
     params: params
   })
 }
 /**
- * 新闻分类信息
+ * 内容分类信息
  * @param {array} params 请求参数
  */
 export function info(params) {
   return request({
-    url: '/admin/NewsCategory/info',
+    url: '/admin/CmsCategory/info',
     method: 'get',
     params: params
   })
 }
 /**
- * 新闻分类添加
+ * 内容分类添加
  * @param {array} data 请求数据
  */
 export function add(data) {
   return request({
-    url: '/admin/NewsCategory/add',
+    url: '/admin/CmsCategory/add',
     method: 'post',
     data
   })
 }
 /**
- * 新闻分类修改
+ * 内容分类修改
  * @param {array} data 请求数据
  */
 export function edit(data) {
   return request({
-    url: '/admin/NewsCategory/edit',
+    url: '/admin/CmsCategory/edit',
     method: 'post',
     data
   })
 }
 /**
- * 新闻分类删除
+ * 内容分类删除
  * @param {array} data 请求数据
  */
 export function dele(data) {
   return request({
-    url: '/admin/NewsCategory/dele',
+    url: '/admin/CmsCategory/dele',
     method: 'post',
     data
   })
 }
 /**
- * 新闻分类是否隐藏
+ * 内容分类是否隐藏
  * @param {array} data 请求数据
  */
 export function ishide(data) {
   return request({
-    url: '/admin/NewsCategory/ishide',
+    url: '/admin/CmsCategory/ishide',
     method: 'post',
     data
   })

@@ -11,11 +11,11 @@
       </el-row>
     </div>
     <!-- 列表 -->
-    <el-table ref="table" v-loading="loading" :data="data" :height="height" style="width: 100%" row-key="project_category_id" default-expand-all border @selection-change="select">
+    <el-table ref="table" v-loading="loading" :data="data" :height="height" style="width: 100%" row-key="category_id" default-expand-all border @selection-change="select">
       <el-table-column type="selection" width="40" />
       <el-table-column prop="category_name" label="分类名称" min-width="250" show-overflow-tooltip />
-      <el-table-column prop="project_category_id" label="分类ID" min-width="80" />
-      <el-table-column prop="project_category_pid" label="PID" min-width="80" />
+      <el-table-column prop="category_id" label="分类ID" min-width="80" />
+      <el-table-column prop="category_pid" label="PID" min-width="80" />
       <el-table-column prop="sort" label="排序" min-width="80" />
       <el-table-column prop="is_hide" label="是否隐藏" min-width="80" align="center">
         <template slot-scope="scope">
@@ -40,11 +40,11 @@
     <!-- 添加、修改 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialog" top="1vh" width="65%" :before-close="cancel" :close-on-click-modal="false">
       <el-form ref="ref" :rules="rules" :model="model" class="dialog-body" label-width="100px" :style="{height:height+'px'}">
-        <el-form-item label="分类父级" prop="project_category_pid">
+        <el-form-item label="分类父级" prop="category_pid">
           <el-cascader
-            v-model="model.project_category_pid"
+            v-model="model.category_pid"
             :options="data"
-            :props="{checkStrictly: true, value: 'project_category_id', label: 'category_name'}"
+            :props="{checkStrictly: true, value: 'category_id', label: 'category_name'}"
             style="width:100%"
             clearable
             filterable
@@ -98,10 +98,10 @@
         <el-form-item label="排序" prop="sort">
           <el-input v-model="model.sort" clearable placeholder="200" />
         </el-form-item>
-        <el-form-item v-if="model.project_category_id" label="添加时间" prop="create_time">
+        <el-form-item v-if="model.category_id" label="添加时间" prop="create_time">
           <el-input v-model="model.create_time" disabled />
         </el-form-item>
-        <el-form-item v-if="model.project_category_id" label="修改时间" prop="update_time">
+        <el-form-item v-if="model.category_id" label="修改时间" prop="update_time">
           <el-input v-model="model.update_time" disabled />
         </el-form-item>
       </el-form>
@@ -116,23 +116,23 @@
 <script>
 import screenHeight from '@/utils/screen-height'
 import { getAdminToken } from '@/utils/auth'
-import { list, info, add, edit, dele, ishide } from '@/api/project-category'
+import { list, info, add, edit, dele, ishide } from '@/api/cms/category'
 
 export default {
-  name: 'ProjectCategory',
+  name: 'CmsCategory',
   components: { },
   directives: { },
   data() {
     return {
-      name: '案例分类',
+      name: '内容分类',
       height: 680,
       loading: false,
       data: [],
       dialog: false,
       dialogTitle: '',
       model: {
-        project_category_id: '',
-        project_category_pid: 0,
+        category_id: '',
+        category_pid: 0,
         category_name: '',
         title: '',
         keywords: '',
@@ -142,7 +142,7 @@ export default {
       },
       is_hide: 0,
       selection: [],
-      uploadAction: process.env.VUE_APP_BASE_API + '/admin/ProjectCategory/upload',
+      uploadAction: process.env.VUE_APP_BASE_API + '/admin/CmsCategory/upload',
       uploadHeaders: { AdminToken: getAdminToken() },
       uploadData: { type: 'image' },
       rules: {
@@ -190,16 +190,16 @@ export default {
       this.dialogTitle = this.name + '添加'
       this.model = this.$options.data().model
       if (row) {
-        this.model.project_category_pid = row.project_category_id
+        this.model.category_pid = row.category_id
       }
     },
     // 修改
     edit(row) {
       this.loading = true
       this.dialog = true
-      this.dialogTitle = this.name + '修改：' + row.project_category_id
+      this.dialogTitle = this.name + '修改：' + row.category_id
       info({
-        project_category_id: row.project_category_id
+        category_id: row.category_id
       }).then(res => {
         this.reset(res.data)
         this.loading = false
@@ -215,13 +215,13 @@ export default {
         var title = '删除' + this.name
         var message = '确定要删除选中的 <span style="color:red">' + row.length + ' </span> 条' + this.name + '吗？'
         if (row.length === 1) {
-          title = title + '：' + row[0].project_category_id
+          title = title + '：' + row[0].category_id
           message = '确定要删除' + this.name + ' <span style="color:red">' + row[0].category_name + ' </span>吗？'
         }
         this.$confirm(message, title, { type: 'warning', dangerouslyUseHTMLString: true }).then(() => {
           this.loading = true
           dele({
-            project_category: row
+            article_category: row
           }).then(res => {
             this.list()
             this.$message.success(res.msg)
@@ -241,7 +241,7 @@ export default {
       this.$refs['ref'].validate(valid => {
         if (valid) {
           this.loading = true
-          if (this.model.project_category_id) {
+          if (this.model.category_id) {
             edit(this.model).then(res => {
               this.dialog = false
               this.list()
@@ -272,6 +272,7 @@ export default {
       }
       if (this.$refs['ref'] !== undefined) {
         this.$refs['ref'].resetFields()
+        this.$refs['ref'].clearValidate()
       }
     },
     // 查询
@@ -295,7 +296,7 @@ export default {
           is_hide = this.is_hide
         }
         ishide({
-          project_category: row,
+          article_category: row,
           is_hide: is_hide
         }).then(res => {
           this.list()
@@ -309,11 +310,12 @@ export default {
     // 父级选择
     pidChange(value) {
       if (value) {
-        this.model.project_category_pid = value[value.length - 1]
+        this.model.category_pid = value[value.length - 1]
       }
     },
     // 上传图片
     uploadSuccess(res, file, fileList) {
+      console.log(res)
       if (res.code === 200) {
         this.model.imgs.push(res.data)
         this.$message.success(res.msg)

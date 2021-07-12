@@ -4,8 +4,19 @@
     <div class="filter-container">
       <el-row :gutter="0">
         <el-col :xs="24" :sm="20">
-          <el-input v-model="query.links_id" class="filter-item" style="width: 110px;" placeholder="ID" clearable />
+          <el-input v-model="query.cms_id" class="filter-item" style="width: 110px;" placeholder="ID" clearable />
           <el-input v-model="query.name" class="filter-item" style="width: 200px;" placeholder="名称" clearable />
+          <el-cascader
+            v-model="query.category_id"
+            class="filter-item"
+            :options="cmsCategory"
+            :props="{checkStrictly: true, value: 'category_id', label: 'category_name'}"
+            style="width:150px"
+            clearable
+            filterable
+            placeholder="分类"
+            @change="pidChangeQuery"
+          />
           <el-select v-model="query.date_type" class="filter-item" style="width:110px;" placeholder="时间类型" clearable>
             <el-option value="create_time" label="添加时间" />
             <el-option value="update_time" label="修改时间" />
@@ -32,14 +43,15 @@
     <!-- 列表 -->
     <el-table v-loading="loading" :data="data" :height="height-50" style="width: 100%" border @sort-change="sort" @selection-change="select">
       <el-table-column type="selection" width="40" />
-      <el-table-column prop="links_id" label="ID" min-width="80" sortable="custom" />
-      <el-table-column prop="img_url" label="图片" min-width="70" align="center">
+      <el-table-column prop="cms_id" label="ID" min-width="80" sortable="custom" />
+      <el-table-column prop="image" label="图片" min-width="70" align="center">
         <template slot-scope="scope">
           <el-image v-if="scope.row.img_url" style="width:40px;height:40px;" :src="scope.row.img_url" :preview-src-list="[scope.row.img_url]" title="点击查看大图" />
         </template>
       </el-table-column>
-      <el-table-column prop="name" label="名称" min-width="150" sortable="custom" show-overflow-tooltip />
-      <el-table-column prop="url" label="链接" min-width="200" sortable="custom" show-overflow-tooltip />
+      <el-table-column prop="name" label="名称" min-width="230" show-overflow-tooltip />
+      <el-table-column prop="category_name" label="分类" min-width="100" show-overflow-tooltip />
+      <el-table-column prop="hits" label="点击量" min-width="90" sortable="custom" />
       <el-table-column prop="sort" label="排序" min-width="80" sortable="custom" />
       <el-table-column prop="is_top" label="置顶" min-width="80" sortable="custom" align="center">
         <template slot-scope="scope">
@@ -84,15 +96,34 @@
     <!-- 分页 -->
     <pagination v-show="count > 0" :total="count" :page.sync="query.page" :limit.sync="query.limit" @pagination="list" />
     <!-- 添加、修改 -->
-    <el-dialog :title="dialogTitle" :visible.sync="dialog" width="50%" top="1vh" :before-close="cancel" @close-on-click-modal="false">
+    <el-dialog :title="dialogTitle" :visible.sync="dialog" width="65%" top="1vh" :before-close="cancel" @opened="dialogOpened()" @closed="dialogClosed()" @close-on-click-modal="false">
       <el-form ref="ref" :rules="rules" :model="model" class="dialog-body" label-width="100px" :style="{height:height+'px'}">
+        <el-form-item label="分类" prop="category_id" clearable placeholder="请选择">
+          <el-cascader
+            v-model="model.category_id"
+            :options="cmsCategory"
+            :props="{checkStrictly: true, value: 'category_id', label: 'category_name'}"
+            style="width:100%"
+            clearable
+            filterable
+            placeholder="请选择分类"
+            @change="pidChange"
+          />
+        </el-form-item>
         <el-form-item label="名称" prop="name">
           <el-input v-model="model.name" clearable placeholder="请输入名称" />
         </el-form-item>
+        <el-form-item label="标题" prop="title">
+          <el-input v-model="model.title" clearable placeholder="title" />
+        </el-form-item>
+        <el-form-item label="关键词" prop="keywords">
+          <el-input v-model="model.keywords" clearable placeholder="keywords" />
+        </el-form-item>
+        <el-form-item label="描述" prop="description">
+          <el-input v-model="model.description" type="textarea" clearable placeholder="description" />
+        </el-form-item>
         <el-form-item label="链接" prop="url">
-          <el-input v-model="model.url" clearable placeholder="请输入链接">
-            <el-link slot="append" class="el-icon-position" :href="model.url" target="_blank" title="打开链接" />
-          </el-input>
+          <el-input v-model="model.url" clearable placeholder="url" />
         </el-form-item>
         <el-form-item label="图片" prop="imgs">
           <el-row :gutter="0">
@@ -111,7 +142,7 @@
               </el-upload>
             </el-col>
             <el-col :span="16">
-              <div>jpg、png格式，大小不超过 200 KB。</div>
+              <div>每张图片大小不超过 500 KB，jpg、png格式。</div>
             </el-col>
           </el-row>
           <el-row :gutter="0">
@@ -125,13 +156,78 @@
             </el-col>
           </el-row>
         </el-form-item>
+        <el-form-item label="附件" prop="files">
+          <el-row :gutter="0">
+            <el-col :span="8">
+              <el-upload
+                name="file"
+                :file-list="model.files"
+                :show-file-list="false"
+                :action="uploadAction"
+                :headers="uploadHeaders"
+                :data="uploadFileData"
+                :on-success="uploadFileSuccess"
+                :on-error="uploadError"
+              >
+                <el-button size="mini">上传附件</el-button>
+              </el-upload>
+            </el-col>
+            <el-col :span="16">
+              <div>每个附件大小不超过 10 MB。</div>
+            </el-col>
+          </el-row>
+          <el-row v-for="(item, index) in model.files" :key="index" :gutter="0">
+            <el-col :span="16"><el-input v-model="item.name" placeholder="名称" clearable /></el-col>
+            <el-col :span="4"><el-input v-model="item.size" placeholder="大小" clearable /></el-col>
+            <el-col :span="4">
+              <el-link :href="item.url" :underline="false" :download="item.url" target="_blank" style="margin:0 10px">下载</el-link>
+              <el-button size="mini" @click="uploadFileDele(index)">删除</el-button>
+            </el-col>
+          </el-row>
+        </el-form-item>
+        <el-form-item label="视频" prop="videos">
+          <el-row :gutter="0">
+            <el-col :span="4">
+              <el-upload
+                name="file"
+                :file-list="model.videos"
+                :show-file-list="false"
+                :action="uploadAction"
+                :headers="uploadHeaders"
+                :data="uploadVideoData"
+                :on-success="uploadVideoSuccess"
+                :on-error="uploadError"
+              >
+                <el-button size="mini">上传视频</el-button>
+              </el-upload>
+            </el-col>
+            <el-col :span="4">
+              <el-button size="mini" @click="uploadVideoAdd()">插入视频</el-button>
+            </el-col>
+            <el-col :span="16">
+              <div>每个视频大小不超过 50 MB。</div>
+            </el-col>
+          </el-row>
+          <el-row v-for="(item, index) in model.videos" :key="index" :gutter="0">
+            <el-col :span="8"><el-input v-model="item.name" placeholder="名称" clearable /></el-col>
+            <el-col :span="8"><el-input v-model="item.path" placeholder="网址" clearable /></el-col>
+            <el-col :span="4"><el-input v-model="item.size" placeholder="大小" clearable /></el-col>
+            <el-col :span="4">
+              <el-link :href="item.url" :underline="false" :download="item.url" target="_blank" style="margin:0 10px">下载</el-link>
+              <el-button size="mini" @click="uploadVideoDele(index)">删除</el-button>
+            </el-col>
+          </el-row>
+        </el-form-item>
+        <el-form-item label="内容" prop="content">
+          <div id="content" />
+        </el-form-item>
         <el-form-item label="排序" prop="sort">
           <el-input v-model="model.sort" clearable placeholder="" />
         </el-form-item>
-        <el-form-item v-if="model.links_id" label="添加时间" prop="create_time">
+        <el-form-item v-if="model.cms_id" label="添加时间" prop="create_time">
           <el-input v-model="model.create_time" disabled />
         </el-form-item>
-        <el-form-item v-if="model.links_id" label="修改时间" prop="update_time">
+        <el-form-item v-if="model.cms_id" label="修改时间" prop="update_time">
           <el-input v-model="model.update_time" disabled />
         </el-form-item>
         <el-form-item v-if="model.delete_time" label="删除时间" prop="delete_time">
@@ -148,8 +244,19 @@
       <div class="filter-container">
         <el-row :gutter="0">
           <el-col :xs="24" :sm="24">
-            <el-input v-model="recoverQuery.links_id" class="filter-item" style="width: 110px;" placeholder="ID" clearable />
+            <el-input v-model="recoverQuery.cms_id" class="filter-item" style="width: 110px;" placeholder="ID" clearable />
             <el-input v-model="recoverQuery.name" class="filter-item" style="width: 200px;" placeholder="名称" clearable />
+            <el-cascader
+              v-model="recoverQuery.category_id"
+              class="filter-item"
+              :options="cmsCategory"
+              :props="{checkStrictly: true, value: 'category_id', label: 'category_name'}"
+              style="width:150px"
+              clearable
+              filterable
+              placeholder="分类"
+              @change="recoverPidChangeQuery"
+            />
             <el-select v-model="recoverQuery.date_type" class="filter-item" style="width:110px;" placeholder="时间类型" clearable>
               <el-option value="create_time" label="添加时间" />
               <el-option value="update_time" label="修改时间" />
@@ -172,14 +279,16 @@
       </div>
       <el-table ref="recoverRef" v-loading="recoverLoad" :data="recoverData" :height="height-60" style="width: 100%" border @sort-change="recoverSort" @selection-change="recoverSelect">
         <el-table-column type="selection" width="40" />
-        <el-table-column prop="links_id" label="ID" min-width="80" sortable="custom" />
-        <el-table-column prop="img_url" label="图片" min-width="70" align="center">
+        <el-table-column prop="cms_id" label="ID" min-width="80" sortable="custom" />
+        <el-table-column prop="cms_uid" label="标识" min-width="80" sortable="custom" show-overflow-tooltip />
+        <el-table-column prop="image" label="图片" min-width="70" align="center">
           <template slot-scope="scope">
             <el-image v-if="scope.row.img_url" style="height:40px;" :src="scope.row.img_url" :preview-src-list="[scope.row.img_url]" title="点击查看大图" />
           </template>
         </el-table-column>
-        <el-table-column prop="name" label="名称" min-width="150" sortable="custom" show-overflow-tooltip />
-        <el-table-column prop="url" label="链接" min-width="200" sortable="custom" show-overflow-tooltip />
+        <el-table-column prop="name" label="名称" min-width="230" show-overflow-tooltip />
+        <el-table-column prop="category_name" label="分类" min-width="100" show-overflow-tooltip />
+        <el-table-column prop="hits" label="点击量" min-width="90" sortable="custom" />
         <el-table-column prop="sort" label="排序" min-width="80" sortable="custom" />
         <el-table-column prop="is_top" label="置顶" min-width="80" sortable="custom" align="center">
           <template slot-scope="scope">
@@ -224,15 +333,16 @@ import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination'
 import permission from '@/directive/permission/index.js' // 权限判断指令
 import { getAdminToken } from '@/utils/auth'
-import { list, info, add, edit, dele, istop, ishot, isrec, ishide, recover, recoverReco, recoverDele } from '@/api/links'
+import { list, category, info, add, edit, dele, istop, ishot, isrec, ishide, recover, recoverReco, recoverDele } from '@/api/cms/cms'
+import E from 'wangeditor'
 
 export default {
-  name: 'Links',
+  name: 'Cms',
   components: { Pagination },
   directives: { permission },
   data() {
     return {
-      name: '友链',
+      name: '内容',
       height: 680,
       loading: false,
       query: {
@@ -244,10 +354,17 @@ export default {
       dialog: false,
       dialogTitle: '',
       model: {
-        links_id: '',
+        cms_id: '',
+        category_id: '',
         name: '',
+        title: '',
+        keywords: '',
+        description: '',
         url: '',
         imgs: [],
+        files: [],
+        videos: [],
+        content: '',
         sort: 200
       },
       is_top: 0,
@@ -255,13 +372,17 @@ export default {
       is_rec: 0,
       is_hide: 0,
       selection: [],
-      uploadAction: process.env.VUE_APP_BASE_API + '/admin/Links/upload',
+      uploadAction: process.env.VUE_APP_BASE_API + '/admin/Cms/upload',
       uploadHeaders: { AdminToken: getAdminToken() },
       uploadData: { type: 'image' },
+      uploadFileData: { type: 'file' },
+      uploadVideoData: { type: 'video' },
+      editor: null,
       rules: {
-        name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
-        url: [{ required: true, message: '请输入链接', trigger: 'blur' }]
+        category_id: [{ required: true, message: '请选择分类', trigger: 'blur' }],
+        name: [{ required: true, message: '请输入名称', trigger: 'blur' }]
       },
+      cmsCategory: [],
       recoverDialog: false,
       recoverDialogTitle: '',
       recoverLoad: false,
@@ -277,6 +398,7 @@ export default {
   created() {
     this.height = screenHeight()
     this.list()
+    this.category()
   },
   methods: {
     // 列表
@@ -302,20 +424,22 @@ export default {
       this.dialog = true
       this.dialogTitle = this.name + '添加'
       this.model = this.$options.data().model
+      this.category()
     },
     // 修改
     edit(row) {
       this.loading = true
       this.dialog = true
-      this.dialogTitle = this.name + '修改：' + row.links_id
+      this.dialogTitle = this.name + '修改：' + row.cms_id
       info({
-        links_id: row.links_id
+        cms_id: row.cms_id
       }).then(res => {
         this.reset(res.data)
         this.loading = false
       }).catch(() => {
         this.loading = false
       })
+      this.category()
     },
     // 删除
     dele(row) {
@@ -325,13 +449,13 @@ export default {
         var title = '删除' + this.name
         var message = '确定要删除选中的 <span style="color:red">' + row.length + ' </span> 条' + this.name + '吗？'
         if (row.length === 1) {
-          title = title + '：' + row[0].links_id
+          title = title + '：' + row[0].cms_id
           message = '确定要删除' + this.name + ' <span style="color:red">' + row[0].name + ' </span>吗？'
         }
         this.$confirm(message, title, { type: 'warning', dangerouslyUseHTMLString: true }).then(() => {
           this.loading = true
           dele({
-            links: row
+            cms: row
           }).then(res => {
             this.list()
             this.$message.success(res.msg)
@@ -351,7 +475,7 @@ export default {
       this.$refs['ref'].validate(valid => {
         if (valid) {
           this.loading = true
-          if (this.model.links_id) {
+          if (this.model.cms_id) {
             edit(this.model).then(res => {
               this.dialog = false
               this.list()
@@ -377,8 +501,8 @@ export default {
     reset(row) {
       if (row) {
         this.model = row
-        if (this.model.links_category_id === 0) {
-          this.model.links_category_id = ''
+        if (this.model.category_id === 0) {
+          this.model.category_id = ''
         }
       } else {
         this.model = this.$options.data().model
@@ -396,6 +520,7 @@ export default {
     // 刷新
     refresh() {
       this.query = this.$options.data().query
+      this.category()
       this.list()
     },
     // 排序
@@ -422,7 +547,7 @@ export default {
           is_top = this.is_top
         }
         istop({
-          links: row,
+          cms: row,
           is_top: is_top
         }).then(res => {
           this.list()
@@ -444,7 +569,7 @@ export default {
           is_hot = this.is_hot
         }
         ishot({
-          links: row,
+          cms: row,
           is_hot: is_hot
         }).then(res => {
           this.list()
@@ -466,7 +591,7 @@ export default {
           is_rec = this.is_rec
         }
         isrec({
-          links: row,
+          cms: row,
           is_rec: is_rec
         }).then(res => {
           this.list()
@@ -488,7 +613,7 @@ export default {
           is_hide = this.is_hide
         }
         ishide({
-          links: row,
+          cms: row,
           is_hide: is_hide
         }).then(res => {
           this.list()
@@ -499,10 +624,27 @@ export default {
         })
       }
     },
+    // 分类
+    category() {
+      category().then(res => {
+        this.cmsCategory = res.data.list
+      }).catch(() => {})
+    },
+    // 父级选择
+    pidChange(value) {
+      if (value) {
+        this.model.category_id = value[value.length - 1]
+      }
+    },
+    // 父级选择（查询）
+    pidChangeQuery(value) {
+      if (value) {
+        this.query.category_id = value[value.length - 1]
+      }
+    },
     // 上传图片
     uploadSuccess(res, file, fileList) {
       if (res.code === 200) {
-        this.model.imgs = []
         this.model.imgs.push(res.data)
         this.$message.success(res.msg)
       } else {
@@ -513,7 +655,97 @@ export default {
       this.$message.error(res.msg || '上传出错')
     },
     uploadDele(index) {
-      this.model.imgs = []
+      this.model.imgs.splice(index, 1)
+    },
+    // 上传附件
+    uploadFileSuccess(res, file, fileList) {
+      if (res.code === 200) {
+        this.model.files.push(res.data)
+        this.$message.success(res.msg)
+      } else {
+        this.$message.error(res.msg)
+      }
+    },
+    uploadFileDele(index) {
+      this.model.files.splice(index, 1)
+    },
+    // 上传视频
+    uploadVideoSuccess(res, file, fileList) {
+      if (res.code === 200) {
+        this.model.videos.push(res.data)
+        this.$message.success(res.msg)
+      } else {
+        this.$message.error(res.msg)
+      }
+    },
+    uploadVideoDele(index) {
+      this.model.videos.splice(index, 1)
+    },
+    uploadVideoAdd() {
+      var videos = {}
+      videos.name = videos.path = videos.size = videos.type = videos.url = ''
+      this.model.videos.push(videos)
+    },
+    // 富文本编辑器
+    dialogOpened() {
+      const that = this
+      // 扩展菜单
+      const { BtnMenu } = E
+      class clear extends BtnMenu {
+        constructor(editor) {
+          const $elem = E.$(`<div class="w-e-menu" data-title="清空内容"><el-button>清空</el-button></div>`)
+          super($elem, editor)
+        }
+        clickHandler() {
+          that.editor.txt.clear()
+        }
+        tryChangeActive() {}
+      }
+      this.editor = new E('#content')
+      this.editor.menus.extend('clearKey', clear)
+      this.editor.config.menus = this.editor.config.menus.concat('clearKey')
+      // 上传图片
+      this.editor.config.uploadImgServer = this.uploadAction // 上传接口地址
+      this.editor.config.uploadImgMaxLength = 1 // 一次最多上传数量
+      this.editor.config.uploadImgParams = { type: 'image' } // 自定义上传参数
+      this.editor.config.uploadFileName = 'file' // 自定义 fileName
+      this.editor.config.uploadImgHeaders = this.uploadHeaders // 自定义 header
+      this.editor.config.uploadImgHooks = {
+        customInsert: function(insertImgFn, result) {
+          if (result.code === 200) {
+            insertImgFn(result.data.file_url)
+          } else {
+            that.$message.error(result.msg)
+          }
+        }
+      }
+      // 上传视频
+      this.editor.config.uploadVideoServer = this.uploadAction // 上传接口地址
+      this.editor.config.uploadVideoParams = { type: 'video' } // 自定义上传参数
+      this.editor.config.uploadVideoName = 'file' // 自定义 fileName
+      this.editor.config.uploadVideoHeaders = this.uploadHeaders // 自定义 header
+      this.editor.config.uploadVideoHooks = {
+        customInsert: function(insertVideoFn, result) {
+          if (result.code === 200) {
+            insertVideoFn(result.data.file_url)
+          } else {
+            that.$message.error(result.msg)
+          }
+        }
+      }
+
+      this.editor.config.height = 500
+      this.editor.config.focus = false
+      this.editor.config.placeholder = ''
+      this.editor.config.onchange = (newHtml) => {
+        this.model.content = newHtml
+      }
+      this.editor.create()
+      this.editor.txt.html(this.model.content)
+    },
+    dialogClosed() {
+      this.editor.destroy()
+      this.editor = null
     },
     // 回收站
     recover() {
@@ -566,13 +798,13 @@ export default {
         var title = '恢复' + this.name
         var message = '确定要恢复选中的 <span style="color:red">' + row.length + ' </span> 条' + this.name + '吗？'
         if (row.length === 1) {
-          title = title + '：' + row[0].links_id
+          title = title + '：' + row[0].cms_id
           message = '确定要恢复' + this.name + ' <span style="color:red">' + row[0].name + ' </span>吗？'
         }
         this.$confirm(message, title, { type: 'warning', dangerouslyUseHTMLString: true }).then(() => {
           this.recoverLoad = true
           recoverReco({
-            links: row
+            cms: row
           }).then(res => {
             this.list()
             this.recoverList()
@@ -591,13 +823,13 @@ export default {
         var title = '删除' + this.name
         var message = '确定要彻底删除选中的 <span style="color:red">' + row.length + ' </span> 条' + this.name + '吗？'
         if (row.length === 1) {
-          title = title + '：' + row[0].links_id
+          title = title + '：' + row[0].cms_id
           message = '确定要彻底删除' + this.name + ' <span style="color:red">' + row[0].name + ' </span>吗？'
         }
         this.$confirm(message, title, { type: 'warning', dangerouslyUseHTMLString: true }).then(() => {
           this.recoverLoad = true
           recoverDele({
-            links: row
+            cms: row
           }).then(res => {
             this.recoverList()
             this.$message.success(res.msg)
@@ -614,7 +846,7 @@ export default {
     // 回收站父级选择（查询）
     recoverPidChangeQuery(value) {
       if (value) {
-        this.recoverQuery.links_category_id = value[value.length - 1]
+        this.recoverQuery.category_id = value[value.length - 1]
       }
     }
   }

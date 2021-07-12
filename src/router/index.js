@@ -109,7 +109,7 @@ export const asyncRoutes = [
     name: 'Members',
     meta: {
       title: '会员管理',
-      icon: 'el-icon-menu',
+      icon: 'el-icon-user',
       roles: ['admin/Member/list', 'admin/MemberLog/list']
     },
     redirect: 'noRedirect',
@@ -121,7 +121,7 @@ export const asyncRoutes = [
         name: 'Member',
         meta: {
           title: '会员管理',
-          icon: 'el-icon-s-grid',
+          icon: 'el-icon-user',
           roles: ['admin/Member/list']
         },
         component: () => import('@/views/member/member')
@@ -131,7 +131,7 @@ export const asyncRoutes = [
         name: 'MemberLog',
         meta: {
           title: '会员日志',
-          icon: 'el-icon-s-grid',
+          icon: 'el-icon-notebook-1',
           roles: ['admin/MemberLog/list']
         },
         component: () => import('@/views/member/member-log')
@@ -141,7 +141,7 @@ export const asyncRoutes = [
         name: 'MemberLogStat',
         meta: {
           title: '会员日志统计',
-          icon: 'el-icon-s-grid',
+          icon: 'el-icon-notebook-1',
           roles: ['admin/MemberLog/stat'],
           activeMenu: '/members/member-log'
         },
@@ -157,22 +157,10 @@ export const asyncRoutes = [
       title: '内容管理',
       icon: 'el-icon-reading',
       roles: [
-        'admin/Article/list',
-        'admin/ArticleCategory/list',
-        'admin/Carousel/list',
-        'admin/Download/list',
-        'admin/DownloadCategory/list',
-        'admin/News/list',
-        'admin/NewsCategory/list',
-        'admin/Product/list',
-        'admin/ProductCategory/list',
-        'admin/Project/list',
-        'admin/ProjectCategory/list',
-        'admin/Video/list',
-        'admin/VideoCategory/list',
-        'admin/Links/list',
-        'admin/Comment/list',
-        'admin/SettingCms/cmsInfo'
+        'admin/Cms/list',
+        'admin/CmsCategory/list',
+        'admin/CmsComment/list',
+        'admin/CmsSetting/info'
       ]
     },
     redirect: 'noRedirect',
@@ -180,167 +168,44 @@ export const asyncRoutes = [
     alwaysShow: true,
     children: [
       {
-        path: 'article',
-        name: 'Article',
+        path: 'cms',
+        name: 'Cms',
         meta: {
-          title: '文章管理',
+          title: '内容管理',
           icon: 'el-icon-s-grid',
-          roles: ['admin/Article/list']
+          roles: ['admin/Cms/list']
         },
-        component: () => import('@/views/cms/article/article')
+        component: () => import('@/views/cms/cms')
       },
       {
-        path: 'article-category',
-        name: 'ArticleCategory',
+        path: 'category',
+        name: 'CmsCategory',
         meta: {
-          title: '文章分类',
+          title: '内容分类',
           icon: 'el-icon-menu',
-          roles: ['admin/ArticleCategory/list']
+          roles: ['admin/CmsCategory/list']
         },
-        component: () => import('@/views/cms/article/article-category')
-      },
-      {
-        path: 'download',
-        name: 'Download',
-        meta: {
-          title: '下载管理',
-          icon: 'el-icon-s-grid',
-          roles: ['admin/Download/list']
-        },
-        component: () => import('@/views/cms/download/download')
-      },
-      {
-        path: 'download-category',
-        name: 'DownloadCategory',
-        meta: {
-          title: '下载分类',
-          icon: 'el-icon-menu',
-          roles: ['admin/DownloadCategory/list']
-        },
-        component: () => import('@/views/cms/download/download-category')
-      },
-      {
-        path: 'news',
-        name: 'News',
-        meta: {
-          title: '新闻管理',
-          icon: 'el-icon-s-grid',
-          roles: ['admin/News/list']
-        },
-        component: () => import('@/views/cms/news/news')
-      },
-      {
-        path: 'news-category',
-        name: 'NewsCategory',
-        meta: {
-          title: '新闻分类',
-          icon: 'el-icon-menu',
-          roles: ['admin/NewsCategory/list']
-        },
-        component: () => import('@/views/cms/news/news-category')
-      },
-      {
-        path: 'product',
-        name: 'Product',
-        meta: {
-          title: '产品管理',
-          icon: 'el-icon-s-grid',
-          roles: ['admin/Product/list']
-        },
-        component: () => import('@/views/cms/product/product')
-      },
-      {
-        path: 'product-category',
-        name: 'ProductCategory',
-        meta: {
-          title: '产品分类',
-          icon: 'el-icon-menu',
-          roles: ['admin/ProductCategory/list']
-        },
-        component: () => import('@/views/cms/product/product-category')
-      },
-      {
-        path: 'project',
-        name: 'Project',
-        meta: {
-          title: '案例管理',
-          icon: 'el-icon-s-grid',
-          roles: ['admin/Project/list']
-        },
-        component: () => import('@/views/cms/project/project')
-      },
-      {
-        path: 'project-category',
-        name: 'ProjectCategory',
-        meta: {
-          title: '案例分类',
-          icon: 'el-icon-menu',
-          roles: ['admin/ProjectCategory/list']
-        },
-        component: () => import('@/views/cms/project/project-category')
-      },
-      {
-        path: 'video',
-        name: 'Video',
-        meta: {
-          title: '视频管理',
-          icon: 'el-icon-s-grid',
-          roles: ['admin/Video/list']
-        },
-        component: () => import('@/views/cms/video/video')
-      },
-      {
-        path: 'video-category',
-        name: 'VideoCategory',
-        meta: {
-          title: '视频分类',
-          icon: 'el-icon-menu',
-          roles: ['admin/VideoCategory/list']
-        },
-        component: () => import('@/views/cms/video/video-category')
-      },
-      {
-        path: 'links',
-        name: 'Links',
-        meta: {
-          title: '友链管理',
-          icon: 'el-icon-s-grid',
-          roles: ['admin/Links/list']
-        },
-        component: () => import('@/views/cms/links/links')
-      },
-      {
-        path: 'carousel',
-        name: 'Carousel',
-        meta: {
-          title: '轮播管理',
-          icon: 'el-icon-s-grid',
-          roles: ['admin/Carousel/list']
-        },
-        component: () => import('@/views/cms/carousel/carousel')
+        component: () => import('@/views/cms/category')
       },
       {
         path: 'comment',
-        name: 'Comment',
+        name: 'CmsComment',
         meta: {
           title: '留言管理',
-          icon: 'el-icon-s-grid',
-          roles: ['admin/Comment/list']
+          icon: 'el-icon-chat-line-square',
+          roles: ['admin/CmsComment/list']
         },
-        component: () => import('@/views/cms/comment/comment')
+        component: () => import('@/views/cms/comment')
       },
       {
-        path: 'setting-cms',
-        name: 'SettingCms',
+        path: 'setting',
+        name: 'CmsSetting',
         meta: {
           title: '内容设置',
           icon: 'el-icon-setting',
-          roles: [
-            'admin/SettingCms/cmsInfo',
-            'admin/SettingCms/cmsEdit'
-          ]
+          roles: ['admin/CmsSetting/info']
         },
-        component: () => import('@/views/cms/setting/cms')
+        component: () => import('@/views/cms/setting')
       }
     ]
   },
@@ -349,7 +214,7 @@ export const asyncRoutes = [
     name: 'Settings',
     meta: {
       title: '设置管理',
-      icon: 'el-icon-menu',
+      icon: 'el-icon-setting',
       roles: [
         'admin/Setting/tokenInfo',
         'admin/Setting/captchaInfo',
@@ -370,7 +235,7 @@ export const asyncRoutes = [
         name: 'Base',
         meta: {
           title: '基础设置',
-          icon: 'el-icon-s-grid',
+          icon: 'el-icon-setting',
           roles: [
             'admin/Setting/tokenInfo',
             'admin/Setting/captchaInfo',
@@ -385,7 +250,7 @@ export const asyncRoutes = [
         name: 'Api',
         meta: {
           title: '接口管理',
-          icon: 'el-icon-s-grid',
+          icon: 'el-icon-connection',
           roles: ['admin/Api/list']
         },
         component: () => import('@/views/api/api')
@@ -395,7 +260,7 @@ export const asyncRoutes = [
         name: 'Wechat',
         meta: {
           title: '微信设置',
-          icon: 'el-icon-s-grid',
+          icon: 'el-icon-chat-dot-round',
           roles: ['admin/SettingWechat/offiInfo', 'admin/SettingWechat/miniInfo']
         },
         component: () => import('@/views/setting/wechat')
@@ -405,7 +270,7 @@ export const asyncRoutes = [
         name: 'Region',
         meta: {
           title: '地区管理',
-          icon: 'el-icon-s-grid',
+          icon: 'el-icon-location-outline',
           roles: ['admin/Region/list']
         },
         component: () => import('@/views/region/region')
@@ -501,7 +366,7 @@ export const asyncRoutes = [
     name: 'System',
     meta: {
       title: '系统管理',
-      icon: 'el-icon-setting',
+      icon: 'el-icon-s-tools',
       roles: [
         'admin/AdminSetting/cacheInfo',
         'admin/AdminSetting/tokenInfo',

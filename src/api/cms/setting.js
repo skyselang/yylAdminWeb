@@ -1,13 +1,13 @@
 import request from '@/utils/request'
 
-// ----------------内容管理----------------
+// ----------------内容设置----------------
 /**
  * 内容设置信息
  * @param {array} params 请求数据
  */
-export function cmsInfo(params) {
+export function info(params) {
   return request({
-    url: '/admin/SettingCms/cmsInfo',
+    url: '/admin/CmsSetting/info',
     method: 'get',
     params: params
   })
@@ -16,9 +16,9 @@ export function cmsInfo(params) {
  * 内容设置修改
  * @param {array} data 请求数据
  */
-export function cmsEdit(data) {
+export function edit(data) {
   return request({
-    url: '/admin/SettingCms/cmsEdit',
+    url: '/admin/CmsSetting/edit',
     method: 'post',
     data
   })

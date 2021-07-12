@@ -100,12 +100,12 @@
 </template>
 
 <script>
-import { cmsInfo, cmsEdit } from '@/api/setting-cms'
+import { info, edit } from '@/api/cms/setting'
 import { getAdminToken } from '@/utils/auth'
 
 export default {
-  name: 'SettingCms',
-  components: {},
+  name: 'CmsSetting',
+  components: { },
   data() {
     return {
       loading: false,
@@ -127,7 +127,7 @@ export default {
         off_acc: '',
         off_acc_url: ''
       },
-      uploadAction: process.env.VUE_APP_BASE_API + '/admin/SettingCms/cmsUpload',
+      uploadAction: process.env.VUE_APP_BASE_API + '/admin/CmsSetting/upload',
       uploadHeaders: { AdminToken: getAdminToken() },
       rules: {
         name: [{ required: true, message: '请输入名称', trigger: 'blur' }]
@@ -140,14 +140,14 @@ export default {
   methods: {
     // 信息
     info() {
-      cmsInfo().then((res) => {
+      info().then((res) => {
         this.model = res.data
       })
     },
     // 刷新
     refresh() {
       this.loading = true
-      cmsInfo()
+      info()
         .then((res) => {
           this.model = res.data
           this.loading = false
@@ -162,7 +162,7 @@ export default {
       this.$refs['ref'].validate((valid) => {
         if (valid) {
           this.loading = true
-          cmsEdit(this.model)
+          edit(this.model)
             .then((res) => {
               this.info()
               this.loading = false
