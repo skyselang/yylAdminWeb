@@ -4,7 +4,7 @@
     <div class="filter-container">
       <el-row :gutter="0">
         <el-col :xs="24" :sm="24" style="text-align:right;">
-          <el-checkbox class="filter-item" border @change="expandAll">收起</el-checkbox>
+          <el-checkbox v-model="isExpandAll" class="filter-item" border @change="expandAll">收起</el-checkbox>
           <el-button class="filter-item" style="margin-left:10px" @click="refresh()">刷新</el-button>
           <el-button class="filter-item" type="primary" @click="add()">添加</el-button>
         </el-col>
@@ -81,7 +81,7 @@
               </el-upload>
             </el-col>
             <el-col :span="16">
-              <div>jpg、png格式，每张图片大小不超过 500 KB。</div>
+              <div>每张图片大小不超过 500 KB，jpg、png格式。</div>
             </el-col>
           </el-row>
           <el-row :gutter="0">
@@ -140,9 +140,10 @@ export default {
         imgs: [],
         sort: 200
       },
+      isExpandAll: false,
       is_hide: 0,
       selection: [],
-      uploadAction: process.env.VUE_APP_BASE_API + '/admin/CmsCategory/upload',
+      uploadAction: process.env.VUE_APP_BASE_API + '/admin/cms.Category/upload',
       uploadHeaders: { AdminToken: getAdminToken() },
       uploadData: { type: 'image' },
       rules: {
@@ -184,6 +185,11 @@ export default {
         }
       })
     },
+    // 刷新
+    refresh() {
+      this.isExpandAll = false
+      this.list()
+    },
     // 添加
     add(row) {
       this.dialog = true
@@ -221,7 +227,7 @@ export default {
         this.$confirm(message, title, { type: 'warning', dangerouslyUseHTMLString: true }).then(() => {
           this.loading = true
           dele({
-            article_category: row
+            category: row
           }).then(res => {
             this.list()
             this.$message.success(res.msg)
@@ -275,16 +281,6 @@ export default {
         this.$refs['ref'].clearValidate()
       }
     },
-    // 查询
-    search() {
-      this.query.page = 1
-      this.list()
-    },
-    // 刷新
-    refresh() {
-      this.query = this.$options.data().query
-      this.list()
-    },
     // 是否隐藏
     ishide(row, select = false) {
       if (row.length === 0) {
@@ -296,7 +292,7 @@ export default {
           is_hide = this.is_hide
         }
         ishide({
-          article_category: row,
+          category: row,
           is_hide: is_hide
         }).then(res => {
           this.list()

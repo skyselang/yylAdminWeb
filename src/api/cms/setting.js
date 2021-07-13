@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-
+const url = '/admin/cms.Setting/'
 // ----------------内容设置----------------
 /**
  * 内容设置信息
@@ -7,7 +7,7 @@ import request from '@/utils/request'
  */
 export function info(params) {
   return request({
-    url: '/admin/CmsSetting/info',
+    url: url + 'info',
     method: 'get',
     params: params
   })
@@ -18,7 +18,7 @@ export function info(params) {
  */
 export function edit(data) {
   return request({
-    url: '/admin/CmsSetting/edit',
+    url: url + 'edit',
     method: 'post',
     data
   })

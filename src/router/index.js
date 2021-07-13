@@ -157,10 +157,10 @@ export const asyncRoutes = [
       title: '内容管理',
       icon: 'el-icon-reading',
       roles: [
-        'admin/Cms/list',
-        'admin/CmsCategory/list',
-        'admin/CmsComment/list',
-        'admin/CmsSetting/info'
+        'admin/cms.Category/list',
+        'admin/cms.Content/list',
+        'admin/cms.Comment/list',
+        'admin/cms.Setting/info'
       ]
     },
     redirect: 'noRedirect',
@@ -168,24 +168,24 @@ export const asyncRoutes = [
     alwaysShow: true,
     children: [
       {
-        path: 'cms',
-        name: 'Cms',
-        meta: {
-          title: '内容管理',
-          icon: 'el-icon-s-grid',
-          roles: ['admin/Cms/list']
-        },
-        component: () => import('@/views/cms/cms')
-      },
-      {
         path: 'category',
         name: 'CmsCategory',
         meta: {
           title: '内容分类',
           icon: 'el-icon-menu',
-          roles: ['admin/CmsCategory/list']
+          roles: ['admin/cms.Category/list']
         },
         component: () => import('@/views/cms/category')
+      },
+      {
+        path: 'content',
+        name: 'CmsContent',
+        meta: {
+          title: '内容管理',
+          icon: 'el-icon-s-grid',
+          roles: ['admin/cms.Content/list']
+        },
+        component: () => import('@/views/cms/content')
       },
       {
         path: 'comment',
@@ -193,7 +193,7 @@ export const asyncRoutes = [
         meta: {
           title: '留言管理',
           icon: 'el-icon-chat-line-square',
-          roles: ['admin/CmsComment/list']
+          roles: ['admin/cms.Comment/list']
         },
         component: () => import('@/views/cms/comment')
       },
@@ -203,7 +203,7 @@ export const asyncRoutes = [
         meta: {
           title: '内容设置',
           icon: 'el-icon-setting',
-          roles: ['admin/CmsSetting/info']
+          roles: ['admin/cms.Setting/info']
         },
         component: () => import('@/views/cms/setting')
       }

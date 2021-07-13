@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-
+const url = '/admin/cms.Comment/'
 // ----------------留言管理----------------
 /**
  * 留言列表
@@ -7,7 +7,7 @@ import request from '@/utils/request'
  */
 export function list(params) {
   return request({
-    url: '/admin/CmsComment/list',
+    url: url + 'list',
     method: 'get',
     params: params
   })
@@ -18,7 +18,7 @@ export function list(params) {
  */
 export function info(params) {
   return request({
-    url: '/admin/CmsComment/info',
+    url: url + 'info',
     method: 'get',
     params: params
   })
@@ -29,7 +29,7 @@ export function info(params) {
  */
 export function edit(data) {
   return request({
-    url: '/admin/CmsComment/edit',
+    url: url + 'edit',
     method: 'post',
     data
   })
@@ -40,7 +40,7 @@ export function edit(data) {
  */
 export function dele(data) {
   return request({
-    url: '/admin/CmsComment/dele',
+    url: url + 'dele',
     method: 'post',
     data
   })
@@ -51,7 +51,7 @@ export function dele(data) {
  */
 export function isread(data) {
   return request({
-    url: '/admin/CmsComment/isread',
+    url: url + 'isread',
     method: 'post',
     data
   })
@@ -62,7 +62,7 @@ export function isread(data) {
  */
 export function recover(params) {
   return request({
-    url: '/admin/CmsComment/recover',
+    url: url + 'recover',
     method: 'get',
     params: params
   })
@@ -73,7 +73,7 @@ export function recover(params) {
  */
 export function recoverReco(data) {
   return request({
-    url: '/admin/CmsComment/recoverReco',
+    url: url + 'recoverReco',
     method: 'post',
     data
   })
@@ -84,7 +84,7 @@ export function recoverReco(data) {
  */
 export function recoverDele(data) {
   return request({
-    url: '/admin/CmsComment/recoverDele',
+    url: url + 'recoverDele',
     method: 'post',
     data
   })

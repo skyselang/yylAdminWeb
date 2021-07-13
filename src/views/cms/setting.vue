@@ -127,7 +127,7 @@ export default {
         off_acc: '',
         off_acc_url: ''
       },
-      uploadAction: process.env.VUE_APP_BASE_API + '/admin/CmsSetting/upload',
+      uploadAction: process.env.VUE_APP_BASE_API + '/admin/cms.Setting/upload',
       uploadHeaders: { AdminToken: getAdminToken() },
       rules: {
         name: [{ required: true, message: '请输入名称', trigger: 'blur' }]

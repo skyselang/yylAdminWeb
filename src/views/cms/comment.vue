@@ -12,7 +12,6 @@
           </el-select>
           <el-select v-model="query.date_type" class="filter-item" style="width:110px;" placeholder="时间类型" clearable>
             <el-option value="create_time" label="添加时间" />
-            <el-option value="read_time" label="阅读时间" />
             <el-option value="update_time" label="修改时间" />
           </el-select>
           <el-date-picker
@@ -50,7 +49,7 @@
       <el-table-column prop="update_time" label="修改时间" min-width="155" sortable="custom" />
       <el-table-column label="操作" min-width="145" align="right" fixed="right">
         <template slot-scope="{ row }">
-          <el-button size="mini" type="success" @click="edit(row)">修改</el-button>
+          <el-button size="mini" type="success" @click="edit(row)">查看</el-button>
           <el-button size="mini" type="danger" @click="dele([row])">删除</el-button>
         </template>
       </el-table-column>
@@ -86,7 +85,7 @@
           <el-input v-model="model.title" clearable placeholder="" disabled />
         </el-form-item>
         <el-form-item label="内容" prop="content">
-          <el-input v-model="model.content" type="textarea" clearable placeholder="" disabled />
+          <el-input v-model="model.content" type="textarea" clearable placeholder="" disabled autosize />
         </el-form-item>
         <el-form-item label="备注" prop="remark">
           <el-input v-model="model.remark" clearable placeholder="" />
@@ -122,8 +121,6 @@
             </el-select>
             <el-select v-model="recoverQuery.date_type" class="filter-item" style="width:110px;" placeholder="时间类型" clearable>
               <el-option value="create_time" label="添加时间" />
-              <el-option value="read_time" label="阅读时间" />
-              <el-option value="update_time" label="修改时间" />
               <el-option value="delete_time" label="删除时间" />
             </el-select>
             <el-date-picker
@@ -203,7 +200,7 @@ export default {
         sort: 200
       },
       selection: [],
-      uploadAction: process.env.VUE_APP_BASE_API + '/admin/Comment/upload',
+      uploadAction: process.env.VUE_APP_BASE_API + '/admin/cms.Comment/upload',
       uploadHeaders: { AdminToken: getAdminToken() },
       uploadData: { type: 'image' },
       rules: {},

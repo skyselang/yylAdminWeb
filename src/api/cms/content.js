@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-
+const url = '/admin/cms.Content/'
 // ----------------内容管理----------------
 /**
  * 内容列表
@@ -7,7 +7,7 @@ import request from '@/utils/request'
  */
 export function list(params) {
   return request({
-    url: '/admin/Cms/list',
+    url: url + 'list',
     method: 'get',
     params: params
   })
@@ -18,7 +18,7 @@ export function list(params) {
  */
 export function category(params) {
   return request({
-    url: '/admin/Cms/category',
+    url: url + 'category',
     method: 'get',
     params: params
   })
@@ -29,7 +29,7 @@ export function category(params) {
  */
 export function info(params) {
   return request({
-    url: '/admin/Cms/info',
+    url: url + 'info',
     method: 'get',
     params: params
   })
@@ -40,7 +40,7 @@ export function info(params) {
  */
 export function add(data) {
   return request({
-    url: '/admin/Cms/add',
+    url: url + 'add',
     method: 'post',
     data
   })
@@ -51,7 +51,7 @@ export function add(data) {
  */
 export function edit(data) {
   return request({
-    url: '/admin/Cms/edit',
+    url: url + 'edit',
     method: 'post',
     data
   })
@@ -62,7 +62,7 @@ export function edit(data) {
  */
 export function dele(data) {
   return request({
-    url: '/admin/Cms/dele',
+    url: url + 'dele',
     method: 'post',
     data
   })
@@ -73,7 +73,7 @@ export function dele(data) {
  */
 export function istop(data) {
   return request({
-    url: '/admin/Cms/istop',
+    url: url + 'istop',
     method: 'post',
     data
   })
@@ -84,7 +84,7 @@ export function istop(data) {
  */
 export function ishot(data) {
   return request({
-    url: '/admin/Cms/ishot',
+    url: url + 'ishot',
     method: 'post',
     data
   })
@@ -95,7 +95,7 @@ export function ishot(data) {
  */
 export function isrec(data) {
   return request({
-    url: '/admin/Cms/isrec',
+    url: url + 'isrec',
     method: 'post',
     data
   })
@@ -106,7 +106,7 @@ export function isrec(data) {
  */
 export function ishide(data) {
   return request({
-    url: '/admin/Cms/ishide',
+    url: url + 'ishide',
     method: 'post',
     data
   })
@@ -117,7 +117,7 @@ export function ishide(data) {
  */
 export function recover(params) {
   return request({
-    url: '/admin/Cms/recover',
+    url: url + 'recover',
     method: 'get',
     params: params
   })
@@ -128,7 +128,7 @@ export function recover(params) {
  */
 export function recoverReco(data) {
   return request({
-    url: '/admin/Cms/recoverReco',
+    url: url + 'recoverReco',
     method: 'post',
     data
   })
@@ -139,7 +139,7 @@ export function recoverReco(data) {
  */
 export function recoverDele(data) {
   return request({
-    url: '/admin/Cms/recoverDele',
+    url: url + 'recoverDele',
     method: 'post',
     data
   })
