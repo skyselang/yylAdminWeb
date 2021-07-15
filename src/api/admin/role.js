@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-
+const url = '/admin/admin.Role/'
 // ----------------角色管理----------------
 /**
  * 角色列表
@@ -7,7 +7,7 @@ import request from '@/utils/request'
  */
 export function list(params) {
   return request({
-    url: '/admin/AdminRole/list',
+    url: url + 'list',
     method: 'get',
     params: params
   })
@@ -18,7 +18,7 @@ export function list(params) {
  */
 export function info(params) {
   return request({
-    url: '/admin/AdminRole/info',
+    url: url + 'info',
     method: 'get',
     params: params
   })
@@ -29,7 +29,7 @@ export function info(params) {
  */
 export function add(data) {
   return request({
-    url: '/admin/AdminRole/add',
+    url: url + 'add',
     method: 'post',
     data
   })
@@ -40,7 +40,7 @@ export function add(data) {
  */
 export function edit(data) {
   return request({
-    url: '/admin/AdminRole/edit',
+    url: url + 'edit',
     method: 'post',
     data
   })
@@ -51,7 +51,7 @@ export function edit(data) {
  */
 export function dele(data) {
   return request({
-    url: '/admin/AdminRole/dele',
+    url: url + 'dele',
     method: 'post',
     data
   })
@@ -62,7 +62,7 @@ export function dele(data) {
  */
 export function disable(data) {
   return request({
-    url: '/admin/AdminRole/disable',
+    url: url + 'disable',
     method: 'post',
     data
   })
@@ -73,7 +73,7 @@ export function disable(data) {
  */
 export function user(params) {
   return request({
-    url: '/admin/AdminRole/user',
+    url: url + 'user',
     method: 'get',
     params: params
   })
@@ -84,7 +84,7 @@ export function user(params) {
  */
 export function userRemove(data) {
   return request({
-    url: '/admin/AdminRole/userRemove',
+    url: url + 'userRemove',
     method: 'post',
     data
   })

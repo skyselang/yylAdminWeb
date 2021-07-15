@@ -1,21 +1,21 @@
 <template>
   <div class="app-container">
     <el-tabs v-model="actTabName" @tab-click="tabClick">
-      <el-tab-pane v-if="checkPermission(['admin/AdminUtils/strrand','admin/AdminUtils/strtran'])" label="字符串" name="str">
+      <el-tab-pane v-if="checkPermission(['admin/admin.Utils/strrand','admin/admin.Utils/strtran'])" label="字符串" name="str">
         <el-row :gutter="8">
-          <el-col v-permission="['admin/AdminUtils/strrand']" :sm="24" :md="12">
+          <el-col v-permission="['admin/admin.Utils/strrand']" :sm="24" :md="12">
             <div class=" filter-container">
               <Strrand v-if="str" />
             </div>
           </el-col>
-          <el-col v-permission="['admin/AdminUtils/strtran']" :sm="24" :md="12">
+          <el-col v-permission="['admin/admin.Utils/strtran']" :sm="24" :md="12">
             <div class="filter-container">
               <Strtran v-if="str" />
             </div>
           </el-col>
         </el-row>
       </el-tab-pane>
-      <el-tab-pane v-if="checkPermission(['admin/AdminUtils/timestamp'])" label="时间戳" name="timestamp">
+      <el-tab-pane v-if="checkPermission(['admin/admin.Utils/timestamp'])" label="时间戳" name="timestamp">
         <el-row :gutter="8">
           <el-col :sm="24" :md="12">
             <div class="filter-container">
@@ -24,7 +24,7 @@
           </el-col>
         </el-row>
       </el-tab-pane>
-      <el-tab-pane v-if="checkPermission(['admin/AdminUtils/qrcode'])" label="二维码" name="qrcode">
+      <el-tab-pane v-if="checkPermission(['admin/admin.Utils/qrcode'])" label="二维码" name="qrcode">
         <el-row :gutter="8">
           <el-col :sm="24" :md="12">
             <div class="filter-container">
@@ -33,7 +33,7 @@
           </el-col>
         </el-row>
       </el-tab-pane>
-      <el-tab-pane v-if="checkPermission(['admin/AdminUtils/bytetran'])" label="字节" name="byte">
+      <el-tab-pane v-if="checkPermission(['admin/admin.Utils/bytetran'])" label="字节" name="byte">
         <el-row :gutter="8">
           <el-col :sm="24" :md="12">
             <div class="filter-container">
@@ -42,7 +42,7 @@
           </el-col>
         </el-row>
       </el-tab-pane>
-      <el-tab-pane v-if="checkPermission(['admin/AdminUtils/ipinfo'])" label="IP" name="ip">
+      <el-tab-pane v-if="checkPermission(['admin/admin.Utils/ipinfo'])" label="IP" name="ip">
         <el-row :gutter="8">
           <el-col :sm="24" :md="12">
             <div class="filter-container">
@@ -51,7 +51,7 @@
           </el-col>
         </el-row>
       </el-tab-pane>
-      <el-tab-pane v-if="checkPermission(['admin/AdminUtils/map'])" label="地图" name="map">
+      <el-tab-pane v-if="checkPermission(['admin/admin.Utils/map'])" label="地图" name="map">
         <el-row :gutter="8">
           <el-col :sm="24" :md="24">
             <div class="filter-container">
@@ -60,7 +60,7 @@
           </el-col>
         </el-row>
       </el-tab-pane>
-      <el-tab-pane v-if="checkPermission(['admin/AdminUtils/server'])" label="服务器" name="server">
+      <el-tab-pane v-if="checkPermission(['admin/admin.Utils/server'])" label="服务器" name="server">
         <el-row :gutter="8" class="dialog-body" :style="{height:height+60+'px'}">
           <el-col :sm="24" :md="24">
             <div class="filter-container">
@@ -69,7 +69,7 @@
           </el-col>
         </el-row>
       </el-tab-pane>
-      <el-tab-pane v-if="checkPermission(['admin/AdminUtils/toollu'])" label="在线工具" name="toollu">
+      <el-tab-pane v-if="checkPermission(['admin/admin.Utils/toollu'])" label="在线工具" name="toollu">
         <el-row :gutter="8" class="dialog-body" :style="{height:height+60+'px'}">
           <el-col :sm="24" :md="24">
             <div class="filter-container">
@@ -97,7 +97,7 @@ import Server from './components/Server'
 import Toollu from './components/Toollu'
 
 export default {
-  name: 'Utils',
+  name: 'AdminUtils',
   directives: { permission },
   components: { Strtran, Strrand, Timestamp, Qrcode, Byte, Ip, Map, Server, Toollu },
   data() {

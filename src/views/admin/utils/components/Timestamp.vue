@@ -24,7 +24,7 @@
 
 <script>
 import clip from '@/utils/clipboard'
-import { timestamp } from '@/api/admin-utils'
+import { timestamp } from '@/api/admin/utils'
 
 export default {
   name: 'Timestamp',

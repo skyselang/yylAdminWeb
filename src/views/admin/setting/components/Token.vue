@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { tokenInfo, tokenEdit } from '@/api/admin-setting'
+import { tokenInfo, tokenEdit } from '@/api/admin/setting'
 
 export default {
   name: 'Token',

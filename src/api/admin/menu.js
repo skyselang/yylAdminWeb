@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-
+const url = '/admin/admin.Menu/'
 // ----------------菜单管理----------------
 /**
  * 菜单列表
@@ -7,7 +7,7 @@ import request from '@/utils/request'
  */
 export function list(params) {
   return request({
-    url: '/admin/AdminMenu/list',
+    url: url + 'list',
     method: 'get',
     params: params
   })
@@ -18,7 +18,7 @@ export function list(params) {
  */
 export function info(params) {
   return request({
-    url: '/admin/AdminMenu/info',
+    url: url + 'info',
     method: 'get',
     params: params
   })
@@ -29,7 +29,7 @@ export function info(params) {
  */
 export function add(data) {
   return request({
-    url: '/admin/AdminMenu/add',
+    url: url + 'add',
     method: 'post',
     data
   })
@@ -40,7 +40,7 @@ export function add(data) {
  */
 export function edit(data) {
   return request({
-    url: '/admin/AdminMenu/edit',
+    url: url + 'edit',
     method: 'post',
     data
   })
@@ -51,7 +51,7 @@ export function edit(data) {
  */
 export function dele(data) {
   return request({
-    url: '/admin/AdminMenu/dele',
+    url: url + 'dele',
     method: 'post',
     data
   })
@@ -62,7 +62,7 @@ export function dele(data) {
  */
 export function disable(data) {
   return request({
-    url: '/admin/AdminMenu/disable',
+    url: url + 'disable',
     method: 'post',
     data
   })
@@ -73,7 +73,7 @@ export function disable(data) {
  */
 export function unauth(data) {
   return request({
-    url: '/admin/AdminMenu/unauth',
+    url: url + 'unauth',
     method: 'post',
     data
   })
@@ -84,7 +84,7 @@ export function unauth(data) {
  */
 export function unlogin(data) {
   return request({
-    url: '/admin/AdminMenu/unlogin',
+    url: url + 'unlogin',
     method: 'post',
     data
   })
@@ -95,7 +95,7 @@ export function unlogin(data) {
  */
 export function role(params) {
   return request({
-    url: '/admin/AdminMenu/role',
+    url: url + 'role',
     method: 'get',
     params: params
   })
@@ -106,7 +106,7 @@ export function role(params) {
  */
 export function roleRemove(data) {
   return request({
-    url: '/admin/AdminMenu/roleRemove',
+    url: url + 'roleRemove',
     method: 'post',
     data
   })
@@ -117,7 +117,7 @@ export function roleRemove(data) {
  */
 export function user(params) {
   return request({
-    url: '/admin/AdminMenu/user',
+    url: url + 'user',
     method: 'get',
     params: params
   })
@@ -128,7 +128,7 @@ export function user(params) {
  */
 export function userRemove(data) {
   return request({
-    url: '/admin/AdminMenu/userRemove',
+    url: url + 'userRemove',
     method: 'post',
     data
   })

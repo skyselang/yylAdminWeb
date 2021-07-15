@@ -1,5 +1,5 @@
-import { login, logout } from '@/api/admin-login'
-import { info as userInfo } from '@/api/admin-user-center'
+import { login, logout } from '@/api/admin/login'
+import { info as userInfo } from '@/api/admin/user-center'
 import {
   setAdminToken,
   getAdminToken,
@@ -74,7 +74,7 @@ const actions = {
 
         const {
           nickname,
-          avatar,
+          avatar_url,
           roles
         } = data
 
@@ -84,10 +84,10 @@ const actions = {
         }
 
         commit('SET_NICKNAME', nickname)
-        commit('SET_AVATAR', avatar)
+        commit('SET_AVATAR', avatar_url)
         commit('SET_ROLES', roles)
         setNickname(data.nickname)
-        setAvatar(data.avatar)
+        setAvatar(data.avatar_url)
         resolve(data)
       }).catch(error => {
         reject(error)

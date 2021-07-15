@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-
+const url = '/admin/admin.Apidoc/'
 // ----------------接口文档----------------
 /**
  * 接口文档
@@ -7,7 +7,7 @@ import request from '@/utils/request'
  */
 export function apidoc(params) {
   return request({
-    url: '/admin/AdminApidoc/apidoc',
+    url: url + 'apidoc',
     method: 'get',
     params: params
   })

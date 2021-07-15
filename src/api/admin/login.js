@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-
+const url = '/admin/admin.Login/'
 // ----------------登录退出-----------------
 /**
  * 验证码
@@ -7,7 +7,7 @@ import request from '@/utils/request'
  */
 export function captcha(params) {
   return request({
-    url: '/admin/AdminLogin/captcha',
+    url: url + 'captcha',
     method: 'get',
     params: params
   })
@@ -18,7 +18,7 @@ export function captcha(params) {
  */
 export function login(data) {
   return request({
-    url: '/admin/AdminLogin/login',
+    url: url + 'login',
     method: 'post',
     data
   })
@@ -29,7 +29,7 @@ export function login(data) {
  */
 export function logout(data) {
   return request({
-    url: '/admin/AdminLogin/logout',
+    url: url + 'logout',
     method: 'post',
     data
   })

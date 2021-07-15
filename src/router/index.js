@@ -105,8 +105,8 @@ export const constantRoutes = [
  */
 export const asyncRoutes = [
   {
-    path: '/members',
-    name: 'Members',
+    path: '/member',
+    name: 'member',
     meta: {
       title: '会员管理',
       icon: 'el-icon-user',
@@ -210,17 +210,17 @@ export const asyncRoutes = [
     ]
   },
   {
-    path: '/settings',
-    name: 'Settings',
+    path: '/setting',
+    name: 'setting',
     meta: {
       title: '设置管理',
       icon: 'el-icon-setting',
       roles: [
+        'admin/Api/list',
         'admin/Setting/tokenInfo',
         'admin/Setting/captchaInfo',
         'admin/Setting/logInfo',
         'admin/Setting/apiInfo',
-        'admin/Api/list',
         'admin/SettingWechat/offiInfo',
         'admin/SettingWechat/miniInfo',
         'admin/Region/list'
@@ -230,6 +230,16 @@ export const asyncRoutes = [
     component: Layout,
     alwaysShow: true,
     children: [
+      {
+        path: 'api',
+        name: 'Api',
+        meta: {
+          title: '接口管理',
+          icon: 'el-icon-connection',
+          roles: ['admin/Api/list']
+        },
+        component: () => import('@/views/api/api')
+      },
       {
         path: 'base',
         name: 'Base',
@@ -244,16 +254,6 @@ export const asyncRoutes = [
           ]
         },
         component: () => import('@/views/setting/base')
-      },
-      {
-        path: 'api',
-        name: 'Api',
-        meta: {
-          title: '接口管理',
-          icon: 'el-icon-connection',
-          roles: ['admin/Api/list']
-        },
-        component: () => import('@/views/api/api')
       },
       {
         path: 'wechat',
@@ -280,16 +280,16 @@ export const asyncRoutes = [
 
   {
     path: '/admin/rule',
-    name: 'Rule',
+    name: 'AdminRule',
     meta: {
       title: '权限管理',
       icon: 'el-icon-lock',
       roles: [
-        'admin/AdminMenu/list',
-        'admin/AdminRole/list',
-        'admin/AdminUser/list',
-        'admin/AdminUserLog/list',
-        'admin/AdminUserCenter/info'
+        'admin/admin.Menu/list',
+        'admin/admin.Role/list',
+        'admin/admin.User/list',
+        'admin/admin.UserLog/list',
+        'admin/admin.UserCenter/info'
       ]
     },
     redirect: 'noRedirect',
@@ -298,51 +298,51 @@ export const asyncRoutes = [
     children: [
       {
         path: 'menu',
-        name: 'Menu',
+        name: 'AdminMenu',
         meta: {
           title: '菜单管理',
           icon: 'el-icon-menu',
-          roles: ['admin/AdminMenu/list']
+          roles: ['admin/admin.Menu/list']
         },
         component: () => import('@/views/admin/menu/menu')
       },
       {
         path: 'role',
-        name: 'Role',
+        name: 'AdminRole',
         meta: {
           title: '角色管理',
           icon: 'el-icon-s-custom',
-          roles: ['admin/AdminRole/list']
+          roles: ['admin/admin.Role/list']
         },
         component: () => import('@/views/admin/role/role')
       },
       {
         path: 'user',
-        name: 'User',
+        name: 'AdminUser',
         meta: {
           title: '用户管理',
           icon: 'el-icon-user',
-          roles: ['admin/AdminUser/list']
+          roles: ['admin/admin.User/list']
         },
         component: () => import('@/views/admin/user/user')
       },
       {
         path: 'user-log',
-        name: 'UserLog',
+        name: 'AdminUserLog',
         meta: {
           title: '日志管理',
           icon: 'el-icon-notebook-2',
-          roles: ['admin/AdminUserLog/list']
+          roles: ['admin/admin.UserLog/list']
         },
         component: () => import('@/views/admin/user/user-log')
       },
       {
         path: 'user-log-stat',
-        name: 'UserLogStat',
+        name: 'AdminUserLogStat',
         meta: {
           title: '日志管理统计',
           icon: 'el-icon-s-data',
-          roles: ['admin/AdminUserLog/stat'],
+          roles: ['admin/admin.UserLog/stat'],
           activeMenu: '/admin/rule/user-log'
         },
         component: () => import('@/views/admin/user/user-log-stat'),
@@ -350,11 +350,11 @@ export const asyncRoutes = [
       },
       {
         path: 'user-center',
-        name: 'UserCenter',
+        name: 'AdminUserCenter',
         meta: {
           title: '个人中心',
           icon: 'el-icon-user-solid',
-          roles: ['admin/AdminUserCenter/info']
+          roles: ['admin/admin.UserCenter/info']
         },
         component: () => import('@/views/admin/user/user-center')
       }
@@ -363,18 +363,18 @@ export const asyncRoutes = [
 
   {
     path: '/admin/system',
-    name: 'System',
+    name: 'AdminSystem',
     meta: {
       title: '系统管理',
       icon: 'el-icon-s-tools',
       roles: [
-        'admin/AdminSetting/cacheInfo',
-        'admin/AdminSetting/tokenInfo',
-        'admin/AdminSetting/captchaInfo',
-        'admin/AdminSetting/logInfo',
-        'admin/AdminSetting/apiInfo',
-        'admin/AdminApidoc/apidoc',
-        'admin/AdminUtils/utils'
+        'admin/admin.Setting/cacheInfo',
+        'admin/admin.Setting/tokenInfo',
+        'admin/admin.Setting/captchaInfo',
+        'admin/admin.Setting/logInfo',
+        'admin/admin.Setting/apiInfo',
+        'admin/admin.Apidoc/apidoc',
+        'admin/admin.Utils/utils'
       ]
     },
     redirect: 'noRedirect',
@@ -383,37 +383,37 @@ export const asyncRoutes = [
     children: [
       {
         path: 'setting',
-        name: 'Setting',
+        name: 'AdminSetting',
         meta: {
           title: '设置管理',
           icon: 'el-icon-s-tools',
           roles: [
-            'admin/AdminSetting/cacheInfo',
-            'admin/AdminSetting/tokenInfo',
-            'admin/AdminSetting/captchaInfo',
-            'admin/AdminSetting/logInfo',
-            'admin/AdminSetting/apiInfo'
+            'admin/admin.Setting/cacheInfo',
+            'admin/admin.Setting/tokenInfo',
+            'admin/admin.Setting/captchaInfo',
+            'admin/admin.Setting/logInfo',
+            'admin/admin.Setting/apiInfo'
           ]
         },
         component: () => import('@/views/admin/setting/setting')
       },
       {
         path: 'apidoc',
-        name: 'Apidoc',
+        name: 'AdminApidoc',
         meta: {
           title: '接口文档',
           icon: 'el-icon-document',
-          roles: ['admin/AdminApidoc/apidoc']
+          roles: ['admin/admin.Apidoc/apidoc']
         },
         component: () => import('@/views/admin/apidoc/apidoc')
       },
       {
         path: 'utils',
-        name: 'Utils',
+        name: 'AdminUtils',
         meta: {
           title: '实用工具',
           icon: 'el-icon-help',
-          roles: ['admin/AdminUtils/utils']
+          roles: ['admin/admin.Utils/utils']
         },
         component: () => import('@/views/admin/utils/utils')
       }

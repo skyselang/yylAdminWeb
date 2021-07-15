@@ -142,7 +142,7 @@
 </template>
 
 <script>
-import { server } from '@/api/admin-utils'
+import { server } from '@/api/admin/utils'
 
 export default {
   name: 'Server',

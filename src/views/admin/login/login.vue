@@ -25,10 +25,10 @@
 
 <script>
 import setting from '@/settings'
-import { captcha } from '@/api/admin-login'
+import { captcha } from '@/api/admin/login'
 
 export default {
-  name: 'Login',
+  name: 'AdminLogin',
   components: {},
   data() {
     return {

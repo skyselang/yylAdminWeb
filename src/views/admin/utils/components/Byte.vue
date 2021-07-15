@@ -40,7 +40,7 @@
 
 <script>
 import clip from '@/utils/clipboard'
-import { bytetran } from '@/api/admin-utils'
+import { bytetran } from '@/api/admin/utils'
 
 export default {
   name: 'Byte',

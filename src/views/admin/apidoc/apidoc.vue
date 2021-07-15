@@ -20,10 +20,10 @@
 <script>
 import screenHeight from '@/utils/screen-height'
 import clip from '@/utils/clipboard'
-import { apidoc } from '@/api/admin-apidoc'
+import { apidoc } from '@/api/admin/apidoc'
 
 export default {
-  name: 'Apidoc',
+  name: 'AdminApidoc',
   components: {},
   data() {
     return {

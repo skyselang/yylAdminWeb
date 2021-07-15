@@ -49,16 +49,14 @@
     <!-- 添加、修改 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialog" top="1vh" width="50%" :before-close="cancel">
       <el-form ref="ref" :model="model" :rules="rules" class="dialog-body" label-width="100px" :style="{height:height+'px'}">
-        <el-form-item v-if="model.admin_user_id && model.avatar" label="头像" prop="avatar">
+        <el-form-item label="头像" prop="avatar">
           <el-col :span="10">
-            <el-avatar shape="circle" fit="contain" :size="100" :src="model.avatar" />
+            <el-avatar shape="circle" fit="contain" :size="100" :src="model.avatar_url" />
           </el-col>
-          <el-col class="line" :span="4" style="text-align:center" />
-          <el-col :span="10">
+          <el-col :span="14">
             <el-upload
-              name="avatar_file"
+              name="file"
               :show-file-list="false"
-              :before-upload="uploadBefore"
               :action="uploadAction"
               :headers="uploadHeaders"
               :data="uploadData"
@@ -201,10 +199,10 @@
 import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination'
 import { getAdminToken } from '@/utils/auth'
-import { list, info, add, edit, dele, issuper, disable, rule, pwd } from '@/api/admin-user'
+import { list, info, add, edit, dele, avatar, issuper, disable, rule, pwd } from '@/api/admin/user'
 
 export default {
-  name: 'User',
+  name: 'AdminUser',
   components: { Pagination },
   data() {
     return {
@@ -219,6 +217,8 @@ export default {
       dialog: false,
       dialogTitle: '',
       model: {
+        avatar: '',
+        avatar_url: '',
         admin_user_id: '',
         admin_role_ids: [],
         admin_menu_ids: [],
@@ -237,9 +237,9 @@ export default {
         create_time: '',
         update_time: ''
       },
-      uploadAction: process.env.VUE_APP_BASE_API + '/admin/AdminUser/avatar',
+      uploadAction: avatar(),
       uploadHeaders: { AdminToken: getAdminToken() },
-      uploadData: { admin_user_id: '' },
+      uploadData: { type: 'image' },
       ruleDialog: false,
       roleData: [],
       menuTree: [],
@@ -369,20 +369,18 @@ export default {
         this.list()
       }
     },
-    // 更换头像
-    uploadBefore() {
-      this.uploadData.admin_user_id = this.model.admin_user_id
-    },
+    // 上传头像
     uploadSuccess(res) {
       if (res.code === 200) {
-        this.model.avatar = res.data.avatar
+        this.model.avatar_url = res.data.url
+        this.model.avatar = res.data.path
         this.$message.success(res.msg)
       } else {
         this.$message.error(res.msg)
       }
     },
-    uploadError() {
-      this.$message.error('上传出错！')
+    uploadError(res) {
+      this.$message.error(res.msg || '上传出错')
     },
     // 是否超管
     isSuper(row) {

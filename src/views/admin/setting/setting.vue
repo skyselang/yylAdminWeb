@@ -1,19 +1,19 @@
 <template>
   <div class="app-container">
     <el-tabs>
-      <el-tab-pane v-if="checkPermission(['admin/AdminSetting/cacheInfo'])" label="缓存设置" lazy>
+      <el-tab-pane v-if="checkPermission(['admin/admin.Setting/cacheInfo'])" label="缓存设置" lazy>
         <Cache />
       </el-tab-pane>
-      <el-tab-pane v-if="checkPermission(['admin/AdminSetting/tokenInfo'])" label="Token设置" lazy>
+      <el-tab-pane v-if="checkPermission(['admin/admin.Setting/tokenInfo'])" label="Token设置" lazy>
         <Token />
       </el-tab-pane>
-      <el-tab-pane v-if="checkPermission(['admin/AdminSetting/captchaInfo'])" label="验证码设置" lazy>
+      <el-tab-pane v-if="checkPermission(['admin/admin.Setting/captchaInfo'])" label="验证码设置" lazy>
         <Captcha />
       </el-tab-pane>
-      <el-tab-pane v-if="checkPermission(['admin/AdminSetting/logInfo'])" label="日志设置" lazy>
+      <el-tab-pane v-if="checkPermission(['admin/admin.Setting/logInfo'])" label="日志设置" lazy>
         <Log />
       </el-tab-pane>
-      <el-tab-pane v-if="checkPermission(['admin/AdminSetting/apiInfo'])" label="接口设置" lazy>
+      <el-tab-pane v-if="checkPermission(['admin/admin.Setting/apiInfo'])" label="接口设置" lazy>
         <Api />
       </el-tab-pane>
     </el-tabs>
@@ -30,7 +30,7 @@ import Log from './components/Log'
 import Api from './components/Api'
 
 export default {
-  name: 'Setting',
+  name: 'AdminSetting',
   directives: { permission },
   components: { Cache, Token, Captcha, Log, Api },
   data() {

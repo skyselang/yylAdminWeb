@@ -26,8 +26,8 @@
           <el-button class="filter-item" @click="refresh()">刷新</el-button>
         </el-col>
         <el-col :xs="24" :sm="3" style="text-align:right;">
-          <el-button v-permission="['admin/AdminUserLog/clear']" class="filter-item" title="日志清除" @click="clear()">清除</el-button>
-          <el-button v-permission="['admin/AdminUserLog/stat']" class="filter-item" type="primary" title="日志管理统计" @click="stat">统计</el-button>
+          <el-button v-permission="['admin/admin.UserLog/clear']" class="filter-item" title="日志清除" @click="clear()">清除</el-button>
+          <el-button v-permission="['admin/admin.UserLog/stat']" class="filter-item" type="primary" title="日志管理统计" @click="stat">统计</el-button>
         </el-col>
       </el-row>
     </div>
@@ -160,10 +160,10 @@
 import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination'
 import permission from '@/directive/permission/index.js' // 权限判断指令
-import { list, info, dele, clear } from '@/api/admin-user-log'
+import { list, info, dele, clear } from '@/api/admin/user-log'
 
 export default {
-  name: 'UserLog',
+  name: 'AdminUserLog',
   components: { Pagination },
   directives: { permission },
   data() {

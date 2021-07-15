@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-card v-loading="loadNum" class="box-card">
+    <el-card v-loading="loading" class="box-card">
       <el-row :gutter="10">
         <el-col :sm="4">
           <el-card class="box-card" :body-style="cardBodyStyle">
@@ -119,8 +119,6 @@
           </el-card>
         </el-col>
       </el-row>
-    </el-card>
-    <el-card v-loading="loadDate" class="box-card">
       <el-row :gutter="0">
         <el-col :sm="24">
           <el-date-picker
@@ -161,7 +159,7 @@ echarts.use([LegendComponent, TitleComponent, TooltipComponent, GridComponent, L
 
 import screenHeight from '@/utils/screen-height'
 import BackToTop from '@/components/BackToTop'
-import { member } from '@/api/index'
+import { member } from '@/api/admin/index'
 
 export default {
   name: 'Member',
@@ -169,9 +167,7 @@ export default {
   data() {
     return {
       height: 680,
-      loadNum: false,
-      loadDate: false,
-      loadRegion: false,
+      loading: false,
       number: {
         total: '-',
         today: '-',
@@ -218,7 +214,7 @@ export default {
   mounted() {},
   methods: {
     member() {
-      this.loadNum = true
+      this.loading = true
       member().then(res => {
         this.number = res.data.number
         this.active = res.data.active
@@ -226,21 +222,21 @@ export default {
         this.date_act = res.data.date_act
         this.region = res.data.region
         this.echartDate(res.data.date_new, res.data.date_act)
-        this.loadNum = false
+        this.loading = false
       }).catch(() => {
-        this.loadNum = false
+        this.loading = false
       })
     },
     echartDateChange() {
-      this.loadDate = true
+      this.loading = true
       member({
         type: 'date',
         date: this.date_new.date
       }).then(res => {
         this.echartDate(res.data.date_new, res.data.date_act)
-        this.loadDate = false
+        this.loading = false
       }).catch(() => {
-        this.loadDate = false
+        this.loading = false
       })
     },
     echartDate(date_new, date_act) {

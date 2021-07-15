@@ -4,7 +4,7 @@
 
 <script>
 export default {
-  name: 'Logout',
+  name: 'AdminLogout',
   components: {},
   data() {
     return { loading: true }

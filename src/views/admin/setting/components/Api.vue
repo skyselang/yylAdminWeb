@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import { apiInfo, apiEdit } from '@/api/admin-setting'
+import { apiInfo, apiEdit } from '@/api/admin/setting'
 
 export default {
   name: 'Api',

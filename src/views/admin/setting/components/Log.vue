@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import { logInfo, logEdit } from '@/api/admin-setting'
+import { logInfo, logEdit } from '@/api/admin/setting'
 
 export default {
   name: 'Log',

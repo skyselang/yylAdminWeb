@@ -115,11 +115,11 @@
 <script>
 import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination'
-import { list as menuTree } from '@/api/admin-menu'
-import { list, info, add, edit, dele, disable, user, userRemove } from '@/api/admin-role'
+import { list as menuTree } from '@/api/admin/menu'
+import { list, info, add, edit, dele, disable, user, userRemove } from '@/api/admin/role'
 
 export default {
-  name: 'Role',
+  name: 'AdminRole',
   components: { Pagination },
   data() {
     return {

@@ -44,7 +44,7 @@
 <script>
 import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination'
-import { log } from '@/api/admin-user-center'
+import { log } from '@/api/admin/user-center'
 
 export default {
   name: 'UserCenterLog',

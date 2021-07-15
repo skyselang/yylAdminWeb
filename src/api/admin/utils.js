@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-
+const url = '/admin/admin.Utils/'
 // ----------------实用工具----------------
 /**
  * 随机字符串
@@ -7,7 +7,7 @@ import request from '@/utils/request'
  */
 export function strrand(data) {
   return request({
-    url: '/admin/AdminUtils/strrand',
+    url: url + 'strrand',
     method: 'post',
     data
   })
@@ -18,7 +18,7 @@ export function strrand(data) {
  */
 export function strtran(data) {
   return request({
-    url: '/admin/AdminUtils/strtran',
+    url: url + 'strtran',
     method: 'post',
     data
   })
@@ -29,7 +29,7 @@ export function strtran(data) {
  */
 export function timestamp(data) {
   return request({
-    url: '/admin/AdminUtils/timestamp',
+    url: url + 'timestamp',
     method: 'post',
     data
   })
@@ -40,7 +40,7 @@ export function timestamp(data) {
  */
 export function bytetran(data) {
   return request({
-    url: '/admin/AdminUtils/bytetran',
+    url: url + 'bytetran',
     method: 'post',
     data
   })
@@ -51,7 +51,7 @@ export function bytetran(data) {
  */
 export function ipinfo(data) {
   return request({
-    url: '/admin/AdminUtils/ipinfo',
+    url: url + 'ipinfo',
     method: 'post',
     data
   })
@@ -62,7 +62,7 @@ export function ipinfo(data) {
  */
 export function server(params) {
   return request({
-    url: '/admin/AdminUtils/server',
+    url: url + 'server',
     method: 'get',
     params: params
   })

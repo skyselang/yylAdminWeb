@@ -175,10 +175,10 @@
 import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination'
 import permission from '@/directive/permission/index.js' // 权限判断指令
-import { list, info, add, edit, dele, disable, unauth, unlogin, role, roleRemove, user, userRemove } from '@/api/admin-menu'
+import { list, info, add, edit, dele, disable, unauth, unlogin, role, roleRemove, user, userRemove } from '@/api/admin/menu'
 
 export default {
-  name: 'Menu',
+  name: 'AdminMenu',
   components: { Pagination },
   directives: { permission },
   data() {

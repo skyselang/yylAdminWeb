@@ -55,7 +55,7 @@
             style="width:100%"
             clearable
             filterable
-            placeholder="一级"
+            placeholder="一级地区"
             @change="pidChange"
           />
         </el-form-item>

@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-
+const url = '/admin/admin.User/'
 // ----------------用户管理----------------
 /**
  * 用户列表
@@ -7,7 +7,7 @@ import request from '@/utils/request'
  */
 export function list(params) {
   return request({
-    url: '/admin/AdminUser/list',
+    url: url + 'list',
     method: 'get',
     params: params
   })
@@ -18,7 +18,7 @@ export function list(params) {
  */
 export function info(params) {
   return request({
-    url: '/admin/AdminUser/info',
+    url: url + 'info',
     method: 'get',
     params: params
   })
@@ -29,7 +29,7 @@ export function info(params) {
  */
 export function add(data) {
   return request({
-    url: '/admin/AdminUser/add',
+    url: url + 'add',
     method: 'post',
     data
   })
@@ -40,7 +40,7 @@ export function add(data) {
  */
 export function edit(data) {
   return request({
-    url: '/admin/AdminUser/edit',
+    url: url + 'edit',
     method: 'post',
     data
   })
@@ -51,10 +51,16 @@ export function edit(data) {
  */
 export function dele(data) {
   return request({
-    url: '/admin/AdminUser/dele',
+    url: url + 'dele',
     method: 'post',
     data
   })
+}
+/**
+ * 更换头像
+ */
+export function avatar() {
+  return process.env.VUE_APP_BASE_API + url + 'avatar'
 }
 /**
  * 用户重置密码
@@ -62,7 +68,7 @@ export function dele(data) {
  */
 export function pwd(data) {
   return request({
-    url: '/admin/AdminUser/pwd',
+    url: url + 'pwd',
     method: 'post',
     data
   })
@@ -74,13 +80,13 @@ export function pwd(data) {
 export function rule(data, method = 'get') {
   if (method === 'post') {
     return request({
-      url: '/admin/AdminUser/rule',
+      url: url + 'rule',
       method: 'post',
       data
     })
   } else {
     return request({
-      url: '/admin/AdminUser/rule',
+      url: url + 'rule',
       method: 'get',
       params: data
     })
@@ -92,7 +98,7 @@ export function rule(data, method = 'get') {
  */
 export function disable(data) {
   return request({
-    url: '/admin/AdminUser/disable',
+    url: url + 'disable',
     method: 'post',
     data
   })
@@ -103,7 +109,7 @@ export function disable(data) {
  */
 export function issuper(data) {
   return request({
-    url: '/admin/AdminUser/super',
+    url: url + 'super',
     method: 'post',
     data
   })

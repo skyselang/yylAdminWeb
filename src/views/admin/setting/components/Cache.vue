@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import { cacheInfo, cacheClear } from '@/api/admin-setting'
+import { cacheInfo, cacheClear } from '@/api/admin/setting'
 
 export default {
   name: 'Cache',

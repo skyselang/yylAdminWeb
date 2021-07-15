@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import { captchaInfo, captchaEdit } from '@/api/admin-setting'
+import { captchaInfo, captchaEdit } from '@/api/admin/setting'
 
 export default {
   name: 'Captcha',

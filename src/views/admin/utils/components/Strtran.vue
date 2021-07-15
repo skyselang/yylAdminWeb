@@ -39,7 +39,7 @@
 
 <script>
 import clip from '@/utils/clipboard'
-import { strtran } from '@/api/admin-utils'
+import { strtran } from '@/api/admin/utils'
 
 export default {
   name: 'Strtran',

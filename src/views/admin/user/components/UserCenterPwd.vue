@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { pwd } from '@/api/admin-user-center'
+import { pwd } from '@/api/admin/user-center'
 
 export default {
   name: 'UserCenterPwd',

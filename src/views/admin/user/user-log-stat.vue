@@ -146,10 +146,10 @@ echarts.use([LegendComponent, TitleComponent, TooltipComponent, GridComponent, L
 
 import screenHeight from '@/utils/screen-height'
 import BackToTop from '@/components/BackToTop'
-import { stat } from '@/api/admin-user-log'
+import { stat } from '@/api/admin/user-log'
 
 export default {
-  name: 'UserLogStat',
+  name: 'AdminUserLogStat',
   components: { BackToTop },
   data() {
     return {

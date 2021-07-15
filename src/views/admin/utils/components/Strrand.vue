@@ -33,7 +33,7 @@
 
 <script>
 import clip from '@/utils/clipboard'
-import { strrand } from '@/api/admin-utils'
+import { strrand } from '@/api/admin/utils'
 
 export default {
   name: 'Strrand',

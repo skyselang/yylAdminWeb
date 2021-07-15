@@ -161,6 +161,7 @@ export default {
       this.loading = true
       list(this.query).then(res => {
         this.data = res.data.list
+        this.isExpandAll = false
         this.loading = false
       }).catch(() => {
         this.loading = false
@@ -187,7 +188,6 @@ export default {
     },
     // 刷新
     refresh() {
-      this.isExpandAll = false
       this.list()
     },
     // 添加
@@ -311,7 +311,6 @@ export default {
     },
     // 上传图片
     uploadSuccess(res, file, fileList) {
-      console.log(res)
       if (res.code === 200) {
         this.model.imgs.push(res.data)
         this.$message.success(res.msg)

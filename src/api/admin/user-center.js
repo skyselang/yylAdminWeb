@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-
+const url = '/admin/admin.UserCenter/'
 // ----------------个人中心----------------
 /**
  * 我的信息
@@ -7,7 +7,7 @@ import request from '@/utils/request'
  */
 export function info(params) {
   return request({
-    url: '/admin/AdminUserCenter/info',
+    url: url + 'info',
     method: 'get',
     params: params
   })
@@ -18,7 +18,7 @@ export function info(params) {
  */
 export function edit(data) {
   return request({
-    url: '/admin/AdminUserCenter/edit',
+    url: url + 'edit',
     method: 'post',
     data
   })
@@ -29,21 +29,16 @@ export function edit(data) {
  */
 export function pwd(data) {
   return request({
-    url: '/admin/AdminUserCenter/pwd',
+    url: url + 'pwd',
     method: 'post',
     data
   })
 }
 /**
  * 更换头像
- * @param {array} data 请求数据
  */
-export function avatar(data) {
-  return request({
-    url: '/admin/AdminUserCenter/avatar',
-    method: 'post',
-    data
-  })
+export function avatar() {
+  return process.env.VUE_APP_BASE_API + url + 'avatar'
 }
 /**
  * 我的日志
@@ -51,7 +46,7 @@ export function avatar(data) {
  */
 export function log(params) {
   return request({
-    url: '/admin/AdminUserCenter/log',
+    url: url + 'log',
     method: 'get',
     params: params
   })

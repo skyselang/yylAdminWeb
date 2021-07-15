@@ -4,6 +4,25 @@
       <el-row :gutter="0">
         <el-col :xs="24" :sm="12">
           <el-form ref="ref" :rules="rules" :model="model" label-width="100px">
+            <el-form-item label="头像" prop="avatar">
+              <el-col :span="10">
+                <el-avatar shape="circle" fit="contain" :size="100" :src="model.avatar_url" />
+              </el-col>
+              <el-col :span="14">
+                <el-upload
+                  name="file"
+                  :show-file-list="false"
+                  :action="uploadAction"
+                  :headers="uploadHeaders"
+                  :data="uploadData"
+                  :on-success="uploadSuccess"
+                  :on-error="uploadError"
+                >
+                  <el-button size="mini">上传头像</el-button>
+                </el-upload>
+                <span>jpg、png图片，小于100kb，宽高1:1</span>
+              </el-col>
+            </el-form-item>
             <el-form-item label="账号" prop="username">
               <el-input v-model="model.username" placeholder="请输入账号" clearable />
             </el-form-item>
@@ -28,7 +47,8 @@
 </template>
 
 <script>
-import { info, edit } from '@/api/admin-user-center'
+import { getAdminToken } from '@/utils/auth'
+import { info, edit, avatar } from '@/api/admin/user-center'
 import store from '@/store'
 
 export default {
@@ -38,11 +58,16 @@ export default {
     return {
       loading: false,
       model: {
+        avatar: '',
+        avatar_url: '',
         username: '',
         nickname: '',
         phone: '',
         email: ''
       },
+      uploadAction: avatar(),
+      uploadHeaders: { AdminToken: getAdminToken() },
+      uploadData: { type: 'image' },
       rules: {
         username: [{ required: true, message: '请输入账号', trigger: 'blur' }],
         nickname: [{ required: true, message: '请输入昵称', trigger: 'blur' }]
@@ -59,6 +84,8 @@ export default {
       }).then(res => {
         this.$refs['ref'].resetFields()
         this.model = res.data
+        store.commit('user/SET_AVATAR', res.data.avatar_url)
+        store.commit('user/SET_NICKNAME', res.data.nickname)
       })
     },
     submit() {
@@ -67,8 +94,6 @@ export default {
           this.loading = true
           edit(this.model).then(res => {
             this.refresh()
-            store.commit('user/SET_NICKNAME', res.data.nickname)
-            store.commit('user/SET_USERNAME', res.data.username)
             this.loading = false
             this.$message.success(res.msg)
           }).catch(() => {
@@ -81,6 +106,19 @@ export default {
       this.loading = true
       this.info()
       this.loading = false
+    },
+    // 上传头像
+    uploadSuccess(res) {
+      if (res.code === 200) {
+        this.model.avatar_url = res.data.url
+        this.model.avatar = res.data.path
+        this.$message.success(res.msg)
+      } else {
+        this.$message.error(res.msg)
+      }
+    },
+    uploadError(res) {
+      this.$message.error(res.msg || '上传出错')
     }
   }
 }

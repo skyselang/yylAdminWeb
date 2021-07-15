@@ -39,7 +39,7 @@
       </el-dropdown>
 
       <span style="display:inline-block;float:right;margin-right:10px;color:#409eff">
-        <el-button v-if="checkPermission(['admin/AdminSetting/cacheClear'])" v-loading="loading" icon="el-icon-delete" circle title="清除缓存" @click="clearCache" />
+        <el-button v-if="checkPermission(['admin/admin.Setting/cacheClear'])" v-loading="loading" icon="el-icon-delete" circle title="清除缓存" @click="clearCache" />
       </span>
     </div>
   </div>
@@ -47,7 +47,7 @@
 
 <script>
 import checkPermission from '@/utils/permission' // 权限判断函数
-import { cacheClear } from '@/api/admin-setting'
+import { cacheClear } from '@/api/admin/setting'
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'

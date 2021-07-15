@@ -40,7 +40,7 @@
 
 <script>
 import clip from '@/utils/clipboard'
-import { ipinfo } from '@/api/admin-utils'
+import { ipinfo } from '@/api/admin/utils'
 
 export default {
   name: 'Ip',
