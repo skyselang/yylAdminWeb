@@ -6,14 +6,16 @@
           <el-form ref="ref" :model="model" :rules="rules" label-width="130px">
             <el-form-item label="logo" prop="logo">
               <el-row :gutter="0">
-                <el-col :span="12">
-                  <el-image shape="circle" fit="contain" style="height: 100px" :src="model.logo_url" :preview-src-list="[model.logo_url]">
-                    <div slot="error" class="image-slot">
-                      <i class="el-icon-picture-outline" />
-                    </div>
-                  </el-image>
+                <el-col :span="10">
+                  <el-image
+                    v-if="model.logo_url"
+                    style="width:100px; height:100px;"
+                    :src="model.logo_url"
+                    :preview-src-list="[model.logo_url]"
+                    title="点击查看大图"
+                  />
                 </el-col>
-                <el-col :span="12">
+                <el-col :span="14">
                   <el-upload
                     name="file"
                     :show-file-list="false"
@@ -66,20 +68,22 @@
             </el-form-item>
             <el-form-item label="公众号" prop="off_acc">
               <el-row :gutter="0">
-                <el-col :span="12">
-                  <el-image shape="circle" fit="contain" style="height: 100px" :src="model.off_acc_url" :preview-src-list="[model.off_acc_url]">
-                    <div slot="error" class="image-slot">
-                      <i class="el-icon-picture-outline" />
-                    </div>
-                  </el-image>
+                <el-col :span="10">
+                  <el-image
+                    v-if="model.off_acc_url"
+                    style="width:100px; height:100px;"
+                    :src="model.off_acc_url"
+                    :preview-src-list="[model.off_acc_url]"
+                    title="点击查看大图"
+                  />
                 </el-col>
-                <el-col :span="12">
+                <el-col :span="14">
                   <el-upload
                     name="file"
                     :show-file-list="false"
                     :action="uploadAction"
                     :headers="uploadHeaders"
-                    :on-success="uploadOffSuccess"
+                    :on-success="uploadSuccessOff"
                     :on-error="uploadError"
                   >
                     <el-button size="mini">上传公众号</el-button>
@@ -100,7 +104,7 @@
 </template>
 
 <script>
-import { info, edit } from '@/api/cms/setting'
+import { info, edit, upload } from '@/api/cms/setting'
 import { getAdminToken } from '@/utils/auth'
 
 export default {
@@ -127,7 +131,7 @@ export default {
         off_acc: '',
         off_acc_url: ''
       },
-      uploadAction: process.env.VUE_APP_BASE_API + '/admin/cms.Setting/upload',
+      uploadAction: upload(),
       uploadHeaders: { AdminToken: getAdminToken() },
       rules: {
         name: [{ required: true, message: '请输入名称', trigger: 'blur' }]
@@ -171,11 +175,13 @@ export default {
             .catch(() => {
               this.loading = false
             })
+        } else {
+          this.$message.error('请完善必填项')
         }
       })
     },
     // 上传logo
-    uploadSuccess(res, file) {
+    uploadSuccess(res) {
       if (res.code === 200) {
         this.model.logo_url = res.data.url
         this.model.logo = res.data.path
@@ -184,11 +190,11 @@ export default {
         this.$message.error(res.msg)
       }
     },
-    uploadError(res, file) {
+    uploadError(res) {
       this.$message.error(res.msg || '上传出错')
     },
     // 上传公众号
-    uploadOffSuccess(res, file) {
+    uploadSuccessOff(res) {
       if (res.code === 200) {
         this.model.off_acc_url = res.data.url
         this.model.off_acc = res.data.path

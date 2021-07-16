@@ -23,3 +23,9 @@ export function edit(data) {
     data
   })
 }
+/**
+ * 内容设置上传
+ */
+export function upload() {
+  return process.env.VUE_APP_BASE_API + url + 'upload'
+}

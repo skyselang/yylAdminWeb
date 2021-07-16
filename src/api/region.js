@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-
+const url = '/admin/Region/'
 // ----------------地区管理----------------
 /**
  * 地区列表
@@ -7,7 +7,7 @@ import request from '@/utils/request'
  */
 export function list(params) {
   return request({
-    url: '/admin/Region/list',
+    url: url + 'list',
     method: 'get',
     params: params
   })
@@ -18,7 +18,7 @@ export function list(params) {
  */
 export function info(params) {
   return request({
-    url: '/admin/Region/info',
+    url: url + 'info',
     method: 'get',
     params: params
   })
@@ -29,7 +29,7 @@ export function info(params) {
  */
 export function add(data) {
   return request({
-    url: '/admin/Region/add',
+    url: url + 'add',
     method: 'post',
     data
   })
@@ -40,7 +40,7 @@ export function add(data) {
  */
 export function edit(data) {
   return request({
-    url: '/admin/Region/edit',
+    url: url + 'edit',
     method: 'post',
     data
   })
@@ -51,7 +51,7 @@ export function edit(data) {
  */
 export function dele(data) {
   return request({
-    url: '/admin/Region/dele',
+    url: url + 'dele',
     method: 'post',
     data
   })

@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-
+const url = '/admin/Member/'
 // ----------------会员管理----------------
 /**
  * 会员列表
@@ -7,7 +7,7 @@ import request from '@/utils/request'
  */
 export function list(params) {
   return request({
-    url: '/admin/Member/list',
+    url: url + 'list',
     method: 'get',
     params: params
   })
@@ -18,7 +18,7 @@ export function list(params) {
  */
 export function info(params) {
   return request({
-    url: '/admin/Member/info',
+    url: url + 'info',
     method: 'get',
     params: params
   })
@@ -29,7 +29,7 @@ export function info(params) {
  */
 export function add(data) {
   return request({
-    url: '/admin/Member/add',
+    url: url + 'add',
     method: 'post',
     data
   })
@@ -40,7 +40,7 @@ export function add(data) {
  */
 export function edit(data) {
   return request({
-    url: '/admin/Member/edit',
+    url: url + 'edit',
     method: 'post',
     data
   })
@@ -51,10 +51,16 @@ export function edit(data) {
  */
 export function dele(data) {
   return request({
-    url: '/admin/Member/dele',
+    url: url + 'dele',
     method: 'post',
     data
   })
+}
+/**
+ * 会员上传头像
+ */
+export function avatar() {
+  return process.env.VUE_APP_BASE_API + url + 'avatar'
 }
 /**
  * 会员重置密码
@@ -62,7 +68,7 @@ export function dele(data) {
  */
 export function pwd(data) {
   return request({
-    url: '/admin/Member/pwd',
+    url: url + 'pwd',
     method: 'post',
     data
   })
@@ -73,7 +79,7 @@ export function pwd(data) {
  */
 export function disable(data) {
   return request({
-    url: '/admin/Member/disable',
+    url: url + 'disable',
     method: 'post',
     data
   })

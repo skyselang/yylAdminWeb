@@ -4,13 +4,14 @@
     <div class="filter-container">
       <el-row :gutter="0">
         <el-col :xs="24" :sm="24" style="text-align:right;">
+          <el-checkbox v-model="isExpandAll" class="filter-item" border @change="expandAll">收起</el-checkbox>
           <el-button class="filter-item" @click="refresh()">刷新</el-button>
           <el-button class="filter-item" type="primary" @click="add()">添加</el-button>
         </el-col>
       </el-row>
     </div>
     <!-- 列表 -->
-    <el-table v-loading="loading" :data="data" :height="height+50" style="width: 100%" row-key="api_id" border>
+    <el-table ref="table" v-loading="loading" :data="data" :height="height+50" style="width: 100%" row-key="api_id" default-expand-all border>
       <el-table-column prop="api_name" label="接口名称" min-width="200" fixed="left" />
       <el-table-column prop="api_url" label="接口链接" min-width="260" show-overflow-tooltip />
       <el-table-column prop="api_sort" label="接口排序" min-width="90" />
@@ -122,6 +123,7 @@ export default {
         api_url: '',
         api_sort: 200
       },
+      isExpandAll: false,
       rules: {
         api_name: [{ required: true, message: '请输入接口名称', trigger: 'blur' }]
       }
@@ -137,9 +139,22 @@ export default {
       this.loading = true
       list().then(res => {
         this.data = res.data.list
+        this.isExpandAll = false
         this.loading = false
       }).catch(() => {
         this.loading = false
+      })
+    },
+    // 收起
+    expandAll(e) {
+      this.expandFor(this.data, !e)
+    },
+    expandFor(data, isExpand) {
+      data.forEach(i => {
+        this.$refs.table.toggleRowExpansion(i, isExpand)
+        if (i.children) {
+          this.expandFor(i.children, isExpand)
+        }
       })
     },
     // 添加

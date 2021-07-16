@@ -244,7 +244,7 @@ export const asyncRoutes = [
         path: 'base',
         name: 'Base',
         meta: {
-          title: '基础设置',
+          title: '设置管理',
           icon: 'el-icon-setting',
           roles: [
             'admin/Setting/tokenInfo',

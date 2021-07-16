@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-
+const url = '/admin/MemberLog/'
 // ----------------会员日志----------------
 /**
  * 会员日志列表
@@ -7,7 +7,7 @@ import request from '@/utils/request'
  */
 export function list(params) {
   return request({
-    url: '/admin/MemberLog/list',
+    url: url + 'list',
     method: 'get',
     params: params
   })
@@ -18,7 +18,7 @@ export function list(params) {
  */
 export function info(params) {
   return request({
-    url: '/admin/MemberLog/info',
+    url: url + 'info',
     method: 'get',
     params: params
   })
@@ -29,7 +29,7 @@ export function info(params) {
  */
 export function dele(data) {
   return request({
-    url: '/admin/MemberLog/dele',
+    url: url + 'dele',
     method: 'post',
     data
   })
@@ -40,7 +40,7 @@ export function dele(data) {
  */
 export function clear(data) {
   return request({
-    url: '/admin/MemberLog/clear',
+    url: url + 'clear',
     method: 'post',
     data
   })
@@ -51,7 +51,7 @@ export function clear(data) {
  */
 export function stat(data) {
   return request({
-    url: '/admin/MemberLog/stat',
+    url: url + 'stat',
     method: 'post',
     data
   })

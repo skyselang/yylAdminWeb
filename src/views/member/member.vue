@@ -37,10 +37,10 @@
       <el-table-column prop="avatar" label="头像" min-width="100" align="center">
         <template slot-scope="scope">
           <el-image
-            v-if="scope.row.avatar"
-            style="width: 35px; height: 35px; border-radius: 100% / 100%;"
-            :src="scope.row.avatar"
-            :preview-src-list="[scope.row.avatar]"
+            v-if="scope.row.avatar_url"
+            style="width: 35px; height: 35px; border-radius: 35px;"
+            :src="scope.row.avatar_url"
+            :preview-src-list="[scope.row.avatar_url]"
             title="点击查看大图"
           />
         </template>
@@ -71,21 +71,29 @@
     <!-- 添加、修改 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialog" top="1vh" width="50%" :before-close="cancel">
       <el-form ref="ref" :model="model" :rules="rules" class="dialog-body" label-width="100px" :style="{height:height+'px'}">
-        <el-form-item v-if="model.member_id" label="头像" prop="avatar">
-          <el-avatar shape="circle" fit="contain" :size="100" :src="model.avatar" />
-          <el-upload
-            name="avatar_file"
-            :show-file-list="false"
-            :before-upload="uploadBefore"
-            :action="uploadAction"
-            :headers="uploadHeaders"
-            :data="uploadData"
-            :on-success="uploadSuccess"
-            :on-error="uploadError"
-          >
-            <el-button size="mini">更换头像</el-button>
-          </el-upload>
-          <span>jpg、png图片，小于100KB，宽高1:1</span>
+        <el-form-item label="头像" prop="avatar_url">
+          <el-col :span="10">
+            <el-image
+              v-if="model.avatar_url"
+              style="width: 100px; height: 100px; border-radius: 100px;"
+              :src="model.avatar_url"
+              :preview-src-list="[model.avatar_url]"
+              title="点击查看大图"
+            />
+          </el-col>
+          <el-col :span="14">
+            <el-upload
+              name="file"
+              :show-file-list="false"
+              :action="uploadAction"
+              :headers="uploadHeaders"
+              :on-success="uploadSuccess"
+              :on-error="uploadError"
+            >
+              <el-button size="mini">上传头像</el-button>
+            </el-upload>
+            <span>jpg、png图片，小于100kb，宽高1:1</span>
+          </el-col>
         </el-form-item>
         <el-form-item label="账号" prop="username">
           <el-input key="username" v-model="model.username" placeholder="请输入账号" clearable />
@@ -161,7 +169,7 @@ import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination'
 import { getAdminToken } from '@/utils/auth'
 import { list as regionList } from '@/api/region'
-import { list, info, add, edit, dele, pwd, disable } from '@/api/member'
+import { list, info, add, edit, dele, pwd, avatar, disable } from '@/api/member'
 
 export default {
   name: 'Member',
@@ -187,6 +195,7 @@ export default {
         email: '',
         region_id: '',
         avatar: '',
+        avatar_url: '',
         remark: '',
         sort: 10000
       },
@@ -201,9 +210,8 @@ export default {
         value: 'region_id',
         label: 'region_name'
       },
-      uploadAction: process.env.VUE_APP_BASE_API + '/admin/Member/avatar',
+      uploadAction: avatar(),
       uploadHeaders: { AdminToken: getAdminToken() },
-      uploadData: { member_id: '' },
       pwdDialog: false,
       pwdDialogTitle: '',
       pwdRules: {
@@ -330,20 +338,18 @@ export default {
         this.model.region_id = value[value.length - 1]
       }
     },
-    // 更换头像
-    uploadBefore() {
-      this.uploadData.member_id = this.model.member_id
-    },
+    // 上传头像
     uploadSuccess(res) {
       if (res.code === 200) {
-        this.model.avatar = res.data.avatar
+        this.model.avatar = res.data.path
+        this.model.avatar_url = res.data.url
         this.$message.success(res.msg)
       } else {
         this.$message.error(res.msg)
       }
     },
-    uploadError() {
-      this.$message.error('上传出错')
+    uploadError(res) {
+      this.$message.error(res.msg || '上传出错')
     },
     // 是否禁用
     disable(row) {

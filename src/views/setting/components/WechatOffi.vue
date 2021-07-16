@@ -11,24 +11,29 @@
             <el-input v-model="model.origin_id" clearable />
             <el-button icon="el-icon-document-copy" clearable @click="copy(model.origin_id, $event)" />
           </el-form-item>
-          <el-form-item label="二维码" prop="qrcode">
-            <el-image shape="circle" fit="contain" style="height: 100px" :src="model.qrcode_url" :preview-src-list="[model.qrcode_url]">
-              <div slot="error" class="image-slot">
-                <i class="el-icon-picture-outline" />
-              </div>
-            </el-image>
-            <el-upload
-              name="file"
-              :show-file-list="false"
-              :action="uploadAction"
-              :headers="uploadHeaders"
-              :data="uploadData"
-              :on-success="uploadSuccess"
-              :on-error="uploadError"
-            >
-              <el-button size="mini">上传</el-button>
-            </el-upload>
-            <span>jpg、png图片，小于200KB，宽高1:1</span>
+          <el-form-item label="二维码" prop="qrcode_url">
+            <el-col :span="10">
+              <el-image
+                v-if="model.qrcode_url"
+                style="width: 100px; height: 100px;"
+                :src="model.qrcode_url"
+                :preview-src-list="[model.qrcode_url]"
+                title="点击查看大图"
+              />
+            </el-col>
+            <el-col :span="14">
+              <el-upload
+                name="file"
+                :show-file-list="false"
+                :action="uploadAction"
+                :headers="uploadHeaders"
+                :on-success="uploadSuccess"
+                :on-error="uploadError"
+              >
+                <el-button size="mini">上传二维码</el-button>
+              </el-upload>
+              <span>jpg、png图片，小于200kb，宽高1:1</span>
+            </el-col>
           </el-form-item>
           <el-form-item label="AppID" prop="appid">
             <el-input v-model="model.appid" clearable />
@@ -67,7 +72,7 @@
 
 <script>
 import clip from '@/utils/clipboard'
-import { offiInfo, offiEdit } from '@/api/setting-wechat'
+import { offiInfo, offiEdit, qrcode } from '@/api/setting-wechat'
 import { getAdminToken } from '@/utils/auth'
 
 export default {
@@ -92,9 +97,8 @@ export default {
         encoding_aes_type: 1,
         qrcode_url: ''
       },
-      uploadAction: process.env.VUE_APP_BASE_API + '/admin/SettingWechat/qrcode',
+      uploadAction: qrcode(),
       uploadHeaders: { AdminToken: getAdminToken() },
-      uploadData: { type: 'offi' },
       rules: {
         appid: [{ required: true, message: '请输入appid', trigger: 'blur' }],
         appsecret: [{ required: true, message: '请输入appsecret', trigger: 'blur' }]
@@ -142,17 +146,17 @@ export default {
       })
     },
     // 上传二维码
-    uploadSuccess(res, file) {
+    uploadSuccess(res) {
       if (res.code === 200) {
-        this.model.qrcode_url = res.data.file_url
-        this.model.qrcode = res.data.file_path
+        this.model.qrcode_url = res.data.url
+        this.model.qrcode = res.data.path
         this.$message.success(res.msg)
       } else {
         this.$message.error(res.msg)
       }
     },
-    uploadError(res, file) {
-      this.$message.error('上传出错')
+    uploadError(res) {
+      this.$message.error(res.msg || '上传出错')
     },
     // 复制
     copy(text, event) {

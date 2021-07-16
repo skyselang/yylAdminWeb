@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-
+const url = '/admin/Setting/'
 // ----------------基础管理----------------
 /**
  * Token设置信息
@@ -7,7 +7,7 @@ import request from '@/utils/request'
  */
 export function tokenInfo(params) {
   return request({
-    url: '/admin/Setting/tokenInfo',
+    url: url + 'tokenInfo',
     method: 'get',
     params: params
   })
@@ -18,7 +18,7 @@ export function tokenInfo(params) {
  */
 export function tokenEdit(data) {
   return request({
-    url: '/admin/Setting/tokenEdit',
+    url: url + 'tokenEdit',
     method: 'post',
     data
   })
@@ -29,7 +29,7 @@ export function tokenEdit(data) {
  */
 export function captchaInfo(params) {
   return request({
-    url: '/admin/Setting/captchaInfo',
+    url: url + 'captchaInfo',
     method: 'get',
     params: params
   })
@@ -40,7 +40,7 @@ export function captchaInfo(params) {
  */
 export function captchaEdit(data) {
   return request({
-    url: '/admin/Setting/captchaEdit',
+    url: url + 'captchaEdit',
     method: 'post',
     data
   })
@@ -51,7 +51,7 @@ export function captchaEdit(data) {
  */
 export function logInfo(params) {
   return request({
-    url: '/admin/Setting/logInfo',
+    url: url + 'logInfo',
     method: 'get',
     params: params
   })
@@ -62,7 +62,7 @@ export function logInfo(params) {
  */
 export function logEdit(data) {
   return request({
-    url: '/admin/Setting/logEdit',
+    url: url + 'logEdit',
     method: 'post',
     data
   })
@@ -73,7 +73,7 @@ export function logEdit(data) {
  */
 export function apiInfo(params) {
   return request({
-    url: '/admin/Setting/apiInfo',
+    url: url + 'apiInfo',
     method: 'get',
     params: params
   })
@@ -84,7 +84,7 @@ export function apiInfo(params) {
  */
 export function apiEdit(data) {
   return request({
-    url: '/admin/Setting/apiEdit',
+    url: url + 'apiEdit',
     method: 'post',
     data
   })

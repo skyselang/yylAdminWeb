@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-
+const url = '/admin/SettingWechat/'
 // ----------------微信设置-------------------
 /**
  * 公众号信息
@@ -7,7 +7,7 @@ import request from '@/utils/request'
  */
 export function offiInfo(params) {
   return request({
-    url: '/admin/SettingWechat/offiInfo',
+    url: url + 'offiInfo',
     method: 'get',
     params: params
   })
@@ -18,7 +18,7 @@ export function offiInfo(params) {
  */
 export function offiEdit(data) {
   return request({
-    url: '/admin/SettingWechat/offiEdit',
+    url: url + 'offiEdit',
     method: 'post',
     data
   })
@@ -29,7 +29,7 @@ export function offiEdit(data) {
  */
 export function miniInfo(params) {
   return request({
-    url: '/admin/SettingWechat/miniInfo',
+    url: url + 'miniInfo',
     method: 'get',
     params: params
   })
@@ -40,8 +40,14 @@ export function miniInfo(params) {
  */
 export function miniEdit(data) {
   return request({
-    url: '/admin/SettingWechat/miniEdit',
+    url: url + 'miniEdit',
     method: 'post',
     data
   })
+}
+/**
+ * 上传二维码
+ */
+export function qrcode() {
+  return process.env.VUE_APP_BASE_API + url + 'qrcode'
 }

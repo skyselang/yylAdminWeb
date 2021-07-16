@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-
+const url = '/admin/Api/'
 // ----------------接口管理----------------
 /**
  * 接口列表
@@ -7,7 +7,7 @@ import request from '@/utils/request'
  */
 export function list() {
   return request({
-    url: '/admin/Api/list',
+    url: url + 'list',
     method: 'get'
   })
 }
@@ -17,7 +17,7 @@ export function list() {
  */
 export function info(params) {
   return request({
-    url: '/admin/Api/info',
+    url: url + 'info',
     method: 'get',
     params: params
   })
@@ -28,7 +28,7 @@ export function info(params) {
  */
 export function add(data) {
   return request({
-    url: '/admin/Api/add',
+    url: url + 'add',
     method: 'post',
     data
   })
@@ -39,7 +39,7 @@ export function add(data) {
  */
 export function edit(data) {
   return request({
-    url: '/admin/Api/edit',
+    url: url + 'edit',
     method: 'post',
     data
   })
@@ -50,7 +50,7 @@ export function edit(data) {
  */
 export function dele(data) {
   return request({
-    url: '/admin/Api/dele',
+    url: url + 'dele',
     method: 'post',
     data
   })
@@ -61,7 +61,7 @@ export function dele(data) {
  */
 export function disable(data) {
   return request({
-    url: '/admin/Api/disable',
+    url: url + 'disable',
     method: 'post',
     data
   })
@@ -72,7 +72,7 @@ export function disable(data) {
  */
 export function unlogin(data) {
   return request({
-    url: '/admin/Api/unlogin',
+    url: url + 'unlogin',
     method: 'post',
     data
   })

@@ -63,7 +63,7 @@
               :on-success="uploadSuccess"
               :on-error="uploadError"
             >
-              <el-button>更换头像</el-button>
+              <el-button>上传头像</el-button>
             </el-upload>
             <span>jpg、png图片，小于100kb，宽高1:1</span>
           </el-col>
