@@ -16,31 +16,21 @@
       </el-row>
     </div>
     <!-- 列表 -->
-    <el-table
-      v-loading="loading"
-      :data="data"
-      :height="height+50"
-      style="width: 100%"
-      row-key="region_id"
-      border
-      lazy
-      :load="listLoad"
-      @sort-change="sort"
-    >
-      <el-table-column prop="region_name" label="名称" min-width="250" fixed="left" />
+    <el-table v-loading="loading" :data="data" :height="height+50" style="width:100%" row-key="region_id" lazy :load="listLoad" @sort-change="sort">
+      <el-table-column prop="region_name" label="名称" min-width="250" />
       <el-table-column prop="region_pinyin" label="拼音" min-width="250" sortable="custom" />
       <el-table-column prop="region_jianpin" label="简拼" min-width="120" sortable="custom" />
       <el-table-column prop="region_initials" label="首字母" min-width="90" sortable="custom" />
       <el-table-column prop="region_citycode" label="区号" min-width="80" sortable="custom" />
       <el-table-column prop="region_zipcode" label="邮编" min-width="80" sortable="custom" />
       <el-table-column prop="region_sort" label="排序" min-width="80" sortable="custom" />
-      <el-table-column prop="region_id" label="地区ID" min-width="90" sortable="custom" />
-      <el-table-column prop="region_pid" label="PID" min-width="90" />
-      <el-table-column label="操作" width="210" fixed="right" align="right">
+      <el-table-column prop="region_id" label="地区ID" min-width="95" sortable="custom" />
+      <el-table-column prop="region_pid" label="PID" min-width="95" />
+      <el-table-column label="操作" width="130" fixed="right" align="right">
         <template slot-scope="{ row }">
-          <el-button size="mini" type="primary" @click="add(row)">添加</el-button>
-          <el-button size="mini" type="success" @click="edit(row)">修改</el-button>
-          <el-button size="mini" type="danger" @click="dele(row)">删除</el-button>
+          <el-button size="mini" type="text" @click="add(row)">添加</el-button>
+          <el-button size="mini" type="text" @click="edit(row)">修改</el-button>
+          <el-button size="mini" type="text" @click="dele(row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -170,27 +160,30 @@ export default {
         this.loading = false
       })
     },
+    // 树形列表
+    tree() {
+      this.regionTree = []
+      list({ type: 'tree' }).then(res => {
+        this.regionTree = res.data
+      }).catch(() => {})
+    },
     // 添加
     add(row) {
       this.dialog = true
       this.dialogTitle = '地区添加'
-      list({ type: 'tree' }).then(res => {
-        if (row) {
-          this.model = this.$options.data().model
-          this.model.region_pid = row.region_id
-        } else {
-          this.reset()
-        }
-        this.regionTree = res.data
-      })
+      this.tree()
+      if (row) {
+        this.model = this.$options.data().model
+        this.model.region_pid = row.region_id
+      } else {
+        this.reset()
+      }
     },
     // 修改
     edit(row) {
       this.dialog = true
       this.dialogTitle = '地区修改：' + row.region_id
-      list({ type: 'tree' }).then(res => {
-        this.regionTree = res.data
-      })
+      this.tree()
       info({
         region_id: row.region_id
       }).then(res => {
@@ -271,13 +264,13 @@ export default {
     // 排序
     sort(sort) {
       this.query.sort_field = sort.prop
-      this.query.sort_type = ''
+      this.query.sort_value = ''
       if (sort.order === 'ascending') {
-        this.query.sort_type = 'asc'
+        this.query.sort_value = 'asc'
         this.list()
       }
       if (sort.order === 'descending') {
-        this.query.sort_type = 'desc'
+        this.query.sort_value = 'desc'
         this.list()
       }
     },

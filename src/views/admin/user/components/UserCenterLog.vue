@@ -26,8 +26,8 @@
       </el-row>
     </div>
     <!-- 列表 -->
-    <el-table v-loading="loading" :data="data" :height="height-50" style="width: 100%" border @sort-change="sort">
-      <el-table-column prop="admin_user_log_id" label="日志ID" min-width="100" sortable="custom" fixed="left" />
+    <el-table v-loading="loading" :data="data" :height="height-50" style="width: 100%" @sort-change="sort">
+      <el-table-column prop="admin_user_log_id" label="日志ID" min-width="100" sortable="custom" />
       <el-table-column prop="menu_url" label="菜单链接" min-width="250" />
       <el-table-column prop="menu_name" label="菜单名称" min-width="150" />
       <el-table-column prop="request_method" label="请求方式 " min-width="110" />
@@ -57,7 +57,7 @@ export default {
       count: 0,
       query: {
         page: 1,
-        limit: 12
+        limit: 15
       }
     }
   },
@@ -90,13 +90,13 @@ export default {
     // 排序
     sort(sort) {
       this.query.sort_field = sort.prop
-      this.query.sort_type = ''
+      this.query.sort_value = ''
       if (sort.order === 'ascending') {
-        this.query.sort_type = 'asc'
+        this.query.sort_value = 'asc'
         this.log()
       }
       if (sort.order === 'descending') {
-        this.query.sort_type = 'desc'
+        this.query.sort_value = 'desc'
         this.log()
       }
     }

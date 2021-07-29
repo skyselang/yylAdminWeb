@@ -9,24 +9,29 @@
           <el-input v-model="model.str" type="textarea" placeholder="请输入字符串" clearable />
         </el-form-item>
         <el-form-item label="长度" prop="len">
-          <el-input v-model="model.len" clearable />
-          <el-button icon="el-icon-document-copy" @click="copy(model.len, $event)" />
+          <el-input v-model="model.len">
+            <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.len, $event)" />
+          </el-input>
         </el-form-item>
         <el-form-item label="小写" prop="lower">
-          <el-input v-model="model.lower" clearable />
-          <el-button icon="el-icon-document-copy" @click="copy(model.lower, $event)" />
+          <el-input v-model="model.lower">
+            <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.lower, $event)" />
+          </el-input>
         </el-form-item>
         <el-form-item label="大写" prop="upper">
-          <el-input v-model="model.upper" clearable />
-          <el-button icon="el-icon-document-copy" @click="copy(model.upper, $event)" />
+          <el-input v-model="model.upper">
+            <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.upper, $event)" />
+          </el-input>
         </el-form-item>
         <el-form-item label="反转" prop="rev">
-          <el-input v-model="model.rev" clearable />
-          <el-button icon="el-icon-document-copy" @click="copy(model.rev, $event)" />
+          <el-input v-model="model.rev">
+            <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.rev, $event)" />
+          </el-input>
         </el-form-item>
         <el-form-item label="MD5" prop="md5">
-          <el-input v-model="model.md5" clearable />
-          <el-button icon="el-icon-document-copy" @click="copy(model.md5, $event)" />
+          <el-input v-model="model.md5">
+            <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.md5, $event)" />
+          </el-input>
         </el-form-item>
         <el-form-item>
           <el-button @click="clear()">清空</el-button>
@@ -85,5 +90,5 @@ export default {
 </script>
 
 <style scoped>
-  .el-input{width: 90%;}
+
 </style>

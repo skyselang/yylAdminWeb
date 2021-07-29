@@ -15,10 +15,10 @@
       </el-row>
     </div>
     <!-- 列表 -->
-    <el-table v-loading="loading" :data="datas" :height="height" style="width: 100%" border @sort-change="sort">
-      <el-table-column prop="admin_role_id" label="角色ID" min-width="100" sortable="custom" fixed="left" />
-      <el-table-column prop="role_name" label="名称" min-width="120" show-overflow-tooltip />
-      <el-table-column prop="role_desc" label="描述" min-width="130" show-overflow-tooltip />
+    <el-table v-loading="loading" :data="datas" :height="height" style="width: 100%" @sort-change="sort">
+      <el-table-column prop="admin_role_id" label="角色ID" min-width="100" sortable="custom" />
+      <el-table-column prop="role_name" label="名称" min-width="120" />
+      <el-table-column prop="role_desc" label="描述" min-width="130" />
       <el-table-column prop="role_sort" label="排序" min-width="100" sortable="custom" />
       <el-table-column prop="create_time" label="添加时间" min-width="160" sortable="custom" />
       <el-table-column prop="update_time" label="修改时间" min-width="160" sortable="custom" />
@@ -27,11 +27,11 @@
           <el-switch v-model="scope.row.is_disable" :active-value="1" :inactive-value="0" @change="isDisable(scope.row)" />
         </template>
       </el-table-column>
-      <el-table-column label="操作" min-width="210" align="right" fixed="right">
+      <el-table-column label="操作" min-width="130" align="right" fixed="right">
         <template slot-scope="{ row }">
-          <el-button size="mini" type="primary" @click="userShow(row)">用户</el-button>
-          <el-button size="mini" type="success" @click="edit(row)">修改</el-button>
-          <el-button size="mini" type="danger" @click="dele(row)">删除</el-button>
+          <el-button size="mini" type="text" @click="userShow(row)">用户</el-button>
+          <el-button size="mini" type="text" @click="edit(row)">修改</el-button>
+          <el-button size="mini" type="text" @click="dele(row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -86,8 +86,8 @@
     </el-dialog>
     <!-- 用户列表 -->
     <el-dialog :title="userDialogTitle" :visible.sync="userDialog" width="65%" top="1vh">
-      <el-table ref="userRef" v-loading="userLoad" :data="userData" :height="height+30" style="width: 100%" border @sort-change="userSort">
-        <el-table-column prop="admin_user_id" label="用户ID" min-width="100" sortable="custom" fixed="left" />
+      <el-table ref="userRef" v-loading="userLoad" :data="userData" :height="height+30" style="width: 100%" @sort-change="userSort">
+        <el-table-column prop="admin_user_id" label="用户ID" min-width="100" sortable="custom" />
         <el-table-column prop="username" label="账号" min-width="120" sortable="custom" />
         <el-table-column prop="nickname" label="昵称" min-width="120" />
         <el-table-column prop="remark" label="备注" width="100" />
@@ -103,7 +103,7 @@
         </el-table-column>
         <el-table-column label="操作" min-width="80" align="right" fixed="right">
           <template slot-scope="{ row }">
-            <el-button size="mini" type="danger" @click="userRemove(row)">解除</el-button>
+            <el-button size="mini" type="text" @click="userRemove(row)">解除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -129,7 +129,7 @@ export default {
       count: 0,
       query: {
         page: 1,
-        limit: 12
+        limit: 15
       },
       dialog: false,
       dialogTitle: '',
@@ -265,13 +265,13 @@ export default {
     // 排序
     sort(sort) {
       this.query.sort_field = sort.prop
-      this.query.sort_type = ''
+      this.query.sort_value = ''
       if (sort.order === 'ascending') {
-        this.query.sort_type = 'asc'
+        this.query.sort_value = 'asc'
         this.list()
       }
       if (sort.order === 'descending') {
-        this.query.sort_type = 'desc'
+        this.query.sort_value = 'desc'
         this.list()
       }
     },
@@ -347,13 +347,13 @@ export default {
     // 用户排序
     userSort(sort) {
       this.userQuery.sort_field = sort.prop
-      this.userQuery.sort_type = ''
+      this.userQuery.sort_value = ''
       if (sort.order === 'ascending') {
-        this.userQuery.sort_type = 'asc'
+        this.userQuery.sort_value = 'asc'
         this.user()
       }
       if (sort.order === 'descending') {
-        this.userQuery.sort_type = 'desc'
+        this.userQuery.sort_value = 'desc'
         this.user()
       }
     },

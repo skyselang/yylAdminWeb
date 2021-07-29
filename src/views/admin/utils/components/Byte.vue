@@ -6,28 +6,34 @@
     <div class="text item">
       <el-form ref="ref" :model="model" :rules="rules" label-width="100px">
         <el-form-item label="比特(b)">
-          <el-input v-model="model.b" type="number" clearable @input="value('b')" />
-          <el-button icon="el-icon-document-copy" @click="copy(model.b, $event)" />
+          <el-input v-model="model.b" type="number" clearable @input="value('b')">
+            <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.b, $event)" />
+          </el-input>
         </el-form-item>
         <el-form-item label="字节(B)">
-          <el-input v-model="model.B" type="number" clearable @input="value('B')" />
-          <el-button icon="el-icon-document-copy" @click="copy(model.B, $event)" />
+          <el-input v-model="model.B" type="number" clearable @input="value('B')">
+            <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.B, $event)" />
+          </el-input>
         </el-form-item>
         <el-form-item label="千字节(KB)">
-          <el-input v-model="model.KB" type="number" clearable @input="value('KB')" />
-          <el-button icon="el-icon-document-copy" @click="copy(model.KB, $event)" />
+          <el-input v-model="model.KB" type="number" clearable @input="value('KB')">
+            <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.KB, $event)" />
+          </el-input>
         </el-form-item>
         <el-form-item label="兆字节(MB)">
-          <el-input v-model="model.MB" type="number" clearable @input="value('MB')" />
-          <el-button icon="el-icon-document-copy" @click="copy(model.MB, $event)" />
+          <el-input v-model="model.MB" type="number" clearable @input="value('MB')">
+            <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.MB, $event)" />
+          </el-input>
         </el-form-item>
         <el-form-item label="吉字节(GB)">
-          <el-input v-model="model.GB" type="number" clearable @input="value('GB')" />
-          <el-button icon="el-icon-document-copy" @click="copy(model.GB, $event)" />
+          <el-input v-model="model.GB" type="number" clearable @input="value('GB')">
+            <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.GB, $event)" />
+          </el-input>
         </el-form-item>
         <el-form-item label="太字节(TB)">
-          <el-input v-model="model.TB" type="number" clearable @input="value('TB')" />
-          <el-button icon="el-icon-document-copy" @click="copy(model.TB, $event)" />
+          <el-input v-model="model.TB" type="number" clearable @input="value('TB')">
+            <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.TB, $event)" />
+          </el-input>
         </el-form-item>
         <el-form-item>
           <el-button @click="clear()">清空</el-button>
@@ -93,5 +99,5 @@ export default {
 </script>
 
 <style scoped>
-  .el-input{width: 90%;}
+
 </style>

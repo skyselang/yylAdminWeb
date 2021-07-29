@@ -11,12 +11,10 @@
       </el-row>
     </div>
     <!-- 列表 -->
-    <el-table ref="table" v-loading="loading" :data="data" :height="height" style="width: 100%" row-key="category_id" default-expand-all border @selection-change="select">
+    <el-table ref="table" v-loading="loading" :data="data" :height="height" style="width: 100%" row-key="category_id" @selection-change="select">
       <el-table-column type="selection" width="40" />
       <el-table-column prop="category_name" label="分类名称" min-width="250" show-overflow-tooltip />
       <el-table-column prop="category_id" label="分类ID" min-width="80" />
-      <el-table-column prop="category_pid" label="PID" min-width="80" />
-      <el-table-column prop="sort" label="排序" min-width="80" />
       <el-table-column prop="is_hide" label="是否隐藏" min-width="80" align="center">
         <template slot-scope="scope">
           <el-switch v-model="scope.row.is_hide" :active-value="1" :inactive-value="0" @change="ishide([scope.row])" />
@@ -24,18 +22,19 @@
       </el-table-column>
       <el-table-column prop="create_time" label="添加时间" min-width="160" />
       <el-table-column prop="update_time" label="修改时间" min-width="160" />
-      <el-table-column label="操作" min-width="210" align="right" fixed="right">
+      <el-table-column prop="sort" label="排序" min-width="80" />
+      <el-table-column label="操作" min-width="120" align="right" fixed="right">
         <template slot-scope="{ row }">
-          <el-button size="mini" type="primary" @click="add(row)">添加</el-button>
-          <el-button size="mini" type="success" @click="edit(row)">修改</el-button>
-          <el-button size="mini" type="danger" @click="dele([row])">删除</el-button>
+          <el-button size="mini" type="text" @click="add(row)">添加</el-button>
+          <el-button size="mini" type="text" @click="edit(row)">修改</el-button>
+          <el-button size="mini" type="text" @click="dele([row])">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
     <div style="margin-top: 20px">
       <el-switch v-model="is_hide" style="margin-left: 10px;" :active-value="1" :inactive-value="0" />
-      <el-button size="mini" @click="ishide(selection,true)">隐藏</el-button>
-      <el-button size="mini" type="danger" @click="dele(selection)">删除</el-button>
+      <el-button size="mini" type="text" @click="ishide(selection,true)">隐藏</el-button>
+      <el-button size="mini" type="text" @click="dele(selection)">删除</el-button>
     </div>
     <!-- 添加、修改 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialog" top="1vh" width="65%" :before-close="cancel" :close-on-click-modal="false">
@@ -116,7 +115,7 @@
 <script>
 import screenHeight from '@/utils/screen-height'
 import { getAdminToken } from '@/utils/auth'
-import { list, info, add, edit, dele, ishide } from '@/api/cms/category'
+import { list, info, add, edit, dele, upload, ishide } from '@/api/cms/category'
 
 export default {
   name: 'CmsCategory',
@@ -140,10 +139,10 @@ export default {
         imgs: [],
         sort: 200
       },
-      isExpandAll: false,
+      isExpandAll: true,
       is_hide: 0,
       selection: [],
-      uploadAction: process.env.VUE_APP_BASE_API + '/admin/cms.Category/upload',
+      uploadAction: upload(),
       uploadHeaders: { AdminToken: getAdminToken() },
       uploadData: { type: 'image' },
       rules: {
@@ -161,7 +160,7 @@ export default {
       this.loading = true
       list(this.query).then(res => {
         this.data = res.data.list
-        this.isExpandAll = false
+        this.isExpandAll = true
         this.loading = false
       }).catch(() => {
         this.loading = false
@@ -310,7 +309,7 @@ export default {
       }
     },
     // 上传图片
-    uploadSuccess(res, file, fileList) {
+    uploadSuccess(res) {
       if (res.code === 200) {
         this.model.imgs.push(res.data)
         this.$message.success(res.msg)
@@ -318,7 +317,7 @@ export default {
         this.$message.error(res.msg)
       }
     },
-    uploadError(res, file, fileList) {
+    uploadError(res) {
       this.$message.error(res.msg || '上传出错')
     },
     uploadDele(index) {

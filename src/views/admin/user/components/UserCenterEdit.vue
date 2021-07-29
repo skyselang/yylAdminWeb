@@ -4,7 +4,7 @@
       <el-row :gutter="0">
         <el-col :xs="24" :sm="12">
           <el-form ref="ref" :rules="rules" :model="model" label-width="100px">
-            <el-form-item label="头像" prop="avatar">
+            <el-form-item label="头像" prop="avatar_url">
               <el-col :span="10">
                 <el-avatar shape="circle" fit="contain" :size="100" :src="model.avatar_url" />
               </el-col>

@@ -24,6 +24,17 @@ export function info(params) {
   })
 }
 /**
+ * 留言添加
+ * @param {array} data 请求数据
+ */
+export function add(data) {
+  return request({
+    url: url + 'add',
+    method: 'post',
+    data
+  })
+}
+/**
  * 留言修改
  * @param {array} data 请求数据
  */

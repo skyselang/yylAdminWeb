@@ -4,8 +4,15 @@
     <div class="filter-container">
       <el-row :gutter="0">
         <el-col :xs="24" :sm="20">
-          <el-input v-model="query.content_id" class="filter-item" style="width: 110px;" placeholder="ID" clearable />
-          <el-input v-model="query.name" class="filter-item" style="width: 200px;" placeholder="名称" clearable />
+          <el-select v-model="query.search_field" class="filter-item" style="width:110px;" placeholder="">
+            <el-option value="content_id" label="内容ID" />
+            <el-option value="name" label="名称" />
+            <el-option value="is_top" label="是否置顶" />
+            <el-option value="is_hot" label="是否热门" />
+            <el-option value="is_rec" label="是否推荐" />
+            <el-option value="is_hide" label="是否隐藏" />
+          </el-select>
+          <el-input v-model="query.search_value" class="filter-item" style="width:200px;" placeholder="搜索内容" clearable />
           <el-cascader
             v-model="query.category_id"
             class="filter-item"
@@ -17,12 +24,12 @@
             placeholder="分类"
             @change="categoryPidChangeQuery"
           />
-          <el-select v-model="query.date_type" class="filter-item" style="width:110px;" placeholder="时间类型" clearable>
+          <el-select v-model="query.date_field" class="filter-item" style="width:110px;" placeholder="时间类型">
             <el-option value="create_time" label="添加时间" />
             <el-option value="update_time" label="修改时间" />
           </el-select>
           <el-date-picker
-            v-model="query.date_range"
+            v-model="query.date_value"
             type="daterange"
             class="filter-item"
             style="width: 240px;"
@@ -41,9 +48,9 @@
       </el-row>
     </div>
     <!-- 列表 -->
-    <el-table v-loading="loading" :data="data" :height="height-50" style="width: 100%" border @sort-change="sort" @selection-change="select">
+    <el-table v-loading="loading" :data="data" :height="height-50" style="width: 100%" @sort-change="sort" @selection-change="select">
       <el-table-column type="selection" width="40" />
-      <el-table-column prop="content_id" label="ID" min-width="80" sortable="custom" />
+      <el-table-column prop="content_id" label="内容ID" min-width="100" sortable="custom" />
       <el-table-column prop="img_url" label="图片" min-width="70" align="center">
         <template slot-scope="scope">
           <el-image v-if="scope.row.img_url" style="width:40px;height:40px;" :src="scope.row.img_url" :preview-src-list="[scope.row.img_url]" title="点击查看大图" />
@@ -75,23 +82,23 @@
       </el-table-column>
       <el-table-column prop="create_time" label="添加时间" min-width="155" sortable="custom" />
       <el-table-column prop="update_time" label="修改时间" min-width="155" sortable="custom" />
-      <el-table-column label="操作" min-width="145" align="right" fixed="right">
+      <el-table-column label="操作" min-width="85" align="right" fixed="right">
         <template slot-scope="{ row }">
-          <el-button size="mini" type="success" @click="edit(row)">修改</el-button>
-          <el-button size="mini" type="danger" @click="dele([row])">删除</el-button>
+          <el-button size="mini" type="text" @click="edit(row)">修改</el-button>
+          <el-button size="mini" type="text" @click="dele([row])">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
     <div style="margin-top: 20px">
       <el-switch v-model="is_top" style="margin-left: 10px;" :active-value="1" :inactive-value="0" />
-      <el-button size="mini" @click="istop(selection,true)">置顶</el-button>
+      <el-button size="mini" type="text" @click="istop(selection,true)">置顶</el-button>
       <el-switch v-model="is_hot" style="margin-left: 10px;" :active-value="1" :inactive-value="0" />
-      <el-button size="mini" @click="ishot(selection,true)">热门</el-button>
+      <el-button size="mini" type="text" @click="ishot(selection,true)">热门</el-button>
       <el-switch v-model="is_rec" style="margin-left: 10px;" :active-value="1" :inactive-value="0" />
-      <el-button size="mini" @click="isrec(selection,true)">推荐</el-button>
+      <el-button size="mini" type="text" @click="isrec(selection,true)">推荐</el-button>
       <el-switch v-model="is_hide" style="margin-left: 10px;" :active-value="1" :inactive-value="0" />
-      <el-button size="mini" @click="ishide(selection,true)">隐藏</el-button>
-      <el-button size="mini" type="danger" @click="dele(selection)">删除</el-button>
+      <el-button size="mini" type="text" @click="ishide(selection,true)">隐藏</el-button>
+      <el-button size="mini" type="text" @click="dele(selection)">删除</el-button>
     </div>
     <!-- 分页 -->
     <pagination v-show="count > 0" :total="count" :page.sync="query.page" :limit.sync="query.limit" @pagination="list" />
@@ -244,8 +251,15 @@
       <div class="filter-container">
         <el-row :gutter="0">
           <el-col :xs="24" :sm="24">
-            <el-input v-model="recoverQuery.content_id" class="filter-item" style="width: 110px;" placeholder="ID" clearable />
-            <el-input v-model="recoverQuery.name" class="filter-item" style="width: 200px;" placeholder="名称" clearable />
+            <el-select v-model="recoverQuery.search_field" class="filter-item" style="width:110px;" placeholder="">
+              <el-option value="content_id" label="内容ID" />
+              <el-option value="name" label="名称" />
+              <el-option value="is_top" label="是否置顶" />
+              <el-option value="is_hot" label="是否热门" />
+              <el-option value="is_rec" label="是否推荐" />
+              <el-option value="is_hide" label="是否隐藏" />
+            </el-select>
+            <el-input v-model="recoverQuery.search_value" class="filter-item" style="width:200px;" placeholder="搜索内容" clearable />
             <el-cascader
               v-model="recoverQuery.category_id"
               class="filter-item"
@@ -257,12 +271,12 @@
               placeholder="分类"
               @change="recoverCategoryChangeQuery"
             />
-            <el-select v-model="recoverQuery.date_type" class="filter-item" style="width:110px;" placeholder="时间类型" clearable>
-              <el-option value="create_time" label="添加时间" />
+            <el-select v-model="recoverQuery.date_field" class="filter-item" style="width:110px;" placeholder="时间类型">
               <el-option value="delete_time" label="删除时间" />
+              <el-option value="create_time" label="添加时间" />
             </el-select>
             <el-date-picker
-              v-model="recoverQuery.date_range"
+              v-model="recoverQuery.date_value"
               type="daterange"
               class="filter-item"
               style="width: 240px;"
@@ -276,7 +290,7 @@
           </el-col>
         </el-row>
       </div>
-      <el-table ref="recoverRef" v-loading="recoverLoad" :data="recoverData" :height="height-60" style="width: 100%" border @sort-change="recoverSort" @selection-change="recoverSelect">
+      <el-table ref="recoverRef" v-loading="recoverLoad" :data="recoverData" :height="height-60" style="width: 100%" @sort-change="recoverSort" @selection-change="recoverSelect">
         <el-table-column type="selection" width="40" />
         <el-table-column prop="content_id" label="ID" min-width="80" sortable="custom" />
         <el-table-column prop="img_url" label="图片" min-width="70" align="center">
@@ -290,16 +304,16 @@
         <el-table-column prop="sort" label="排序" min-width="80" sortable="custom" />
         <el-table-column prop="create_time" label="添加时间" min-width="155" sortable="custom" />
         <el-table-column prop="delete_time" label="删除时间" min-width="155" sortable="custom" />
-        <el-table-column label="操作" min-width="145" align="right" fixed="right">
+        <el-table-column label="操作" min-width="85" align="right" fixed="right">
           <template slot-scope="{ row }">
-            <el-button size="mini" type="success" @click="recoverReco([row])">恢复</el-button>
-            <el-button size="mini" type="danger" @click="recoverDele([row])">删除</el-button>
+            <el-button size="mini" type="text" @click="recoverReco([row])">恢复</el-button>
+            <el-button size="mini" type="text" @click="recoverDele([row])">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
       <div style="margin-top: 20px">
-        <el-button size="mini" type="success" @click="recoverReco(recoverSelection)">恢复</el-button>
-        <el-button size="mini" type="danger" @click="recoverDele(recoverSelection)">删除</el-button>
+        <el-button size="mini" type="text" @click="recoverReco(recoverSelection)">恢复</el-button>
+        <el-button size="mini" type="text" @click="recoverDele(recoverSelection)">删除</el-button>
       </div>
       <pagination v-show="recoverCount > 0" :total="recoverCount" :page.sync="recoverQuery.page" :limit.sync="recoverQuery.limit" @pagination="recoverList" />
     </el-dialog>
@@ -311,7 +325,7 @@ import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination'
 import permission from '@/directive/permission/index.js' // 权限判断指令
 import { getAdminToken } from '@/utils/auth'
-import { list, category, info, add, edit, dele, istop, ishot, isrec, ishide, recover, recoverReco, recoverDele } from '@/api/cms/content'
+import { list, category, info, add, edit, dele, upload, istop, ishot, isrec, ishide, recover, recoverReco, recoverDele } from '@/api/cms/content'
 import E from 'wangeditor'
 
 export default {
@@ -325,7 +339,9 @@ export default {
       loading: false,
       query: {
         page: 1,
-        limit: 12
+        limit: 12,
+        search_field: 'content_id',
+        date_field: 'create_time'
       },
       data: [],
       count: 0,
@@ -350,7 +366,7 @@ export default {
       is_rec: 0,
       is_hide: 0,
       selection: [],
-      uploadAction: process.env.VUE_APP_BASE_API + '/admin/cms.Content/upload',
+      uploadAction: upload(),
       uploadHeaders: { AdminToken: getAdminToken() },
       uploadData: { type: 'image' },
       uploadFileData: { type: 'file' },
@@ -368,7 +384,9 @@ export default {
       recoverCount: 0,
       recoverQuery: {
         page: 1,
-        limit: 10
+        limit: 10,
+        search_field: 'content_id',
+        date_field: 'delete_time'
       },
       recoverSelection: []
     }
@@ -504,13 +522,13 @@ export default {
     // 排序
     sort(sort) {
       this.query.sort_field = sort.prop
-      this.query.sort_type = ''
+      this.query.sort_value = ''
       if (sort.order === 'ascending') {
-        this.query.sort_type = 'asc'
+        this.query.sort_value = 'asc'
         this.list()
       }
       if (sort.order === 'descending') {
-        this.query.sort_type = 'desc'
+        this.query.sort_value = 'desc'
         this.list()
       }
     },
@@ -621,7 +639,7 @@ export default {
       }
     },
     // 上传图片
-    uploadSuccess(res, file, fileList) {
+    uploadSuccess(res) {
       if (res.code === 200) {
         this.model.imgs.push(res.data)
         this.$message.success(res.msg)
@@ -629,14 +647,14 @@ export default {
         this.$message.error(res.msg)
       }
     },
-    uploadError(res, file, fileList) {
+    uploadError(res) {
       this.$message.error(res.msg || '上传出错')
     },
     uploadDele(index) {
       this.model.imgs.splice(index, 1)
     },
     // 上传附件
-    uploadFileSuccess(res, file, fileList) {
+    uploadFileSuccess(res) {
       if (res.code === 200) {
         this.model.files.push(res.data)
         this.$message.success(res.msg)
@@ -648,7 +666,7 @@ export default {
       this.model.files.splice(index, 1)
     },
     // 上传视频
-    uploadVideoSuccess(res, file, fileList) {
+    uploadVideoSuccess(res) {
       if (res.code === 200) {
         this.model.videos.push(res.data)
         this.$message.success(res.msg)
@@ -691,7 +709,7 @@ export default {
       this.editor.config.uploadImgHooks = {
         customInsert: function(insertImgFn, result) {
           if (result.code === 200) {
-            insertImgFn(result.data.file_url)
+            insertImgFn(result.data.url)
           } else {
             that.$message.error(result.msg)
           }
@@ -705,7 +723,7 @@ export default {
       this.editor.config.uploadVideoHooks = {
         customInsert: function(insertVideoFn, result) {
           if (result.code === 200) {
-            insertVideoFn(result.data.file_url)
+            insertVideoFn(result.data.url)
           } else {
             that.$message.error(result.msg)
           }
@@ -758,13 +776,13 @@ export default {
     // 回收站排序
     recoverSort(sort) {
       this.recoverQuery.sort_field = sort.prop
-      this.recoverQuery.sort_type = ''
+      this.recoverQuery.sort_value = ''
       if (sort.order === 'ascending') {
-        this.recoverQuery.sort_type = 'asc'
+        this.recoverQuery.sort_value = 'asc'
         this.recoverList()
       }
       if (sort.order === 'descending') {
-        this.recoverQuery.sort_type = 'desc'
+        this.recoverQuery.sort_value = 'desc'
         this.recoverList()
       }
     },

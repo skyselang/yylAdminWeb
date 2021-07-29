@@ -5,12 +5,12 @@
         <el-col :sm="8">
           <el-card class="box-card" :body-style="cardBodyStyle">
             <div slot="header" class="clearfix">
-              <span>内容</span>
+              <span>分类</span>
             </div>
             <div class="text">
               <el-row :gutter="0">
                 <el-col :span="24" class="color-tot" title="总数">
-                  {{ count.content }}
+                  {{ count.category }}
                 </el-col>
               </el-row>
             </div>
@@ -19,12 +19,12 @@
         <el-col :sm="8">
           <el-card class="box-card" :body-style="cardBodyStyle">
             <div slot="header" class="clearfix">
-              <span>分类</span>
+              <span>内容</span>
             </div>
             <div class="text">
               <el-row :gutter="0">
                 <el-col :span="24" class="color-tot" title="总数">
-                  {{ count.category }}
+                  {{ count.content }}
                 </el-col>
               </el-row>
             </div>

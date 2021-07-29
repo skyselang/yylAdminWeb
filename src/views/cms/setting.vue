@@ -7,14 +7,11 @@
             <el-form-item label="logo" prop="logo">
               <el-row :gutter="0">
                 <el-col :span="10">
-                  <el-image
-                    v-if="model.logo_url"
-                    style="width:100px; height:100px;"
-                    :src="model.logo_url"
-                    :preview-src-list="[model.logo_url]"
-                    title="点击查看大图"
-                  />
-                </el-col>
+                  <el-image style="width:100px; height:100px;" :src="model.logo_url" :preview-src-list="[model.logo_url]" title="点击查看大图">
+                    <div slot="error" class="image-slot">
+                      <i class="el-icon-picture-outline" />
+                    </div>
+                  </el-image></el-col>
                 <el-col :span="14">
                   <el-upload
                     name="file"
@@ -69,13 +66,11 @@
             <el-form-item label="公众号" prop="off_acc">
               <el-row :gutter="0">
                 <el-col :span="10">
-                  <el-image
-                    v-if="model.off_acc_url"
-                    style="width:100px; height:100px;"
-                    :src="model.off_acc_url"
-                    :preview-src-list="[model.off_acc_url]"
-                    title="点击查看大图"
-                  />
+                  <el-image style="width:100px; height:100px;" :src="model.off_acc_url" :preview-src-list="[model.off_acc_url]" title="点击查看大图">
+                    <div slot="error" class="image-slot">
+                      <i class="el-icon-picture-outline" />
+                    </div>
+                  </el-image>
                 </el-col>
                 <el-col :span="14">
                   <el-upload

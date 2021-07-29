@@ -4,17 +4,20 @@
     <div class="filter-container">
       <el-row :gutter="0">
         <el-col :xs="24" :sm="22">
-          <el-input v-model="query.member_id" class="filter-item" style="width: 110px;" placeholder="会员ID" clearable />
-          <el-input v-model="query.username" class="filter-item" style="width: 140px;" placeholder="账号" clearable />
-          <el-input v-model="query.phone" class="filter-item" style="width: 150px;" placeholder="手机" clearable />
-          <el-input v-model="query.email" class="filter-item" style="width: 250px;" placeholder="邮箱" clearable />
-          <el-select v-model="query.date_type" class="filter-item" style="width:110px;" placeholder="日期类型" clearable>
+          <el-select v-model="query.search_field" class="filter-item" style="width:110px;" placeholder="">
+            <el-option value="member_id" label="会员ID" />
+            <el-option value="username" label="账号" />
+            <el-option value="phone" label="手机" />
+            <el-option value="email" label="邮箱" />
+          </el-select>
+          <el-input v-model="query.search_value" class="filter-item" style="width:200px;" placeholder="会员ID/账号/手机/邮箱" clearable />
+          <el-select v-model="query.date_field" class="filter-item" style="width:110px;" placeholder="">
             <el-option value="create_time" label="注册时间" />
             <el-option value="login_time" label="登录时间" />
             <el-option value="update_time" label="修改时间" />
           </el-select>
           <el-date-picker
-            v-model="query.date_range"
+            v-model="query.date_value"
             type="daterange"
             class="filter-item"
             style="width: 240px;"
@@ -32,37 +35,39 @@
       </el-row>
     </div>
     <!-- 列表 -->
-    <el-table v-loading="loading" :data="data" :height="height" style="width: 100%" border @sort-change="sort">
+    <el-table v-loading="loading" :data="data" :height="height" style="width:100%" @sort-change="sort">
       <el-table-column prop="member_id" label="会员ID" min-width="100" sortable="custom" fixed="left" />
-      <el-table-column prop="avatar" label="头像" min-width="100" align="center">
+      <el-table-column prop="avatar" label="头像" min-width="80" align="center">
         <template slot-scope="scope">
           <el-image
-            v-if="scope.row.avatar_url"
-            style="width: 35px; height: 35px; border-radius: 35px;"
+            style="width:30px; height:30px; border-radius:3px;"
             :src="scope.row.avatar_url"
             :preview-src-list="[scope.row.avatar_url]"
             title="点击查看大图"
-          />
+          >
+            <div slot="error" class="image-slot">
+              <i class="el-icon-picture-outline" />
+            </div>
+          </el-image>
         </template>
       </el-table-column>
       <el-table-column prop="username" label="账号" min-width="120" sortable="custom" show-overflow-tooltip />
-      <el-table-column prop="nickname" label="昵称" min-width="120" sortable="custom" show-overflow-tooltip />
+      <el-table-column prop="nickname" label="昵称" min-width="200" sortable="custom" show-overflow-tooltip />
       <el-table-column prop="phone" label="手机" min-width="120" sortable="custom" show-overflow-tooltip />
       <el-table-column prop="email" label="邮箱" min-width="220" sortable="custom" show-overflow-tooltip />
-      <el-table-column prop="create_time" label="注册时间" min-width="160" sortable="custom" />
-      <el-table-column prop="login_time" label="登录时间" min-width="160" sortable="custom" />
       <el-table-column prop="remark" label="备注" min-width="110" show-overflow-tooltip />
-      <el-table-column prop="sort" label="排序" width="80" sortable="custom" />
       <el-table-column prop="is_disable" label="禁用" min-width="80" sortable="custom" align="center">
         <template slot-scope="scope">
           <el-switch v-model="scope.row.is_disable" :active-value="1" :inactive-value="0" @change="disable(scope.row)" />
         </template>
       </el-table-column>
-      <el-table-column label="操作" min-width="210" align="right" fixed="right">
+      <el-table-column prop="sort" label="排序" width="80" sortable="custom" />
+      <el-table-column prop="create_time" label="注册时间" min-width="160" sortable="custom" />
+      <el-table-column label="操作" min-width="120" align="right" fixed="right">
         <template slot-scope="{ row }">
-          <el-button size="mini" type="primary" @click="pwd(row)">密码</el-button>
-          <el-button size="mini" type="success" @click="edit(row)">修改</el-button>
-          <el-button size="mini" type="danger" @click="dele(row)">删除</el-button>
+          <el-button size="mini" type="text" @click="pwd(row)">密码</el-button>
+          <el-button size="mini" type="text" @click="edit(row)">修改</el-button>
+          <el-button size="mini" type="text" @click="dele(row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -72,16 +77,19 @@
     <el-dialog :title="dialogTitle" :visible.sync="dialog" top="1vh" width="50%" :before-close="cancel">
       <el-form ref="ref" :model="model" :rules="rules" class="dialog-body" label-width="100px" :style="{height:height+'px'}">
         <el-form-item label="头像" prop="avatar_url">
-          <el-col :span="10">
+          <el-col :span="8">
             <el-image
-              v-if="model.avatar_url"
-              style="width: 100px; height: 100px; border-radius: 100px;"
+              style="width:100px; height:100px; border-radius:10px;"
               :src="model.avatar_url"
               :preview-src-list="[model.avatar_url]"
               title="点击查看大图"
-            />
+            >
+              <div slot="error" class="image-slot">
+                <i class="el-icon-picture-outline" />
+              </div>
+            </el-image>
           </el-col>
-          <el-col :span="14">
+          <el-col :span="16">
             <el-upload
               name="file"
               :show-file-list="false"
@@ -119,15 +127,6 @@
         <el-form-item label="排序" prop="sort">
           <el-input v-model="model.sort" type="number" />
         </el-form-item>
-        <el-form-item v-if="model.member_id" label="登录时间" prop="login_time">
-          <el-col :span="10">
-            <el-input v-model="model.login_time" disabled />
-          </el-col>
-          <el-col class="line" :span="4" style="text-align:center">登录地区</el-col>
-          <el-col :span="10">
-            <el-input v-model="model.login_region" disabled />
-          </el-col>
-        </el-form-item>
         <el-form-item v-if="model.member_id" label="注册时间" prop="create_time">
           <el-col :span="10">
             <el-input v-model="model.create_time" disabled />
@@ -137,6 +136,15 @@
             <el-input v-model="model.update_time" disabled />
           </el-col>
         </el-form-item>
+        <el-form-item v-if="model.member_id" label="登录时间" prop="login_time">
+          <el-col :span="10">
+            <el-input v-model="model.login_time" disabled />
+          </el-col>
+          <el-col class="line" :span="4" style="text-align:center">登录地区</el-col>
+          <el-col :span="10">
+            <el-input v-model="model.login_region" disabled />
+          </el-col>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancel">取消</el-button>
@@ -144,8 +152,8 @@
       </div>
     </el-dialog>
     <!-- 重置密码 -->
-    <el-dialog :title="pwdDialogTitle" :visible.sync="pwdDialog" top="1vh" :before-close="pwdCancel">
-      <el-form ref="refPwd" :rules="pwdRules" :model="model" label-width="100px" class="dialog-body" :style="{height:height+'px'}">
+    <el-dialog :title="pwdDialogTitle" :visible.sync="pwdDialog" :before-close="pwdCancel">
+      <el-form ref="refPwd" :rules="pwdRules" :model="model" label-width="100px" class="dialog-body">
         <el-form-item label="账号">
           <el-input v-model="model.username" clearable disabled />
         </el-form-item>
@@ -182,7 +190,9 @@ export default {
       count: 0,
       query: {
         page: 1,
-        limit: 12
+        limit: 12,
+        search_field: 'member_id',
+        date_field: 'create_time'
       },
       dialog: false,
       dialogTitle: '',
@@ -197,7 +207,7 @@ export default {
         avatar: '',
         avatar_url: '',
         remark: '',
-        sort: 10000
+        sort: 250
       },
       rules: {
         username: [{ required: true, message: '请输入账号', trigger: 'blur' }],
@@ -222,6 +232,7 @@ export default {
   created() {
     this.height = screenHeight()
     this.list()
+    this.region()
   },
   methods: {
     // 列表
@@ -239,9 +250,6 @@ export default {
     add() {
       this.dialog = true
       this.dialogTitle = '会员添加'
-      regionList({ type: 'tree' }).then(res => {
-        this.regionTree = res.data
-      })
       this.reset()
     },
     // 修改
@@ -322,13 +330,13 @@ export default {
     // 排序
     sort(sort) {
       this.query.sort_field = sort.prop
-      this.query.sort_type = ''
+      this.query.sort_value = ''
       if (sort.order === 'ascending') {
-        this.query.sort_type = 'asc'
+        this.query.sort_value = 'asc'
         this.list()
       }
       if (sort.order === 'descending') {
-        this.query.sort_type = 'desc'
+        this.query.sort_value = 'desc'
         this.list()
       }
     },
@@ -389,6 +397,11 @@ export default {
             this.loading = false
           })
         }
+      })
+    },
+    region() {
+      regionList({ type: 'tree' }).then(res => {
+        this.regionTree = res.data
       })
     }
   }

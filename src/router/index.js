@@ -121,7 +121,6 @@ export const asyncRoutes = [
         name: 'Member',
         meta: {
           title: '会员管理',
-          icon: 'el-icon-user',
           roles: ['admin/Member/list']
         },
         component: () => import('@/views/member/member')
@@ -131,7 +130,6 @@ export const asyncRoutes = [
         name: 'MemberLog',
         meta: {
           title: '会员日志',
-          icon: 'el-icon-notebook-1',
           roles: ['admin/MemberLog/list']
         },
         component: () => import('@/views/member/member-log')
@@ -141,9 +139,8 @@ export const asyncRoutes = [
         name: 'MemberLogStat',
         meta: {
           title: '会员日志统计',
-          icon: 'el-icon-notebook-1',
           roles: ['admin/MemberLog/stat'],
-          activeMenu: '/members/member-log'
+          activeMenu: '/member/member-log'
         },
         component: () => import('@/views/member/member-log-stat'),
         hidden: true
@@ -172,7 +169,6 @@ export const asyncRoutes = [
         name: 'CmsCategory',
         meta: {
           title: '内容分类',
-          icon: 'el-icon-menu',
           roles: ['admin/cms.Category/list']
         },
         component: () => import('@/views/cms/category')
@@ -182,7 +178,6 @@ export const asyncRoutes = [
         name: 'CmsContent',
         meta: {
           title: '内容管理',
-          icon: 'el-icon-s-grid',
           roles: ['admin/cms.Content/list']
         },
         component: () => import('@/views/cms/content')
@@ -192,7 +187,6 @@ export const asyncRoutes = [
         name: 'CmsComment',
         meta: {
           title: '留言管理',
-          icon: 'el-icon-chat-line-square',
           roles: ['admin/cms.Comment/list']
         },
         component: () => import('@/views/cms/comment')
@@ -202,7 +196,6 @@ export const asyncRoutes = [
         name: 'CmsSetting',
         meta: {
           title: '内容设置',
-          icon: 'el-icon-setting',
           roles: ['admin/cms.Setting/info']
         },
         component: () => import('@/views/cms/setting')
@@ -235,7 +228,6 @@ export const asyncRoutes = [
         name: 'Api',
         meta: {
           title: '接口管理',
-          icon: 'el-icon-connection',
           roles: ['admin/Api/list']
         },
         component: () => import('@/views/api/api')
@@ -245,7 +237,6 @@ export const asyncRoutes = [
         name: 'Base',
         meta: {
           title: '设置管理',
-          icon: 'el-icon-setting',
           roles: [
             'admin/Setting/tokenInfo',
             'admin/Setting/captchaInfo',
@@ -260,7 +251,6 @@ export const asyncRoutes = [
         name: 'Wechat',
         meta: {
           title: '微信设置',
-          icon: 'el-icon-chat-dot-round',
           roles: ['admin/SettingWechat/offiInfo', 'admin/SettingWechat/miniInfo']
         },
         component: () => import('@/views/setting/wechat')
@@ -270,7 +260,6 @@ export const asyncRoutes = [
         name: 'Region',
         meta: {
           title: '地区管理',
-          icon: 'el-icon-location-outline',
           roles: ['admin/Region/list']
         },
         component: () => import('@/views/region/region')
@@ -301,7 +290,6 @@ export const asyncRoutes = [
         name: 'AdminMenu',
         meta: {
           title: '菜单管理',
-          icon: 'el-icon-menu',
           roles: ['admin/admin.Menu/list']
         },
         component: () => import('@/views/admin/menu/menu')
@@ -311,7 +299,6 @@ export const asyncRoutes = [
         name: 'AdminRole',
         meta: {
           title: '角色管理',
-          icon: 'el-icon-s-custom',
           roles: ['admin/admin.Role/list']
         },
         component: () => import('@/views/admin/role/role')
@@ -321,7 +308,6 @@ export const asyncRoutes = [
         name: 'AdminUser',
         meta: {
           title: '用户管理',
-          icon: 'el-icon-user',
           roles: ['admin/admin.User/list']
         },
         component: () => import('@/views/admin/user/user')
@@ -331,7 +317,6 @@ export const asyncRoutes = [
         name: 'AdminUserLog',
         meta: {
           title: '日志管理',
-          icon: 'el-icon-notebook-2',
           roles: ['admin/admin.UserLog/list']
         },
         component: () => import('@/views/admin/user/user-log')
@@ -341,7 +326,6 @@ export const asyncRoutes = [
         name: 'AdminUserLogStat',
         meta: {
           title: '日志管理统计',
-          icon: 'el-icon-s-data',
           roles: ['admin/admin.UserLog/stat'],
           activeMenu: '/admin/rule/user-log'
         },
@@ -353,7 +337,6 @@ export const asyncRoutes = [
         name: 'AdminUserCenter',
         meta: {
           title: '个人中心',
-          icon: 'el-icon-user-solid',
           roles: ['admin/admin.UserCenter/info']
         },
         component: () => import('@/views/admin/user/user-center')
@@ -386,7 +369,6 @@ export const asyncRoutes = [
         name: 'AdminSetting',
         meta: {
           title: '设置管理',
-          icon: 'el-icon-s-tools',
           roles: [
             'admin/admin.Setting/cacheInfo',
             'admin/admin.Setting/tokenInfo',
@@ -402,7 +384,6 @@ export const asyncRoutes = [
         name: 'AdminApidoc',
         meta: {
           title: '接口文档',
-          icon: 'el-icon-document',
           roles: ['admin/admin.Apidoc/apidoc']
         },
         component: () => import('@/views/admin/apidoc/apidoc')
@@ -412,7 +393,6 @@ export const asyncRoutes = [
         name: 'AdminUtils',
         meta: {
           title: '实用工具',
-          icon: 'el-icon-help',
           roles: ['admin/admin.Utils/utils']
         },
         component: () => import('@/views/admin/utils/utils')

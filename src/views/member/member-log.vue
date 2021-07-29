@@ -3,17 +3,25 @@
     <!-- 查询 -->
     <div class="filter-container">
       <el-row :gutter="0">
-        <el-col :xs="24" :sm="21">
+        <el-col :xs="24" :sm="20">
+          <el-select v-model="query.search_field" class="filter-item" style="width:110px;" placeholder="">
+            <el-option value="member_id" label="会员ID" />
+            <el-option value="username" label="会员账号" />
+            <el-option value="api_url" label="接口链接" />
+            <el-option value="api_name" label="接口名称" />
+            <el-option value="request_ip" label="请求IP" />
+            <el-option value="request_region" label="请求地区" />
+            <el-option value="request_isp" label="请求ISP" />
+            <el-option value="response_code" label="返回码" />
+          </el-select>
+          <el-input v-model="query.search_value" class="filter-item" style="width:230px;" placeholder="搜索内容" clearable />
           <el-select v-model="query.log_type" class="filter-item" style="width:110px;" placeholder="日志类型" clearable>
             <el-option :value="1" label="注册日志" />
             <el-option :value="2" label="登录日志" />
             <el-option :value="3" label="操作日志" />
           </el-select>
-          <el-input v-model="query.member_keyword" class="filter-item" style="width: 135px;" placeholder="会员账号/昵称" clearable />
-          <el-input v-model="query.api_keyword" class="filter-item" style="width: 235px;" placeholder="接口链接/名称" clearable />
-          <el-input v-model="query.request_keyword" class="filter-item" style="width: 155px;" placeholder="请求IP/地区/ISP" clearable />
           <el-date-picker
-            v-model="query.create_time"
+            v-model="query.date_value"
             type="daterange"
             class="filter-item"
             style="width: 240px;"
@@ -25,29 +33,29 @@
           <el-button class="filter-item" type="primary" @click="search()">查询</el-button>
           <el-button class="filter-item" @click="refresh()">刷新</el-button>
         </el-col>
-        <el-col :xs="24" :sm="3" style="text-align:right;">
+        <el-col :xs="24" :sm="4" style="text-align:right;">
           <el-button v-permission="['admin/MemberLog/clear']" class="filter-item" title="日志清除" @click="clear()">清除</el-button>
           <el-button v-permission="['admin/MemberLog/stat']" class="filter-item" type="primary" title="日志统计" @click="stat">统计</el-button>
         </el-col>
       </el-row>
     </div>
     <!-- 列表 -->
-    <el-table v-loading="loading" :data="data" :height="height" style="width: 100%" border @sort-change="sort">
-      <el-table-column prop="member_log_id" label="日志ID" min-width="100" sortable="custom" fixed="left" />
+    <el-table v-loading="loading" :data="data" :height="height" style="width: 100%" @sort-change="sort">
+      <el-table-column prop="member_log_id" label="日志ID" min-width="100" sortable="custom" />
+      <el-table-column prop="member_id" label="会员ID" min-width="100" sortable="custom" />
       <el-table-column prop="username" label="会员账号" min-width="110" show-overflow-tooltip />
       <el-table-column prop="api_url" label="接口链接" min-width="220" show-overflow-tooltip />
       <el-table-column prop="api_name" label="接口名称" min-width="130" show-overflow-tooltip />
-      <el-table-column prop="request_method" label="请求方式 " min-width="100" />
       <el-table-column prop="request_ip" label="请求IP" min-width="130" />
       <el-table-column prop="request_region" label="请求地区" min-width="150" show-overflow-tooltip />
       <el-table-column prop="request_isp" label="请求ISP" min-width="110" />
       <el-table-column prop="response_code" label="返回码" min-width="80" />
       <el-table-column prop="response_msg" label="返回描述" min-width="130" show-overflow-tooltip />
       <el-table-column prop="create_time" label="请求时间" min-width="160" sortable="custom" />
-      <el-table-column label="操作" min-width="145" align="right" fixed="right">
+      <el-table-column label="操作" min-width="90" align="right" fixed="right">
         <template slot-scope="{ row }">
-          <el-button size="mini" type="primary" @click="info(row)">详情</el-button>
-          <el-button size="mini" type="danger" @click="dele(row)">删除</el-button>
+          <el-button size="mini" type="text" @click="info(row)">详情</el-button>
+          <el-button size="mini" type="text" @click="dele(row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -131,9 +139,9 @@
         <el-form-item label="接口链接" prop="api_url">
           <el-input v-model="clearModel.api_url" type="text" clearable />
         </el-form-item>
-        <el-form-item label="日期范围" prop="date_range">
+        <el-form-item label="日期范围" prop="date_value">
           <el-date-picker
-            v-model="clearModel.date_range"
+            v-model="clearModel.date_value"
             type="daterange"
             class="filter-item"
             range-separator="-"
@@ -174,7 +182,8 @@ export default {
       count: 0,
       query: {
         page: 1,
-        limit: 12
+        limit: 15,
+        search_field: 'member_id'
       },
       dialog: false,
       dialogTitle: '',
@@ -187,7 +196,7 @@ export default {
         username: '',
         api_id: '',
         api_url: '',
-        date_range: []
+        date_value: []
       },
       clearRules: {}
     }
@@ -268,13 +277,13 @@ export default {
     // 排序
     sort(sort) {
       this.query.sort_field = sort.prop
-      this.query.sort_type = ''
+      this.query.sort_value = ''
       if (sort.order === 'ascending') {
-        this.query.sort_type = 'asc'
+        this.query.sort_value = 'asc'
         this.list()
       }
       if (sort.order === 'descending') {
-        this.query.sort_type = 'desc'
+        this.query.sort_value = 'desc'
         this.list()
       }
     },
@@ -299,7 +308,7 @@ export default {
     },
     // 统计
     stat() {
-      this.$router.push('/members/member-log-stat')
+      this.$router.push('/member/member-log-stat')
     }
   }
 }

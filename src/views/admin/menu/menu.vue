@@ -11,22 +11,15 @@
       </el-row>
     </div>
     <!-- 列表 -->
-    <el-table ref="table" v-loading="loading" :data="data" :height="height+50" style="width: 100%" row-key="admin_menu_id" default-expand-all border>
-      <el-table-column prop="menu_name" label="菜单名称" min-width="220" show-overflow-tooltip fixed="left" />
-      <el-table-column prop="menu_url" label="菜单链接(roles)" min-width="225" show-overflow-tooltip />
-      <el-table-column prop="menu_sort" label="排序" min-width="60" />
-      <el-table-column prop="admin_menu_id" label="菜单ID" min-width="65" />
-      <el-table-column prop="menu_pid" label="PID" min-width="60" />
-      <el-table-column prop="create_time" label="添加时间" min-width="155" />
-      <el-table-column prop="update_time" label="修改时间" min-width="155" />
+    <el-table ref="table" v-loading="loading" :data="data" :height="height+50" style="width: 100%" row-key="admin_menu_id">
+      <el-table-column prop="menu_name" label="菜单名称" min-width="220" />
+      <el-table-column prop="menu_url" label="菜单链接(roles)" min-width="300" />
       <el-table-column prop="is_disable" label="是否禁用" min-width="95" align="center">
         <template slot="header">
-          <span>是否禁用 </span>
+          <span>是否禁用</span>
           <el-tooltip placement="top">
-            <div slot="content">
-              开启后无法访问<br>
-            </div>
-            <i class="el-icon-info" title="" />
+            <div slot="content">开启后无法访问</div>
+            <i class="el-icon-warning" title="" />
           </el-tooltip>
         </template>
         <template slot-scope="scope">
@@ -35,12 +28,10 @@
       </el-table-column>
       <el-table-column prop="is_unauth" label="无需权限" min-width="95" align="center">
         <template slot="header">
-          <span>无需权限 </span>
+          <span>无需权限</span>
           <el-tooltip placement="top">
-            <div slot="content">
-              开启后不用分配权限也可以访问<br>
-            </div>
-            <i class="el-icon-info" title="" />
+            <div slot="content">开启后不用分配权限也可以访问</div>
+            <i class="el-icon-warning" title="" />
           </el-tooltip>
         </template>
         <template slot-scope="scope">
@@ -49,25 +40,25 @@
       </el-table-column>
       <el-table-column prop="is_unlogin" label="无需登录" min-width="95" align="center">
         <template slot="header">
-          <span>无需登录 </span>
+          <span>无需登录</span>
           <el-tooltip placement="top">
-            <div slot="content">
-              开启后不用登录就可以访问，如验证码登录等<br>
-            </div>
-            <i class="el-icon-info" title="" />
+            <div slot="content">开启后不用登录就可以访问，如登录</div>
+            <i class="el-icon-warning" title="" />
           </el-tooltip>
         </template>
         <template slot-scope="scope">
           <el-switch v-if="scope.row.menu_url" v-model="scope.row.is_unlogin" :active-value="1" :inactive-value="0" @change="unlogin(scope.row)" />
         </template>
       </el-table-column>
-      <el-table-column label="操作" min-width="345" align="right" fixed="right">
+      <el-table-column prop="admin_menu_id" label="菜单ID" min-width="65" />
+      <el-table-column prop="menu_sort" label="排序" min-width="60" />
+      <el-table-column label="操作" min-width="200" align="right">
         <template slot-scope="{ row }">
-          <el-button size="mini" type="primary" @click="roleShow(row)">角色</el-button>
-          <el-button size="mini" type="primary" @click="userShow(row,'admin_menu_id')">用户</el-button>
-          <el-button size="mini" type="primary" @click="add(row)">添加</el-button>
-          <el-button size="mini" type="success" @click="edit(row)">修改</el-button>
-          <el-button size="mini" type="danger" @click="dele(row)">删除</el-button>
+          <el-button size="mini" type="text" @click="roleShow(row)">角色</el-button>
+          <el-button size="mini" type="text" @click="userShow(row,'admin_menu_id')">用户</el-button>
+          <el-button size="mini" type="text" @click="add(row)">添加</el-button>
+          <el-button size="mini" type="text" @click="edit(row)">修改</el-button>
+          <el-button size="mini" type="text" @click="dele(row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -75,16 +66,7 @@
     <el-dialog :title="dialogTitle" :visible.sync="dialog" top="1vh" width="50%" :before-close="cancel">
       <el-form ref="ref" :rules="rules" :model="model" class="dialog-body" label-width="100px" :style="{height:height+'px'}">
         <el-form-item label="菜单父级" prop="menu_pid">
-          <el-cascader
-            v-model="model.menu_pid"
-            :options="data"
-            :props="props"
-            style="width:100%"
-            clearable
-            filterable
-            placeholder="一级菜单"
-            @change="pidChange"
-          />
+          <el-cascader v-model="model.menu_pid" :options="data" :props="props" style="width:100%" clearable filterable placeholder="一级菜单" @change="pidChange" />
         </el-form-item>
         <el-form-item label="菜单名称" prop="menu_name">
           <el-input v-model="model.menu_name" clearable placeholder="请输入菜单名称" />
@@ -126,8 +108,8 @@
     </el-dialog>
     <!-- 角色 -->
     <el-dialog :title="roleDialogTitle" :visible.sync="roleDialog" width="65%" top="1vh">
-      <el-table ref="roleRef" v-loading="roleLoad" :data="roleData" :height="height+30" style="width: 100%" border @sort-change="roleSort">
-        <el-table-column prop="admin_role_id" label="角色ID" min-width="100" sortable="custom" fixed="left" />
+      <el-table ref="roleRef" v-loading="roleLoad" :data="roleData" :height="height+30" style="width: 100%" @sort-change="roleSort">
+        <el-table-column prop="admin_role_id" label="角色ID" min-width="100" sortable="custom" />
         <el-table-column prop="role_name" label="角色" min-width="120" sortable="custom" />
         <el-table-column prop="role_desc" label="描述" min-width="130" />
         <el-table-column prop="is_disable" label="禁用" min-width="80" align="center" sortable="custom">
@@ -135,10 +117,10 @@
             <el-switch v-model="scope.row.is_disable" :active-value="1" :inactive-value="0" disabled />
           </template>
         </el-table-column>
-        <el-table-column label="操作" min-width="145" align="right" fixed="right">
+        <el-table-column label="操作" min-width="85" align="right" fixed="right">
           <template slot-scope="{ row }">
-            <el-button size="mini" type="primary" @click="userShow(row)">用户</el-button>
-            <el-button size="mini" type="danger" @click="roleRemove(row)">解除</el-button>
+            <el-button size="mini" type="text" @click="userShow(row)">用户</el-button>
+            <el-button size="mini" type="text" @click="roleRemove(row)">解除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -146,14 +128,14 @@
     </el-dialog>
     <!-- 用户 -->
     <el-dialog :title="userDialogTitle" :visible.sync="userDialog" width="65%" top="1vh">
-      <el-table ref="userRef" v-loading="userLoad" :data="userData" :height="height+30" style="width: 100%" border @sort-change="userSort">
-        <el-table-column prop="admin_user_id" label="用户ID" min-width="100" sortable="custom" fixed="left" />
+      <el-table ref="userRef" v-loading="userLoad" :data="userData" :height="height+30" style="width: 100%" @sort-change="userSort">
+        <el-table-column prop="admin_user_id" label="用户ID" min-width="100" sortable="custom" />
         <el-table-column prop="username" label="账号" min-width="120" sortable="custom" />
         <el-table-column prop="nickname" label="昵称" min-width="120" />
         <el-table-column prop="remark" label="备注" min-width="100" />
-        <el-table-column prop="is_admin" label="超管" min-width="80" align="center">
+        <el-table-column prop="is_super" label="超管" min-width="80" align="center">
           <template slot-scope="scope">
-            <el-switch v-model="scope.row.is_admin" :active-value="1" :inactive-value="0" disabled />
+            <el-switch v-model="scope.row.is_super" :active-value="1" :inactive-value="0" disabled />
           </template>
         </el-table-column>
         <el-table-column prop="is_disable" label="禁用" min-width="80" align="center">
@@ -163,7 +145,7 @@
         </el-table-column>
         <el-table-column label="操作" min-width="80" align="right" fixed="right">
           <template slot-scope="{ row }">
-            <el-button v-if="userQuery.admin_menu_id" size="mini" type="danger" @click="userRemove(row)">解除</el-button>
+            <el-button v-if="userQuery.admin_menu_id" size="mini" type="text" @click="userRemove(row)">解除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -184,16 +166,14 @@ export default {
   directives: { permission },
   data() {
     return {
+      name: '菜单',
       height: 680,
       loading: false,
       data: [],
-      props: {
-        checkStrictly: true,
-        value: 'admin_menu_id',
-        label: 'menu_name'
-      },
+      props: { checkStrictly: true, value: 'admin_menu_id', label: 'menu_name' },
       dialog: false,
       dialogTitle: '',
+      isExpandAll: true,
       model: {
         admin_menu_id: '',
         menu_pid: 0,
@@ -211,7 +191,6 @@ export default {
         edit_edit: false,
         edit_dele: false
       },
-      isExpandAll: false,
       rules: {
         menu_name: [{ required: true, message: '请输入菜单名称', trigger: 'blur' }]
       },
@@ -220,19 +199,13 @@ export default {
       roleLoad: false,
       roleData: [],
       roleCount: 0,
-      roleQuery: {
-        page: 1,
-        limit: 10
-      },
+      roleQuery: { page: 1, limit: 10 },
       userDialog: false,
       userDialogTitle: '',
       userLoad: false,
       userData: [],
       userCount: 0,
-      userQuery: {
-        page: 1,
-        limit: 10
-      }
+      userQuery: { page: 1, limit: 10 }
     }
   },
   created() {
@@ -245,7 +218,7 @@ export default {
       this.loading = true
       list().then(res => {
         this.data = res.data.list
-        this.isExpandAll = false
+        this.isExpandAll = true
         this.loading = false
       }).catch(() => {
         this.loading = false
@@ -389,7 +362,7 @@ export default {
     unlogin(row) {
       if (row.is_unlogin === 1) {
         this.$confirm(
-          '确定要设置菜单 <span style="color:red">' + row.menu_name + ' </span>为无需登录吗？<br>开启后不用登录就可以访问！请根据需求设置！',
+          '确定要设置菜单 <span style="color:red">' + row.menu_name + ' </span>为无需登录吗？<br>开启后不用登录就可以访问！请谨慎设置！',
           '无需登录：' + row.admin_menu_id,
           { type: 'warning', dangerouslyUseHTMLString: true }
         ).then(() => {
@@ -451,13 +424,13 @@ export default {
     // 角色排序
     roleSort(sort) {
       this.roleQuery.sort_field = sort.prop
-      this.roleQuery.sort_type = ''
+      this.roleQuery.sort_value = ''
       if (sort.order === 'ascending') {
-        this.roleQuery.sort_type = 'asc'
+        this.roleQuery.sort_value = 'asc'
         this.roleList()
       }
       if (sort.order === 'descending') {
-        this.roleQuery.sort_type = 'desc'
+        this.roleQuery.sort_value = 'desc'
         this.roleList()
       }
     },
@@ -511,13 +484,13 @@ export default {
     // 用户排序
     userSort(sort) {
       this.userQuery.sort_field = sort.prop
-      this.userQuery.sort_type = ''
+      this.userQuery.sort_value = ''
       if (sort.order === 'ascending') {
-        this.userQuery.sort_type = 'asc'
+        this.userQuery.sort_value = 'asc'
         this.userList()
       }
       if (sort.order === 'descending') {
-        this.userQuery.sort_type = 'desc'
+        this.userQuery.sort_value = 'desc'
         this.userList()
       }
     },

@@ -4,22 +4,22 @@
       <el-col :xs="24" :sm="12">
         <el-form ref="ref" :model="model" :rules="rules" label-width="130px">
           <el-form-item label="名称" prop="name">
-            <el-input v-model="model.name" />
-            <el-button icon="el-icon-document-copy" clearable @click="copy(model.name, $event)" />
+            <el-input v-model="model.name">
+              <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.name, $event)" />
+            </el-input>
           </el-form-item>
           <el-form-item label="原始ID" prop="origin_id">
-            <el-input v-model="model.origin_id" />
-            <el-button icon="el-icon-document-copy" clearable @click="copy(model.origin_id, $event)" />
+            <el-input v-model="model.origin_id">
+              <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.origin_id, $event)" />
+            </el-input>
           </el-form-item>
           <el-form-item label="二维码" prop="qrcode_url">
             <el-col :span="10">
-              <el-image
-                v-if="model.qrcode_url"
-                style="width: 100px; height: 100px;"
-                :src="model.qrcode_url"
-                :preview-src-list="[model.qrcode_url]"
-                title="点击查看大图"
-              />
+              <el-image style="width:100px; height:100px;" :src="model.qrcode_url" :preview-src-list="[model.qrcode_url]" title="点击查看大图">
+                <div slot="error" class="image-slot">
+                  <i class="el-icon-picture-outline" />
+                </div>
+              </el-image>
             </el-col>
             <el-col :span="14">
               <el-upload
@@ -36,12 +36,14 @@
             </el-col>
           </el-form-item>
           <el-form-item label="AppID" prop="appid">
-            <el-input v-model="model.appid" />
-            <el-button icon="el-icon-document-copy" clearable @click="copy(model.appid, $event)" />
+            <el-input v-model="model.appid">
+              <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.appid, $event)" />
+            </el-input>
           </el-form-item>
           <el-form-item label="AppSecret" prop="appsecret">
-            <el-input v-model="model.appsecret" />
-            <el-button icon="el-icon-document-copy" clearable @click="copy(model.appsecret, $event)" />
+            <el-input v-model="model.appsecret">
+              <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.appsecret, $event)" />
+            </el-input>
           </el-form-item>
           <el-form-item>
             <el-button :loading="loading" @click="refresh()">刷新</el-button>
@@ -145,5 +147,5 @@ export default {
 </script>
 
 <style scoped>
-  .el-input{width: 90%;}
+
 </style>

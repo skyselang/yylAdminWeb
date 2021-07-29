@@ -11,21 +11,14 @@
       </el-row>
     </div>
     <!-- 列表 -->
-    <el-table ref="table" v-loading="loading" :data="data" :height="height+50" style="width: 100%" row-key="api_id" default-expand-all border>
-      <el-table-column prop="api_name" label="接口名称" min-width="200" fixed="left" />
-      <el-table-column prop="api_url" label="接口链接" min-width="260" show-overflow-tooltip />
-      <el-table-column prop="api_sort" label="接口排序" min-width="90" />
-      <el-table-column prop="api_id" label="接口ID" min-width="80" />
-      <el-table-column prop="api_pid" label="PID" min-width="80" />
-      <el-table-column prop="create_time" label="添加时间" min-width="160" />
-      <el-table-column prop="update_time" label="修改时间" min-width="160" />
+    <el-table ref="table" v-loading="loading" :data="data" :height="height+50" style="width: 100%" row-key="api_id">
+      <el-table-column prop="api_name" label="接口名称" min-width="210" />
+      <el-table-column prop="api_url" label="接口链接" min-width="300" />
       <el-table-column prop="is_disable" label="是否禁用" min-width="95" align="center">
         <template slot="header">
           <span>是否禁用 </span>
           <el-tooltip placement="top">
-            <div slot="content">
-              开启后无法访问<br>
-            </div>
+            <div slot="content">开启后无法访问</div>
             <i class="el-icon-info" title="" />
           </el-tooltip>
         </template>
@@ -37,9 +30,7 @@
         <template slot="header">
           <span>无需登录 </span>
           <el-tooltip placement="top">
-            <div slot="content">
-              开启后不用登录也可以访问，如登录注册等<br>
-            </div>
+            <div slot="content">开启后不用登录也可以访问，如登录注册等</div>
             <i class="el-icon-info" title="" />
           </el-tooltip>
         </template>
@@ -47,11 +38,13 @@
           <el-switch v-if="scope.row.api_url" v-model="scope.row.is_unlogin" :active-value="1" :inactive-value="0" @change="unlogin(scope.row)" />
         </template>
       </el-table-column>
-      <el-table-column label="操作" min-width="210" align="right" fixed="right">
+      <el-table-column prop="api_id" label="接口ID" min-width="80" />
+      <el-table-column prop="api_sort" label="排序" min-width="80" />
+      <el-table-column label="操作" min-width="130" align="right" fixed="right">
         <template slot-scope="{ row }">
-          <el-button size="mini" type="primary" @click="add(row)">添加</el-button>
-          <el-button size="mini" type="success" @click="edit(row)">修改</el-button>
-          <el-button size="mini" type="danger" @click="dele(row)">删除</el-button>
+          <el-button size="mini" type="text" @click="add(row)">添加</el-button>
+          <el-button size="mini" type="text" @click="edit(row)">修改</el-button>
+          <el-button size="mini" type="text" @click="dele(row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -123,7 +116,7 @@ export default {
         api_url: '',
         api_sort: 200
       },
-      isExpandAll: false,
+      isExpandAll: true,
       rules: {
         api_name: [{ required: true, message: '请输入接口名称', trigger: 'blur' }]
       }
@@ -139,7 +132,7 @@ export default {
       this.loading = true
       list().then(res => {
         this.data = res.data.list
-        this.isExpandAll = false
+        this.isExpandAll = true
         this.loading = false
       }).catch(() => {
         this.loading = false

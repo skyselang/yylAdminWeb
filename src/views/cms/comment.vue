@@ -4,18 +4,20 @@
     <div class="filter-container">
       <el-row :gutter="0">
         <el-col :xs="24" :sm="20">
-          <el-input v-model="query.comment_id" class="filter-item" style="width: 110px;" placeholder="ID" clearable />
-          <el-input v-model="query.keyword" class="filter-item" style="width: 200px;" placeholder="称呼/手机/标题" clearable />
-          <el-select v-model="query.is_read" class="filter-item" style="width:80px;" placeholder="阅读" clearable>
-            <el-option value="0" label="未读" />
-            <el-option value="1" label="已读" />
+          <el-select v-model="query.search_field" class="filter-item" style="width:110px;" placeholder="">
+            <el-option value="comment_id" label="留言ID" />
+            <el-option value="call" label="称呼" />
+            <el-option value="mobile" label="手机" />
+            <el-option value="title" label="标题" />
+            <el-option value="is_read" label="是否已读" />
           </el-select>
-          <el-select v-model="query.date_type" class="filter-item" style="width:110px;" placeholder="时间类型" clearable>
+          <el-input v-model="query.search_value" class="filter-item" style="width:200px;" placeholder="搜索内容" clearable />
+          <el-select v-model="query.date_field" class="filter-item" style="width:110px;" placeholder="时间类型">
             <el-option value="create_time" label="添加时间" />
             <el-option value="update_time" label="修改时间" />
           </el-select>
           <el-date-picker
-            v-model="query.date_range"
+            v-model="query.date_value"
             type="daterange"
             class="filter-item"
             style="width: 240px;"
@@ -29,13 +31,14 @@
         </el-col>
         <el-col :xs="24" :sm="4" style="text-align:right;">
           <el-button class="filter-item" @click="recover()">回收站</el-button>
+          <el-button class="filter-item" type="primary" @click="add()">添加</el-button>
         </el-col>
       </el-row>
     </div>
     <!-- 列表 -->
-    <el-table v-loading="loading" :data="data" :height="height-50" style="width: 100%" border @sort-change="sort" @selection-change="select">
+    <el-table v-loading="loading" :data="data" :height="height-50" style="width: 100%" @sort-change="sort" @selection-change="select">
       <el-table-column type="selection" width="40" />
-      <el-table-column prop="comment_id" label="ID" min-width="80" sortable="custom" />
+      <el-table-column prop="comment_id" label="留言ID" min-width="100" sortable="custom" />
       <el-table-column prop="call" label="称呼" min-width="100" show-overflow-tooltip />
       <el-table-column prop="mobile" label="手机" min-width="120" sortable="custom" show-overflow-tooltip />
       <el-table-column prop="title" label="标题" min-width="200" show-overflow-tooltip />
@@ -47,16 +50,16 @@
       </el-table-column>
       <el-table-column prop="create_time" label="添加时间" min-width="155" sortable="custom" />
       <el-table-column prop="update_time" label="修改时间" min-width="155" sortable="custom" />
-      <el-table-column label="操作" min-width="145" align="right" fixed="right">
+      <el-table-column label="操作" min-width="85" align="right" fixed="right">
         <template slot-scope="{ row }">
-          <el-button size="mini" type="success" @click="edit(row)">查看</el-button>
-          <el-button size="mini" type="danger" @click="dele([row])">删除</el-button>
+          <el-button size="mini" type="text" @click="edit(row)">查看</el-button>
+          <el-button size="mini" type="text" @click="dele([row])">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
     <div style="margin-top: 20px">
-      <el-button size="mini" @click="isread(selection,true)">已读</el-button>
-      <el-button size="mini" type="danger" @click="dele(selection)">删除</el-button>
+      <el-button size="mini" type="text" @click="isread(selection,true)">已读</el-button>
+      <el-button size="mini" type="text" @click="dele(selection)">删除</el-button>
     </div>
     <!-- 分页 -->
     <pagination v-show="count > 0" :total="count" :page.sync="query.page" :limit.sync="query.limit" @pagination="list" />
@@ -64,28 +67,28 @@
     <el-dialog :title="dialogTitle" :visible.sync="dialog" width="50%" top="1vh" :before-close="cancel" @close-on-click-modal="false">
       <el-form ref="ref" :rules="rules" :model="model" class="dialog-body" label-width="100px" :style="{height:height+'px'}">
         <el-form-item label="称呼" prop="call">
-          <el-input v-model="model.call" clearable placeholder="" disabled />
+          <el-input v-model="model.call" clearable placeholder="" />
         </el-form-item>
         <el-form-item label="手机" prop="mobile">
-          <el-input v-model="model.mobile" clearable placeholder="" disabled />
+          <el-input v-model="model.mobile" clearable placeholder="" />
         </el-form-item>
         <el-form-item label="电话" prop="tel">
-          <el-input v-model="model.tel" clearable placeholder="" disabled />
+          <el-input v-model="model.tel" clearable placeholder="" />
         </el-form-item>
         <el-form-item label="邮箱" prop="email">
-          <el-input v-model="model.email" clearable placeholder="" disabled />
+          <el-input v-model="model.email" clearable placeholder="" />
         </el-form-item>
         <el-form-item label="QQ" prop="qq">
-          <el-input v-model="model.qq" clearable placeholder="" disabled />
+          <el-input v-model="model.qq" clearable placeholder="" />
         </el-form-item>
         <el-form-item label="微信" prop="wechat">
-          <el-input v-model="model.wechat" clearable placeholder="" disabled />
+          <el-input v-model="model.wechat" clearable placeholder="" />
         </el-form-item>
         <el-form-item label="标题" prop="title">
-          <el-input v-model="model.title" clearable placeholder="" disabled />
+          <el-input v-model="model.title" clearable placeholder="" />
         </el-form-item>
         <el-form-item label="内容" prop="content">
-          <el-input v-model="model.content" type="textarea" clearable placeholder="" disabled autosize />
+          <el-input v-model="model.content" type="textarea" clearable placeholder="" :autosize="{minRows:3,maxRows:20}" />
         </el-form-item>
         <el-form-item label="备注" prop="remark">
           <el-input v-model="model.remark" clearable placeholder="" />
@@ -113,18 +116,20 @@
       <div class="filter-container">
         <el-row :gutter="0">
           <el-col :xs="24" :sm="24">
-            <el-input v-model="recoverQuery.comment_id" class="filter-item" style="width: 110px;" placeholder="ID" clearable />
-            <el-input v-model="recoverQuery.keyword" class="filter-item" style="width: 200px;" placeholder="称呼/手机/标题" clearable />
-            <el-select v-model="recoverQuery.is_read" class="filter-item" style="width:80px;" placeholder="阅读" clearable>
-              <el-option value="0" label="未读" />
-              <el-option value="1" label="已读" />
+            <el-select v-model="recoverQuery.search_field" class="filter-item" style="width:110px;" placeholder="">
+              <el-option value="comment_id" label="留言ID" />
+              <el-option value="call" label="称呼" />
+              <el-option value="mobile" label="手机" />
+              <el-option value="title" label="标题" />
+              <el-option value="is_read" label="是否已读" />
             </el-select>
-            <el-select v-model="recoverQuery.date_type" class="filter-item" style="width:110px;" placeholder="时间类型" clearable>
+            <el-input v-model="recoverQuery.search_value" class="filter-item" style="width:200px;" placeholder="搜索内容" clearable />
+            <el-select v-model="recoverQuery.date_field" class="filter-item" style="width:110px;" placeholder="时间类型" clearable>
               <el-option value="create_time" label="添加时间" />
               <el-option value="delete_time" label="删除时间" />
             </el-select>
             <el-date-picker
-              v-model="recoverQuery.date_range"
+              v-model="recoverQuery.date_value"
               type="daterange"
               class="filter-item"
               style="width: 240px;"
@@ -138,7 +143,7 @@
           </el-col>
         </el-row>
       </div>
-      <el-table ref="recoverRef" v-loading="recoverLoad" :data="recoverData" :height="height-60" style="width: 100%" border @sort-change="recoverSort" @selection-change="recoverSelect">
+      <el-table ref="recoverRef" v-loading="recoverLoad" :data="recoverData" :height="height-60" style="width: 100%" @sort-change="recoverSort" @selection-change="recoverSelect">
         <el-table-column type="selection" width="40" />
         <el-table-column prop="comment_id" label="ID" min-width="80" sortable="custom" />
         <el-table-column prop="call" label="称呼" min-width="100" show-overflow-tooltip />
@@ -152,16 +157,16 @@
         </el-table-column>
         <el-table-column prop="create_time" label="添加时间" min-width="155" sortable="custom" />
         <el-table-column prop="delete_time" label="删除时间" min-width="155" sortable="custom" />
-        <el-table-column label="操作" min-width="145" align="right" fixed="right">
+        <el-table-column label="操作" min-width="85" align="right" fixed="right">
           <template slot-scope="{ row }">
-            <el-button size="mini" type="success" @click="recoverReco([row])">恢复</el-button>
-            <el-button size="mini" type="danger" @click="recoverDele([row])">删除</el-button>
+            <el-button size="mini" type="text" @click="recoverReco([row])">恢复</el-button>
+            <el-button size="mini" type="text" @click="recoverDele([row])">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
       <div style="margin-top: 20px">
-        <el-button size="mini" type="success" @click="recoverReco(recoverSelection)">恢复</el-button>
-        <el-button size="mini" type="danger" @click="recoverDele(recoverSelection)">删除</el-button>
+        <el-button size="mini" type="text" @click="recoverReco(recoverSelection)">恢复</el-button>
+        <el-button size="mini" type="text" @click="recoverDele(recoverSelection)">删除</el-button>
       </div>
       <pagination v-show="recoverCount > 0" :total="recoverCount" :page.sync="recoverQuery.page" :limit.sync="recoverQuery.limit" @pagination="recoverList" />
     </el-dialog>
@@ -172,8 +177,7 @@
 import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination'
 import permission from '@/directive/permission/index.js' // 权限判断指令
-import { getAdminToken } from '@/utils/auth'
-import { list, info, edit, dele, isread, recover, recoverReco, recoverDele } from '@/api/cms/comment'
+import { list, info, add, edit, dele, isread, recover, recoverReco, recoverDele } from '@/api/cms/comment'
 
 export default {
   name: 'CmsComment',
@@ -186,7 +190,9 @@ export default {
       loading: false,
       query: {
         page: 1,
-        limit: 12
+        limit: 15,
+        search_field: 'comment_id',
+        date_field: 'create_time'
       },
       data: [],
       count: 0,
@@ -194,16 +200,23 @@ export default {
       dialogTitle: '',
       model: {
         comment_id: '',
-        name: '',
-        url: '',
-        imgs: [],
-        sort: 200
+        call: '',
+        mobile: '',
+        tel: '',
+        email: '',
+        qq: '',
+        wechat: '',
+        title: '',
+        content: '',
+        remark: ''
       },
       selection: [],
-      uploadAction: process.env.VUE_APP_BASE_API + '/admin/cms.Comment/upload',
-      uploadHeaders: { AdminToken: getAdminToken() },
-      uploadData: { type: 'image' },
-      rules: {},
+      rules: {
+        call: [{ required: true, message: '请输入称呼', trigger: 'blur' }],
+        mobile: [{ required: true, message: '请输入手机', trigger: 'blur' }],
+        title: [{ required: true, message: '请输入标题', trigger: 'blur' }],
+        content: [{ required: true, message: '请输入内容', trigger: 'blur' }]
+      },
       recoverDialog: false,
       recoverDialogTitle: '',
       recoverLoad: false,
@@ -211,7 +224,9 @@ export default {
       recoverCount: 0,
       recoverQuery: {
         page: 1,
-        limit: 10
+        limit: 10,
+        search_field: 'comment_id',
+        date_field: 'create_time'
       },
       recoverSelection: []
     }
@@ -302,6 +317,15 @@ export default {
             }).catch(() => {
               this.loading = false
             })
+          } else {
+            add(this.model).then(res => {
+              this.dialog = false
+              this.list()
+              this.reset()
+              this.$message.success(res.msg)
+            }).catch(() => {
+              this.loading = false
+            })
           }
         }
       })
@@ -310,9 +334,6 @@ export default {
     reset(row) {
       if (row) {
         this.model = row
-        if (this.model.comment_category_id === 0) {
-          this.model.comment_category_id = ''
-        }
       } else {
         this.model = this.$options.data().model
       }
@@ -334,18 +355,18 @@ export default {
     // 排序
     sort(sort) {
       this.query.sort_field = sort.prop
-      this.query.sort_type = ''
+      this.query.sort_value = ''
       if (sort.order === 'ascending') {
-        this.query.sort_type = 'asc'
+        this.query.sort_value = 'asc'
         this.list()
       }
       if (sort.order === 'descending') {
-        this.query.sort_type = 'desc'
+        this.query.sort_value = 'desc'
         this.list()
       }
     },
     // 已读
-    isread(row, select = false) {
+    isread(row) {
       if (row.length === 0) {
         this.selectAlert()
       } else {
@@ -394,13 +415,13 @@ export default {
     // 回收站排序
     recoverSort(sort) {
       this.recoverQuery.sort_field = sort.prop
-      this.recoverQuery.sort_type = ''
+      this.recoverQuery.sort_value = ''
       if (sort.order === 'ascending') {
-        this.recoverQuery.sort_type = 'asc'
+        this.recoverQuery.sort_value = 'asc'
         this.recoverList()
       }
       if (sort.order === 'descending') {
-        this.recoverQuery.sort_type = 'desc'
+        this.recoverQuery.sort_value = 'desc'
         this.recoverList()
       }
     },
@@ -456,12 +477,6 @@ export default {
     // 回收站选择
     recoverSelect(selection) {
       this.recoverSelection = selection
-    },
-    // 回收站父级选择（查询）
-    recoverPidChangeQuery(value) {
-      if (value) {
-        this.recoverQuery.comment_category_id = value[value.length - 1]
-      }
     }
   }
 }

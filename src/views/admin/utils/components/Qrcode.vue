@@ -10,7 +10,7 @@
         </el-form-item>
         <el-form-item id="qrcode" label="二维码" prop="value" style="margin-bottom: 0;">
           <qrcode-vue v-if="model.value" v-model="model.value" :size="model.size" />
-          <div v-else style="width:215px;height:215px" />
+          <div v-else style="width:210px;height:210px" />
         </el-form-item>
         <el-form-item>
           <el-button @click="clear()">清空</el-button>

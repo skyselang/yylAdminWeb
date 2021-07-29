@@ -6,28 +6,34 @@
     <div class="text item">
       <el-form ref="ref" :model="model" :rules="rules" label-width="100px">
         <el-form-item label="IP">
-          <el-input v-model="model.ip" type="text" clearable />
-          <el-button icon="el-icon-document-copy" @click="copy(model.ip, $event)" />
+          <el-input v-model="model.ip" type="text" clearable>
+            <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.ip, $event)" />
+          </el-input>
         </el-form-item>
         <el-form-item label="国家">
-          <el-input v-model="model.country" type="text" />
-          <el-button icon="el-icon-document-copy" @click="copy(model.country, $event)" />
+          <el-input v-model="model.country" type="text">
+            <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.country, $event)" />
+          </el-input>
         </el-form-item>
         <el-form-item label="省份">
-          <el-input v-model="model.province" type="text" />
-          <el-button icon="el-icon-document-copy" @click="copy(model.province, $event)" />
+          <el-input v-model="model.province" type="text">
+            <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.province, $event)" />
+          </el-input>
         </el-form-item>
         <el-form-item label="城市">
-          <el-input v-model="model.city" type="text" />
-          <el-button icon="el-icon-document-copy" @click="copy(model.city, $event)" />
+          <el-input v-model="model.city" type="text">
+            <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.city, $event)" />
+          </el-input>
         </el-form-item>
         <el-form-item label="区县">
-          <el-input v-model="model.area" type="text" />
-          <el-button icon="el-icon-document-copy" @click="copy(model.area, $event)" />
+          <el-input v-model="model.area" type="text">
+            <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.area, $event)" />
+          </el-input>
         </el-form-item>
         <el-form-item label="运营商">
-          <el-input v-model="model.isp" type="text" />
-          <el-button icon="el-icon-document-copy" @click="copy(model.isp, $event)" />
+          <el-input v-model="model.isp" type="text">
+            <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.isp, $event)" />
+          </el-input>
         </el-form-item>
         <el-form-item>
           <el-button @click="clear()">清空</el-button>
@@ -86,5 +92,5 @@ export default {
 </script>
 
 <style scoped>
-  .el-input{width: 90%;}
+
 </style>

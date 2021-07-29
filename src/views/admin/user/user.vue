@@ -16,8 +16,8 @@
       </el-row>
     </div>
     <!-- 列表 -->
-    <el-table v-loading="loading" :data="datas" :height="height" style="width: 100%" border @sort-change="sort">
-      <el-table-column prop="admin_user_id" label="用户ID" min-width="100" sortable="custom" fixed="left" />
+    <el-table v-loading="loading" :data="datas" :height="height" style="width: 100%" @sort-change="sort">
+      <el-table-column prop="admin_user_id" label="用户ID" min-width="100" sortable="custom" />
       <el-table-column prop="username" label="账号" min-width="120" sortable="custom" show-overflow-tooltip />
       <el-table-column prop="nickname" label="昵称" min-width="120" sortable="custom" show-overflow-tooltip />
       <el-table-column prop="email" label="邮箱" min-width="250" sortable="custom" show-overflow-tooltip />
@@ -35,12 +35,12 @@
           <el-switch v-model="scope.row.is_disable" :active-value="1" :inactive-value="0" @change="isProhibit(scope.row)" />
         </template>
       </el-table-column>
-      <el-table-column label="操作" min-width="280" align="right" fixed="right">
+      <el-table-column label="操作" min-width="160" align="right" fixed="right">
         <template slot-scope="{ row }">
-          <el-button size="mini" type="primary" @click="rule(row)">权限</el-button>
-          <el-button size="mini" type="primary" @click="pwd(row)">密码</el-button>
-          <el-button size="mini" type="success" @click="edit(row)">修改</el-button>
-          <el-button size="mini" type="danger" @click="dele(row)">删除</el-button>
+          <el-button size="mini" type="text" @click="rule(row)">权限</el-button>
+          <el-button size="mini" type="text" @click="pwd(row)">密码</el-button>
+          <el-button size="mini" type="text" @click="edit(row)">修改</el-button>
+          <el-button size="mini" type="text" @click="dele(row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -49,7 +49,7 @@
     <!-- 添加、修改 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialog" top="1vh" width="50%" :before-close="cancel">
       <el-form ref="ref" :model="model" :rules="rules" class="dialog-body" label-width="100px" :style="{height:height+'px'}">
-        <el-form-item label="头像" prop="avatar">
+        <el-form-item label="头像" prop="avatar_url">
           <el-col :span="10">
             <el-avatar shape="circle" fit="contain" :size="100" :src="model.avatar_url" />
           </el-col>
@@ -63,7 +63,7 @@
               :on-success="uploadSuccess"
               :on-error="uploadError"
             >
-              <el-button>上传头像</el-button>
+              <el-button size="mini">上传头像</el-button>
             </el-upload>
             <span>jpg、png图片，小于100kb，宽高1:1</span>
           </el-col>
@@ -212,7 +212,7 @@ export default {
       count: 0,
       query: {
         page: 1,
-        limit: 12
+        limit: 15
       },
       dialog: false,
       dialogTitle: '',
@@ -359,13 +359,13 @@ export default {
     // 排序
     sort(sort) {
       this.query.sort_field = sort.prop
-      this.query.sort_type = ''
+      this.query.sort_value = ''
       if (sort.order === 'ascending') {
-        this.query.sort_type = 'asc'
+        this.query.sort_value = 'asc'
         this.list()
       }
       if (sort.order === 'descending') {
-        this.query.sort_type = 'desc'
+        this.query.sort_value = 'desc'
         this.list()
       }
     },

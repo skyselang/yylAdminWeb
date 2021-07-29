@@ -68,6 +68,12 @@ export function dele(data) {
   })
 }
 /**
+ * 内容上传文件
+ */
+export function upload() {
+  return process.env.VUE_APP_BASE_API + url + 'upload'
+}
+/**
  * 内容是否置顶
  * @param {array} data 请求数据
  */
