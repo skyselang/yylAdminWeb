@@ -66,18 +66,7 @@
         <el-form-item label="图片" prop="imgs">
           <el-row :gutter="0">
             <el-col :span="8">
-              <el-upload
-                name="file"
-                :file-list="model.imgs"
-                :show-file-list="false"
-                :action="uploadAction"
-                :headers="uploadHeaders"
-                :data="uploadData"
-                :on-success="uploadSuccess"
-                :on-error="uploadError"
-              >
-                <el-button size="mini">上传图片</el-button>
-              </el-upload>
+              <el-button size="mini" @click="fileUpload()">上传图片</el-button>
             </el-col>
             <el-col :span="16">
               <div>每张图片大小不超过 500 KB，jpg、png格式。</div>
@@ -85,10 +74,10 @@
           </el-row>
           <el-row :gutter="0">
             <el-col v-for="(item, index) in model.imgs" :key="index" :span="6" style="border:1px solid #DCDFE6">
-              <el-image style="width:100%;height:100px;" :src="item.url" :preview-src-list="[item.url]" fit="contain" title="点击查看大图" />
+              <el-image style="width:100%;height:100px;" :src="item.file_url" :preview-src-list="[item.file_url]" fit="contain" title="点击查看大图" />
               <br style="line-height: 0">
-              <el-link :href="item.url" :underline="false" :download="item.url" target="_blank" style="margin:0 1px">
-                下载<span style="font-size:10px">({{ item.size }})</span>
+              <el-link :href="item.file_url" :underline="false" :download="item.file_url" target="_blank" style="margin:0 1px">
+                下载<span style="font-size:10px">({{ item.file_size }})</span>
               </el-link>
               <el-button size="mini" @click="uploadDele(index)">删除</el-button>
             </el-col>
@@ -109,17 +98,20 @@
         <el-button type="primary" @click="submit">提交</el-button>
       </div>
     </el-dialog>
+    <el-dialog title="文件管理" :visible.sync="fileDialog" width="80%" top="1vh">
+      <file-manage file-type="image" @file-lists="fileLists" />
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import screenHeight from '@/utils/screen-height'
-import { getAdminToken } from '@/utils/auth'
-import { list, info, add, edit, dele, upload, ishide } from '@/api/cms/category'
+import FileManage from '@/components/FileManage'
+import { list, info, add, edit, dele, ishide } from '@/api/cms/category'
 
 export default {
   name: 'CmsCategory',
-  components: { },
+  components: { FileManage },
   directives: { },
   data() {
     return {
@@ -142,9 +134,7 @@ export default {
       isExpandAll: true,
       is_hide: 0,
       selection: [],
-      uploadAction: upload(),
-      uploadHeaders: { AdminToken: getAdminToken() },
-      uploadData: { type: 'image' },
+      fileDialog: false,
       rules: {
         category_name: [{ required: true, message: '请输入分类名称', trigger: 'blur' }]
       }
@@ -309,16 +299,17 @@ export default {
       }
     },
     // 上传图片
-    uploadSuccess(res) {
-      if (res.code === 200) {
-        this.model.imgs.push(res.data)
-        this.$message.success(res.msg)
-      } else {
-        this.$message.error(res.msg)
-      }
+    fileUpload() {
+      this.fileDialog = true
     },
-    uploadError(res) {
-      this.$message.error(res.msg || '上传出错')
+    fileLists(filelists) {
+      this.fileDialog = false
+      const file_len = filelists.length
+      if (filelists) {
+        for (let i = 0; i < file_len; i++) {
+          this.model.imgs.push(filelists[i])
+        }
+      }
     },
     uploadDele(index) {
       this.model.imgs.splice(index, 1)

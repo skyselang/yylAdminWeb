@@ -1,67 +1,64 @@
 <template>
-  <el-card class="box-card">
-    <el-row :gutter="0">
-      <el-col :xs="24" :sm="12">
-        <el-form ref="ref" :model="model" :rules="rules" label-width="130px">
-          <el-form-item label="名称" prop="name">
-            <el-input v-model="model.name">
-              <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.name, $event)" />
-            </el-input>
-          </el-form-item>
-          <el-form-item label="原始ID" prop="origin_id">
-            <el-input v-model="model.origin_id">
-              <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.origin_id, $event)" />
-            </el-input>
-          </el-form-item>
-          <el-form-item label="二维码" prop="qrcode_url">
-            <el-col :span="10">
-              <el-image style="width:100px; height:100px;" :src="model.qrcode_url" :preview-src-list="[model.qrcode_url]" title="点击查看大图">
-                <div slot="error" class="image-slot">
-                  <i class="el-icon-picture-outline" />
-                </div>
-              </el-image>
-            </el-col>
-            <el-col :span="14">
-              <el-upload
-                name="file"
-                :show-file-list="false"
-                :action="uploadAction"
-                :headers="uploadHeaders"
-                :on-success="uploadSuccess"
-                :on-error="uploadError"
-              >
-                <el-button size="mini">上传二维码</el-button>
-              </el-upload>
-              <span>jpg、png图片，小于200kb，宽高1:1</span>
-            </el-col>
-          </el-form-item>
-          <el-form-item label="AppID" prop="appid">
-            <el-input v-model="model.appid">
-              <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.appid, $event)" />
-            </el-input>
-          </el-form-item>
-          <el-form-item label="AppSecret" prop="appsecret">
-            <el-input v-model="model.appsecret">
-              <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.appsecret, $event)" />
-            </el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-button :loading="loading" @click="refresh()">刷新</el-button>
-            <el-button :loading="loading" type="primary" @click="submit()">提交</el-button>
-          </el-form-item>
-        </el-form>
-      </el-col>
-    </el-row>
-  </el-card>
+  <div>
+    <el-card class="box-card">
+      <el-row :gutter="0">
+        <el-col :xs="24" :sm="16">
+          <el-form ref="ref" :model="model" :rules="rules" label-width="130px">
+            <el-form-item label="名称" prop="name">
+              <el-input v-model="model.name">
+                <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.name, $event)" />
+              </el-input>
+            </el-form-item>
+            <el-form-item label="原始ID" prop="origin_id">
+              <el-input v-model="model.origin_id">
+                <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.origin_id, $event)" />
+              </el-input>
+            </el-form-item>
+            <el-form-item label="二维码" prop="qrcode_url">
+              <el-col :span="10">
+                <el-image style="width:100px; height:100px;" :src="model.qrcode_url" :preview-src-list="[model.qrcode_url]" title="点击查看大图">
+                  <div slot="error" class="image-slot">
+                    <i class="el-icon-picture-outline" />
+                  </div>
+                </el-image>
+              </el-col>
+              <el-col :span="14">
+                <el-button size="mini" @click="fileUpload()">上传图片</el-button>
+                <br>
+                <span>jpg、png图片，小于200kb，宽高1:1</span>
+              </el-col>
+            </el-form-item>
+            <el-form-item label="AppID" prop="appid">
+              <el-input v-model="model.appid">
+                <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.appid, $event)" />
+              </el-input>
+            </el-form-item>
+            <el-form-item label="AppSecret" prop="appsecret">
+              <el-input v-model="model.appsecret">
+                <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.appsecret, $event)" />
+              </el-input>
+            </el-form-item>
+            <el-form-item>
+              <el-button :loading="loading" @click="refresh()">刷新</el-button>
+              <el-button :loading="loading" type="primary" @click="submit()">提交</el-button>
+            </el-form-item>
+          </el-form>
+        </el-col>
+      </el-row>
+    </el-card>
+    <el-dialog title="文件管理" :visible.sync="fileDialog" width="80%" top="1vh">
+      <file-manage file-type="image" @file-lists="fileLists" />
+    </el-dialog>
+  </div>
 </template>
 
 <script>
 import clip from '@/utils/clipboard'
-import { miniInfo, miniEdit, qrcode } from '@/api/setting-wechat'
-import { getAdminToken } from '@/utils/auth'
+import FileManage from '@/components/FileManage'
+import { miniInfo, miniEdit } from '@/api/setting-wechat'
 
 export default {
-  components: {},
+  components: { FileManage },
   data() {
     return {
       loading: false,
@@ -70,11 +67,10 @@ export default {
         origin_id: '',
         appid: '',
         appsecret: '',
-        qrcode: '',
+        qrcode_id: 0,
         qrcode_url: ''
       },
-      uploadAction: qrcode(),
-      uploadHeaders: { AdminToken: getAdminToken() },
+      fileDialog: false,
       rules: {
         appid: [{ required: true, message: '请输入appid', trigger: 'blur' }],
         appsecret: [{ required: true, message: '请输入appsecret', trigger: 'blur' }]
@@ -122,17 +118,13 @@ export default {
       })
     },
     // 上传二维码
-    uploadSuccess(res, file) {
-      if (res.code === 200) {
-        this.model.qrcode_url = res.data.url
-        this.model.qrcode = res.data.path
-        this.$message.success(res.msg)
-      } else {
-        this.$message.error(res.msg)
-      }
+    fileUpload() {
+      this.fileDialog = true
     },
-    uploadError(res) {
-      this.$message.error(res.msg || '上传出错')
+    fileLists(filelists) {
+      this.fileDialog = false
+      this.model.qrcode_id = filelists[0]['file_id']
+      this.model.qrcode_url = filelists[0]['file_url']
     },
     // 复制
     copy(text, event) {

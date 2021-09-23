@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-const url = '/admin/admin.Index/'
+const url = '/admin/Index/'
 // ----------------控制台-----------------
 /**
  * 首页
@@ -30,6 +30,17 @@ export function member(params) {
 export function cms(params) {
   return request({
     url: url + 'cms',
+    method: 'get',
+    params: params
+  })
+}
+/**
+ * 文件统计
+ * @param {array} params 请求参数
+ */
+export function file(params) {
+  return request({
+    url: url + 'file',
     method: 'get',
     params: params
   })

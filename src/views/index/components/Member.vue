@@ -135,12 +135,10 @@
       </el-row>
       <el-row :gutter="0">
         <el-col :sm="24">
-          <div id="echartDate" style="height:500px" />
+          <div id="echartDate" style="height:450px" />
         </el-col>
       </el-row>
     </el-card>
-
-    <back-to-top transition-name="fade" />
   </div>
 </template>
 
@@ -151,22 +149,19 @@ import * as echarts from 'echarts/core'
 // 引入柱状图图表，图表后缀都为 Chart
 import { LineChart } from 'echarts/charts'
 // 引入提示框，标题，直角坐标系组件，组件后缀都为 Component
-import { LegendComponent, TitleComponent, TooltipComponent, GridComponent } from 'echarts/components'
+import { TitleComponent, LegendComponent, TooltipComponent, GridComponent } from 'echarts/components'
 // 引入 Canvas 渲染器，注意引入 CanvasRenderer 或者 SVGRenderer 是必须的一步
 import { CanvasRenderer } from 'echarts/renderers'
 // 注册必须的组件
-echarts.use([LegendComponent, TitleComponent, TooltipComponent, GridComponent, LineChart, CanvasRenderer])
+echarts.use([LineChart, TitleComponent, LegendComponent, TooltipComponent, GridComponent, CanvasRenderer])
 
-import screenHeight from '@/utils/screen-height'
-import BackToTop from '@/components/BackToTop'
-import { member } from '@/api/admin/index'
+import { member } from '@/api/index'
 
 export default {
-  name: 'Member',
-  components: { BackToTop },
+  name: 'IndexMember',
+  components: { },
   data() {
     return {
-      height: 680,
       loading: false,
       number: {
         total: '-',
@@ -208,7 +203,6 @@ export default {
   },
   computed: {},
   created() {
-    this.height = screenHeight(180)
     this.member()
   },
   mounted() {},
@@ -245,7 +239,6 @@ export default {
         title: {
           text: ''
         },
-        color: ['#1890ff', '#13ce66'],
         tooltip: {
           trigger: 'axis'
         },
@@ -305,10 +298,10 @@ export default {
   color: #1890ff;
 }
 .color-new {
-  color: #1890ff;
+  color: #5470c6;
   border-right: 1px solid #e6ebf5;
 }
 .color-act {
-  color: #13ce66;
+  color: #91cc75;
 }
 </style>

@@ -2,91 +2,81 @@
   <div class="app-container">
     <el-card class="box-card">
       <el-row :gutter="0">
-        <el-col :xs="24" :sm="12">
+        <el-col :sm="24" :md="16">
           <el-form ref="ref" :model="model" :rules="rules" label-width="130px">
-            <el-form-item label="logo" prop="logo">
-              <el-row :gutter="0">
-                <el-col :span="10">
-                  <el-image style="width:100px; height:100px;" :src="model.logo_url" :preview-src-list="[model.logo_url]" title="点击查看大图">
-                    <div slot="error" class="image-slot">
-                      <i class="el-icon-picture-outline" />
-                    </div>
-                  </el-image></el-col>
-                <el-col :span="14">
-                  <el-upload
-                    name="file"
-                    :show-file-list="false"
-                    :action="uploadAction"
-                    :headers="uploadHeaders"
-                    :on-success="uploadSuccess"
-                    :on-error="uploadError"
-                  >
-                    <el-button size="mini">上传logo</el-button>
-                  </el-upload>
-                  <span>jpg、png图片，小于200KB。</span>
-                </el-col>
-              </el-row>
-            </el-form-item>
-            <el-form-item label="名称" prop="name">
-              <el-input v-model="model.name" clearable placeholder="name" />
-            </el-form-item>
-            <el-form-item label="标题" prop="title">
-              <el-input v-model="model.title" clearable placeholder="title" />
-            </el-form-item>
-            <el-form-item label="关键词" prop="keywords">
-              <el-input v-model="model.keywords" clearable placeholder="keywords" />
-            </el-form-item>
-            <el-form-item label="描述" prop="description">
-              <el-input v-model="model.description" type="textarea" clearable placeholder="description" />
-            </el-form-item>
-            <el-form-item label="备案号" prop="icp">
-              <el-input v-model="model.icp" clearable placeholder="icp" />
-            </el-form-item>
-            <el-form-item label="版权" prop="copyright">
-              <el-input v-model="model.copyright" clearable placeholder="copyright" />
-            </el-form-item>
-            <el-form-item label="地址" prop="address">
-              <el-input v-model="model.address" clearable placeholder="address" />
-            </el-form-item>
-            <el-form-item label="电话" prop="tel">
-              <el-input v-model="model.tel" clearable placeholder="tel" />
-            </el-form-item>
-            <el-form-item label="手机" prop="mobile">
-              <el-input v-model="model.mobile" clearable placeholder="mobile" />
-            </el-form-item>
-            <el-form-item label="邮箱" prop="email">
-              <el-input v-model="model.email" clearable placeholder="email" />
-            </el-form-item>
-            <el-form-item label="QQ" prop="qq">
-              <el-input v-model="model.qq" clearable placeholder="qq" />
-            </el-form-item>
-            <el-form-item label="微信" prop="wechat">
-              <el-input v-model="model.wechat" clearable placeholder="wechat" />
-            </el-form-item>
-            <el-form-item label="公众号" prop="off_acc">
-              <el-row :gutter="0">
-                <el-col :span="10">
-                  <el-image style="width:100px; height:100px;" :src="model.off_acc_url" :preview-src-list="[model.off_acc_url]" title="点击查看大图">
-                    <div slot="error" class="image-slot">
-                      <i class="el-icon-picture-outline" />
-                    </div>
-                  </el-image>
-                </el-col>
-                <el-col :span="14">
-                  <el-upload
-                    name="file"
-                    :show-file-list="false"
-                    :action="uploadAction"
-                    :headers="uploadHeaders"
-                    :on-success="uploadSuccessOff"
-                    :on-error="uploadError"
-                  >
-                    <el-button size="mini">上传公众号</el-button>
-                  </el-upload>
-                  <span>jpg、png图片，小于200KB。</span>
-                </el-col>
-              </el-row>
-            </el-form-item>
+            <el-tabs>
+              <el-tab-pane label="基本信息" name="">
+                <el-form-item label="logo" prop="logo_id">
+                  <el-row :gutter="0">
+                    <el-col :span="10">
+                      <el-image style="width:100px; height:100px;" :src="model.logo_url" :preview-src-list="[model.logo_url]" title="点击查看大图">
+                        <div slot="error" class="image-slot">
+                          <i class="el-icon-picture-outline" />
+                        </div>
+                      </el-image></el-col>
+                    <el-col :span="14">
+                      <el-button size="mini" @click="fileUpload('logo')">上传图片</el-button>
+                      <br>
+                      <span>jpg、png图片，小于200KB。</span>
+                    </el-col>
+                  </el-row>
+                </el-form-item>
+                <el-form-item label="名称" prop="name">
+                  <el-input v-model="model.name" clearable placeholder="name" />
+                </el-form-item>
+                <el-form-item label="标题" prop="title">
+                  <el-input v-model="model.title" clearable placeholder="title" />
+                </el-form-item>
+                <el-form-item label="关键词" prop="keywords">
+                  <el-input v-model="model.keywords" clearable placeholder="keywords" />
+                </el-form-item>
+                <el-form-item label="描述" prop="description">
+                  <el-input v-model="model.description" type="textarea" clearable placeholder="description" />
+                </el-form-item>
+                <el-form-item label="备案号" prop="icp">
+                  <el-input v-model="model.icp" clearable placeholder="icp" />
+                </el-form-item>
+                <el-form-item label="版权" prop="copyright">
+                  <el-input v-model="model.copyright" clearable placeholder="copyright" />
+                </el-form-item>
+              </el-tab-pane>
+              <el-tab-pane label="联系信息" name="">
+                <el-form-item label="公众号" prop="off_acc_id">
+                  <el-row :gutter="0">
+                    <el-col :span="10">
+                      <el-image style="width:100px; height:100px;" :src="model.off_acc_url" :preview-src-list="[model.off_acc_url]" title="点击查看大图">
+                        <div slot="error" class="image-slot">
+                          <i class="el-icon-picture-outline" />
+                        </div>
+                      </el-image>
+                    </el-col>
+                    <el-col :span="14">
+                      <el-button size="mini" @click="fileUpload('off_acc')">上传图片</el-button>
+                      <br>
+                      <span>jpg、png图片，小于200KB。</span>
+                    </el-col>
+                  </el-row>
+                </el-form-item>
+                <el-form-item label="地址" prop="address">
+                  <el-input v-model="model.address" clearable placeholder="address" />
+                </el-form-item>
+                <el-form-item label="电话" prop="tel">
+                  <el-input v-model="model.tel" clearable placeholder="tel" />
+                </el-form-item>
+                <el-form-item label="手机" prop="mobile">
+                  <el-input v-model="model.mobile" clearable placeholder="mobile" />
+                </el-form-item>
+                <el-form-item label="邮箱" prop="email">
+                  <el-input v-model="model.email" clearable placeholder="email" />
+                </el-form-item>
+                <el-form-item label="QQ" prop="qq">
+                  <el-input v-model="model.qq" clearable placeholder="qq" />
+                </el-form-item>
+                <el-form-item label="微信" prop="wechat">
+                  <el-input v-model="model.wechat" clearable placeholder="wechat" />
+                </el-form-item>
+              </el-tab-pane>
+            </el-tabs>
             <el-form-item>
               <el-button :loading="loading" @click="refresh()">刷新</el-button>
               <el-button :loading="loading" type="primary" @click="submit()">提交</el-button>
@@ -95,21 +85,24 @@
         </el-col>
       </el-row>
     </el-card>
+    <el-dialog title="文件管理" :visible.sync="fileDialog" width="80%" top="1vh">
+      <file-manage file-type="image" @file-lists="fileLists" />
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { info, edit, upload } from '@/api/cms/setting'
-import { getAdminToken } from '@/utils/auth'
+import FileManage from '@/components/FileManage'
+import { info, edit } from '@/api/cms/setting'
 
 export default {
   name: 'CmsSetting',
-  components: { },
+  components: { FileManage },
   data() {
     return {
       loading: false,
       model: {
-        logo: '',
+        logo_id: '',
         logo_url: '',
         name: '',
         title: '',
@@ -123,11 +116,11 @@ export default {
         email: '',
         qq: '',
         wechat: '',
-        off_acc: '',
+        off_acc_id: '',
         off_acc_url: ''
       },
-      uploadAction: upload(),
-      uploadHeaders: { AdminToken: getAdminToken() },
+      fileDialog: false,
+      fileField: 'logo',
       rules: {
         name: [{ required: true, message: '请输入名称', trigger: 'blur' }]
       }
@@ -171,31 +164,23 @@ export default {
               this.loading = false
             })
         } else {
-          this.$message.error('请完善必填项')
+          this.$message.error('请完善必填项*')
         }
       })
     },
-    // 上传logo
-    uploadSuccess(res) {
-      if (res.code === 200) {
-        this.model.logo_url = res.data.url
-        this.model.logo = res.data.path
-        this.$message.success(res.msg)
-      } else {
-        this.$message.error(res.msg)
-      }
+    // 上传logo、公众号
+    fileUpload(field) {
+      this.fileField = field
+      this.fileDialog = true
     },
-    uploadError(res) {
-      this.$message.error(res.msg || '上传出错')
-    },
-    // 上传公众号
-    uploadSuccessOff(res) {
-      if (res.code === 200) {
-        this.model.off_acc_url = res.data.url
-        this.model.off_acc = res.data.path
-        this.$message.success(res.msg)
-      } else {
-        this.$message.error(res.msg)
+    fileLists(filelists) {
+      this.fileDialog = false
+      if (this.fileField === 'logo') {
+        this.model.logo_id = filelists[0]['file_id']
+        this.model.logo_url = filelists[0]['file_url']
+      } else if (this.fileField === 'off_acc') {
+        this.model.off_acc_id = filelists[0]['file_id']
+        this.model.off_acc_url = filelists[0]['file_url']
       }
     }
   }

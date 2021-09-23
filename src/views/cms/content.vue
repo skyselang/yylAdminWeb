@@ -135,18 +135,7 @@
         <el-form-item label="图片" prop="imgs">
           <el-row :gutter="0">
             <el-col :span="8">
-              <el-upload
-                name="file"
-                :file-list="model.imgs"
-                :show-file-list="false"
-                :action="uploadAction"
-                :headers="uploadHeaders"
-                :data="uploadData"
-                :on-success="uploadSuccess"
-                :on-error="uploadError"
-              >
-                <el-button size="mini">上传图片</el-button>
-              </el-upload>
+              <el-button size="mini" @click="fileUpload('image')">上传图片</el-button>
             </el-col>
             <el-col :span="16">
               <div>每张图片大小不超过 500 KB，jpg、png格式。</div>
@@ -154,10 +143,10 @@
           </el-row>
           <el-row :gutter="0">
             <el-col v-for="(item, index) in model.imgs" :key="index" :span="6" style="border:1px solid #DCDFE6">
-              <el-image style="width:100%;height:100px;" :src="item.url" :preview-src-list="[item.url]" fit="contain" title="点击查看大图" />
+              <el-image style="width:100%;height:100px;" :src="item.file_url" :preview-src-list="[item.file_url]" fit="contain" title="点击查看大图" />
               <br style="line-height: 0">
-              <el-link :href="item.url" :underline="false" :download="item.url" target="_blank" style="margin:0 1px">
-                下载<span style="font-size:10px">({{ item.size }})</span>
+              <el-link :href="item.file_url" :underline="false" :download="item.file_url" target="_blank" style="margin:0 1px">
+                下载<span style="font-size:10px">({{ item.file_size }})</span>
               </el-link>
               <el-button size="mini" @click="uploadDele(index)">删除</el-button>
             </el-col>
@@ -166,28 +155,17 @@
         <el-form-item label="附件" prop="files">
           <el-row :gutter="0">
             <el-col :span="8">
-              <el-upload
-                name="file"
-                :file-list="model.files"
-                :show-file-list="false"
-                :action="uploadAction"
-                :headers="uploadHeaders"
-                :data="uploadFileData"
-                :on-success="uploadFileSuccess"
-                :on-error="uploadError"
-              >
-                <el-button size="mini">上传附件</el-button>
-              </el-upload>
+              <el-button size="mini" @click="fileUpload('word')">上传附件</el-button>
             </el-col>
             <el-col :span="16">
               <div>每个附件大小不超过 10 MB。</div>
             </el-col>
           </el-row>
           <el-row v-for="(item, index) in model.files" :key="index" :gutter="0">
-            <el-col :span="16"><el-input v-model="item.name" placeholder="名称" clearable /></el-col>
-            <el-col :span="4"><el-input v-model="item.size" placeholder="大小" clearable /></el-col>
+            <el-col :span="16"><el-input v-model="item.file_name" placeholder="名称" clearable /></el-col>
+            <el-col :span="4"><el-input v-model="item.file_size" placeholder="大小" clearable /></el-col>
             <el-col :span="4">
-              <el-link :href="item.url" :underline="false" :download="item.url" target="_blank" style="margin:0 10px">下载</el-link>
+              <el-link :href="item.file_url" :underline="false" :download="item.file_url" target="_blank" style="margin:0 10px">下载</el-link>
               <el-button size="mini" @click="uploadFileDele(index)">删除</el-button>
             </el-col>
           </el-row>
@@ -195,18 +173,7 @@
         <el-form-item label="视频" prop="videos">
           <el-row :gutter="0">
             <el-col :span="4">
-              <el-upload
-                name="file"
-                :file-list="model.videos"
-                :show-file-list="false"
-                :action="uploadAction"
-                :headers="uploadHeaders"
-                :data="uploadVideoData"
-                :on-success="uploadVideoSuccess"
-                :on-error="uploadError"
-              >
-                <el-button size="mini">上传视频</el-button>
-              </el-upload>
+              <el-button size="mini" @click="fileUpload('video')">上传视频</el-button>
             </el-col>
             <el-col :span="4">
               <el-button size="mini" @click="uploadVideoAdd()">插入视频</el-button>
@@ -216,11 +183,11 @@
             </el-col>
           </el-row>
           <el-row v-for="(item, index) in model.videos" :key="index" :gutter="0">
-            <el-col :span="8"><el-input v-model="item.name" placeholder="名称" clearable /></el-col>
-            <el-col :span="8"><el-input v-model="item.path" placeholder="网址" clearable /></el-col>
-            <el-col :span="4"><el-input v-model="item.size" placeholder="大小" clearable /></el-col>
+            <el-col :span="8"><el-input v-model="item.file_name" placeholder="名称" clearable /></el-col>
+            <el-col :span="8"><el-input v-model="item.file_path" placeholder="网址" clearable /></el-col>
+            <el-col :span="4"><el-input v-model="item.file_size" placeholder="大小" clearable /></el-col>
             <el-col :span="4">
-              <el-link :href="item.url" :underline="false" :download="item.url" target="_blank" style="margin:0 10px">下载</el-link>
+              <el-link :href="item.file_url" :underline="false" :download="item.file_url" target="_blank" style="margin:0 10px">下载</el-link>
               <el-button size="mini" @click="uploadVideoDele(index)">删除</el-button>
             </el-col>
           </el-row>
@@ -317,6 +284,12 @@
       </div>
       <pagination v-show="recoverCount > 0" :total="recoverCount" :page.sync="recoverQuery.page" :limit.sync="recoverQuery.limit" @pagination="recoverList" />
     </el-dialog>
+    <el-dialog title="文件管理" :visible.sync="fileDialog" width="80%" top="1vh">
+      <file-manage :file-type="fileType" @file-lists="fileLists" />
+    </el-dialog>
+    <el-dialog title="文件管理" :visible.sync="editorDialog" width="80%" top="1vh">
+      <file-manage :file-type="editorFileType" @file-lists="fileListsEd" />
+    </el-dialog>
   </div>
 </template>
 
@@ -324,13 +297,13 @@
 import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination'
 import permission from '@/directive/permission/index.js' // 权限判断指令
-import { getAdminToken } from '@/utils/auth'
-import { list, category, info, add, edit, dele, upload, istop, ishot, isrec, ishide, recover, recoverReco, recoverDele } from '@/api/cms/content'
 import E from 'wangeditor'
+import FileManage from '@/components/FileManage'
+import { list, category, info, add, edit, dele, istop, ishot, isrec, ishide, recover, recoverReco, recoverDele } from '@/api/cms/content'
 
 export default {
   name: 'CmsContent',
-  components: { Pagination },
+  components: { Pagination, FileManage },
   directives: { permission },
   data() {
     return {
@@ -366,12 +339,11 @@ export default {
       is_rec: 0,
       is_hide: 0,
       selection: [],
-      uploadAction: upload(),
-      uploadHeaders: { AdminToken: getAdminToken() },
-      uploadData: { type: 'image' },
-      uploadFileData: { type: 'file' },
-      uploadVideoData: { type: 'video' },
+      fileDialog: false,
+      fileType: 'image',
       editor: null,
+      editorDialog: false,
+      editorFileType: 'image',
       rules: {
         category_id: [{ required: true, message: '请选择分类', trigger: 'blur' }],
         name: [{ required: true, message: '请输入名称', trigger: 'blur' }]
@@ -420,7 +392,6 @@ export default {
       this.dialog = true
       this.dialogTitle = this.name + '添加'
       this.model = this.$options.data().model
-      this.category()
     },
     // 修改
     edit(row) {
@@ -435,7 +406,6 @@ export default {
       }).catch(() => {
         this.loading = false
       })
-      this.category()
     },
     // 删除
     dele(row) {
@@ -638,48 +608,67 @@ export default {
         this.query.category_id = value[value.length - 1]
       }
     },
-    // 上传图片
-    uploadSuccess(res) {
-      if (res.code === 200) {
-        this.model.imgs.push(res.data)
-        this.$message.success(res.msg)
-      } else {
-        this.$message.error(res.msg)
+    // 上传图片、附件、视频
+    fileUpload(filetype) {
+      this.fileType = filetype
+      this.fileDialog = true
+    },
+    fileLists(filelists, filetype) {
+      this.fileDialog = false
+      const file_len = filelists.length
+      if (filelists) {
+        for (let i = 0; i < file_len; i++) {
+          if (filetype === 'video') {
+            this.model.videos.push(filelists[i])
+          } else if (filetype === 'word') {
+            this.model.files.push(filelists[i])
+          } else {
+            this.model.imgs.push(filelists[i])
+          }
+        }
       }
     },
-    uploadError(res) {
-      this.$message.error(res.msg || '上传出错')
+    fileListsEd(filelists, filetype) {
+      this.editorDialog = false
+      const file_len = filelists.length
+      if (filelists) {
+        for (let i = 0; i < file_len; i++) {
+          if (filetype === 'image') {
+            this.editor.cmd.do(
+              'insertHTML',
+              `<img file-ids="${filelists[i]['file_id']}" src="${filelists[i]['file_url']}" style="max-width:50%;"/>`
+            )
+          } else if (filetype === 'word') {
+            this.editor.cmd.do(
+              'insertHTML',
+              `<a file-ids="${filelists[i]['file_id']}" href="${filelists[i]['file_url']}" download="${filelists[i]['file_url']}" target="_blank">${filelists[i]['file_name']}</el-link>`
+            )
+          } else {
+            this.editor.cmd.do(
+              'insertHTML',
+              `<video width="50%" height="50%" controls>
+                <source file-ids="${filelists[i]['file_id']}" src="${filelists[i]['file_url']}" type="video/mp4">
+                <object file-ids="${filelists[i]['file_id']}" data="${filelists[i]['file_url']}" width="50%" height="50%">
+                  <embed file-ids="${filelists[i]['file_id']}" src="${filelists[i]['file_url']}" width="50%" height="50%">
+                </object>
+              </video>`
+            )
+          }
+        }
+      }
     },
     uploadDele(index) {
       this.model.imgs.splice(index, 1)
     },
-    // 上传附件
-    uploadFileSuccess(res) {
-      if (res.code === 200) {
-        this.model.files.push(res.data)
-        this.$message.success(res.msg)
-      } else {
-        this.$message.error(res.msg)
-      }
-    },
     uploadFileDele(index) {
       this.model.files.splice(index, 1)
-    },
-    // 上传视频
-    uploadVideoSuccess(res) {
-      if (res.code === 200) {
-        this.model.videos.push(res.data)
-        this.$message.success(res.msg)
-      } else {
-        this.$message.error(res.msg)
-      }
     },
     uploadVideoDele(index) {
       this.model.videos.splice(index, 1)
     },
     uploadVideoAdd() {
       var videos = {}
-      videos.name = videos.path = videos.size = videos.type = videos.url = ''
+      videos.name = videos.file_path = videos.file_size = videos.file_type = videos.file_url = ''
       this.model.videos.push(videos)
     },
     // 富文本编辑器
@@ -687,6 +676,39 @@ export default {
       const that = this
       // 扩展菜单
       const { BtnMenu } = E
+      class upimg extends BtnMenu {
+        constructor(editor) {
+          const $elem = E.$(`<div class="w-e-menu" data-title="上传图片"><el-button>图片</el-button></div>`)
+          super($elem, editor)
+        }
+        clickHandler() {
+          that.editorFileType = 'image'
+          that.editorDialog = true
+        }
+        tryChangeActive() {}
+      }
+      class upfile extends BtnMenu {
+        constructor(editor) {
+          const $elem = E.$(`<div class="w-e-menu" data-title="上传附件"><el-button>附件</el-button></div>`)
+          super($elem, editor)
+        }
+        clickHandler() {
+          that.editorFileType = 'word'
+          that.editorDialog = true
+        }
+        tryChangeActive() {}
+      }
+      class upvideo extends BtnMenu {
+        constructor(editor) {
+          const $elem = E.$(`<div class="w-e-menu" data-title="上传视频"><el-button>视频</el-button></div>`)
+          super($elem, editor)
+        }
+        clickHandler() {
+          that.editorFileType = 'video'
+          that.editorDialog = true
+        }
+        tryChangeActive() {}
+      }
       class clear extends BtnMenu {
         constructor(editor) {
           const $elem = E.$(`<div class="w-e-menu" data-title="清空内容"><el-button>清空</el-button></div>`)
@@ -697,47 +719,25 @@ export default {
         }
         tryChangeActive() {}
       }
-      this.editor = new E('#content')
-      this.editor.menus.extend('clearKey', clear)
-      this.editor.config.menus = this.editor.config.menus.concat('clearKey')
-      // 上传图片
-      this.editor.config.uploadImgServer = this.uploadAction // 上传接口地址
-      this.editor.config.uploadImgMaxLength = 1 // 一次最多上传数量
-      this.editor.config.uploadImgParams = { type: 'image' } // 自定义上传参数
-      this.editor.config.uploadFileName = 'file' // 自定义 fileName
-      this.editor.config.uploadImgHeaders = this.uploadHeaders // 自定义 header
-      this.editor.config.uploadImgHooks = {
-        customInsert: function(insertImgFn, result) {
-          if (result.code === 200) {
-            insertImgFn(result.data.url)
-          } else {
-            that.$message.error(result.msg)
-          }
-        }
-      }
-      // 上传视频
-      this.editor.config.uploadVideoServer = this.uploadAction // 上传接口地址
-      this.editor.config.uploadVideoParams = { type: 'video' } // 自定义上传参数
-      this.editor.config.uploadVideoName = 'file' // 自定义 fileName
-      this.editor.config.uploadVideoHeaders = this.uploadHeaders // 自定义 header
-      this.editor.config.uploadVideoHooks = {
-        customInsert: function(insertVideoFn, result) {
-          if (result.code === 200) {
-            insertVideoFn(result.data.url)
-          } else {
-            that.$message.error(result.msg)
-          }
-        }
-      }
+      that.editor = new E('#content')
+      that.editor.config.excludeMenus = ['image', 'video']
+      that.editor.menus.extend('upimgKey', upimg)
+      that.editor.config.menus = that.editor.config.menus.concat('upimgKey')
+      that.editor.menus.extend('upfileKey', upfile)
+      that.editor.config.menus = that.editor.config.menus.concat('upfileKey')
+      that.editor.menus.extend('upvideoKey', upvideo)
+      that.editor.config.menus = that.editor.config.menus.concat('upvideoKey')
+      that.editor.menus.extend('clearKey', clear)
+      that.editor.config.menus = that.editor.config.menus.concat('clearKey')
 
-      this.editor.config.height = 500
-      this.editor.config.focus = false
-      this.editor.config.placeholder = ''
-      this.editor.config.onchange = (newHtml) => {
-        this.model.content = newHtml
+      that.editor.config.height = 500
+      that.editor.config.focus = false
+      that.editor.config.placeholder = ''
+      that.editor.config.onchange = (newHtml) => {
+        that.model.content = newHtml
       }
-      this.editor.create()
-      this.editor.txt.html(this.model.content)
+      that.editor.create()
+      that.editor.txt.html(that.model.content)
     },
     dialogClosed() {
       this.editor.destroy()
@@ -816,7 +816,7 @@ export default {
       if (row.length === 0) {
         this.selectAlert()
       } else {
-        var title = '删除' + this.name
+        var title = '彻底删除' + this.name
         var message = '确定要彻底删除选中的 <span style="color:red">' + row.length + ' </span> 条' + this.name + '吗？'
         if (row.length === 1) {
           title = title + '：' + row[0].content_id

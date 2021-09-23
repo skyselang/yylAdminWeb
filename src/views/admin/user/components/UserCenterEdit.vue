@@ -9,17 +9,8 @@
                 <el-avatar shape="circle" fit="contain" :size="100" :src="model.avatar_url" />
               </el-col>
               <el-col :span="14">
-                <el-upload
-                  name="file"
-                  :show-file-list="false"
-                  :action="uploadAction"
-                  :headers="uploadHeaders"
-                  :data="uploadData"
-                  :on-success="uploadSuccess"
-                  :on-error="uploadError"
-                >
-                  <el-button size="mini">上传头像</el-button>
-                </el-upload>
+                <el-button size="mini" @click="fileUpload()">上传头像</el-button>
+                <br>
                 <span>jpg、png图片，小于100kb，宽高1:1</span>
               </el-col>
             </el-form-item>
@@ -43,31 +34,32 @@
         </el-col>
       </el-row>
     </el-card>
+    <el-dialog title="文件管理" :visible.sync="fileDialog" width="80%" top="1vh">
+      <file-manage file-type="image" @file-lists="fileLists" />
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getAdminToken } from '@/utils/auth'
-import { info, edit, avatar } from '@/api/admin/user-center'
 import store from '@/store'
+import FileManage from '@/components/FileManage'
+import { info, edit } from '@/api/admin/user-center'
 
 export default {
   name: 'UserCenterEdit',
-  components: {},
+  components: { FileManage },
   data() {
     return {
       loading: false,
       model: {
-        avatar: '',
+        avatar_id: 0,
         avatar_url: '',
         username: '',
         nickname: '',
         phone: '',
         email: ''
       },
-      uploadAction: avatar(),
-      uploadHeaders: { AdminToken: getAdminToken() },
-      uploadData: { type: 'image' },
+      fileDialog: false,
       rules: {
         username: [{ required: true, message: '请输入账号', trigger: 'blur' }],
         nickname: [{ required: true, message: '请输入昵称', trigger: 'blur' }]
@@ -108,17 +100,13 @@ export default {
       this.loading = false
     },
     // 上传头像
-    uploadSuccess(res) {
-      if (res.code === 200) {
-        this.model.avatar_url = res.data.url
-        this.model.avatar = res.data.path
-        this.$message.success(res.msg)
-      } else {
-        this.$message.error(res.msg)
-      }
+    fileUpload() {
+      this.fileDialog = true
     },
-    uploadError(res) {
-      this.$message.error(res.msg || '上传出错')
+    fileLists(filelists) {
+      this.fileDialog = false
+      this.model.avatar_id = filelists[0]['file_id']
+      this.model.avatar_url = filelists[0]['file_url']
     }
   }
 }

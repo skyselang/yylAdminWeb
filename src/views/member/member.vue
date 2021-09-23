@@ -37,7 +37,7 @@
     <!-- 列表 -->
     <el-table v-loading="loading" :data="data" :height="height" style="width:100%" @sort-change="sort">
       <el-table-column prop="member_id" label="会员ID" min-width="100" sortable="custom" fixed="left" />
-      <el-table-column prop="avatar" label="头像" min-width="80" align="center">
+      <el-table-column prop="avatar_id" label="头像" min-width="80" align="center">
         <template slot-scope="scope">
           <el-image
             style="width:30px; height:30px; border-radius:3px;"
@@ -90,16 +90,8 @@
             </el-image>
           </el-col>
           <el-col :span="16">
-            <el-upload
-              name="file"
-              :show-file-list="false"
-              :action="uploadAction"
-              :headers="uploadHeaders"
-              :on-success="uploadSuccess"
-              :on-error="uploadError"
-            >
-              <el-button size="mini">上传头像</el-button>
-            </el-upload>
+            <el-button size="mini" @click="fileUpload()">上传头像</el-button>
+            <br>
             <span>jpg、png图片，小于100kb，宽高1:1</span>
           </el-col>
         </el-form-item>
@@ -169,19 +161,22 @@
         <el-button type="primary" @click="pwdSubmit">提交</el-button>
       </div>
     </el-dialog>
+    <el-dialog title="文件管理" :visible.sync="fileDialog" width="80%" top="1vh">
+      <file-manage file-type="image" @file-lists="fileLists" />
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination'
-import { getAdminToken } from '@/utils/auth'
+import FileManage from '@/components/FileManage'
 import { list as regionList } from '@/api/region'
-import { list, info, add, edit, dele, pwd, avatar, disable } from '@/api/member'
+import { list, info, add, edit, dele, pwd, disable } from '@/api/member'
 
 export default {
   name: 'Member',
-  components: { Pagination },
+  components: { Pagination, FileManage },
   data() {
     return {
       height: 680,
@@ -204,7 +199,7 @@ export default {
         phone: '',
         email: '',
         region_id: '',
-        avatar: '',
+        avatar_id: 0,
         avatar_url: '',
         remark: '',
         sort: 250
@@ -220,8 +215,7 @@ export default {
         value: 'region_id',
         label: 'region_name'
       },
-      uploadAction: avatar(),
-      uploadHeaders: { AdminToken: getAdminToken() },
+      fileDialog: false,
       pwdDialog: false,
       pwdDialogTitle: '',
       pwdRules: {
@@ -347,17 +341,13 @@ export default {
       }
     },
     // 上传头像
-    uploadSuccess(res) {
-      if (res.code === 200) {
-        this.model.avatar = res.data.path
-        this.model.avatar_url = res.data.url
-        this.$message.success(res.msg)
-      } else {
-        this.$message.error(res.msg)
-      }
+    fileUpload() {
+      this.fileDialog = true
     },
-    uploadError(res) {
-      this.$message.error(res.msg || '上传出错')
+    fileLists(filelists) {
+      this.fileDialog = false
+      this.model.avatar_id = filelists[0]['file_id']
+      this.model.avatar_url = filelists[0]['file_url']
     },
     // 是否禁用
     disable(row) {

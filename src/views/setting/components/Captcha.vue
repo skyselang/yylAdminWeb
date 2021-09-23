@@ -1,7 +1,7 @@
 <template>
   <el-card class="box-card">
     <el-row :gutter="0">
-      <el-col :xs="24" :sm="12">
+      <el-col :xs="24" :sm="16">
         <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
           <el-form-item label="注册验证码" prop="captcha_register">
             <el-switch v-model="model.captcha_register" :active-value="1" :inactive-value="0" />
