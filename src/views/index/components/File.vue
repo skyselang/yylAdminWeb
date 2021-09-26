@@ -1,9 +1,9 @@
 <template>
   <div>
-    <el-card v-loading="loading" class="box-card">
+    <el-card v-loading="loading">
       <el-row :gutter="0">
         <el-col :sm="24">
-          <div id="echartFile" style="height:500px; width:100%" />
+          <div id="echartIndexFile" style="height:500px; width:100%" />
         </el-col>
       </el-row>
     </el-card>
@@ -14,14 +14,14 @@
 // ECharts
 // 引入 echarts 核心模块，核心模块提供了 echarts 使用必须要的接口
 import * as echarts from 'echarts/core'
-// 引入柱状图图表，图表后缀都为 Chart
+// 引入图表，图表后缀都为 Chart
 import { PieChart } from 'echarts/charts'
-// 引入提示框，标题，直角坐标系组件，组件后缀都为 Component
-import { TitleComponent, LegendComponent, TooltipComponent } from 'echarts/components'
+// 引入组件，组件后缀都为 Component
+import { TitleComponent, LegendComponent, TooltipComponent, GridComponent } from 'echarts/components'
 // 引入 Canvas 渲染器，注意引入 CanvasRenderer 或者 SVGRenderer 是必须的一步
 import { CanvasRenderer } from 'echarts/renderers'
 // 注册必须的组件
-echarts.use([PieChart, TitleComponent, LegendComponent, TooltipComponent, CanvasRenderer])
+echarts.use([PieChart, TitleComponent, LegendComponent, TooltipComponent, GridComponent, CanvasRenderer])
 
 import { file } from '@/api/index'
 
@@ -46,14 +46,14 @@ export default {
     file() {
       this.loading = true
       file().then(res => {
-        this.echartFile(res.data)
+        this.echartIndexFile(res.data)
         this.loading = false
       }).catch(() => {
         this.loading = false
       })
     },
-    echartFile(data) {
-      var echart = echarts.init(document.getElementById('echartFile'))
+    echartIndexFile(data) {
+      var echart = echarts.init(document.getElementById('echartIndexFile'))
       var option = {
         title: {
           text: '文件',
@@ -64,7 +64,14 @@ export default {
           top: 'bottom'
         },
         tooltip: {
-          trigger: 'item'
+          trigger: 'item',
+          formatter: '{a} <br/>{b} : {c} ({d}%)'
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true
         },
         series: [
           {
@@ -74,7 +81,14 @@ export default {
             center: ['50%', '50%'],
             roseType: 'area',
             itemStyle: {
-              borderRadius: 8
+              borderRadius: 8,
+              normal: {
+                label: {
+                  show: true,
+                  formatter: '{b} : {c} ({d}%)'
+                },
+                labelLine: { show: true }
+              }
             },
             data: data.data
           }
@@ -87,27 +101,4 @@ export default {
 </script>
 
 <style scoped>
-.box-card {
-  text-align: center;
-}
-.box-card .text {
-  color: #666;
-  font-size: 20px;
-  line-height: 32px;
-  font-weight: 700;
-  text-align: center;
-}
-.el-row {
-  margin-bottom: 10px;
-}
-.color-tot {
-  color: #1890ff;
-}
-.color-new {
-  color: #1890ff;
-  border-right: 1px solid #e6ebf5;
-}
-.color-act {
-  color: #13ce66;
-}
 </style>

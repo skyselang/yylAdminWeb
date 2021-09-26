@@ -254,13 +254,12 @@ export default {
         title: {
           text: ''
         },
-        color: ['#1890ff'],
         tooltip: {
           trigger: 'axis'
         },
         grid: {
           left: '3%',
-          right: '4%',
+          right: '3%',
           bottom: '3%',
           containLabel: true
         },
@@ -276,7 +275,11 @@ export default {
           {
             type: 'line',
             smooth: true,
-            data: data.y_data
+            data: data.y_data,
+            label: {
+              show: true,
+              position: 'top'
+            }
           }
         ]
       }
@@ -342,14 +345,17 @@ export default {
             type: 'pie',
             radius: '55%',
             center: ['50%', '60%'],
-            data: data.p_data,
-            emphasis: {
-              Style: {
-                shadowBlur: 10,
-                shadowOffsetX: 0,
-                shadowColor: 'rgba(0, 0, 0, 0.5)'
+            itemStyle: {
+              borderRadius: 8,
+              normal: {
+                label: {
+                  show: true,
+                  formatter: '{b} : {c} ({d}%)'
+                },
+                labelLine: { show: true }
               }
-            }
+            },
+            data: data.p_data
           }
         ]
       }

@@ -57,12 +57,6 @@ export function dele(data) {
   })
 }
 /**
- * 内容分类上传文件
- */
-export function upload() {
-  return process.env.VUE_APP_BASE_API + url + 'upload'
-}
-/**
  * 内容分类是否隐藏
  * @param {array} data 请求数据
  */

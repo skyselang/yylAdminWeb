@@ -35,12 +35,6 @@ export function pwd(data) {
   })
 }
 /**
- * 更换头像
- */
-export function avatar() {
-  return process.env.VUE_APP_BASE_API + url + 'avatar'
-}
-/**
  * 我的日志
  * @param {array} params 请求参数
  */

@@ -13,6 +13,17 @@ export function index(params) {
   })
 }
 /**
+ * 总数统计
+ * @param {array} params 请求参数
+ */
+export function count(params) {
+  return request({
+    url: url + 'count',
+    method: 'get',
+    params: params
+  })
+}
+/**
  * 会员统计
  * @param {array} params 请求参数
  */

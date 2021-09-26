@@ -45,9 +45,3 @@ export function miniEdit(data) {
     data
   })
 }
-/**
- * 上传二维码
- */
-export function qrcode() {
-  return process.env.VUE_APP_BASE_API + url + 'qrcode'
-}

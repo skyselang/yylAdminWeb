@@ -57,12 +57,6 @@ export function dele(data) {
   })
 }
 /**
- * 会员上传头像
- */
-export function avatar() {
-  return process.env.VUE_APP_BASE_API + url + 'avatar'
-}
-/**
  * 会员重置密码
  * @param {array} data 请求数据
  */
@@ -82,5 +76,16 @@ export function disable(data) {
     url: url + 'disable',
     method: 'post',
     data
+  })
+}
+/**
+ * 会员统计
+ * @param {array} params 请求参数
+ */
+export function stat(params) {
+  return request({
+    url: url + 'stat',
+    method: 'get',
+    params: params
   })
 }

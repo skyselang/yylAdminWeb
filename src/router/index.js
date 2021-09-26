@@ -110,7 +110,7 @@ export const asyncRoutes = [
     meta: {
       title: '会员管理',
       icon: 'el-icon-user',
-      roles: ['admin/Member/list', 'admin/MemberLog/list']
+      roles: ['admin/Member/list', 'admin/MemberLog/list', 'admin/Member/stat']
     },
     redirect: 'noRedirect',
     component: Layout,
@@ -146,6 +146,16 @@ export const asyncRoutes = [
         },
         component: () => import('@/views/member/member-log-stat'),
         hidden: true
+      },
+      {
+        path: 'member-stat',
+        name: 'MemberStat',
+        meta: {
+          title: '会员统计',
+          icon: 'el-icon-user',
+          roles: ['admin/Member/stat']
+        },
+        component: () => import('@/views/member/member-stat')
       }
     ]
   },

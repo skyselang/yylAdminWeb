@@ -57,12 +57,6 @@ export function dele(data) {
   })
 }
 /**
- * 更换头像
- */
-export function avatar() {
-  return process.env.VUE_APP_BASE_API + url + 'avatar'
-}
-/**
  * 用户重置密码
  * @param {array} data 请求数据
  */

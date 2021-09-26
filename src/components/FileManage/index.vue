@@ -129,7 +129,7 @@
                   <el-checkbox :key="item.file_id" :label="item.file_id" />
                 </div>
                 <div :style="{width:'100%',height:((height-80)/3)-((height-80)/3*0.33)+'px'}">
-                  <el-image v-if="item.file_type=='image'" :src="item.file_url" :preview-src-list="[item.file_url]" title="点击查看大图" style="width:100%;height:100%;" />
+                  <el-image v-if="item.file_type=='image'" fit="contain" :src="item.file_url" :preview-src-list="[item.file_url]" title="点击查看大图" style="height:100%;" />
                   <video v-else-if="item.file_type=='video'" width="100%" height="100%" controls>
                     <source :src="item.file_url" type="video/mp4">
                     <object :data="item.file_url" width="100%" height="100%">
@@ -315,8 +315,8 @@
           </el-col>
         </el-row>
       </div>
-      <!-- 回收站分组、类型 -->
       <el-row :gutter="6">
+        <!-- 回收站分组、类型 -->
         <el-col :span="4">
           <el-row :gutter="0">
             <el-col :span="20"><el-button type="text" style="color:inherit">分组</el-button></el-col>
@@ -364,15 +364,15 @@
           <el-row v-if="recoverCount > 0" :gutter="6">
             <el-checkbox-group v-model="recoverCheckedIds" @change="recoverCheckedChange">
               <el-col v-for="(item, index) in recoverData" :key="index" :span="4" style="margin-bottom:6px;text-align:center">
-                <el-card class="file-card" :body-style="{ minWidth:'16.5%', height:'220px',padding:'0 6px' }">
+                <el-card class="file-card" :body-style="{ minWidth:'16.5%', height:(height-80)/3+'px',padding:'0 6px' }">
                   <div class="file-ext">
                     <span>{{ item.file_ext }}</span>
                   </div>
                   <div style="text-align:left">
                     <el-checkbox :key="item.file_id" :label="item.file_id" />
                   </div>
-                  <div style="width:100%;height:150px;">
-                    <el-image v-if="item.file_type=='image'" :src="item.file_url" :preview-src-list="[item.file_url]" title="点击查看大图" style="max-width:100%; max-height:100%;" />
+                  <div :style="{width:'100%',height:((height-80)/3)-((height-80)/3*0.33)+'px'}">
+                    <el-image v-if="item.file_type=='image'" fit="contain" :src="item.file_url" :preview-src-list="[item.file_url]" title="点击查看大图" style="height:100%;" />
                     <video v-else-if="item.file_type=='video'" width="100%" height="100%" controls>
                       <source :src="item.file_url" type="video/mp4">
                       <object :data="item.file_url" width="100%" height="100%">
