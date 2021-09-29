@@ -30,7 +30,7 @@ import Log from './components/Log'
 import Api from './components/Api'
 
 export default {
-  name: 'AdminSetting',
+  name: 'AdminSystemSetting',
   directives: { permission },
   components: { Cache, Token, Captcha, Log, Api },
   data() {

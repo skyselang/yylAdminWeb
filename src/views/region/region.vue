@@ -107,7 +107,7 @@ import screenHeight from '@/utils/screen-height'
 import { list, info, add, edit, dele } from '@/api/region'
 
 export default {
-  name: 'Region',
+  name: 'SettingRegion',
   components: { },
   data() {
     return {

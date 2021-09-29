@@ -93,7 +93,7 @@ import permission from '@/directive/permission/index.js' // 权限判断指令
 import { list, info, add, edit, dele, disable, unlogin } from '@/api/api'
 
 export default {
-  name: 'Api',
+  name: 'SettingApi',
   components: { },
   directives: { permission },
   data() {

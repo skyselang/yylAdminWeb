@@ -18,7 +18,7 @@ import WechatOffi from './components/WechatOffi'
 import WechatMini from './components/WechatMini'
 
 export default {
-  name: 'Wechat',
+  name: 'SettingWechat',
   components: { WechatOffi, WechatMini },
   data() {
     return {

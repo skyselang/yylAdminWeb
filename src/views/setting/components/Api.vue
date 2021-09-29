@@ -8,7 +8,9 @@
           </el-form-item>
           <el-form-item label="接口速率">
             <el-col :span="11">
-              <el-input v-model="model.api_rate_num" type="number" placeholder="次数" />
+              <el-input v-model="model.api_rate_num" type="number" placeholder="次数">
+                <template slot="append">次</template>
+              </el-input>
             </el-col>
             <el-col class="line" :span="2" style="text-align:center">/</el-col>
             <el-col :span="11">
@@ -31,7 +33,7 @@
 import { apiInfo, apiEdit } from '@/api/setting'
 
 export default {
-  name: 'Api',
+  name: 'SettingApi',
   components: {},
   data() {
     return {

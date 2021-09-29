@@ -78,6 +78,7 @@ import FileManage from '@/components/FileManage'
 import { offiInfo, offiEdit } from '@/api/setting-wechat'
 
 export default {
+  name: 'SettingWechatOffi',
   components: { FileManage },
   data() {
     return {

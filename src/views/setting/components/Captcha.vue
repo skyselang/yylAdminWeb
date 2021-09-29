@@ -23,7 +23,7 @@
 import { captchaInfo, captchaEdit } from '@/api/setting'
 
 export default {
-  name: 'Captcha',
+  name: 'SettingCaptcha',
   components: {},
   data() {
     return {

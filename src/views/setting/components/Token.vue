@@ -30,7 +30,7 @@
 import { tokenInfo, tokenEdit } from '@/api/setting'
 
 export default {
-  name: 'Token',
+  name: 'SettingToken',
   components: {},
   data() {
     return {

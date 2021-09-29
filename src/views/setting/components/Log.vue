@@ -23,7 +23,7 @@
 import { logInfo, logEdit } from '@/api/setting'
 
 export default {
-  name: 'Log',
+  name: 'SettingLog',
   components: {},
   data() {
     return {

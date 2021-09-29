@@ -23,7 +23,7 @@
 import { captchaInfo, captchaEdit } from '@/api/admin/setting'
 
 export default {
-  name: 'Captcha',
+  name: 'AdminSettingCaptcha',
   components: {},
   data() {
     return {

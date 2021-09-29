@@ -30,7 +30,7 @@
 import { tokenInfo, tokenEdit } from '@/api/admin/setting'
 
 export default {
-  name: 'Token',
+  name: 'AdminSettingToken',
   components: {},
   data() {
     return {

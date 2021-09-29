@@ -23,7 +23,7 @@
 import { cacheInfo, cacheClear } from '@/api/admin/setting'
 
 export default {
-  name: 'Cache',
+  name: 'AdminSettingCache',
   components: {},
   data() {
     return {

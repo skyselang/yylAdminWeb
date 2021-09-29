@@ -148,7 +148,7 @@ import BackToTop from '@/components/BackToTop'
 import { stat } from '@/api/member-log'
 
 export default {
-  name: 'MemberLogsta',
+  name: 'MemberLogStat',
   components: { BackToTop },
   data() {
     return {
@@ -318,7 +318,11 @@ export default {
         series: [
           {
             type: 'bar',
-            data: data.y_data
+            data: data.y_data,
+            label: {
+              show: true,
+              position: 'top'
+            }
           }
         ]
       }

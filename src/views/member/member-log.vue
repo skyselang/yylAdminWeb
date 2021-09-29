@@ -35,7 +35,6 @@
         </el-col>
         <el-col :xs="24" :sm="4" style="text-align:right;">
           <el-button v-permission="['admin/MemberLog/clear']" class="filter-item" title="日志清除" @click="clear()">清除</el-button>
-          <el-button v-permission="['admin/MemberLog/stat']" class="filter-item" type="primary" title="日志统计" @click="stat">统计</el-button>
         </el-col>
       </el-row>
     </div>
@@ -305,10 +304,6 @@ export default {
       }).catch(() => {
         this.loading = false
       })
-    },
-    // 统计
-    stat() {
-      this.$router.push('/member/member-log-stat')
     }
   }
 }

@@ -85,13 +85,13 @@
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             style="max-width:280px"
-            @change="echartDateChange()"
+            @change="echartUserDateChange()"
           />
         </el-col>
       </el-row>
       <el-row :gutter="0">
         <el-col :sm="24">
-          <div id="echartDate" :style="{height:height-100+'px'}" />
+          <div id="echartUserDate" :style="{height:height-100+'px'}" />
         </el-col>
       </el-row>
     </el-card>
@@ -116,13 +116,13 @@
       <el-divider />
       <el-row v-loading="loadField" :gutter="0">
         <el-col :sm="24">
-          <div id="echartFieldLine" :style="{height:height+'px'}" />
+          <div id="echartUserLine" :style="{height:height+'px'}" />
         </el-col>
       </el-row>
       <el-divider />
       <el-row v-loading="loadField" :gutter="0">
         <el-col :sm="24">
-          <div id="echartFieldPie" :style="{height:height+'px'}" />
+          <div id="echartUserPie" :style="{height:height+'px'}" />
         </el-col>
       </el-row>
     </el-card>
@@ -167,13 +167,13 @@ export default {
         lastmonth: '--'
       },
       date: {
-        x_data: [],
-        y_data: [],
+        x: [],
+        s: [],
         date: []
       },
       field: {
-        x_data: [],
-        y_data: [],
+        x: [],
+        s: [],
         date: []
       },
       fieldType: [
@@ -218,21 +218,21 @@ export default {
         this.num = res.data.num
         this.date = res.data.date
         this.field = res.data.field
-        this.echartDate(res.data.date)
-        this.echartFieldLine(res.data.field)
-        this.echartFieldPie(res.data.field)
+        this.echartUserDate(res.data.date)
+        this.echartUserLine(res.data.field)
+        this.echartUserPie(res.data.field)
         this.loadNum = false
       }).catch(() => {
         this.loadNum = false
       })
     },
-    echartDateChange() {
+    echartUserDateChange() {
       this.loadDate = true
       stat({
         type: 'date',
         date: this.date.date
       }).then(res => {
-        this.echartDate(res.data.date)
+        this.echartUserDate(res.data.date)
         this.loadDate = false
       }).catch(() => {
         this.loadDate = false
@@ -245,15 +245,15 @@ export default {
         date: this.field.date,
         field: this.fieldValue
       }).then(res => {
-        this.echartFieldLine(res.data.field)
-        this.echartFieldPie(res.data.field)
+        this.echartUserLine(res.data.field)
+        this.echartUserPie(res.data.field)
         this.loadField = false
       }).catch(() => {
         this.loadField = false
       })
     },
-    echartDate(data) {
-      var echart = echarts.init(document.getElementById('echartDate'))
+    echartUserDate(data) {
+      var echart = echarts.init(document.getElementById('echartUserDate'))
       var option = {
         title: {
           text: ''
@@ -264,14 +264,14 @@ export default {
         },
         grid: {
           left: '3%',
-          right: '4%',
+          right: '3%',
           bottom: '3%',
           containLabel: true
         },
         xAxis: {
           type: 'category',
           boundaryGap: false,
-          data: data.x_data
+          data: data.x
         },
         yAxis: {
           type: 'value'
@@ -281,14 +281,18 @@ export default {
             name: '',
             type: 'line',
             smooth: true,
-            data: data.y_data
+            data: data.s,
+            label: {
+              show: true,
+              position: 'top'
+            }
           }
         ]
       }
       echart.setOption(option)
     },
-    echartFieldLine(data) {
-      var echart = echarts.init(document.getElementById('echartFieldLine'))
+    echartUserLine(data) {
+      var echart = echarts.init(document.getElementById('echartUserLine'))
       var option = {
         title: {
           text: ''
@@ -302,14 +306,14 @@ export default {
         },
         grid: {
           left: '3%',
-          right: '4%',
+          right: '3%',
           bottom: '3%',
           containLabel: true
         },
         xAxis: [
           {
             type: 'category',
-            data: data.x_data
+            data: data.x
           }
         ],
         yAxis: [
@@ -320,14 +324,18 @@ export default {
         series: [
           {
             type: 'bar',
-            data: data.y_data
+            data: data.s,
+            label: {
+              show: true,
+              position: 'top'
+            }
           }
         ]
       }
       echart.setOption(option)
     },
-    echartFieldPie(data) {
-      var echart = echarts.init(document.getElementById('echartFieldPie'))
+    echartUserPie(data) {
+      var echart = echarts.init(document.getElementById('echartUserPie'))
       var option = {
         title: {
           text: ''
@@ -347,12 +355,15 @@ export default {
             type: 'pie',
             radius: '55%',
             center: ['50%', '60%'],
-            data: data.p_data,
-            emphasis: {
-              Style: {
-                shadowBlur: 10,
-                shadowOffsetX: 0,
-                shadowColor: 'rgba(0, 0, 0, 0.5)'
+            data: data.sp,
+            itemStyle: {
+              borderRadius: 8,
+              normal: {
+                label: {
+                  show: true,
+                  formatter: '{b} : {c} ({d}%)'
+                },
+                labelLine: { show: true }
               }
             }
           }

@@ -25,7 +25,7 @@ import Log from './components/Log'
 import Api from './components/Api'
 
 export default {
-  name: 'Base',
+  name: 'SettingBase',
   components: { Token, Captcha, Log, Api },
   data() {
     return {

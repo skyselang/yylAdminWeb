@@ -2,16 +2,17 @@
   <div class="app-container">
     <el-row :gutter="0">
       <el-col :span="24">
-        <span class="padding-right">密码：{{ apidocModel.apidoc_pwd }}
-          <i class="el-icon-copy-document" title="复制密码" @click="apidocCopy(apidocModel.apidoc_pwd, $event)" />
+        <span class="padding-right">密码：{{ model.apidoc_pwd }}
+          <i class="el-icon-copy-document" title="复制密码" @click="copy(model.apidoc_pwd, $event)" />
         </span>
-        <span class="padding-right">AdminToken：{{ apidocModel.admin_token_sub }}
-          <i class="el-icon-copy-document" title="复制Token" @click="apidocCopy(apidocModel.admin_token, $event)" />
+        <span class="padding-right">AdminToken：{{ model.admin_token_sub }}
+          <i class="el-icon-copy-document" title="复制Token" @click="copy(model.admin_token, $event)" />
         </span>
-        <el-button class="filter-item" size="mini" @click="refresh()"><i class="el-icon-refresh" />刷新</el-button>
+        <el-button class="filter-item" size="mini" circle title="刷新" @click="refresh()"><i class="el-icon-refresh" /></el-button>
+        <el-link style="margin-left:10px" :href="model.apidoc_url" target="_blank" :underline="false" title="新标签页打开"><i class="el-icon-position" /></el-link>
       </el-col>
       <el-col :span="24">
-        <iframe :src="apidocModel.apidoc_url" frameborder="0" width="100%" :height="height" />
+        <iframe :src="model.apidoc_url" frameborder="0" width="100%" :height="height" />
       </el-col>
     </el-row>
   </div>
@@ -23,13 +24,13 @@ import clip from '@/utils/clipboard'
 import { apidoc } from '@/api/admin/apidoc'
 
 export default {
-  name: 'AdminApidoc',
+  name: 'AdminSystemApidoc',
   components: {},
   data() {
     return {
       height: 600,
       isload: false,
-      apidocModel: {
+      model: {
         apidoc_url: '',
         apidoc_pwd: '',
         admin_token: '',
@@ -47,18 +48,19 @@ export default {
     apidoc() {
       apidoc().then(res => {
         this.isload = true
-        this.apidocModel = res.data
+        this.model = res.data
       })
     },
     // 刷新
     refresh() {
       this.apidoc()
     },
-    apidocCopy(text, event) {
+    // 复制
+    copy(text, event) {
       if (text) {
         clip(text, event)
       } else {
-        this.$message({ message: '复制失败', type: 'error' })
+        this.$message.error('复制失败')
       }
     }
   }

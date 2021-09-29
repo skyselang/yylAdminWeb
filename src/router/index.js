@@ -23,7 +23,7 @@ import Layout from '@/layout'
  * // 你可以设置 alwaysShow: true，这样它就会忽略之前定义的规则，一直显示根路由
  * alwaysShow: true
  *
- * // 设定路由的名字，一定要填写不然使用<keep-alive>时会出现各种问题
+ * // 设定路由的名字，一定要填写且与vue文件name一致，不然使用<keep-alive>时会出现各种问题
  * name: 'Index'
  * meta: {
  *   roles: ['admin/Index/index'] // 设置该路由进入的权限（菜单链接），支持多个权限叠加
@@ -110,7 +110,12 @@ export const asyncRoutes = [
     meta: {
       title: '会员管理',
       icon: 'el-icon-user',
-      roles: ['admin/Member/list', 'admin/MemberLog/list', 'admin/Member/stat']
+      roles: [
+        'admin/Member/list',
+        'admin/MemberLog/list',
+        'admin/MemberLog/stat',
+        'admin/Member/stat'
+      ]
     },
     redirect: 'noRedirect',
     component: Layout,
@@ -137,17 +142,6 @@ export const asyncRoutes = [
         component: () => import('@/views/member/member-log')
       },
       {
-        path: 'member-log-stat',
-        name: 'MemberLogStat',
-        meta: {
-          title: '会员日志统计',
-          roles: ['admin/MemberLog/stat'],
-          activeMenu: '/member/member-log'
-        },
-        component: () => import('@/views/member/member-log-stat'),
-        hidden: true
-      },
-      {
         path: 'member-stat',
         name: 'MemberStat',
         meta: {
@@ -156,6 +150,16 @@ export const asyncRoutes = [
           roles: ['admin/Member/stat']
         },
         component: () => import('@/views/member/member-stat')
+      },
+      {
+        path: 'member-log-stat',
+        name: 'MemberLogStat',
+        meta: {
+          title: '会员日志统计',
+          icon: 'el-icon-user',
+          roles: ['admin/MemberLog/stat']
+        },
+        component: () => import('@/views/member/member-log-stat')
       }
     ]
   },
@@ -226,7 +230,8 @@ export const asyncRoutes = [
       icon: 'el-icon-folder',
       roles: [
         'admin/file.File/list',
-        'admin/file.Group/list'
+        'admin/file.Group/list',
+        'admin/file.Setting/info'
       ]
     },
     redirect: 'noRedirect',
@@ -235,7 +240,7 @@ export const asyncRoutes = [
     children: [
       {
         path: 'file',
-        name: 'File',
+        name: 'FileFile',
         meta: {
           title: '文件管理',
           icon: 'el-icon-folder',
@@ -245,7 +250,7 @@ export const asyncRoutes = [
       },
       {
         path: 'group',
-        name: 'Group',
+        name: 'FileGroup',
         meta: {
           title: '文件分组',
           icon: 'el-icon-folder',
@@ -255,7 +260,7 @@ export const asyncRoutes = [
       },
       {
         path: 'setting',
-        name: 'setting',
+        name: 'FileSetting',
         meta: {
           title: '文件设置',
           icon: 'el-icon-folder',
@@ -288,7 +293,7 @@ export const asyncRoutes = [
     children: [
       {
         path: 'api',
-        name: 'Api',
+        name: 'SettingApi',
         meta: {
           title: '接口管理',
           icon: 'el-icon-setting',
@@ -298,7 +303,7 @@ export const asyncRoutes = [
       },
       {
         path: 'base',
-        name: 'Base',
+        name: 'SettingBase',
         meta: {
           title: '设置管理',
           icon: 'el-icon-setting',
@@ -313,7 +318,7 @@ export const asyncRoutes = [
       },
       {
         path: 'wechat',
-        name: 'Wechat',
+        name: 'SettingWechat',
         meta: {
           title: '微信设置',
           icon: 'el-icon-setting',
@@ -323,7 +328,7 @@ export const asyncRoutes = [
       },
       {
         path: 'region',
-        name: 'Region',
+        name: 'SettingRegion',
         meta: {
           title: '地区管理',
           icon: 'el-icon-setting',
@@ -345,6 +350,7 @@ export const asyncRoutes = [
         'admin/admin.Role/list',
         'admin/admin.User/list',
         'admin/admin.UserLog/list',
+        'admin/admin.UserLog/stat',
         'admin/admin.UserCenter/info'
       ]
     },
@@ -386,22 +392,11 @@ export const asyncRoutes = [
         path: 'user-log',
         name: 'AdminUserLog',
         meta: {
-          title: '日志管理',
+          title: '用户日志',
           icon: 'el-icon-lock',
           roles: ['admin/admin.UserLog/list']
         },
         component: () => import('@/views/admin/user/user-log')
-      },
-      {
-        path: 'user-log-stat',
-        name: 'AdminUserLogStat',
-        meta: {
-          title: '日志管理统计',
-          roles: ['admin/admin.UserLog/stat'],
-          activeMenu: '/admin/rule/user-log'
-        },
-        component: () => import('@/views/admin/user/user-log-stat'),
-        hidden: true
       },
       {
         path: 'user-center',
@@ -412,6 +407,16 @@ export const asyncRoutes = [
           roles: ['admin/admin.UserCenter/info']
         },
         component: () => import('@/views/admin/user/user-center')
+      },
+      {
+        path: 'user-log-stat',
+        name: 'AdminUserLogStat',
+        meta: {
+          title: '用户日志统计',
+          icon: 'el-icon-lock',
+          roles: ['admin/admin.UserLog/stat']
+        },
+        component: () => import('@/views/admin/user/user-log-stat')
       }
     ]
   },
@@ -438,7 +443,7 @@ export const asyncRoutes = [
     children: [
       {
         path: 'setting',
-        name: 'AdminSetting',
+        name: 'AdminSystemSetting',
         meta: {
           title: '设置管理',
           icon: 'el-icon-s-tools',
@@ -454,7 +459,7 @@ export const asyncRoutes = [
       },
       {
         path: 'apidoc',
-        name: 'AdminApidoc',
+        name: 'AdminSystemApidoc',
         meta: {
           title: '接口文档',
           icon: 'el-icon-s-tools',
@@ -464,7 +469,7 @@ export const asyncRoutes = [
       },
       {
         path: 'utils',
-        name: 'AdminUtils',
+        name: 'AdminSystemUtils',
         meta: {
           title: '实用工具',
           icon: 'el-icon-s-tools',
