@@ -218,12 +218,12 @@
             </div>
           </el-tab-pane>
           <el-tab-pane label="上传限制" lazy>
-            <el-form-item label="图片类型" prop="image_ext" class="margin-bottom">
+            <el-form-item label="图片格式" prop="image_ext" class="margin-bottom">
               <el-col :span="11">
                 <el-input v-model="model.image_ext" clearable />
               </el-col>
               <el-col class="line" :span="13">
-                允许上传的图片后缀，逗号,隔开，为空则不限制
+                允许上传的图片后缀，逗号,隔开
               </el-col>
             </el-form-item>
             <el-form-item label="图片大小" prop="image_size">
@@ -233,16 +233,16 @@
                 </el-input>
               </el-col>
               <el-col class="line" :span="13">
-                允许上传的图片大小，单位 MB，为0则不限制
+                允许上传的图片大小，单位 MB
               </el-col>
             </el-form-item>
 
-            <el-form-item label="视频类型" prop="video_ext" class="margin-bottom">
+            <el-form-item label="视频格式" prop="video_ext" class="margin-bottom">
               <el-col :span="11">
                 <el-input v-model="model.video_ext" clearable />
               </el-col>
               <el-col class="line" :span="13">
-                允许上传的视频后缀，逗号,隔开，为空则不限制
+                允许上传的视频后缀，逗号,隔开
               </el-col>
             </el-form-item>
             <el-form-item label="视频大小" prop="video_size">
@@ -252,16 +252,16 @@
                 </el-input>
               </el-col>
               <el-col class="line" :span="13">
-                允许上传的视频大小，单位 MB，为0则不限制
+                允许上传的视频大小，单位 MB
               </el-col>
             </el-form-item>
 
-            <el-form-item label="音频类型" prop="audio_ext" class="margin-bottom">
+            <el-form-item label="音频格式" prop="audio_ext" class="margin-bottom">
               <el-col :span="11">
                 <el-input v-model="model.audio_ext" clearable />
               </el-col>
               <el-col class="line" :span="13">
-                允许上传的音频后缀，逗号,隔开，为空则不限制
+                允许上传的音频后缀，逗号,隔开
               </el-col>
             </el-form-item>
             <el-form-item label="音频大小" prop="audio_size">
@@ -271,16 +271,16 @@
                 </el-input>
               </el-col>
               <el-col class="line" :span="13">
-                允许上传的音频大小，单位 MB，为0则不限制
+                允许上传的音频大小，单位 MB
               </el-col>
             </el-form-item>
 
-            <el-form-item label="文档类型" prop="word_ext" class="margin-bottom">
+            <el-form-item label="文档格式" prop="word_ext" class="margin-bottom">
               <el-col :span="11">
                 <el-input v-model="model.word_ext" clearable />
               </el-col>
               <el-col class="line" :span="13">
-                允许上传的文档后缀，逗号,隔开，为空则不限制
+                允许上传的文档后缀，逗号,隔开
               </el-col>
             </el-form-item>
             <el-form-item label="文档大小" prop="word_size">
@@ -290,16 +290,16 @@
                 </el-input>
               </el-col>
               <el-col class="line" :span="13">
-                允许上传的文档大小，单位 MB，为0则不限制
+                允许上传的文档大小，单位 MB
               </el-col>
             </el-form-item>
 
-            <el-form-item label="其它类型" prop="other_ext" class="margin-bottom">
+            <el-form-item label="其它格式" prop="other_ext" class="margin-bottom">
               <el-col :span="11">
                 <el-input v-model="model.other_ext" clearable />
               </el-col>
               <el-col class="line" :span="13">
-                允许上传的其它文件后缀，逗号,隔开，为空则不限制
+                允许上传的其它文件后缀，逗号,隔开
               </el-col>
             </el-form-item>
             <el-form-item label="其它大小" prop="other_size">
@@ -309,7 +309,7 @@
                 </el-input>
               </el-col>
               <el-col class="line" :span="13">
-                允许上传的其它文件大小，单位 MB，为0则不限制
+                允许上传的其它文件大小，单位 MB
               </el-col>
             </el-form-item>
           </el-tab-pane>
