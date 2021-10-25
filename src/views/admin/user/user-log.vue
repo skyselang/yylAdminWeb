@@ -12,7 +12,7 @@
           <el-input v-model="query.request_keyword" class="filter-item" style="width: 155px;" placeholder="请求IP/地区/ISP" clearable />
           <el-input v-model="query.menu_keyword" class="filter-item" style="width: 250px;" placeholder="菜单链接/名称" clearable />
           <el-date-picker
-            v-model="query.create_time"
+            v-model="query.date_value"
             type="daterange"
             class="filter-item"
             style="width: 240px;"

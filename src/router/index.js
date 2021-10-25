@@ -170,8 +170,8 @@ export const asyncRoutes = [
       title: '内容管理',
       icon: 'el-icon-reading',
       roles: [
-        'admin/cms.Category/list',
         'admin/cms.Content/list',
+        'admin/cms.Category/list',
         'admin/cms.Comment/list',
         'admin/cms.Setting/info'
       ]
@@ -181,16 +181,6 @@ export const asyncRoutes = [
     alwaysShow: true,
     children: [
       {
-        path: 'category',
-        name: 'CmsCategory',
-        meta: {
-          title: '内容分类',
-          icon: 'el-icon-reading',
-          roles: ['admin/cms.Category/list']
-        },
-        component: () => import('@/views/cms/category')
-      },
-      {
         path: 'content',
         name: 'CmsContent',
         meta: {
@@ -199,6 +189,16 @@ export const asyncRoutes = [
           roles: ['admin/cms.Content/list']
         },
         component: () => import('@/views/cms/content')
+      },
+      {
+        path: 'category',
+        name: 'CmsCategory',
+        meta: {
+          title: '内容分类',
+          icon: 'el-icon-reading',
+          roles: ['admin/cms.Category/list']
+        },
+        component: () => import('@/views/cms/category')
       },
       {
         path: 'comment',
@@ -302,21 +302,6 @@ export const asyncRoutes = [
         component: () => import('@/views/api/api')
       },
       {
-        path: 'base',
-        name: 'SettingBase',
-        meta: {
-          title: '设置管理',
-          icon: 'el-icon-setting',
-          roles: [
-            'admin/Setting/tokenInfo',
-            'admin/Setting/captchaInfo',
-            'admin/Setting/logInfo',
-            'admin/Setting/apiInfo'
-          ]
-        },
-        component: () => import('@/views/setting/base')
-      },
-      {
         path: 'wechat',
         name: 'SettingWechat',
         meta: {
@@ -335,6 +320,21 @@ export const asyncRoutes = [
           roles: ['admin/Region/list']
         },
         component: () => import('@/views/region/region')
+      },
+      {
+        path: 'base',
+        name: 'SettingBase',
+        meta: {
+          title: '基础设置',
+          icon: 'el-icon-setting',
+          roles: [
+            'admin/Setting/tokenInfo',
+            'admin/Setting/captchaInfo',
+            'admin/Setting/logInfo',
+            'admin/Setting/apiInfo'
+          ]
+        },
+        component: () => import('@/views/setting/base')
       }
     ]
   },
