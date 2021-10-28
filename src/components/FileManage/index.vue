@@ -27,7 +27,7 @@
           <el-button class="filter-item" @click="refresh()">刷新</el-button>
         </el-col>
         <el-col :xs="24" :sm="3" style="text-align:right;">
-          <el-button class="filter-item" style="margin-right:5px" icon="el-icon-delete" title="回收站" @click="recover()" />
+          <el-button class="filter-item" style="margin-right:5px" title="回收站" @click="recover()">回收站</el-button>
           <el-upload
             name="file"
             class="filter-item"
@@ -45,7 +45,7 @@
             :on-change="uploadChange"
             :on-exceed="uploadExceed"
           >
-            <el-button type="primary" icon="el-icon-upload2" title="上传文件" @click="uploadClear" />
+            <el-button type="primary" title="上传文件" @click="uploadClear">上传</el-button>
           </el-upload>
         </el-col>
       </el-row>

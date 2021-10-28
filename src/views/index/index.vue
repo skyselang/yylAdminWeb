@@ -12,10 +12,10 @@
         </el-col>
       </el-row>
       <el-row :gutter="10">
-        <el-col :xs="24" :sm="15">
+        <el-col :xs="24" :sm="14">
           <cms v-if="checkPermission(['admin/Index/cms'])" />
         </el-col>
-        <el-col :xs="24" :sm="9">
+        <el-col :xs="24" :sm="10">
           <file v-if="checkPermission(['admin/Index/file'])" />
         </el-col>
       </el-row>
