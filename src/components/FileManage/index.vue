@@ -3,7 +3,7 @@
     <!-- 查询/添加 -->
     <div class="filter-container">
       <el-row :gutter="0">
-        <el-col :xs="24" :sm="21">
+        <el-col :xs="24" :sm="20">
           <el-select v-model="query.search_field" class="filter-item" style="width:110px;" placeholder="">
             <el-option value="file_name" label="文件名称" />
             <el-option value="file_id" label="文件ID" />
@@ -26,7 +26,7 @@
           <el-button class="filter-item" type="primary" @click="search()">查询</el-button>
           <el-button class="filter-item" @click="refresh()">刷新</el-button>
         </el-col>
-        <el-col :xs="24" :sm="3" style="text-align:right;">
+        <el-col :xs="24" :sm="4" style="text-align:right;">
           <el-button class="filter-item" style="margin-right:5px" title="回收站" @click="recover()">回收站</el-button>
           <el-upload
             name="file"
@@ -358,6 +358,20 @@
               <el-link :type="recoverQuery.is_disable===1?'primary':''" :underline="false" style="height:26px;" @click="recoverDisableSelect(1)">已禁用</el-link>
             </el-col>
           </el-row>
+          <el-row :gutter="0">
+            <el-col :span="24"><el-button type="text" style="color:inherit">上传</el-button></el-col>
+          </el-row>
+          <el-row :gutter="0">
+            <el-col :span="24" style="padding-left:10px">
+              <el-link :type="recoverQuery.is_front===''?'primary':''" :underline="false" style="height:26px;" @click="recoverFrontSelect('')">全部</el-link>
+            </el-col>
+            <el-col :span="24" style="padding-left:10px">
+              <el-link :type="recoverQuery.is_front===0?'primary':''" :underline="false" style="height:26px;" @click="recoverFrontSelect(0)">后台</el-link>
+            </el-col>
+            <el-col :span="24" style="padding-left:10px">
+              <el-link :type="recoverQuery.is_front===1?'primary':''" :underline="false" style="height:26px;" @click="recoverFrontSelect(1)">前台</el-link>
+            </el-col>
+          </el-row>
         </el-col>
         <!-- 回收站列表 -->
         <el-col :span="20" class="dialog-body" :style="{height:height-50+'px'}">
@@ -515,6 +529,7 @@ export default {
         group_id: '',
         file_type: '',
         is_disable: '',
+        is_front: '',
         search_field: 'file_name',
         date_field: 'delete_time'
       },
@@ -885,6 +900,11 @@ export default {
     // 回收站类型筛选
     recoverTypeSelect(file_type = '') {
       this.recoverQuery.file_type = file_type
+      this.recoverList()
+    },
+    // 回收站上传类型
+    recoverFrontSelect(is_front = '') {
+      this.recoverQuery.is_front = is_front
       this.recoverList()
     },
     // 回收站状态筛选

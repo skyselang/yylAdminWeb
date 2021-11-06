@@ -4,6 +4,11 @@
     <div class="filter-container">
       <el-row :gutter="0">
         <el-col :xs="24" :sm="20">
+          <el-select v-model="query.log_type" class="filter-item" style="width:110px;" placeholder="日志类型" clearable>
+            <el-option :value="1" label="注册日志" />
+            <el-option :value="2" label="登录日志" />
+            <el-option :value="3" label="操作日志" />
+          </el-select>
           <el-select v-model="query.search_field" class="filter-item" style="width:110px;" placeholder="">
             <el-option value="member_id" label="会员ID" />
             <el-option value="username" label="会员账号" />
@@ -15,11 +20,6 @@
             <el-option value="response_code" label="返回码" />
           </el-select>
           <el-input v-model="query.search_value" class="filter-item" style="width:230px;" placeholder="搜索内容" clearable />
-          <el-select v-model="query.log_type" class="filter-item" style="width:110px;" placeholder="日志类型" clearable>
-            <el-option :value="1" label="注册日志" />
-            <el-option :value="2" label="登录日志" />
-            <el-option :value="3" label="操作日志" />
-          </el-select>
           <el-date-picker
             v-model="query.date_value"
             type="daterange"

@@ -4,6 +4,17 @@
     <div class="filter-container">
       <el-row :gutter="0">
         <el-col :xs="24" :sm="20">
+          <el-cascader
+            v-model="query.category_id"
+            class="filter-item"
+            :options="categoryData"
+            :props="{checkStrictly: true, value: 'category_id', label: 'category_name'}"
+            style="width:150px"
+            clearable
+            filterable
+            placeholder="分类"
+            @change="categoryPidChangeQuery"
+          />
           <el-select v-model="query.search_field" class="filter-item" style="width:110px;" placeholder="">
             <el-option value="content_id" label="内容ID" />
             <el-option value="name" label="名称" />
@@ -12,18 +23,7 @@
             <el-option value="is_rec" label="是否推荐" />
             <el-option value="is_hide" label="是否隐藏" />
           </el-select>
-          <el-input v-model="query.search_value" class="filter-item" style="width:200px;" placeholder="搜索内容" clearable />
-          <el-cascader
-            v-model="query.category_id"
-            class="filter-item"
-            :options="categoryData"
-            :props="{checkStrictly: true, value: 'category_id', label: 'category_name'}"
-            style="width:200px"
-            clearable
-            filterable
-            placeholder="分类"
-            @change="categoryPidChangeQuery"
-          />
+          <el-input v-model="query.search_value" class="filter-item" style="width:20%;min-width:150px;" placeholder="搜索内容" clearable />
           <el-select v-model="query.date_field" class="filter-item" style="width:110px;" placeholder="时间类型">
             <el-option value="create_time" label="添加时间" />
             <el-option value="update_time" label="修改时间" />
