@@ -40,7 +40,6 @@ export default {
     ...mapState({
       sidebar: state => state.app.sidebar,
       device: state => state.app.device,
-      showSettings: state => state.settings.showSettings,
       needTagsView: state => state.settings.tagsView,
       fixedHeader: state => state.settings.fixedHeader
     }),

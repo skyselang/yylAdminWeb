@@ -14,7 +14,7 @@ const ORIGINAL_THEME = '#409EFF' // 默认颜色
 export default {
   data() {
     return {
-      chalk: '', // content of theme-chalk css
+      chalk: '', // 自定义主题 chalk css
       theme: ''
     }
   },
@@ -35,7 +35,7 @@ export default {
       if (typeof val !== 'string') return
       const themeCluster = this.getThemeCluster(val.replace('#', ''))
       const originalCluster = this.getThemeCluster(oldVal.replace('#', ''))
-      console.log(themeCluster, originalCluster)
+      // console.log(themeCluster, originalCluster)
 
       const $message = this.$message({
         message: '  Compiling the theme',

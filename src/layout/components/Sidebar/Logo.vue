@@ -2,20 +2,19 @@
   <div class="sidebar-logo-container" :class="{'collapse':collapse}">
     <transition name="sidebarLogoFade">
       <router-link v-if="collapse" key="collapse" class="sidebar-logo-link" to="/">
-        <img v-if="logo" :src="logo" class="sidebar-logo">
-        <h1 v-else class="sidebar-title">{{ name }} </h1>
+        <img v-if="logoUrl" :src="logoUrl" class="sidebar-logo">
+        <h1 v-else class="sidebar-title">{{ systemName }} </h1>
       </router-link>
       <router-link v-else key="expand" class="sidebar-logo-link" to="/">
-        <img v-if="logo" :src="logo" class="sidebar-logo">
-        <h1 class="sidebar-title">{{ name }} </h1>
+        <img v-if="logoUrl" :src="logoUrl" class="sidebar-logo">
+        <h1 class="sidebar-title">{{ systemName }} </h1>
       </router-link>
     </transition>
   </div>
 </template>
 
 <script>
-import defaultSettings from '@/settings'
-import logo from '@/assets/logo/logo.png'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'SidebarLogo',
@@ -26,10 +25,10 @@ export default {
     }
   },
   data() {
-    return {
-      name: defaultSettings.systemName,
-      logo: logo
-    }
+    return {}
+  },
+  computed: {
+    ...mapGetters(['systemName', 'logoUrl'])
   }
 }
 </script>

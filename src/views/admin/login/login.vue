@@ -1,8 +1,8 @@
 <template>
-  <div class="login-container">
+  <div class="login-container" :style="{backgroundImage:'url('+login_bg_url+')' }">
     <el-form ref="ref" :model="model" :rules="rules" class="login-form" label-position="left">
       <div class="title-container">
-        <h3 class="title">{{ systemName }}</h3>
+        <h3 class="title">{{ system_name }}</h3>
       </div>
       <el-form-item prop="username">
         <el-input v-model="model.username" type="text" placeholder="账号/手机/邮箱" prefix-icon="el-icon-user" autocomplete="on" clearable />
@@ -15,7 +15,7 @@
           <el-input v-model="model.captcha_code" placeholder="请输入验证码" prefix-icon="el-icon-picture" autocomplete="off" clearable />
         </el-col>
         <el-col :span="11">
-          <el-image :src="captcha_src" fit="fill" alt="验证码" title="点击刷新验证码" style="width:200px;height:36px;float:right" @click="captcha" />
+          <el-image :src="captcha_src" fit="fill" alt="验证码" title="点击刷新验证码" style="width:200px;height:36px;float:right" @click="setting" />
         </el-col>
       </el-form-item>
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
@@ -24,20 +24,20 @@
 </template>
 
 <script>
-import setting from '@/settings'
-import { captcha } from '@/api/admin/login'
+import { setting } from '@/api/admin/login'
 
 export default {
   name: 'AdminLogin',
   components: {},
   data() {
     return {
-      systemName: setting.systemName,
+      system_name: '',
       loading: false,
       redirect: undefined,
       otherQuery: {},
       captcha_src: '',
       captcha_switch: 0,
+      login_bg_url: '',
       model: {
         username: '',
         password: '',
@@ -64,19 +64,24 @@ export default {
     }
   },
   created() {
-    this.captcha()
+    this.setting()
   },
   mounted() { },
   destroyed() { },
   methods: {
-    // 验证码
-    captcha() {
+    // 设置
+    setting() {
       this.model.captcha_id = ''
       this.model.captcha_code = ''
-      captcha().then(res => {
+      setting().then(res => {
         this.model.captcha_id = res.data.captcha_id
+        this.login_bg_url = res.data.login_bg_url
+        this.system_name = res.data.system_name
         this.captcha_src = res.data.captcha_src
         this.captcha_switch = res.data.captcha_switch
+        this.$store.dispatch('settings/changeSetting', { key: 'systemName', value: res.data.system_name })
+        this.$store.dispatch('settings/changeSetting', { key: 'pageTitle', value: res.data.page_title })
+        this.$store.dispatch('settings/changeSetting', { key: 'logoUrl', value: res.data.logo_url })
       })
     },
     // 登录
@@ -111,55 +116,13 @@ export default {
 }
 </script>
 
-<style lang="scss">
-$bg: #283443;
-$light_gray: #fff;
-$cursor: #fff;
-
-@supports (-webkit-mask: none) and (not (cater-color: $cursor)) {
-  .login-container .el-input input {
-    color: $cursor;
-  }
-}
-
-/* reset element-ui css */
-.login-container {
-  .el-input {
-    display: inline-block;
-
-    input {
-      background: transparent;
-      border: 0px;
-      -webkit-appearance: none;
-      border-radius: 0px;
-      color: $light_gray;
-      caret-color: $cursor;
-
-      &:-webkit-autofill {
-        box-shadow: 0 0 0px 1000px $bg inset !important;
-        -webkit-text-fill-color: $cursor !important;
-      }
-    }
-  }
-
-  .el-form-item {
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
-    color: #454545;
-  }
-}
-</style>
-
 <style lang="scss" scoped>
-$bg: #2d3a4b;
-$dark_gray: #889aa4;
-$light_gray: #eee;
-
 .login-container {
-  min-height: 100%;
   width: 100%;
-  background-color: $bg;
+  min-height: 100%;
+  background-color: #2d3a4b;
+  background-size: 100% 100%;
+  background-position: center center;
   overflow: hidden;
 
   .login-form {
@@ -176,7 +139,7 @@ $light_gray: #eee;
 
     .title {
       font-size: 26px;
-      color: $light_gray;
+      color: #eee;
       margin: 0px auto 40px auto;
       text-align: center;
       font-weight: bold;

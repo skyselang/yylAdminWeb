@@ -4,7 +4,7 @@ import { Message } from 'element-ui'
 import NProgress from 'nprogress' // 进度条
 import 'nprogress/nprogress.css' // 进度条样式
 import { getAdminToken } from '@/utils/auth' // 从cookie中获取token
-import getPageTitle from '@/utils/get-page-title'
+import getPageTitle from '@/utils/page-title'
 
 NProgress.configure({ showSpinner: false }) // 进度条配置
 
@@ -17,7 +17,7 @@ router.beforeEach(async(to, from, next) => {
   // 设置页面标题
   document.title = getPageTitle(to.meta.title)
 
-  // 判断会员是否已登录
+  // 判断用户是否已登录
   const hasToken = getAdminToken()
 
   if (hasToken) {
@@ -26,13 +26,13 @@ router.beforeEach(async(to, from, next) => {
       next({ path: '/' })
       NProgress.done()
     } else {
-      // 判断会员是否获取了权限
+      // 判断用户是否获取了权限
       const hasRoles = store.getters.roles && store.getters.roles.length > 0
       if (hasRoles) {
         next()
       } else {
         try {
-          // 获取会员信息
+          // 获取用户信息
           // 注意：权限必须是对象数组！例如：['admin/Index/index']
           const { roles } = await store.dispatch('user/userInfo')
 

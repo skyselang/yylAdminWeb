@@ -13,6 +13,17 @@ export function captcha(params) {
   })
 }
 /**
+ * 设置
+ *  @param {array} params 请求参数
+ */
+export function setting(params) {
+  return request({
+    url: url + 'setting',
+    method: 'get',
+    params: params
+  })
+}
+/**
  * 登录
  * @param {array} data 请求数据
  */

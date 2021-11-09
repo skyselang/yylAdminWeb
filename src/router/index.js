@@ -452,7 +452,8 @@ export const asyncRoutes = [
             'admin/admin.Setting/tokenInfo',
             'admin/admin.Setting/captchaInfo',
             'admin/admin.Setting/logInfo',
-            'admin/admin.Setting/apiInfo'
+            'admin/admin.Setting/apiInfo',
+            'admin/admin.Setting/systemInfo'
           ]
         },
         component: () => import('@/views/admin/setting/setting')

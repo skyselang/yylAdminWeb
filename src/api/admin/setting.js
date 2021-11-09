@@ -111,3 +111,25 @@ export function apiEdit(data) {
     data
   })
 }
+/**
+ * 系统设置信息
+ * @param {array} params 请求数据
+ */
+export function systemInfo(params) {
+  return request({
+    url: url + 'systemInfo',
+    method: 'get',
+    params: params
+  })
+}
+/**
+ * 系统设置修改
+ * @param {array} data 请求数据
+ */
+export function systemEdit(data) {
+  return request({
+    url: url + 'systemEdit',
+    method: 'post',
+    data
+  })
+}

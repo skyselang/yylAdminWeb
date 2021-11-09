@@ -1,0 +1,138 @@
+<template>
+  <el-card class="box-card">
+    <el-row :gutter="0">
+      <el-col :xs="24" :sm="12">
+        <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
+          <el-form-item label="logo" prop="logo_id">
+            <el-row :gutter="0">
+              <el-col :span="10">
+                <el-image style="width:100px; height:100%;" :src="model.logo_url" :preview-src-list="[model.logo_url]" title="点击查看大图">
+                  <div slot="error" class="image-slot">
+                    <i class="el-icon-picture-outline" />
+                  </div>
+                </el-image></el-col>
+              <el-col :span="14">
+                <el-button size="mini" @click="fileUpload('logo')">上传LOGO</el-button>
+                <br>
+                <span>jpg、png图片，200 x 200，小于 200 KB。</span>
+              </el-col>
+            </el-row>
+          </el-form-item>
+          <el-form-item label="登录背景" prop="login_bg_id">
+            <el-row :gutter="0">
+              <el-col :span="10">
+                <el-image style="width:100px; height:100%;" :src="model.login_bg_url" :preview-src-list="[model.login_bg_url]" title="点击查看大图">
+                  <div slot="error" class="image-slot">
+                    <i class="el-icon-picture-outline" />
+                  </div>
+                </el-image></el-col>
+              <el-col :span="14">
+                <el-button size="mini" @click="fileUpload('login_bg')">上传背景图</el-button>
+                <br>
+                <span>jpg、png图片，1920 x 1080，小于 500 KB。</span>
+              </el-col>
+            </el-row>
+          </el-form-item>
+          <el-form-item label="系统名称" prop="system_name">
+            <el-input v-model="model.system_name" type="text" style="width:90%" />
+            <i class="el-icon-warning-outline" title="侧边栏登录页面显示" />
+          </el-form-item>
+          <el-form-item label="页面标题" prop="page_title">
+            <el-input v-model="model.page_title" type="text" style="width:90%" />
+            <i class="el-icon-warning-outline" title="浏览器页面标题后缀" />
+          </el-form-item>
+          <el-form-item>
+            <el-button :loading="loading" @click="refresh()">刷新</el-button>
+            <el-button :loading="loading" type="primary" @click="submit()">提交</el-button>
+          </el-form-item>
+        </el-form>
+      </el-col>
+    </el-row>
+    <el-dialog title="文件管理" :visible.sync="fileDialog" width="80%" top="1vh">
+      <file-manage file-type="image" @file-lists="fileLists" />
+    </el-dialog>
+  </el-card>
+</template>
+
+<script>
+import FileManage from '@/components/FileManage'
+import { systemInfo, systemEdit } from '@/api/admin/setting'
+
+export default {
+  name: 'AdminSettingSystem',
+  components: { FileManage },
+  data() {
+    return {
+      loading: false,
+      model: {
+        logo_id: 0,
+        logo_url: '',
+        login_bg_id: 0,
+        login_bg_url: '',
+        system_name: '',
+        page_title: ''
+      },
+      fileDialog: false,
+      fileField: 'logo',
+      rules: {}
+    }
+  },
+  created() {
+    this.info()
+  },
+  methods: {
+    // 信息
+    info() {
+      systemInfo().then(res => {
+        this.model = res.data
+        this.$store.dispatch('settings/changeSetting', { key: 'systemName', value: res.data.system_name })
+        this.$store.dispatch('settings/changeSetting', { key: 'pageTitle', value: res.data.page_title })
+        this.$store.dispatch('settings/changeSetting', { key: 'logoUrl', value: res.data.logo_url })
+      })
+    },
+    // 刷新
+    refresh() {
+      this.loading = true
+      systemInfo()
+        .then((res) => {
+          this.model = res.data
+          this.loading = false
+          this.$message.success(res.msg)
+        })
+        .catch(() => {
+          this.loading = false
+        })
+    },
+    // 提交
+    submit() {
+      this.$refs['ref'].validate(valid => {
+        if (valid) {
+          this.loading = true
+          systemEdit(this.model).then(res => {
+            this.info()
+            this.loading = false
+            this.$message.success(res.msg)
+          }).catch(() => {
+            this.loading = false
+          })
+        }
+      })
+    },
+    // 上传图片
+    fileUpload(field) {
+      this.fileField = field
+      this.fileDialog = true
+    },
+    fileLists(filelists) {
+      this.fileDialog = false
+      if (this.fileField === 'logo') {
+        this.model.logo_id = filelists[0]['file_id']
+        this.model.logo_url = filelists[0]['file_url']
+      } else if (this.fileField === 'login_bg') {
+        this.model.login_bg_id = filelists[0]['file_id']
+        this.model.login_bg_url = filelists[0]['file_url']
+      }
+    }
+  }
+}
+</script>

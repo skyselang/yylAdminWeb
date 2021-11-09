@@ -4,6 +4,8 @@ import {
   setAdminToken,
   getAdminToken,
   delAdminToken,
+  setUsername,
+  delUsername,
   setNickname,
   delNickname,
   setAvatar,
@@ -24,6 +26,9 @@ const state = {
 const mutations = {
   SET_ADMINTOKEN: (state, adminToken) => {
     state.adminToken = adminToken
+  },
+  SET_USERNAME: (state, username) => {
+    state.username = username
   },
   SET_NICKNAME: (state, nickname) => {
     state.nickname = nickname
@@ -73,6 +78,7 @@ const actions = {
         }
 
         const {
+          username,
           nickname,
           avatar_url,
           roles
@@ -83,11 +89,13 @@ const actions = {
           reject('获取权限失败, 请重新登录！')
         }
 
+        commit('SET_USERNAME', username)
         commit('SET_NICKNAME', nickname)
         commit('SET_AVATAR', avatar_url)
         commit('SET_ROLES', roles)
-        setNickname(data.nickname)
-        setAvatar(data.avatar_url)
+        setUsername(username)
+        setNickname(nickname)
+        setAvatar(avatar_url)
         resolve(data)
       }).catch(error => {
         reject(error)
@@ -100,8 +108,12 @@ const actions = {
     return new Promise((resolve, reject) => {
       logout().then(() => {
         commit('SET_ADMINTOKEN', '')
+        commit('SET_USERNAME', '')
+        commit('SET_NICKNAME', '')
+        commit('SET_AVATAR', '')
         commit('SET_ROLES', [])
         delAdminToken()
+        delUsername()
         delNickname()
         delAvatar()
         resetRouter()

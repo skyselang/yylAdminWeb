@@ -11,7 +11,18 @@ export function delAdminToken() {
   return Cookies.remove(AdminTokenKey)
 }
 
-const NicknameKey = 'AdminNickname'
+const UsernameKey = 'Username'
+export function setUsername(username) {
+  return Cookies.set(UsernameKey, username)
+}
+export function getUsername() {
+  return Cookies.get(UsernameKey)
+}
+export function delUsername() {
+  return Cookies.remove(UsernameKey)
+}
+
+const NicknameKey = 'Nickname'
 export function setNickname(nickname) {
   return Cookies.set(NicknameKey, nickname)
 }
@@ -22,9 +33,9 @@ export function delNickname() {
   return Cookies.remove(NicknameKey)
 }
 
-const AvatarKey = 'AdminAvatar'
-export function setAvatar(username) {
-  return Cookies.set(AvatarKey, username)
+const AvatarKey = 'Avatar'
+export function setAvatar(avatar) {
+  return Cookies.set(AvatarKey, avatar)
 }
 export function getAvatar() {
   return Cookies.get(AvatarKey)
