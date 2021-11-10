@@ -51,10 +51,11 @@
       <el-form ref="ref" :model="model" :rules="rules" class="dialog-body" label-width="100px" :style="{height:height+'px'}">
         <el-form-item label="头像" prop="avatar_url">
           <el-col :span="10">
-            <el-avatar shape="circle" fit="contain" :size="100" :src="model.avatar_url" />
+            <el-avatar v-if="model.avatar_url" shape="circle" fit="contain" :size="100" :src="model.avatar_url" />
+            <el-avatar v-else icon="el-icon-user-solid" :size="100" />
           </el-col>
           <el-col :span="14">
-            <el-button size="mini" @click="fileUpload()">上传图片</el-button>
+            <el-button size="mini" @click="fileUpload()">上传头像</el-button>
             <br>
             <span>jpg、png图片，小于100kb，宽高1:1</span>
           </el-col>
@@ -183,7 +184,7 @@
         <el-button type="primary" @click="pwdSubmit">提交</el-button>
       </div>
     </el-dialog>
-    <el-dialog title="文件管理" :visible.sync="fileDialog" width="80%" top="1vh">
+    <el-dialog title="上传头像" :visible.sync="fileDialog" width="80%" top="1vh">
       <file-manage file-type="image" @file-lists="fileLists" />
     </el-dialog>
   </div>

@@ -6,7 +6,9 @@ import {
   setPageTitle,
   getPageTitle,
   setLogoUrl,
-  getLogoUrl
+  getLogoUrl,
+  setFaviconUrl,
+  getFaviconUrl
 } from '@/utils/settings'
 
 const {
@@ -20,6 +22,7 @@ const state = {
   systemName: getSystemName(),
   pageTitle: getPageTitle(),
   logoUrl: getLogoUrl(),
+  faviconUrl: getFaviconUrl(),
   tagsView: tagsView,
   fixedHeader: fixedHeader,
   sidebarLogo: sidebarLogo
@@ -35,12 +38,12 @@ const mutations = {
       state[key] = value
       if (key === 'systemName') {
         setSystemName(value)
-      }
-      if (key === 'pageTitle') {
+      } else if (key === 'pageTitle') {
         setPageTitle(value)
-      }
-      if (key === 'logoUrl') {
+      } else if (key === 'logoUrl') {
         setLogoUrl(value)
+      } else if (key === 'faviconUrl') {
+        setFaviconUrl(value)
       }
     }
   }

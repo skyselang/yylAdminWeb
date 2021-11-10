@@ -98,7 +98,7 @@
         <el-button type="primary" @click="submit">提交</el-button>
       </div>
     </el-dialog>
-    <el-dialog title="文件管理" :visible.sync="fileDialog" width="80%" top="1vh">
+    <el-dialog title="上传图片" :visible.sync="fileDialog" width="80%" top="1vh">
       <file-manage file-type="image" @file-lists="fileLists" />
     </el-dialog>
   </div>

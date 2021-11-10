@@ -1,7 +1,7 @@
 <template>
   <el-card class="box-card">
     <el-row :gutter="0">
-      <el-col :xs="24" :sm="12">
+      <el-col :xs="24" :sm="18" :md="12">
         <el-form ref="ref" :model="model" label-width="120px">
           <el-form-item label="" prop="">
             <span>手动清除所有缓存（后台登录状态不会清除）。</span>

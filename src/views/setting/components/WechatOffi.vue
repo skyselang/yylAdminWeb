@@ -2,7 +2,7 @@
   <div>
     <el-card class="box-card">
       <el-row :gutter="0">
-        <el-col :xs="24" :sm="16">
+        <el-col :xs="24" :sm="18" :md="12">
           <el-form ref="ref" :model="model" :rules="rules" label-width="130px">
             <el-form-item label="名称" prop="name">
               <el-input v-model="model.name">
@@ -23,7 +23,7 @@
                 </el-image>
               </el-col>
               <el-col :span="14">
-                <el-button size="mini" @click="fileUpload()">上传图片</el-button>
+                <el-button size="mini" @click="fileUpload()">上传二维码</el-button>
                 <br>
                 <span>jpg、png图片，小于200kb，宽高1:1</span>
               </el-col>
@@ -66,7 +66,7 @@
         </el-col>
       </el-row>
     </el-card>
-    <el-dialog title="文件管理" :visible.sync="fileDialog" width="80%" top="1vh">
+    <el-dialog title="上传二维码" :visible.sync="fileDialog" width="80%" top="1vh">
       <file-manage file-type="image" @file-lists="fileLists" />
     </el-dialog>
   </div>

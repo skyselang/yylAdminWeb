@@ -2,13 +2,16 @@
   <div>
     <el-card v-loading="loading" class="box-card">
       <el-row :gutter="0">
-        <el-col :xs="24" :sm="12">
-          <el-form ref="ref" :rules="rules" :model="model" label-width="100px">
+        <el-col :xs="24" :sm="18" :md="12">
+          <el-form ref="ref" :rules="rules" :model="model" label-width="120px">
             <el-form-item label="旧密码" prop="password_old">
               <el-input v-model="model.password_old" type="password" placeholder="请输入旧密码" autocomplete="off" clearable show-password />
             </el-form-item>
             <el-form-item label="新密码" prop="password_new">
               <el-input v-model="model.password_new" type="password" placeholder="请输入新密码" autocomplete="off" clearable show-password />
+            </el-form-item>
+            <el-form-item label="确认新密码" prop="password_confirm">
+              <el-input v-model="model.password_confirm" type="password" placeholder="请再次输入新密码" autocomplete="off" clearable show-password />
             </el-form-item>
             <el-form-item>
               <el-button @click="reset">重置</el-button>
@@ -28,15 +31,24 @@ export default {
   name: 'UserCenterPwd',
   components: {},
   data() {
+    var validatePwdConfirm = (rule, value, callback) => {
+      if (value !== this.model.password_new) {
+        callback(new Error('两次输入的新密码不一致'))
+      } else {
+        callback()
+      }
+    }
     return {
       loading: false,
       model: {
         password_old: '',
-        password_new: ''
+        password_new: '',
+        password_confirm: ''
       },
       rules: {
         password_old: [{ required: true, message: '请输入旧密码', trigger: 'blur' }],
-        password_new: [{ required: true, message: '请输入新密码', trigger: 'blur' }]
+        password_new: [{ required: true, message: '请输入新密码', trigger: 'blur' }],
+        password_confirm: [{ required: true, message: '请再次输入新密码', trigger: 'blur' }, { validator: validatePwdConfirm, trigger: 'blur' }]
       }
     }
   },

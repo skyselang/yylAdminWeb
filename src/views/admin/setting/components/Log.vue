@@ -1,7 +1,7 @@
 <template>
   <el-card class="box-card">
     <el-row :gutter="0">
-      <el-col :xs="24" :sm="12">
+      <el-col :xs="24" :sm="18" :md="12">
         <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
           <el-form-item label="" prop="">
             <span>开启后，会记录后台用户日志。</span>

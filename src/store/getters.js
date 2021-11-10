@@ -11,6 +11,7 @@ const getters = {
   permission_routes: state => state.permission.routes,
   systemName: state => state.settings.systemName,
   pageTitle: state => state.settings.pageTitle,
-  logoUrl: state => state.settings.logoUrl
+  logoUrl: state => state.settings.logoUrl,
+  faviconUrl: state => state.settings.faviconUrl
 }
 export default getters

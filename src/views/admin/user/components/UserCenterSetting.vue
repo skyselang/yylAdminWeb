@@ -2,8 +2,8 @@
   <div>
     <el-card class="box-card">
       <el-row :gutter="0">
-        <el-col :xs="24" :sm="12">
-          <el-form ref="settingRef" label-width="100px">
+        <el-col :xs="24" :sm="18" :md="12">
+          <el-form ref="settingRef" label-width="120px">
             <el-form-item label="设置主题">
               <theme-picker @change="themeChange" />
             </el-form-item>
@@ -13,8 +13,12 @@
             <el-form-item label="固定头部">
               <el-switch v-model="fixedHeader" class="drawer-switch" />
             </el-form-item>
-            <el-form-item label="Logo名称">
+            <el-form-item label="logo名称">
               <el-switch v-model="sidebarLogo" class="drawer-switch" />
+            </el-form-item>
+            <el-form-item label="本地缓存">
+              <el-button :loading="lccLoading" type="primary" size="mini" @click="localCacheClear">清除</el-button>
+              <i class="el-icon-warning-outline" title="清除后需要重新登录" />
             </el-form-item>
           </el-form>
         </el-col>
@@ -30,7 +34,9 @@ export default {
   name: 'UserCenterSetting',
   components: { ThemePicker },
   data() {
-    return {}
+    return {
+      lccLoading: false
+    }
   },
   computed: {
     // 便签导航
@@ -77,6 +83,25 @@ export default {
         key: 'theme',
         value: val
       })
+    },
+    // 本地缓存清除
+    localCacheClear() {
+      this.lccLoading = true
+
+      localStorage.clear()
+      sessionStorage.clear()
+      var cookieKeys = document.cookie.match(/[^ =;]+(?=\=)/g)
+      if (cookieKeys) {
+        for (var i = cookieKeys.length; i--;) {
+          document.cookie = cookieKeys[i] + '=0;path=/;expires=' + new Date(0).toUTCString()
+          document.cookie = cookieKeys[i] + '=0;path=/;domain=' + document.domain + ';expires=' + new Date(0).toUTCString()
+        }
+      }
+
+      this.$router.push('/login')
+
+      this.lccLoading = false
+      this.$message.success('本地缓存已清除')
     }
   }
 }

@@ -22,7 +22,7 @@
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
           <el-avatar v-if="avatar" shape="circle" fit="contain" :size="48" :src="avatar" />
-          <el-avatar v-else shape="circle" fit="contain" :size="48" src="/favicon.ico" />
+          <el-avatar v-else icon="el-icon-user-solid" :size="48" />
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown" style="text-align:center">

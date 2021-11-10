@@ -14,6 +14,13 @@ router.beforeEach(async(to, from, next) => {
   // 进度条开始
   NProgress.start()
 
+  // 设置favicon
+  const favicon = document.querySelector("link[rel*='icon']") || document.createElement('link')
+  favicon.type = 'image/x-icon'
+  favicon.rel = 'shortcut icon'
+  favicon.href = store.getters.faviconUrl
+  document.getElementsByTagName('head')[0].appendChild(favicon)
+
   // 设置页面标题
   document.title = getPageTitle(to.meta.title)
 

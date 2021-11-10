@@ -2,10 +2,11 @@
   <div>
     <el-card v-loading="loading" class="box-card">
       <el-row :gutter="0">
-        <el-col :xs="24" :sm="12">
-          <el-form ref="ref" :rules="rules" :model="model" class="dialog-body" label-width="100px">
+        <el-col :xs="24" :sm="18" :md="12">
+          <el-form ref="ref" :rules="rules" :model="model" class="dialog-body" label-width="120px">
             <el-form-item label="头像">
-              <el-avatar shape="circle" fit="contain" :size="100" :src="model.avatar_url" />
+              <el-avatar v-if="model.avatar_url" shape="circle" fit="contain" :size="100" :src="model.avatar_url" />
+              <el-avatar v-else icon="el-icon-user-solid" :size="100" />
             </el-form-item>
             <el-form-item label="账号" prop="username">
               <el-input v-model="model.username" placeholder="请输入账号" clearable />

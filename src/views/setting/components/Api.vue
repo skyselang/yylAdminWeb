@@ -1,7 +1,7 @@
 <template>
   <el-card class="box-card">
     <el-row :gutter="0">
-      <el-col :xs="24" :sm="16">
+      <el-col :xs="24" :sm="18" :md="12">
         <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
           <el-form-item label="" prop="">
             <span>次数/时间；3/1：3次1秒；次数设置为 0 则不限制。</span>

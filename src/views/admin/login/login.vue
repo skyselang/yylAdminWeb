@@ -82,6 +82,7 @@ export default {
         this.$store.dispatch('settings/changeSetting', { key: 'systemName', value: res.data.system_name })
         this.$store.dispatch('settings/changeSetting', { key: 'pageTitle', value: res.data.page_title })
         this.$store.dispatch('settings/changeSetting', { key: 'logoUrl', value: res.data.logo_url })
+        this.$store.dispatch('settings/changeSetting', { key: 'faviconUrl', value: res.data.favicon_url })
       })
     },
     // 登录

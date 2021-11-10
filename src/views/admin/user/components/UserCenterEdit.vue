@@ -2,11 +2,12 @@
   <div>
     <el-card v-loading="loading" class="box-card">
       <el-row :gutter="0">
-        <el-col :xs="24" :sm="12">
-          <el-form ref="ref" :rules="rules" :model="model" label-width="100px">
+        <el-col :xs="24" :sm="18" :md="12">
+          <el-form ref="ref" :rules="rules" :model="model" label-width="120px">
             <el-form-item label="头像" prop="avatar_url">
               <el-col :span="10">
-                <el-avatar shape="circle" fit="contain" :size="100" :src="model.avatar_url" />
+                <el-avatar v-if="model.avatar_url" shape="circle" fit="contain" :size="100" :src="model.avatar_url" />
+                <el-avatar v-else icon="el-icon-user-solid" :size="100" />
               </el-col>
               <el-col :span="14">
                 <el-button size="mini" @click="fileUpload()">上传头像</el-button>
@@ -34,7 +35,7 @@
         </el-col>
       </el-row>
     </el-card>
-    <el-dialog title="文件管理" :visible.sync="fileDialog" width="80%" top="1vh">
+    <el-dialog title="上传头像" :visible.sync="fileDialog" width="80%" top="1vh">
       <file-manage file-type="image" @file-lists="fileLists" />
     </el-dialog>
   </div>

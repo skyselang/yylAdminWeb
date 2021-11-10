@@ -135,7 +135,7 @@
         <el-form-item label="图片" prop="imgs">
           <el-row :gutter="0">
             <el-col :span="8">
-              <el-button size="mini" @click="fileUpload('image')">上传图片</el-button>
+              <el-button size="mini" @click="fileUpload('image', '上传图片')">上传图片</el-button>
             </el-col>
             <el-col :span="16">
               <div>每张图片大小不超过 500 KB，jpg、png格式。</div>
@@ -155,7 +155,7 @@
         <el-form-item label="附件" prop="files">
           <el-row :gutter="0">
             <el-col :span="8">
-              <el-button size="mini" @click="fileUpload('word')">上传附件</el-button>
+              <el-button size="mini" @click="fileUpload('word', '上传附件')">上传附件</el-button>
             </el-col>
             <el-col :span="16">
               <div>每个附件大小不超过 10 MB。</div>
@@ -173,7 +173,7 @@
         <el-form-item label="视频" prop="videos">
           <el-row :gutter="0">
             <el-col :span="4">
-              <el-button size="mini" @click="fileUpload('video')">上传视频</el-button>
+              <el-button size="mini" @click="fileUpload('video', '上传视频')">上传视频</el-button>
             </el-col>
             <el-col :span="4">
               <el-button size="mini" @click="uploadVideoAdd()">插入视频</el-button>
@@ -284,10 +284,10 @@
       </div>
       <pagination v-show="recoverCount > 0" :total="recoverCount" :page.sync="recoverQuery.page" :limit.sync="recoverQuery.limit" @pagination="recoverList" />
     </el-dialog>
-    <el-dialog title="文件管理" :visible.sync="fileDialog" width="80%" top="1vh">
+    <el-dialog :title="fileTitle" :visible.sync="fileDialog" width="80%" top="1vh">
       <file-manage :file-type="fileType" @file-lists="fileLists" />
     </el-dialog>
-    <el-dialog title="文件管理" :visible.sync="editorDialog" width="80%" top="1vh">
+    <el-dialog :title="fileTitle" :visible.sync="editorDialog" width="80%" top="1vh">
       <file-manage :file-type="editorFileType" @file-lists="fileListsEd" />
     </el-dialog>
   </div>
@@ -341,6 +341,7 @@ export default {
       selection: [],
       fileDialog: false,
       fileType: 'image',
+      fileTitle: '文件管理',
       editor: null,
       editorDialog: false,
       editorFileType: 'image',
@@ -609,27 +610,30 @@ export default {
       }
     },
     // 上传图片、附件、视频
-    fileUpload(filetype) {
+    fileUpload(filetype, fileTitle = '文件管理') {
       this.fileType = filetype
+      this.fileTitle = fileTitle
       this.fileDialog = true
     },
     fileLists(filelists, filetype) {
       this.fileDialog = false
+      this.fileTitle = ''
       const file_len = filelists.length
       if (filelists) {
         for (let i = 0; i < file_len; i++) {
-          if (filetype === 'video') {
-            this.model.videos.push(filelists[i])
+          if (filetype === 'image') {
+            this.model.imgs.push(filelists[i])
           } else if (filetype === 'word') {
             this.model.files.push(filelists[i])
-          } else {
-            this.model.imgs.push(filelists[i])
+          } else if (filetype === 'video') {
+            this.model.videos.push(filelists[i])
           }
         }
       }
     },
     fileListsEd(filelists, filetype) {
       this.editorDialog = false
+      this.fileTitle = ''
       const file_len = filelists.length
       if (filelists) {
         for (let i = 0; i < file_len; i++) {
@@ -683,6 +687,7 @@ export default {
         }
         clickHandler() {
           that.editorFileType = 'image'
+          that.fileTitle = '上传图片'
           that.editorDialog = true
         }
         tryChangeActive() {}
@@ -694,6 +699,7 @@ export default {
         }
         clickHandler() {
           that.editorFileType = 'word'
+          that.fileTitle = '上传附件'
           that.editorDialog = true
         }
         tryChangeActive() {}
@@ -705,6 +711,7 @@ export default {
         }
         clickHandler() {
           that.editorFileType = 'video'
+          that.fileTitle = '上传视频'
           that.editorDialog = true
         }
         tryChangeActive() {}

@@ -32,3 +32,14 @@ export function getLogoUrl() {
 export function delLogoUrl() {
   return Cookies.remove(LogoUrlKey)
 }
+
+const FaviconUrlKey = 'FaviconUrl'
+export function setFaviconUrl(FaviconUrl) {
+  return Cookies.set(FaviconUrlKey, FaviconUrl)
+}
+export function getFaviconUrl() {
+  return Cookies.get(FaviconUrlKey)
+}
+export function delFaviconUrl() {
+  return Cookies.remove(FaviconUrlKey)
+}

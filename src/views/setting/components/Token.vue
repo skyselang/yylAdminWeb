@@ -1,7 +1,7 @@
 <template>
   <el-card class="box-card">
     <el-row :gutter="0">
-      <el-col :xs="24" :sm="16">
+      <el-col :xs="24" :sm="18" :md="12">
         <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
           <el-form-item label="Token名称" prop="token_name">
             <el-input v-model="model.token_name" type="text" style="width:90%" />

@@ -2,8 +2,8 @@
   <div class="app-container">
     <el-card class="box-card">
       <el-row :gutter="0">
-        <el-col :sm="24" :md="16">
-          <el-form ref="ref" :model="model" :rules="rules" label-width="130px">
+        <el-col :xs="24" :sm="18" :md="12">
+          <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
             <el-tabs>
               <el-tab-pane label="基本信息" name="">
                 <el-form-item label="logo" prop="logo_id">
@@ -13,9 +13,10 @@
                         <div slot="error" class="image-slot">
                           <i class="el-icon-picture-outline" />
                         </div>
-                      </el-image></el-col>
+                      </el-image>
+                    </el-col>
                     <el-col :span="14">
-                      <el-button size="mini" @click="fileUpload('logo')">上传图片</el-button>
+                      <el-button size="mini" @click="fileUpload('logo', '上传logo')">上传logo</el-button>
                       <br>
                       <span>jpg、png图片，小于200KB。</span>
                     </el-col>
@@ -51,7 +52,7 @@
                       </el-image>
                     </el-col>
                     <el-col :span="14">
-                      <el-button size="mini" @click="fileUpload('off_acc')">上传图片</el-button>
+                      <el-button size="mini" @click="fileUpload('off_acc', '上传二维码')">上传二维码</el-button>
                       <br>
                       <span>jpg、png图片，小于200KB。</span>
                     </el-col>
@@ -85,7 +86,7 @@
         </el-col>
       </el-row>
     </el-card>
-    <el-dialog title="文件管理" :visible.sync="fileDialog" width="80%" top="1vh">
+    <el-dialog :title="fileTitle" :visible.sync="fileDialog" width="80%" top="1vh">
       <file-manage file-type="image" @file-lists="fileLists" />
     </el-dialog>
   </div>
@@ -121,6 +122,7 @@ export default {
       },
       fileDialog: false,
       fileField: 'logo',
+      fileTitle: '文件管理',
       rules: {
         name: [{ required: true, message: '请输入名称', trigger: 'blur' }]
       }
@@ -169,12 +171,14 @@ export default {
       })
     },
     // 上传logo、公众号
-    fileUpload(field) {
+    fileUpload(field, title = '') {
       this.fileField = field
+      this.fileTitle = title
       this.fileDialog = true
     },
     fileLists(filelists) {
       this.fileDialog = false
+      this.fileTitle = ''
       if (this.fileField === 'logo') {
         this.model.logo_id = filelists[0]['file_id']
         this.model.logo_url = filelists[0]['file_url']
