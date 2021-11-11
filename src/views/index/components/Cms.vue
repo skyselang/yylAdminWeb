@@ -51,7 +51,7 @@ export default {
       var option = {
         title: {
           text: '内容',
-          subtext: '总计：' + data.count,
+          subtext: '分类：' + data.category + '，内容：' + data.count,
           left: 'center'
         },
         tooltip: {

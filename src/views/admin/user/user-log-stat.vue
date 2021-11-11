@@ -126,8 +126,6 @@
         </el-col>
       </el-row>
     </el-card>
-
-    <back-to-top transition-name="fade" />
   </div>
 </template>
 
@@ -145,12 +143,11 @@ import { CanvasRenderer } from 'echarts/renderers'
 echarts.use([LegendComponent, TitleComponent, TooltipComponent, GridComponent, LineChart, BarChart, PieChart, CanvasRenderer])
 
 import screenHeight from '@/utils/screen-height'
-import BackToTop from '@/components/BackToTop'
 import { stat } from '@/api/admin/user-log'
 
 export default {
   name: 'AdminUserLogStat',
-  components: { BackToTop },
+  components: { },
   data() {
     return {
       height: 600,

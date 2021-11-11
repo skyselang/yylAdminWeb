@@ -1,8 +1,8 @@
 <template>
   <div class="app-container">
     <el-row>
-      <el-col :span="12" :offset="6" class="yyl-center yyl-top">
-        <el-image style="width:600px" :src="error401" fit="contain" />
+      <el-col :span="12" :offset="6">
+        <el-result icon="warning" title="401" sub-title="没有权限" />
       </el-col>
     </el-row>
     <el-row>
@@ -24,13 +24,10 @@
 </template>
 
 <script>
-import error401 from '@/assets/error/401.jpg'
 export default {
   name: 'Error401',
   data() {
-    return {
-      error401: error401
-    }
+    return {}
   },
   methods: {
     back() {

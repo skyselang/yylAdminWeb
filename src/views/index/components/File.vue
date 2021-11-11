@@ -17,11 +17,11 @@ import * as echarts from 'echarts/core'
 // 引入图表，图表后缀都为 Chart
 import { PieChart } from 'echarts/charts'
 // 引入组件，组件后缀都为 Component
-import { TitleComponent, LegendComponent, TooltipComponent, GridComponent } from 'echarts/components'
+import { TitleComponent, LegendComponent, TooltipComponent } from 'echarts/components'
 // 引入 Canvas 渲染器，注意引入 CanvasRenderer 或者 SVGRenderer 是必须的一步
 import { CanvasRenderer } from 'echarts/renderers'
 // 注册必须的组件
-echarts.use([PieChart, TitleComponent, LegendComponent, TooltipComponent, GridComponent, CanvasRenderer])
+echarts.use([PieChart, TitleComponent, LegendComponent, TooltipComponent, CanvasRenderer])
 
 import { file } from '@/api/index'
 
@@ -57,37 +57,32 @@ export default {
       var option = {
         title: {
           text: '文件',
-          subtext: '总计：' + data.count,
+          subtext: '文件：' + data.count,
           left: 'center'
         },
         legend: {
+          left: 'center',
           top: 'bottom'
         },
         tooltip: {
           trigger: 'item',
           formatter: '{a} <br/>{b} : {c} ({d}%)'
         },
-        grid: {
-          left: '3%',
-          right: '4%',
-          bottom: '3%',
-          containLabel: true
-        },
         series: [
           {
             name: '文件类型',
             type: 'pie',
-            radius: [50, '60%'],
-            center: ['50%', '50%'],
-            roseType: 'area',
+            radius: ['40%', '70%'],
+            avoidLabelOverlap: false,
             itemStyle: {
-              borderRadius: 8,
+              borderRadius: 10,
+              borderColor: '#fff',
+              borderWidth: 2,
               normal: {
                 label: {
                   show: true,
                   formatter: '{b} : {c} ({d}%)'
-                },
-                labelLine: { show: true }
+                }
               }
             },
             data: data.data

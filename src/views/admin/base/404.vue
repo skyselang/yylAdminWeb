@@ -1,8 +1,8 @@
 <template>
   <div class="app-container">
     <el-row>
-      <el-col :span="12" :offset="6" class="yyl-center yyl-top">
-        <el-image style="width:600px" :src="error404" fit="contain" />
+      <el-col :span="12" :offset="6">
+        <el-result icon="error" title="404" sub-title="页面不存在" />
       </el-col>
     </el-row>
     <el-row>
@@ -24,13 +24,10 @@
 </template>
 
 <script>
-import error404 from '@/assets/error/404.jpg'
 export default {
   name: 'Error404',
   data() {
-    return {
-      error404: error404
-    }
+    return {}
   },
   methods: {
     back() {
