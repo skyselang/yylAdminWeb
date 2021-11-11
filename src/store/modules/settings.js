@@ -18,11 +18,11 @@ const {
 } = defaultSettings
 
 const state = {
-  theme: variables.theme,
   systemName: getSystemName(),
   pageTitle: getPageTitle(),
   logoUrl: getLogoUrl(),
   faviconUrl: getFaviconUrl(),
+  theme: variables.theme,
   tagsView: tagsView,
   fixedHeader: fixedHeader,
   sidebarLogo: sidebarLogo
