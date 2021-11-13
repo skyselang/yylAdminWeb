@@ -98,8 +98,8 @@ import Toollu from './components/Toollu'
 
 export default {
   name: 'AdminSystemUtils',
-  directives: { permission },
   components: { Strtran, Strrand, Timestamp, Qrcode, Byte, Ip, Map, Server, Toollu },
+  directives: { permission },
   data() {
     return {
       height: 680

@@ -60,7 +60,10 @@
         </el-row>
         <el-row :gutter="0">
           <el-col :span="24" style="padding-left:10px">
-            <el-link :type="query.group_id==''?'primary':''" :underline="false" style="height:26px;" @click="groupingSelect('')">全部</el-link>
+            <el-link :type="query.group_id===''?'primary':''" :underline="false" style="height:26px;" @click="groupingSelect('')">全部</el-link>
+          </el-col>
+          <el-col :span="24" style="padding-left:10px">
+            <el-link :type="query.group_id===0?'primary':''" :underline="false" style="height:26px;" @click="groupingSelect(0)">未分组</el-link>
           </el-col>
           <el-col v-for="item in group" :key="item.group_id" :span="24" style="padding-left:10px;height:26px;">
             <el-row :gutter="0">
@@ -172,6 +175,7 @@
         <el-empty description="暂无文件" />
       </el-col>
     </el-row>
+    <!-- 批量操作 -->
     <el-row v-show="count > 0" :gutter="0">
       <el-col :span="24">
         <el-checkbox v-model="checkAll" border size="mini" :indeterminate="checkAllInd" @change="checkAllChange">全选</el-checkbox>
@@ -497,7 +501,7 @@ export default {
       group_id: 0,
       uploadAction: add(),
       uploadHeaders: { AdminToken: getAdminToken() },
-      uploadData: {},
+      uploadData: { group_id: 0 },
       uploadLimit: 9,
       uploadFilelist: [],
       rules: {
@@ -720,6 +724,7 @@ export default {
     },
     groupingSelect(group_id = '') {
       this.query.group_id = group_id
+      this.uploadData.group_id = group_id
       this.list()
     },
     // 类型

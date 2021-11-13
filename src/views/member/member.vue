@@ -137,6 +137,35 @@
             <el-input v-model="model.login_region" disabled />
           </el-col>
         </el-form-item>
+        <el-form-item v-if="model.wechat.member_wechat_id" label="微信信息" prop="wechat">
+          <el-descriptions title="" :column="2">
+            <el-descriptions-item label="头像">
+              <el-image
+                style="width:100px; height:100px; border-radius:10px;"
+                :src="model.wechat.headimgurl"
+                :preview-src-list="[model.wechat.headimgurl]"
+                title="点击查看大图"
+              >
+                <div slot="error" class="image-slot">
+                  <i class="el-icon-picture-outline" />
+                </div>
+              </el-image>
+            </el-descriptions-item>
+            <el-descriptions-item label="昵称">{{ model.wechat.nickname }}</el-descriptions-item>
+            <el-descriptions-item label="性别">
+              <el-tag v-if="model.wechat.sex==1" type="info">男</el-tag>
+              <el-tag v-else-if="model.wechat.sex==2" type="info">女</el-tag>
+              <el-tag v-else type="info">未知</el-tag>
+            </el-descriptions-item>
+            <el-descriptions-item label="国家">{{ model.wechat.country }}</el-descriptions-item>
+            <el-descriptions-item label="省份">{{ model.wechat.province }}</el-descriptions-item>
+            <el-descriptions-item label="城市">{{ model.wechat.city }}</el-descriptions-item>
+            <el-descriptions-item label="语言">{{ model.wechat.language }}</el-descriptions-item>
+            <el-descriptions-item label="mwid">{{ model.wechat.member_wechat_id }}</el-descriptions-item>
+            <el-descriptions-item label="openid">{{ model.wechat.openid }}</el-descriptions-item>
+            <el-descriptions-item label="unionid">{{ model.wechat.unionid }}</el-descriptions-item>
+          </el-descriptions>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancel">取消</el-button>
@@ -202,8 +231,10 @@ export default {
         avatar_id: 0,
         avatar_url: '',
         remark: '',
-        sort: 250
+        sort: 250,
+        wechat: {}
       },
+      sexArr: [],
       rules: {
         username: [{ required: true, message: '请输入账号', trigger: 'blur' }],
         password: [{ required: true, message: '请输入密码', trigger: 'blur' }]

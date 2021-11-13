@@ -296,7 +296,6 @@
 <script>
 import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination'
-import permission from '@/directive/permission/index.js' // 权限判断指令
 import E from 'wangeditor'
 import FileManage from '@/components/FileManage'
 import { list, category, info, add, edit, dele, istop, ishot, isrec, ishide, recover, recoverReco, recoverDele } from '@/api/cms/content'
@@ -304,7 +303,7 @@ import { list, category, info, add, edit, dele, istop, ishot, isrec, ishide, rec
 export default {
   name: 'CmsContent',
   components: { Pagination, FileManage },
-  directives: { permission },
+  directives: { },
   data() {
     return {
       name: '内容',

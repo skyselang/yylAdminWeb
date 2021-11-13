@@ -11,7 +11,7 @@
       </el-row>
     </div>
     <!-- 列表 -->
-    <el-table ref="table" v-loading="loading" :data="data" :height="height+50" style="width: 100%" row-key="admin_menu_id">
+    <el-table ref="table" v-loading="loading" :data="data" :height="height+50" style="width: 100%" row-key="admin_menu_id" @cell-dblclick="tableCellDbclick">
       <el-table-column prop="menu_name" label="菜单名称" min-width="220" />
       <el-table-column prop="menu_url" label="菜单链接(roles)" min-width="300" />
       <el-table-column prop="is_disable" label="是否禁用" min-width="95" align="center">
@@ -72,7 +72,9 @@
           <el-input v-model="model.menu_name" clearable placeholder="请输入菜单名称" />
         </el-form-item>
         <el-form-item label="菜单链接" prop="menu_url">
-          <el-input v-model="model.menu_url" clearable placeholder="应用/控制器/操作，区分大小写" />
+          <el-input v-model="model.menu_url" clearable placeholder="应用/控制器/操作，区分大小写">
+            <el-button slot="append" icon="el-icon-document-copy" title="复制" @click="copy(model.menu_url, $event)" />
+          </el-input>
         </el-form-item>
         <el-form-item label="菜单排序" prop="menu_sort">
           <el-input v-model="model.menu_sort" type="number" placeholder="200" />
@@ -155,15 +157,15 @@
 </template>
 
 <script>
+import clip from '@/utils/clipboard'
 import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination'
-import permission from '@/directive/permission/index.js' // 权限判断指令
 import { list, info, add, edit, dele, disable, unauth, unlogin, role, roleRemove, user, userRemove } from '@/api/admin/menu'
 
 export default {
   name: 'AdminMenu',
   components: { Pagination },
-  directives: { permission },
+  directives: { },
   data() {
     return {
       name: '菜单',
@@ -512,6 +514,14 @@ export default {
           this.userLoad = false
         })
       }).catch(() => {})
+    },
+    // 复制
+    copy(text, event) {
+      clip(text, event)
+    },
+    // 表格单元格双击
+    tableCellDbclick(row, column, cell, event) {
+      this.copy(row[column.property], event)
     }
   }
 }

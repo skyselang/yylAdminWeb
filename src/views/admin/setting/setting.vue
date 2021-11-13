@@ -25,7 +25,6 @@
 
 <script>
 import checkPermission from '@/utils/permission' // 权限判断函数
-import permission from '@/directive/permission/index.js' // 权限判断指令
 import Cache from './components/Cache'
 import Token from './components/Token'
 import Captcha from './components/Captcha'
@@ -35,7 +34,7 @@ import System from './components/System'
 
 export default {
   name: 'AdminSystemSetting',
-  directives: { permission },
+  directives: { },
   components: { Cache, Token, Captcha, Log, Api, System },
   data() {
     return {}

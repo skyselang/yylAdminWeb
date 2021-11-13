@@ -15,7 +15,7 @@
           <el-input v-model="model.captcha_code" placeholder="请输入验证码" prefix-icon="el-icon-picture" autocomplete="off" clearable />
         </el-col>
         <el-col :span="11">
-          <el-image :src="captcha_src" fit="fill" alt="验证码" title="点击刷新验证码" style="width:200px;height:36px;float:right" @click="setting" />
+          <el-image :src="captcha_src" fit="fill" alt="验证码" title="点击刷新验证码" style="width:200px;height:36px;float:right" @click="captcha" />
         </el-col>
       </el-form-item>
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import { setting } from '@/api/admin/login'
+import { captcha, setting } from '@/api/admin/login'
 
 export default {
   name: 'AdminLogin',
@@ -69,16 +69,29 @@ export default {
   mounted() { },
   destroyed() { },
   methods: {
+    // 验证码
+    captcha() {
+      captcha().then(res => {
+        this.captchaSet(res)
+      })
+    },
+    captchaSet(res) {
+      this.model.captcha_id = ''
+      this.model.captcha_code = ''
+      if (res.data.captcha_switch) {
+        this.captcha_src = res.data.captcha_src
+        this.model.captcha_id = res.data.captcha_id
+      }
+      this.captcha_switch = res.data.captcha_switch
+    },
     // 设置
     setting() {
       this.model.captcha_id = ''
       this.model.captcha_code = ''
       setting().then(res => {
-        this.model.captcha_id = res.data.captcha_id
-        this.login_bg_url = res.data.login_bg_url
+        this.captchaSet(res)
         this.system_name = res.data.system_name
-        this.captcha_src = res.data.captcha_src
-        this.captcha_switch = res.data.captcha_switch
+        this.login_bg_url = res.data.login_bg_url
         this.$store.dispatch('settings/changeSetting', { key: 'systemName', value: res.data.system_name })
         this.$store.dispatch('settings/changeSetting', { key: 'pageTitle', value: res.data.page_title })
         this.$store.dispatch('settings/changeSetting', { key: 'logoUrl', value: res.data.logo_url })

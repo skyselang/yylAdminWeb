@@ -176,13 +176,12 @@
 <script>
 import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination'
-import permission from '@/directive/permission/index.js' // 权限判断指令
 import { list, info, add, edit, dele, isread, recover, recoverReco, recoverDele } from '@/api/cms/comment'
 
 export default {
   name: 'CmsComment',
   components: { Pagination },
-  directives: { permission },
+  directives: { },
   data() {
     return {
       name: '留言',
