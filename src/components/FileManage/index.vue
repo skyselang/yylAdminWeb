@@ -2,7 +2,7 @@
   <div v-loading="loadup" class="app-container">
     <!-- 查询/添加 -->
     <div class="filter-container">
-      <el-row :gutter="0">
+      <el-row>
         <el-col :xs="24" :sm="20">
           <el-select v-model="query.search_field" class="filter-item" style="width:110px;" placeholder="">
             <el-option value="file_name" label="文件名称" />
@@ -50,100 +50,94 @@
         </el-col>
       </el-row>
     </div>
-    <!-- 列表 -->
-    <el-row :gutter="6">
-      <!-- 筛选条件 -->
-      <el-col :span="4">
-        <el-row :gutter="0">
-          <el-col :span="20"><el-button type="text" style="color:inherit">分组</el-button></el-col>
+    <!-- 筛选/列表 -->
+    <el-row :gutter="3">
+      <!-- 筛选 -->
+      <el-col :span="3" class="dialog-body" :style="{height:height-50+'px'}">
+        <el-row>
+          <el-col :span="20"><el-button type="text" style="color:inherit">分组：</el-button></el-col>
           <el-col :span="4"><el-button type="text" icon="el-icon-plus" title="添加分组" @click="groupAdd()" /></el-col>
         </el-row>
-        <el-row :gutter="0">
-          <el-col :span="24" style="padding-left:10px">
+        <el-row>
+          <el-col style="padding-left:10px">
             <el-link :type="query.group_id===''?'primary':''" :underline="false" style="height:26px;" @click="groupingSelect('')">全部</el-link>
           </el-col>
-          <el-col :span="24" style="padding-left:10px">
+          <el-col style="padding-left:10px">
             <el-link :type="query.group_id===0?'primary':''" :underline="false" style="height:26px;" @click="groupingSelect(0)">未分组</el-link>
           </el-col>
-          <el-col v-for="item in group" :key="item.group_id" :span="24" style="padding-left:10px;height:26px;">
-            <el-row :gutter="0">
+          <el-col v-for="item in group" :key="item.group_id" style="padding-left:10px;height:26px;">
+            <el-row>
               <el-col :span="16">
-                <el-link :type="query.group_id==item.group_id?'primary':''" :underline="false" @click="groupingSelect(item.group_id)">{{ item.group_name }}</el-link>
+                <el-link :type="query.group_id===item.group_id?'primary':''" :underline="false" @click="groupingSelect(item.group_id)">{{ item.group_name }}</el-link>
               </el-col>
               <el-col :span="4">
-                <el-link v-if="query.group_id==item.group_id" type="primary" icon="el-icon-edit" :underline="false" title="修改分组" @click="groupEdit(item)" />
+                <el-link v-if="query.group_id===item.group_id" type="primary" icon="el-icon-edit" :underline="false" title="修改分组" @click="groupEdit(item)" />
               </el-col>
               <el-col :span="4">
-                <el-link v-if="query.group_id==item.group_id" type="primary" icon="el-icon-delete" :underline="false" title="删除分组" @click="groupDele([item])" />
+                <el-link v-if="query.group_id===item.group_id" type="primary" icon="el-icon-delete" :underline="false" title="删除分组" @click="groupDele([item])" />
               </el-col>
             </el-row>
           </el-col>
         </el-row>
-        <el-row :gutter="0">
-          <el-col :span="24"><el-button type="text" style="color:inherit">类型</el-button></el-col>
-        </el-row>
-        <el-row :gutter="0">
-          <el-col :span="24" style="padding-left:10px">
-            <el-link :type="query.file_type==''?'primary':''" :underline="false" style="height:26px;" @click="typeSelect('')">全部</el-link>
+        <el-row>
+          <el-col><el-button type="text" style="color:inherit">类型：</el-button></el-col>
+          <el-col style="padding-left:10px">
+            <el-link :type="query.file_type===''?'primary':''" :underline="false" style="height:26px;" @click="typeSelect('')">全部</el-link>
           </el-col>
-          <el-col v-for="(item, index) in filetype" :key="index" :span="24" style="padding-left:10px">
-            <el-link :type="query.file_type==index?'primary':''" :underline="false" style="height:26px;" @click="typeSelect(index)">{{ item }}</el-link>
+          <el-col v-for="(item, index) in filetype" :key="index" style="padding-left:10px">
+            <el-link :type="query.file_type===index?'primary':''" :underline="false" style="height:26px;" @click="typeSelect(index)">{{ item }}</el-link>
           </el-col>
         </el-row>
-        <el-row :gutter="0">
-          <el-col :span="24"><el-button type="text" style="color:inherit">状态</el-button></el-col>
-        </el-row>
-        <el-row :gutter="0">
-          <el-col :span="24" style="padding-left:10px">
+        <el-row>
+          <el-col><el-button type="text" style="color:inherit">状态：</el-button></el-col>
+          <el-col style="padding-left:10px">
             <el-link :type="query.is_disable===''?'primary':''" :underline="false" style="height:26px;" @click="disableSelect('')">全部</el-link>
           </el-col>
-          <el-col :span="24" style="padding-left:10px">
+          <el-col style="padding-left:10px">
             <el-link :type="query.is_disable===0?'primary':''" :underline="false" style="height:26px;" @click="disableSelect(0)">已启用</el-link>
           </el-col>
-          <el-col :span="24" style="padding-left:10px">
+          <el-col style="padding-left:10px">
             <el-link :type="query.is_disable===1?'primary':''" :underline="false" style="height:26px;" @click="disableSelect(1)">已禁用</el-link>
           </el-col>
         </el-row>
-        <el-row :gutter="0">
-          <el-col :span="24"><el-button type="text" style="color:inherit">上传</el-button></el-col>
-        </el-row>
-        <el-row :gutter="0">
-          <el-col :span="24" style="padding-left:10px">
+        <el-row>
+          <el-col><el-button type="text" style="color:inherit">上传：</el-button></el-col>
+          <el-col style="padding-left:10px">
             <el-link :type="query.is_front===''?'primary':''" :underline="false" style="height:26px;" @click="frontSelect('')">全部</el-link>
           </el-col>
-          <el-col :span="24" style="padding-left:10px">
+          <el-col style="padding-left:10px">
             <el-link :type="query.is_front===0?'primary':''" :underline="false" style="height:26px;" @click="frontSelect(0)">后台</el-link>
           </el-col>
-          <el-col :span="24" style="padding-left:10px">
+          <el-col style="padding-left:10px">
             <el-link :type="query.is_front===1?'primary':''" :underline="false" style="height:26px;" @click="frontSelect(1)">前台</el-link>
           </el-col>
         </el-row>
       </el-col>
-      <!-- 文件卡片 -->
-      <el-col v-if="count > 0" :span="20" class="dialog-body" :style="{height:height-50+'px'}">
-        <el-row :gutter="6">
+      <!-- 列表 -->
+      <el-col v-if="count > 0" :span="21" class="dialog-body" :style="{height:height-50+'px'}">
+        <el-row :gutter="3">
           <el-checkbox-group v-model="checkedIds" @change="checkedChange">
             <el-col v-for="(item, index) in data" :key="index" :span="4" style="margin-bottom:6px;text-align:center">
-              <el-card class="file-card" :body-style="{ minWidth:'16.5%', height:(height-80)/3+'px', padding:'0 6px' }">
+              <el-card class="file-card" :body-style="{ minWidth:'16.5%', height:(height-height*0.1)/3+'px', padding:'0 6px' }">
                 <div class="file-ext">
                   <span>{{ item.file_ext }}</span>
                 </div>
                 <div style="text-align:left">
                   <el-checkbox :key="item.file_id" :label="item.file_id" />
                 </div>
-                <div :style="{width:'100%',height:((height-80)/3)-((height-80)/3*0.33)+'px'}">
-                  <el-image v-if="item.file_type=='image'" fit="contain" :src="item.file_url" :preview-src-list="[item.file_url]" title="点击查看大图" style="height:100%;" />
-                  <video v-else-if="item.file_type=='video'" width="100%" height="100%" controls>
+                <div :style="{width:'100%',height:((height-height*0.1)/3)-((height-height*0.1)/3*0.45)+'px'}">
+                  <el-image v-if="item.file_type==='image'" fit="contain" :src="item.file_url" :preview-src-list="[item.file_url]" title="点击查看大图" style="height:100%;" />
+                  <video v-else-if="item.file_type==='video'" width="100%" height="100%" controls>
                     <source :src="item.file_url" type="video/mp4">
                     <object :data="item.file_url" width="100%" height="100%">
                       <embed :src="item.file_url" width="100%" height="100%">
                     </object>
                   </video>
-                  <audio v-else-if="item.file_type=='audio'" width="100%" height="100%" controls>
+                  <audio v-else-if="item.file_type==='audio'" width="100%" height="100%" controls>
                     <source :src="item.file_url" type="audio/mp3">
                     <embed :src="item.file_url" width="100%" height="100%">
                   </audio>
-                  <el-image v-else-if="item.file_type=='word'" :src="item.file_url" style="width:100%; height:100%;">
+                  <el-image v-else-if="item.file_type==='word'" :src="item.file_url" style="width:100%; height:100%;">
                     <div slot="error" class="image-slot">
                       <i class="el-icon-document" style="font-size:50px" />
                     </div>
@@ -171,13 +165,13 @@
           </el-checkbox-group>
         </el-row>
       </el-col>
-      <el-col v-else :span="20">
+      <el-col v-else :span="21">
         <el-empty description="暂无文件" />
       </el-col>
     </el-row>
     <!-- 批量操作 -->
-    <el-row v-show="count > 0" :gutter="0">
-      <el-col :span="24">
+    <el-row v-show="count > 0">
+      <el-col :offset="3" style="margin-top:15px">
         <el-checkbox v-model="checkAll" border size="mini" :indeterminate="checkAllInd" @change="checkAllChange">全选</el-checkbox>
         <el-button size="mini" type="text" @click="grouping(checkedIds)">分组</el-button>
         <el-button size="mini" type="text" @click="disable(checkedIds,0)">启用</el-button>
@@ -187,9 +181,9 @@
     </el-row>
     <!-- 分页 -->
     <pagination v-show="count > 0" :total="count" :page.sync="query.page" :limit.sync="query.limit" @pagination="list" />
-    <!-- 文件 -->
-    <el-row v-show="fileType" :gutter="0">
-      <el-col :span="24" style="text-align:right;margin-top:20px;">
+    <!-- 选中操作 -->
+    <el-row v-show="fileType">
+      <el-col style="text-align:right;margin-top:20px;">
         <el-button @click="fileCancel()">取消</el-button>
         <el-button type="primary" @click="fileSubmit(checkedIds)">确定</el-button>
       </el-col>
@@ -293,8 +287,8 @@
     <el-dialog :title="recoverDialogTitle" :visible.sync="recoverDialog" width="80%" top="1vh">
       <!-- 回收站查询 -->
       <div class="filter-container">
-        <el-row :gutter="0">
-          <el-col :xs="24" :sm="24">
+        <el-row>
+          <el-col>
             <el-select v-model="recoverQuery.search_field" class="filter-item" style="width:110px;" placeholder="">
               <el-option value="file_name" label="文件名称" />
               <el-option value="file_id" label="文件ID" />
@@ -319,77 +313,73 @@
           </el-col>
         </el-row>
       </div>
-      <el-row :gutter="6">
-        <!-- 回收站分组、类型 -->
-        <el-col :span="4">
-          <el-row :gutter="0">
-            <el-col :span="20"><el-button type="text" style="color:inherit">分组</el-button></el-col>
-          </el-row>
-          <el-row :gutter="0">
-            <el-col :span="24" style="padding-left:10px">
-              <el-link :type="recoverQuery.group_id==''?'primary':''" :underline="false" style="height:26px;" @click="recoverGroupSelect('')">全部</el-link>
+      <!-- 回收站筛选/列表 -->
+      <el-row :gutter="3">
+        <!-- 回收站筛选 -->
+        <el-col :span="3" class="dialog-body" :style="{height:height-50+'px'}">
+          <el-row>
+            <el-col><el-button type="text" style="color:inherit">分组：</el-button></el-col>
+            <el-col style="padding-left:10px">
+              <el-link :type="recoverQuery.group_id===''?'primary':''" :underline="false" style="height:26px;" @click="recoverGroupSelect('')">全部</el-link>
             </el-col>
-            <el-col v-for="item in group" :key="item.group_id" :span="24" style="padding-left:10px;height:26px;">
-              <el-row :gutter="0">
+            <el-col style="padding-left:10px">
+              <el-link :type="recoverQuery.group_id===0?'primary':''" :underline="false" style="height:26px;" @click="recoverGroupSelect(0)">未分组</el-link>
+            </el-col>
+            <el-col v-for="item in group" :key="item.group_id" style="padding-left:10px;height:26px;">
+              <el-row>
                 <el-col :span="16">
-                  <el-link :type="recoverQuery.group_id==item.group_id?'primary':''" :underline="false" @click="recoverGroupSelect(item.group_id)">{{ item.group_name }}</el-link>
+                  <el-link :type="recoverQuery.group_id===item.group_id?'primary':''" :underline="false" @click="recoverGroupSelect(item.group_id)">{{ item.group_name }}</el-link>
                 </el-col>
               </el-row>
             </el-col>
           </el-row>
-          <el-row :gutter="0">
-            <el-col :span="24"><el-button type="text" style="color:inherit">类型</el-button></el-col>
-          </el-row>
-          <el-row :gutter="0">
-            <el-col :span="24" style="padding-left:10px">
-              <el-link :type="recoverQuery.file_type==''?'primary':''" :underline="false" style="height:26px;" @click="recoverTypeSelect('')">全部</el-link>
+          <el-row>
+            <el-col><el-button type="text" style="color:inherit">类型：</el-button></el-col>
+            <el-col style="padding-left:10px">
+              <el-link :type="recoverQuery.file_type===''?'primary':''" :underline="false" style="height:26px;" @click="recoverTypeSelect('')">全部</el-link>
             </el-col>
-            <el-col v-for="(item, index) in filetype" :key="index" :span="24" style="padding-left:10px">
-              <el-link :type="recoverQuery.file_type==index?'primary':''" :underline="false" style="height:26px;" @click="recoverTypeSelect(index)">{{ item }}</el-link>
+            <el-col v-for="(item, index) in filetype" :key="index" style="padding-left:10px">
+              <el-link :type="recoverQuery.file_type===index?'primary':''" :underline="false" style="height:26px;" @click="recoverTypeSelect(index)">{{ item }}</el-link>
             </el-col>
           </el-row>
-          <el-row :gutter="0">
-            <el-col :span="24"><el-button type="text" style="color:inherit">状态</el-button></el-col>
-          </el-row>
-          <el-row :gutter="0">
-            <el-col :span="24" style="padding-left:10px">
+          <el-row>
+            <el-col><el-button type="text" style="color:inherit">状态：</el-button></el-col>
+            <el-col style="padding-left:10px">
               <el-link :type="recoverQuery.is_disable===''?'primary':''" :underline="false" style="height:26px;" @click="recoverDisableSelect('')">全部</el-link>
             </el-col>
-            <el-col :span="24" style="padding-left:10px">
+            <el-col style="padding-left:10px">
               <el-link :type="recoverQuery.is_disable===0?'primary':''" :underline="false" style="height:26px;" @click="recoverDisableSelect(0)">已启用</el-link>
             </el-col>
-            <el-col :span="24" style="padding-left:10px">
+            <el-col style="padding-left:10px">
               <el-link :type="recoverQuery.is_disable===1?'primary':''" :underline="false" style="height:26px;" @click="recoverDisableSelect(1)">已禁用</el-link>
             </el-col>
           </el-row>
-          <el-row :gutter="0">
-            <el-col :span="24"><el-button type="text" style="color:inherit">上传</el-button></el-col>
-          </el-row>
-          <el-row :gutter="0">
-            <el-col :span="24" style="padding-left:10px">
+          <el-row>
+            <el-col><el-button type="text" style="color:inherit">上传：</el-button></el-col>
+            <el-col style="padding-left:10px">
               <el-link :type="recoverQuery.is_front===''?'primary':''" :underline="false" style="height:26px;" @click="recoverFrontSelect('')">全部</el-link>
             </el-col>
-            <el-col :span="24" style="padding-left:10px">
+            <el-col style="padding-left:10px">
               <el-link :type="recoverQuery.is_front===0?'primary':''" :underline="false" style="height:26px;" @click="recoverFrontSelect(0)">后台</el-link>
             </el-col>
-            <el-col :span="24" style="padding-left:10px">
+            <el-col style="padding-left:10px">
               <el-link :type="recoverQuery.is_front===1?'primary':''" :underline="false" style="height:26px;" @click="recoverFrontSelect(1)">前台</el-link>
             </el-col>
           </el-row>
         </el-col>
         <!-- 回收站列表 -->
-        <el-col :span="20" class="dialog-body" :style="{height:height-50+'px'}">
-          <el-row v-if="recoverCount > 0" :gutter="6">
+        <el-col :span="21" class="dialog-body" :style="{height:height-50+'px'}">
+          <el-row v-if="recoverCount > 0" :gutter="3">
             <el-checkbox-group v-model="recoverCheckedIds" @change="recoverCheckedChange">
               <el-col v-for="(item, index) in recoverData" :key="index" :span="4" style="margin-bottom:6px;text-align:center">
-                <el-card class="file-card" :body-style="{ minWidth:'16.5%', height:(height-80)/3+'px',padding:'0 6px' }">
+                <el-card class="file-card" :body-style="{ minWidth:'16.5%', height:(height-height*0.1)/3+'px',padding:'0 6px' }">
                   <div class="file-ext">
                     <span>{{ item.file_ext }}</span>
                   </div>
                   <div style="text-align:left">
                     <el-checkbox :key="item.file_id" :label="item.file_id" />
                   </div>
-                  <div :style="{width:'100%',height:((height-80)/3)-((height-80)/3*0.33)+'px'}">
+                  <div :style="{width:'100%',height:((height-height*0.1)/3)-((height-height*0.1)/3*0.45)+'px'}">
                     <el-image v-if="item.file_type=='image'" fit="contain" :src="item.file_url" :preview-src-list="[item.file_url]" title="点击查看大图" style="height:100%;" />
                     <video v-else-if="item.file_type=='video'" width="100%" height="100%" controls>
                       <source :src="item.file_url" type="video/mp4">
@@ -425,15 +415,16 @@
               </el-col>
             </el-checkbox-group>
           </el-row>
-          <el-row v-else :gutter="6">
-            <el-col :span="24">
+          <el-row v-else :gutter="3">
+            <el-col>
               <el-empty description="暂无文件" />
             </el-col>
           </el-row>
         </el-col>
       </el-row>
-      <el-row v-show="recoverCount > 0" :gutter="0">
-        <el-col :span="24">
+      <!-- 回收站批量操作 -->
+      <el-row v-show="recoverCount > 0">
+        <el-col :offset="3" style="margin-top:15px">
           <el-checkbox v-model="recoverCheckAll" border size="mini" :indeterminate="recoverCheckAllInd" @change="recoverCheckAllChange">全选</el-checkbox>
           <el-button size="mini" type="text" @click="recoverReco(recoverCheckedIds)">恢复</el-button>
           <el-button size="mini" type="text" @click="recoverDele(recoverCheckedIds)">删除</el-button>
