@@ -1002,13 +1002,14 @@ export default {
       this.recoverCheckAll = false
       this.recoverCheckAllInd = false
     },
-    // 文件取消/确定
+    // 文件取消
     fileCancel() {
       this.checkedIds = []
-      this.$emit('file-lists', null)
+      this.$emit('fileCancel')
     },
+    // 文件确定
     fileSubmit(row) {
-      if (row.length === 0) {
+      if (!row.length) {
         this.recoverCheckAlert('请选择文件')
       } else {
         const files = []
@@ -1023,7 +1024,7 @@ export default {
           }
         }
         this.checkedIds = []
-        this.$emit('file-lists', files, this.fileType)
+        this.$emit('fileSubmit', files, this.fileType)
       }
     }
   }

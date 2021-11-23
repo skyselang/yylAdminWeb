@@ -99,7 +99,7 @@
       </div>
     </el-dialog>
     <el-dialog title="上传图片" :visible.sync="fileDialog" width="80%" top="1vh">
-      <file-manage file-type="image" @file-lists="fileLists" />
+      <file-manage file-type="image" @fileCancel="fileCancel" @fileSubmit="fileSubmit" />
     </el-dialog>
   </div>
 </template>
@@ -302,7 +302,10 @@ export default {
     fileUpload() {
       this.fileDialog = true
     },
-    fileLists(filelists) {
+    fileCancel() {
+      this.fileDialog = false
+    },
+    fileSubmit(filelists) {
       this.fileDialog = false
       const file_len = filelists.length
       if (filelists) {

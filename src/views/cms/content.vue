@@ -285,10 +285,10 @@
       <pagination v-show="recoverCount > 0" :total="recoverCount" :page.sync="recoverQuery.page" :limit.sync="recoverQuery.limit" @pagination="recoverList" />
     </el-dialog>
     <el-dialog :title="fileTitle" :visible.sync="fileDialog" width="80%" top="1vh">
-      <file-manage :file-type="fileType" @file-lists="fileLists" />
+      <file-manage :file-type="fileType" @fileCancel="fileCancel" @fileSubmit="fileSubmit" />
     </el-dialog>
     <el-dialog :title="fileTitle" :visible.sync="editorDialog" width="80%" top="1vh">
-      <file-manage :file-type="editorFileType" @file-lists="fileListsEd" />
+      <file-manage :file-type="editorFileType" @fileCancel="fileCancelEd" @fileSubmit="fileSubmitEd" />
     </el-dialog>
   </div>
 </template>
@@ -614,7 +614,10 @@ export default {
       this.fileTitle = fileTitle
       this.fileDialog = true
     },
-    fileLists(filelists, filetype) {
+    fileCancel() {
+      this.fileDialog = false
+    },
+    fileSubmit(filelists, filetype) {
       this.fileDialog = false
       this.fileTitle = ''
       const file_len = filelists.length
@@ -630,7 +633,10 @@ export default {
         }
       }
     },
-    fileListsEd(filelists, filetype) {
+    fileCancelEd() {
+      this.editorDialog = false
+    },
+    fileSubmitEd(filelists, filetype) {
       this.editorDialog = false
       this.fileTitle = ''
       const file_len = filelists.length

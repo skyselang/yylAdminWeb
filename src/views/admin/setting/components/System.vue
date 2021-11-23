@@ -67,7 +67,7 @@
       </el-col>
     </el-row>
     <el-dialog :title="fileTitle" :visible.sync="fileDialog" width="80%" top="1vh">
-      <file-manage file-type="image" @file-lists="fileLists" />
+      <file-manage file-type="image" @fileCancel="fileCancel" @fileSubmit="fileSubmit" />
     </el-dialog>
   </el-card>
 </template>
@@ -146,7 +146,10 @@ export default {
       this.fileTitle = title
       this.fileDialog = true
     },
-    fileLists(filelists) {
+    fileCancel() {
+      this.fileDialog = false
+    },
+    fileSubmit(filelists) {
       this.fileDialog = false
       this.fileTitle = ''
       if (this.fileField === 'logo') {
