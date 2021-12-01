@@ -57,6 +57,17 @@ export function dele(data) {
   })
 }
 /**
+ * 内容分类设置父级
+ * @param {array} data 请求数据
+ */
+export function pid(data) {
+  return request({
+    url: url + 'pid',
+    method: 'post',
+    data
+  })
+}
+/**
  * 内容分类是否隐藏
  * @param {array} data 请求数据
  */

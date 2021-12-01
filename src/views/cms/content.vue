@@ -4,17 +4,6 @@
     <div class="filter-container">
       <el-row :gutter="0">
         <el-col :xs="24" :sm="20">
-          <el-cascader
-            v-model="query.category_id"
-            class="filter-item"
-            :options="categoryData"
-            :props="{checkStrictly: true, value: 'category_id', label: 'category_name'}"
-            style="width:150px"
-            clearable
-            filterable
-            placeholder="分类"
-            @change="categoryPidChangeQuery"
-          />
           <el-select v-model="query.search_field" class="filter-item" style="width:110px;" placeholder="">
             <el-option value="content_id" label="内容ID" />
             <el-option value="name" label="名称" />
@@ -24,6 +13,17 @@
             <el-option value="is_hide" label="是否隐藏" />
           </el-select>
           <el-input v-model="query.search_value" class="filter-item" style="width:20%;min-width:150px;" placeholder="搜索内容" clearable />
+          <el-cascader
+            v-model="query.category_id"
+            class="filter-item"
+            :options="categoryData"
+            :props="{checkStrictly: true, value: 'category_id', label: 'category_name'}"
+            style="width:150px"
+            clearable
+            filterable
+            placeholder="分类"
+            @change="categoryChangeQuery"
+          />
           <el-select v-model="query.date_field" class="filter-item" style="width:110px;" placeholder="时间类型">
             <el-option value="create_time" label="添加时间" />
             <el-option value="update_time" label="修改时间" />
@@ -48,8 +48,8 @@
       </el-row>
     </div>
     <!-- 列表 -->
-    <el-table v-loading="loading" :data="data" :height="height-50" style="width: 100%" @sort-change="sort" @selection-change="select">
-      <el-table-column type="selection" width="40" />
+    <el-table ref="table" v-loading="loading" :data="data" :height="height-50" style="width: 100%" @sort-change="sort" @selection-change="select">
+      <el-table-column type="selection" width="40" title="全选/反选" />
       <el-table-column prop="content_id" label="内容ID" min-width="100" sortable="custom" />
       <el-table-column prop="img_url" label="图片" min-width="70" align="center">
         <template slot-scope="scope">
@@ -89,17 +89,49 @@
         </template>
       </el-table-column>
     </el-table>
+    <!-- 全选操作 -->
     <div style="margin-top: 20px">
-      <el-switch v-model="is_top" style="margin-left: 10px;" :active-value="1" :inactive-value="0" />
-      <el-button size="mini" type="text" @click="istop(selection,true)">置顶</el-button>
-      <el-switch v-model="is_hot" style="margin-left: 10px;" :active-value="1" :inactive-value="0" />
-      <el-button size="mini" type="text" @click="ishot(selection,true)">热门</el-button>
-      <el-switch v-model="is_rec" style="margin-left: 10px;" :active-value="1" :inactive-value="0" />
-      <el-button size="mini" type="text" @click="isrec(selection,true)">推荐</el-button>
-      <el-switch v-model="is_hide" style="margin-left: 10px;" :active-value="1" :inactive-value="0" />
-      <el-button size="mini" type="text" @click="ishide(selection,true)">隐藏</el-button>
+      <el-checkbox v-model="selectButton" style="padding-right:10px" title="全选/反选" @change="selectAll()" />
+      <el-button size="mini" type="text" @click="selectOpen('cate')">分类</el-button>
+      <el-button size="mini" type="text" @click="selectOpen('top')">置顶</el-button>
+      <el-button size="mini" type="text" @click="selectOpen('hot')">热门</el-button>
+      <el-button size="mini" type="text" @click="selectOpen('rec')">推荐</el-button>
+      <el-button size="mini" type="text" @click="selectOpen('hide')">隐藏</el-button>
       <el-button size="mini" type="text" @click="dele(selection)">删除</el-button>
     </div>
+    <el-dialog title="全选操作" :visible.sync="selectDialog">
+      <el-form ref="selectRef" label-width="100px">
+        <el-form-item v-if="selectType==='cate'" label="分类" prop="">
+          <el-cascader
+            v-model="category_id"
+            class="filter-item"
+            :options="categoryData"
+            :props="{checkStrictly: true, value: 'category_id', label: 'category_name'}"
+            style="width:150px"
+            clearable
+            filterable
+            placeholder="分类"
+            @change="selectCategoryChange"
+          />
+        </el-form-item>
+        <el-form-item v-if="selectType==='top'" label="是否置顶" prop="">
+          <el-switch v-model="is_top" style="margin-left: 10px;" :active-value="1" :inactive-value="0" />
+        </el-form-item>
+        <el-form-item v-if="selectType==='hot'" label="是否热门" prop="">
+          <el-switch v-model="is_hot" style="margin-left: 10px;" :active-value="1" :inactive-value="0" />
+        </el-form-item>
+        <el-form-item v-if="selectType==='rec'" label="是否推荐" prop="">
+          <el-switch v-model="is_rec" style="margin-left: 10px;" :active-value="1" :inactive-value="0" />
+        </el-form-item>
+        <el-form-item v-if="selectType==='hide'" label="是否隐藏" prop="">
+          <el-switch v-model="is_hide" style="margin-left: 10px;" :active-value="1" :inactive-value="0" />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="selectCancel">取消</el-button>
+        <el-button type="primary" @click="selectSubmit">提交</el-button>
+      </div>
+    </el-dialog>
     <!-- 分页 -->
     <pagination v-show="count > 0" :total="count" :page.sync="query.page" :limit.sync="query.limit" @pagination="list" />
     <!-- 添加、修改 -->
@@ -172,11 +204,8 @@
         </el-form-item>
         <el-form-item label="视频" prop="videos">
           <el-row :gutter="0">
-            <el-col :span="4">
+            <el-col :span="8">
               <el-button size="mini" @click="fileUpload('video', '上传视频')">上传视频</el-button>
-            </el-col>
-            <el-col :span="4">
-              <el-button size="mini" @click="uploadVideoAdd()">插入视频</el-button>
             </el-col>
             <el-col :span="16">
               <div>每个视频大小不超过 50 MB。</div>
@@ -215,6 +244,7 @@
     </el-dialog>
     <!-- 回收站 -->
     <el-dialog :title="recoverDialogTitle" :visible.sync="recoverDialog" width="80%" top="1vh">
+      <!-- 回收站查询 -->
       <div class="filter-container">
         <el-row :gutter="0">
           <el-col :xs="24" :sm="24">
@@ -257,8 +287,9 @@
           </el-col>
         </el-row>
       </div>
+      <!-- 回收站列表 -->
       <el-table ref="recoverRef" v-loading="recoverLoad" :data="recoverData" :height="height-60" style="width: 100%" @sort-change="recoverSort" @selection-change="recoverSelect">
-        <el-table-column type="selection" width="40" />
+        <el-table-column type="selection" width="40" title="全选/反选" />
         <el-table-column prop="content_id" label="ID" min-width="80" sortable="custom" />
         <el-table-column prop="img_url" label="图片" min-width="70" align="center">
           <template slot-scope="scope">
@@ -267,7 +298,27 @@
         </el-table-column>
         <el-table-column prop="name" label="名称" min-width="230" show-overflow-tooltip />
         <el-table-column prop="category_name" label="分类" min-width="100" show-overflow-tooltip />
-        <el-table-column prop="hits" label="点击量" min-width="90" sortable="custom" />
+        <el-table-column prop="hits" label="点击量" min-width="90" />
+        <el-table-column prop="is_top" label="置顶" min-width="60">
+          <template slot-scope="scope">
+            <el-tag v-if="scope.row.is_top" size="medium">是</el-tag><el-tag v-else type="info">否</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column prop="is_hot" label="热门" min-width="60">
+          <template slot-scope="scope">
+            <el-tag v-if="scope.row.is_hot" size="medium">是</el-tag><el-tag v-else type="info">否</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column prop="is_rec" label="推荐" min-width="60">
+          <template slot-scope="scope">
+            <el-tag v-if="scope.row.is_rec" size="medium">是</el-tag><el-tag v-else type="info">否</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column prop="is_hide" label="隐藏" min-width="60">
+          <template slot-scope="scope">
+            <el-tag v-if="scope.row.is_hide" size="medium">是</el-tag><el-tag v-else type="info">否</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column prop="sort" label="排序" min-width="80" sortable="custom" />
         <el-table-column prop="create_time" label="添加时间" min-width="155" sortable="custom" />
         <el-table-column prop="delete_time" label="删除时间" min-width="155" sortable="custom" />
@@ -278,15 +329,20 @@
           </template>
         </el-table-column>
       </el-table>
+      <!-- 回收站全选 -->
       <div style="margin-top: 20px">
+        <el-checkbox v-model="recoverSelectButton" style="padding-right:10px" title="全选/反选" @change="recoverSelectAll()" />
         <el-button size="mini" type="text" @click="recoverReco(recoverSelection)">恢复</el-button>
         <el-button size="mini" type="text" @click="recoverDele(recoverSelection)">删除</el-button>
       </div>
+      <!-- 回收站分页 -->
       <pagination v-show="recoverCount > 0" :total="recoverCount" :page.sync="recoverQuery.page" :limit.sync="recoverQuery.limit" @pagination="recoverList" />
     </el-dialog>
+    <!-- 文件管理 -->
     <el-dialog :title="fileTitle" :visible.sync="fileDialog" width="80%" top="1vh">
       <file-manage :file-type="fileType" @fileCancel="fileCancel" @fileSubmit="fileSubmit" />
     </el-dialog>
+    <!-- 文件管理(编辑器) -->
     <el-dialog :title="fileTitle" :visible.sync="editorDialog" width="80%" top="1vh">
       <file-manage :file-type="editorFileType" @fileCancel="fileCancelEd" @fileSubmit="fileSubmitEd" />
     </el-dialog>
@@ -294,11 +350,11 @@
 </template>
 
 <script>
+import E from 'wangeditor'
 import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination'
-import E from 'wangeditor'
 import FileManage from '@/components/FileManage'
-import { list, category, info, add, edit, dele, istop, ishot, isrec, ishide, recover, recoverReco, recoverDele } from '@/api/cms/content'
+import { list, category, info, add, edit, dele, cate, istop, ishot, isrec, ishide, recover, recoverReco, recoverDele } from '@/api/cms/content'
 
 export default {
   name: 'CmsContent',
@@ -333,11 +389,16 @@ export default {
         content: '',
         sort: 200
       },
+      categoryData: [],
+      selection: [],
+      selectButton: false,
+      selectDialog: false,
+      selectType: '',
       is_top: 0,
       is_hot: 0,
       is_rec: 0,
       is_hide: 0,
-      selection: [],
+      category_id: 0,
       fileDialog: false,
       fileType: 'image',
       fileTitle: '文件管理',
@@ -348,7 +409,6 @@ export default {
         category_id: [{ required: true, message: '请选择分类', trigger: 'blur' }],
         name: [{ required: true, message: '请输入名称', trigger: 'blur' }]
       },
-      categoryData: [],
       recoverDialog: false,
       recoverDialogTitle: '',
       recoverLoad: false,
@@ -360,7 +420,8 @@ export default {
         search_field: 'content_id',
         date_field: 'delete_time'
       },
-      recoverSelection: []
+      recoverSelection: [],
+      recoverSelectButton: false
     }
   },
   created() {
@@ -375,17 +436,11 @@ export default {
       list(this.query).then(res => {
         this.data = res.data.list
         this.count = res.data.count
+        this.selectButton = false
         this.loading = false
       }).catch(() => {
         this.loading = false
       })
-    },
-    // 选择
-    select(selection) {
-      this.selection = selection
-    },
-    selectAlert(message = '') {
-      this.$alert(message || '请选择需要操作的' + this.name, '提示', { confirmButtonText: '确定', callback: action => {} })
     },
     // 添加
     add() {
@@ -409,7 +464,7 @@ export default {
     },
     // 删除
     dele(row) {
-      if (row.length === 0) {
+      if (!row.length) {
         this.selectAlert()
       } else {
         var title = '删除' + this.name
@@ -502,9 +557,69 @@ export default {
         this.list()
       }
     },
+    // 全选操作
+    select(selection) {
+      this.selection = selection
+    },
+    selectAlert(message = '') {
+      this.$alert(message || '请选择需要操作的' + this.name, '提示', { confirmButtonText: '确定', callback: action => {} })
+    },
+    selectAll() {
+      if (this.selectButton) {
+        this.$refs.table.toggleAllSelection()
+      } else {
+        this.$refs.table.clearSelection()
+      }
+    },
+    selectOpen(selectType) {
+      if (!this.selection.length) {
+        this.selectAlert()
+      } else {
+        this.selectDialog = true
+        this.selectType = selectType
+      }
+    },
+    selectCancel() {
+      this.selectDialog = false
+    },
+    selectSubmit() {
+      if (!this.selection.length) {
+        this.selectAlert()
+      } else {
+        const type = this.selectType
+        if (type === 'cate') {
+          this.setcate(this.selection)
+        } else if (type === 'top') {
+          this.istop(this.selection, true)
+        } else if (type === 'hot') {
+          this.ishot(this.selection, true)
+        } else if (type === 'rec') {
+          this.isrec(this.selection, true)
+        } else if (type === 'hide') {
+          this.ishide(this.selection, true)
+        }
+        this.selectDialog = false
+      }
+    },
+    selectCategoryChange(value) {
+      this.category_id = value[value.length - 1]
+    },
+    // 设置分类
+    setcate(row) {
+      cate({
+        content: row,
+        category_id: this.category_id
+      }).then(res => {
+        this.list()
+        this.selectDialog = false
+        this.$message.success(res.msg)
+      }).catch(() => {
+        this.list()
+      })
+    },
     // 是否置顶
     istop(row, select = false) {
-      if (row.length === 0) {
+      if (!row.length) {
         this.selectAlert()
       } else {
         this.loading = true
@@ -526,7 +641,7 @@ export default {
     },
     // 是否热门
     ishot(row, select = false) {
-      if (row.length === 0) {
+      if (!row.length) {
         this.selectAlert()
       } else {
         this.loading = true
@@ -548,7 +663,7 @@ export default {
     },
     // 是否推荐
     isrec(row, select = false) {
-      if (row.length === 0) {
+      if (!row.length) {
         this.selectAlert()
       } else {
         this.loading = true
@@ -570,7 +685,7 @@ export default {
     },
     // 是否隐藏
     ishide(row, select = false) {
-      if (row.length === 0) {
+      if (!row.length) {
         this.selectAlert()
       } else {
         this.loading = true
@@ -590,20 +705,20 @@ export default {
         })
       }
     },
-    // 分类
+    // 分类获取
     category() {
       category().then(res => {
         this.categoryData = res.data.list
       }).catch(() => {})
     },
-    // 父级选择
+    // 分类选择
     categoryChange(value) {
       if (value) {
         this.model.category_id = value[value.length - 1]
       }
     },
-    // 父级选择（查询）
-    categoryPidChangeQuery(value) {
+    // 分类选择（查询）
+    categoryChangeQuery(value) {
       if (value) {
         this.query.category_id = value[value.length - 1]
       }
@@ -674,11 +789,6 @@ export default {
     },
     uploadVideoDele(index) {
       this.model.videos.splice(index, 1)
-    },
-    uploadVideoAdd() {
-      var videos = {}
-      videos.name = videos.file_path = videos.file_size = videos.file_type = videos.file_url = ''
-      this.model.videos.push(videos)
     },
     // 富文本编辑器
     dialogOpened() {
@@ -777,6 +887,7 @@ export default {
       recover(this.recoverQuery).then(res => {
         this.recoverData = res.data.list
         this.recoverCount = res.data.count
+        this.recoverSelectButton = false
         this.recoverLoad = false
         this.$nextTick(() => {
           this.$refs['recoverRef'].doLayout()
@@ -800,7 +911,7 @@ export default {
     },
     // 回收站恢复
     recoverReco(row) {
-      if (row.length === 0) {
+      if (!row.length) {
         this.selectAlert()
       } else {
         var title = '恢复' + this.name
@@ -825,7 +936,7 @@ export default {
     },
     // 回收站删除
     recoverDele(row) {
-      if (row.length === 0) {
+      if (!row.length) {
         this.selectAlert()
       } else {
         var title = '彻底删除' + this.name
@@ -851,7 +962,14 @@ export default {
     recoverSelect(selection) {
       this.recoverSelection = selection
     },
-    // 回收站父级选择（查询）
+    recoverSelectAll() {
+      if (this.recoverSelectButton) {
+        this.$refs.recoverRef.toggleAllSelection()
+      } else {
+        this.$refs.recoverRef.clearSelection()
+      }
+    },
+    // 回收站分类选择（查询）
     recoverCategoryChangeQuery(value) {
       if (value) {
         this.recoverQuery.category_id = value[value.length - 1]

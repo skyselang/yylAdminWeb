@@ -2,23 +2,23 @@ import request from '@/utils/request'
 const url = '/admin/cms.Content/'
 // ----------------内容管理----------------
 /**
- * 内容列表
- * @param {array} params 请求参数
- */
-export function list(params) {
-  return request({
-    url: url + 'list',
-    method: 'get',
-    params: params
-  })
-}
-/**
  * 内容分类列表
  * @param {array} params 请求参数
  */
 export function category(params) {
   return request({
     url: url + 'category',
+    method: 'get',
+    params: params
+  })
+}
+/**
+ * 内容列表
+ * @param {array} params 请求参数
+ */
+export function list(params) {
+  return request({
+    url: url + 'list',
     method: 'get',
     params: params
   })
@@ -63,6 +63,17 @@ export function edit(data) {
 export function dele(data) {
   return request({
     url: url + 'dele',
+    method: 'post',
+    data
+  })
+}
+/**
+ * 内容设置分类
+ * @param {array} data 请求数据
+ */
+export function cate(data) {
+  return request({
+    url: url + 'cate',
     method: 'post',
     data
   })

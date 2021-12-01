@@ -3,7 +3,7 @@
     <!-- 查询 -->
     <div class="filter-container">
       <el-row :gutter="0">
-        <el-col :xs="24" :sm="24" style="text-align:right;">
+        <el-col :span="24" style="text-align:right;">
           <el-checkbox v-model="isExpandAll" class="filter-item" border @change="expandAll">收起</el-checkbox>
           <el-button class="filter-item" style="margin-left:10px" @click="refresh()">刷新</el-button>
           <el-button class="filter-item" type="primary" @click="add()">添加</el-button>
@@ -31,11 +31,37 @@
         </template>
       </el-table-column>
     </el-table>
+    <!-- 全选操作 -->
     <div style="margin-top: 20px">
-      <el-switch v-model="is_hide" style="margin-left: 10px;" :active-value="1" :inactive-value="0" />
-      <el-button size="mini" type="text" @click="ishide(selection,true)">隐藏</el-button>
+      <el-checkbox v-model="selectButton" style="padding-right:10px" title="全选/反选" @change="selectAll()" />
+      <el-button size="mini" type="text" @click="selectOpen('pid')">父级</el-button>
+      <el-button size="mini" type="text" @click="selectOpen('hide')">隐藏</el-button>
       <el-button size="mini" type="text" @click="dele(selection)">删除</el-button>
     </div>
+    <el-dialog title="全选操作" :visible.sync="selectDialog">
+      <el-form ref="selectRef" label-width="100px">
+        <el-form-item v-if="selectType==='pid'" label="分类父级" prop="">
+          <el-cascader
+            v-model="category_pid"
+            class="filter-item"
+            :options="data"
+            :props="{checkStrictly: true, value: 'category_id', label: 'category_name'}"
+            style="width:150px"
+            clearable
+            filterable
+            placeholder="分类"
+            @change="selectCategoryChange"
+          />
+        </el-form-item>
+        <el-form-item v-if="selectType==='hide'" label="是否隐藏" prop="">
+          <el-switch v-model="is_hide" style="margin-left: 10px;" :active-value="1" :inactive-value="0" />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="selectCancel">取消</el-button>
+        <el-button type="primary" @click="selectSubmit">提交</el-button>
+      </div>
+    </el-dialog>
     <!-- 添加、修改 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialog" top="1vh" width="65%" :before-close="cancel" :close-on-click-modal="false">
       <el-form ref="ref" :rules="rules" :model="model" class="dialog-body" label-width="100px" :style="{height:height+'px'}">
@@ -48,7 +74,7 @@
             clearable
             filterable
             placeholder="一级分类"
-            @change="pidChange"
+            @change="categoryChange"
           />
         </el-form-item>
         <el-form-item label="分类名称" prop="category_name">
@@ -107,7 +133,7 @@
 <script>
 import screenHeight from '@/utils/screen-height'
 import FileManage from '@/components/FileManage'
-import { list, info, add, edit, dele, ishide } from '@/api/cms/category'
+import { list, info, add, edit, dele, pid, ishide } from '@/api/cms/category'
 
 export default {
   name: 'CmsCategory',
@@ -132,8 +158,12 @@ export default {
         sort: 200
       },
       isExpandAll: true,
-      is_hide: 0,
       selection: [],
+      selectButton: false,
+      selectDialog: false,
+      selectType: '',
+      category_pid: '',
+      is_hide: 0,
       fileDialog: false,
       rules: {
         category_name: [{ required: true, message: '请输入分类名称', trigger: 'blur' }]
@@ -155,29 +185,6 @@ export default {
       }).catch(() => {
         this.loading = false
       })
-    },
-    // 选择
-    select(selection) {
-      this.selection = selection
-    },
-    selectAlert(message = '') {
-      this.$alert(message || '请选择需要操作的' + this.name, '提示', { confirmButtonText: '确定', callback: action => {} })
-    },
-    // 收起
-    expandAll(e) {
-      this.expandFor(this.data, !e)
-    },
-    expandFor(data, isExpand) {
-      data.forEach(i => {
-        this.$refs.table.toggleRowExpansion(i, isExpand)
-        if (i.children) {
-          this.expandFor(i.children, isExpand)
-        }
-      })
-    },
-    // 刷新
-    refresh() {
-      this.list()
     },
     // 添加
     add(row) {
@@ -204,7 +211,7 @@ export default {
     },
     // 删除
     dele(row) {
-      if (row.length === 0) {
+      if (!row.length) {
         this.selectAlert()
       } else {
         var title = '删除' + this.name
@@ -258,6 +265,11 @@ export default {
         }
       })
     },
+    // 刷新
+    refresh() {
+      this.reset()
+      this.list()
+    },
     // 重置
     reset(row) {
       if (row) {
@@ -269,6 +281,72 @@ export default {
         this.$refs['ref'].resetFields()
         this.$refs['ref'].clearValidate()
       }
+    },
+    // 收起
+    expandAll(e) {
+      this.expandFor(this.data, !e)
+    },
+    expandFor(data, isExpand) {
+      data.forEach(i => {
+        this.$refs.table.toggleRowExpansion(i, isExpand)
+        if (i.children) {
+          this.expandFor(i.children, isExpand)
+        }
+      })
+    },
+    // 全选操作
+    select(selection) {
+      this.selection = selection
+    },
+    selectAlert(message = '') {
+      this.$alert(message || '请选择需要操作的' + this.name, '提示', { confirmButtonText: '确定', callback: action => {} })
+    },
+    selectAll() {
+      if (this.selectButton) {
+        this.$refs.table.toggleAllSelection()
+      } else {
+        this.$refs.table.clearSelection()
+      }
+    },
+    selectOpen(selectType) {
+      if (!this.selection.length) {
+        this.selectAlert()
+      } else {
+        this.selectDialog = true
+        this.selectType = selectType
+      }
+    },
+    selectCancel() {
+      this.selectDialog = false
+    },
+    selectSubmit() {
+      if (!this.selection.length) {
+        this.selectAlert()
+      } else {
+        const type = this.selectType
+        if (type === 'pid') {
+          this.setpid(this.selection, true)
+        } else if (type === 'hide') {
+          this.ishide(this.selection, true)
+        }
+        this.selectDialog = false
+      }
+    },
+    selectCategoryChange(value) {
+      this.category_pid = value[value.length - 1]
+    },
+    // 设置父级
+    setpid(row) {
+      pid({
+        category: row,
+        category_pid: this.category_pid
+      }).then(res => {
+        this.selectDialog = false
+        this.list()
+        this.$message.success(res.msg)
+      }).catch(() => {
+        this.list()
+      })
     },
     // 是否隐藏
     ishide(row, select = false) {
@@ -292,8 +370,8 @@ export default {
         })
       }
     },
-    // 父级选择
-    pidChange(value) {
+    // 分类父级选择
+    categoryChange(value) {
       if (value) {
         this.model.category_pid = value[value.length - 1]
       }
