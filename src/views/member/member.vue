@@ -7,6 +7,7 @@
           <el-select v-model="query.search_field" class="filter-item" style="width:110px;" placeholder="">
             <el-option value="member_id" label="会员ID" />
             <el-option value="username" label="账号" />
+            <el-option value="nickname" label="昵称" />
             <el-option value="phone" label="手机" />
             <el-option value="email" label="邮箱" />
           </el-select>
@@ -20,7 +21,7 @@
             v-model="query.date_value"
             type="daterange"
             class="filter-item"
-            style="width: 240px;"
+            style="width:240px;"
             range-separator="-"
             value-format="yyyy-MM-dd"
             start-placeholder="开始日期"
@@ -35,20 +36,18 @@
       </el-row>
     </div>
     <!-- 列表 -->
-    <el-table v-loading="loading" :data="data" :height="height" style="width:100%" @sort-change="sort">
-      <el-table-column prop="member_id" label="会员ID" min-width="100" sortable="custom" fixed="left" />
+    <el-table ref="table" v-loading="loading" :data="data" :height="height" style="width:100%" @sort-change="sort" @selection-change="select">
+      <el-table-column type="selection" width="40" title="全选/反选" />
+      <el-table-column prop="member_id" label="会员ID" min-width="100" sortable="custom" />
       <el-table-column prop="avatar_id" label="头像" min-width="80" align="center">
         <template slot-scope="scope">
           <el-image
-            style="width:30px; height:30px; border-radius:3px;"
+            v-if="scope.row.avatar_url"
+            style="width:20px; height:20px; border-radius:3px;"
             :src="scope.row.avatar_url"
             :preview-src-list="[scope.row.avatar_url]"
             title="点击查看大图"
-          >
-            <div slot="error" class="image-slot">
-              <i class="el-icon-picture-outline" />
-            </div>
-          </el-image>
+          />
         </template>
       </el-table-column>
       <el-table-column prop="username" label="账号" min-width="120" sortable="custom" show-overflow-tooltip />
@@ -58,19 +57,53 @@
       <el-table-column prop="remark" label="备注" min-width="110" show-overflow-tooltip />
       <el-table-column prop="is_disable" label="禁用" min-width="80" sortable="custom" align="center">
         <template slot-scope="scope">
-          <el-switch v-model="scope.row.is_disable" :active-value="1" :inactive-value="0" @change="disable(scope.row)" />
+          <el-switch v-model="scope.row.is_disable" :active-value="1" :inactive-value="0" @change="disable([scope.row])" />
         </template>
       </el-table-column>
       <el-table-column prop="sort" label="排序" width="80" sortable="custom" />
       <el-table-column prop="create_time" label="注册时间" min-width="160" sortable="custom" />
       <el-table-column label="操作" min-width="120" align="right" fixed="right">
         <template slot-scope="{ row }">
-          <el-button size="mini" type="text" @click="pwd(row)">密码</el-button>
           <el-button size="mini" type="text" @click="edit(row)">修改</el-button>
-          <el-button size="mini" type="text" @click="dele(row)">删除</el-button>
+          <el-button size="mini" type="text" @click="dele([row])">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
+    <!-- 选中操作 -->
+    <div style="margin-left:10px; margin-top:20px">
+      <el-checkbox v-model="selectButton" style="padding-right:10px" title="全选/反选" @change="selectAll()" />
+      <el-button size="mini" type="text" @click="selectOpen('region')">地区</el-button>
+      <el-button size="mini" type="text" @click="selectOpen('disable')">禁用</el-button>
+      <el-button size="mini" type="text" @click="selectOpen('repwd')">密码</el-button>
+      <el-button size="mini" type="text" @click="dele(selection)">删除</el-button>
+    </div>
+    <el-dialog title="操作" :visible.sync="selectDialog">
+      <el-form ref="selectRef" label-width="100px">
+        <el-form-item v-if="selectType==='region'" label="地区" prop="">
+          <el-cascader
+            v-model="region_id"
+            class="filter-item"
+            :options="regionData"
+            :props="regionProps"
+            style="width:100%"
+            clearable
+            filterable
+            placeholder="地区"
+            @change="selectRegionChange"
+          />
+        </el-form-item>
+        <el-form-item v-if="selectType==='disable'" label="禁用" prop="">
+          <el-switch v-model="is_disable" style="margin-left: 10px;" :active-value="1" :inactive-value="0" />
+        </el-form-item>
+        <el-form-item v-if="selectType==='repwd'" label="新密码" prop="">
+          <el-input v-model="password" placeholder="请输入新密码" clearable show-password />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="selectCancel">取消</el-button>
+        <el-button type="primary" @click="selectSubmit">提交</el-button>
+      </div>
+    </el-dialog>
     <!-- 分页 -->
     <pagination v-show="count > 0" :total="count" :page.sync="query.page" :limit.sync="query.limit" @pagination="list" />
     <!-- 添加、修改 -->
@@ -79,15 +112,12 @@
         <el-form-item label="头像" prop="avatar_url">
           <el-col :span="8">
             <el-image
+              v-if="model.avatar_url"
               style="width:100px; height:100px; border-radius:10px;"
               :src="model.avatar_url"
               :preview-src-list="[model.avatar_url]"
               title="点击查看大图"
-            >
-              <div slot="error" class="image-slot">
-                <i class="el-icon-picture-outline" />
-              </div>
-            </el-image>
+            />
           </el-col>
           <el-col :span="16">
             <el-button size="mini" @click="fileUpload()">上传头像</el-button>
@@ -111,7 +141,7 @@
           <el-input v-model="model.email" clearable />
         </el-form-item>
         <el-form-item label="地区" prop="region_id">
-          <el-cascader v-model="model.region_id" :options="regionTree" :props="regionProps" style="width:100%" @change="regionChange" />
+          <el-cascader v-model="model.region_id" :options="regionData" :props="regionProps" style="width:100%" @change="regionChange" />
         </el-form-item>
         <el-form-item label="备注" prop="remark">
           <el-input v-model="model.remark" clearable />
@@ -137,25 +167,22 @@
             <el-input v-model="model.login_region" disabled />
           </el-col>
         </el-form-item>
-        <el-form-item v-if="model.wechat.member_wechat_id" label="微信信息" prop="wechat">
+        <el-form-item v-if="model.wechat" label="微信信息" prop="wechat">
           <el-descriptions title="" :column="2">
             <el-descriptions-item label="头像">
               <el-image
+                v-if="model.wechat.headimgurl"
                 style="width:100px; height:100px; border-radius:10px;"
                 :src="model.wechat.headimgurl"
                 :preview-src-list="[model.wechat.headimgurl]"
                 title="点击查看大图"
-              >
-                <div slot="error" class="image-slot">
-                  <i class="el-icon-picture-outline" />
-                </div>
-              </el-image>
+              />
             </el-descriptions-item>
             <el-descriptions-item label="昵称">{{ model.wechat.nickname }}</el-descriptions-item>
             <el-descriptions-item label="性别">
-              <el-tag v-if="model.wechat.sex==1" type="info">男</el-tag>
+              <el-tag v-if="model.wechat.sex==0" type="info">未知</el-tag>
+              <el-tag v-else-if="model.wechat.sex==1" type="info">男</el-tag>
               <el-tag v-else-if="model.wechat.sex==2" type="info">女</el-tag>
-              <el-tag v-else type="info">未知</el-tag>
             </el-descriptions-item>
             <el-descriptions-item label="国家">{{ model.wechat.country }}</el-descriptions-item>
             <el-descriptions-item label="省份">{{ model.wechat.province }}</el-descriptions-item>
@@ -172,24 +199,7 @@
         <el-button type="primary" @click="submit">提交</el-button>
       </div>
     </el-dialog>
-    <!-- 重置密码 -->
-    <el-dialog :title="pwdDialogTitle" :visible.sync="pwdDialog" :before-close="pwdCancel">
-      <el-form ref="refPwd" :rules="pwdRules" :model="model" label-width="100px" class="dialog-body">
-        <el-form-item label="账号">
-          <el-input v-model="model.username" clearable disabled />
-        </el-form-item>
-        <el-form-item label="昵称">
-          <el-input v-model="model.nickname" clearable disabled />
-        </el-form-item>
-        <el-form-item label="新密码" prop="password">
-          <el-input v-model="model.password" placeholder="请输入新密码" clearable show-password />
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="pwdCancel">取消</el-button>
-        <el-button type="primary" @click="pwdSubmit">提交</el-button>
-      </div>
-    </el-dialog>
+    <!-- 上传头像 -->
     <el-dialog title="上传头像" :visible.sync="fileDialog" width="80%" top="1vh">
       <file-manage file-type="image" @fileCancel="fileCancel" @fileSubmit="fileSubmit" />
     </el-dialog>
@@ -201,13 +211,14 @@ import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination'
 import FileManage from '@/components/FileManage'
 import { list as regionList } from '@/api/region'
-import { list, info, add, edit, dele, pwd, disable } from '@/api/member'
+import { list, info, add, edit, dele, region, repwd, disable } from '@/api/member'
 
 export default {
   name: 'Member',
   components: { Pagination, FileManage },
   data() {
     return {
+      name: '会员',
       height: 680,
       loading: false,
       data: [],
@@ -234,30 +245,32 @@ export default {
         sort: 250,
         wechat: {}
       },
-      sexArr: [],
       rules: {
         username: [{ required: true, message: '请输入账号', trigger: 'blur' }],
+        nickname: [{ required: true, message: '请输入昵称', trigger: 'blur' }],
         password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
       },
-      regionTree: [],
+      regionData: [],
       regionProps: {
         expandTrigger: 'click',
         checkStrictly: true,
         value: 'region_id',
         label: 'region_name'
       },
-      fileDialog: false,
-      pwdDialog: false,
-      pwdDialogTitle: '',
-      pwdRules: {
-        password: [{ required: true, message: '请输入新密码', trigger: 'blur' }]
-      }
+      selection: [],
+      selectButton: false,
+      selectDialog: false,
+      selectType: '',
+      region_id: 0,
+      is_disable: 0,
+      password: '',
+      fileDialog: false
     }
   },
   created() {
-    this.height = screenHeight()
+    this.height = screenHeight(265)
     this.list()
-    this.region()
+    this.regionList()
   },
   methods: {
     // 列表
@@ -266,51 +279,31 @@ export default {
       list(this.query).then(res => {
         this.data = res.data.list
         this.count = res.data.count
+        this.selectButton = false
         this.loading = false
       }).catch(() => {
         this.loading = false
       })
     },
-    // 添加
+    // 添加、修改
     add() {
       this.dialog = true
-      this.dialogTitle = '会员添加'
+      this.dialogTitle = this.name + '添加'
       this.reset()
     },
-    // 修改
     edit(row) {
       this.dialog = true
-      this.dialogTitle = '会员修改：' + row.member_id
+      this.dialogTitle = this.name + '修改：' + row.member_id
       info({
         member_id: row.member_id
       }).then(res => {
         this.model = res.data
       })
     },
-    // 删除
-    dele(row) {
-      this.$confirm(
-        '确定要删除会员 <span style="color:red">' + row.username + ' </span>吗？',
-        '会员删除：' + row.member_id,
-        { type: 'warning', dangerouslyUseHTMLString: true }
-      ).then(() => {
-        this.loading = true
-        dele({
-          member_id: row.member_id
-        }).then(res => {
-          this.list()
-          this.$message.success(res.msg)
-        }).catch(() => {
-          this.loading = false
-        })
-      }).catch(() => {})
-    },
-    // 取消
     cancel() {
       this.reset()
       this.dialog = false
     },
-    // 提交
     submit() {
       this.$refs['ref'].validate(valid => {
         if (valid) {
@@ -334,6 +327,53 @@ export default {
           }
         }
       })
+    },
+    // 上传头像
+    fileUpload() {
+      this.fileDialog = true
+    },
+    fileCancel() {
+      this.fileDialog = false
+    },
+    fileSubmit(filelists) {
+      this.fileDialog = false
+      this.model.avatar_id = filelists[0]['file_id']
+      this.model.avatar_url = filelists[0]['file_url']
+    },
+    // 选择地区
+    regionList() {
+      regionList({ type: 'tree' }).then(res => {
+        this.regionData = res.data
+      })
+    },
+    regionChange(value) {
+      if (value) {
+        this.model.region_id = value[value.length - 1]
+      }
+    },
+    // 删除
+    dele(row) {
+      if (!row.length) {
+        this.selectAlert()
+      } else {
+        var title = '删除' + this.name
+        var message = '确定要删除选中的 <span style="color:red">' + row.length + ' </span> 条' + this.name + '记录吗？'
+        if (row.length === 1) {
+          title = title + '：' + row[0].member_id
+          message = '确定要删除' + this.name + ' <span style="color:red">' + row[0].username + ' </span>吗？'
+        }
+        this.$confirm(message, title, { type: 'warning', dangerouslyUseHTMLString: true }).then(() => {
+          this.loading = true
+          dele({
+            list: row
+          }).then(res => {
+            this.list()
+            this.$message.success(res.msg)
+          }).catch(() => {
+            this.loading = false
+          })
+        }).catch(() => {})
+      }
     },
     // 重置
     reset() {
@@ -365,68 +405,119 @@ export default {
         this.list()
       }
     },
-    // 地区选择
-    regionChange(value) {
-      if (value) {
-        this.model.region_id = value[value.length - 1]
+    // 选中操作
+    select(selection) {
+      if (selection.length) {
+        this.selectButton = true
+      } else {
+        this.selectButton = false
+      }
+      this.selection = selection
+    },
+    selectAlert(message = '') {
+      this.$alert(message || '请选择需要操作的' + this.name, '提示', { confirmButtonText: '确定', callback: action => {} })
+    },
+    selectAll() {
+      if (this.selectButton) {
+        this.$refs.table.toggleAllSelection()
+      } else {
+        this.$refs.table.clearSelection()
       }
     },
-    // 上传头像
-    fileUpload() {
-      this.fileDialog = true
+    selectOpen(selectType) {
+      if (!this.selection.length) {
+        this.selectAlert()
+      } else {
+        this.selectDialog = true
+        this.selectType = selectType
+      }
     },
-    fileCancel() {
-      this.fileDialog = false
+    selectCancel() {
+      this.selectDialog = false
     },
-    fileSubmit(filelists) {
-      this.fileDialog = false
-      this.model.avatar_id = filelists[0]['file_id']
-      this.model.avatar_url = filelists[0]['file_url']
+    selectSubmit() {
+      if (!this.selection.length) {
+        this.selectAlert()
+      } else {
+        const type = this.selectType
+        if (type === 'region') {
+          this.region(this.selection, true)
+        } else if (type === 'disable') {
+          this.disable(this.selection, true)
+        } else if (type === 'repwd') {
+          this.repwd(this.selection, true)
+        }
+        this.selectDialog = false
+      }
+    },
+    selectRegionChange(value) {
+      if (value) {
+        this.region_id = value[value.length - 1]
+      }
+    },
+    // 设置地区
+    region(row, select = false) {
+      if (!row.length) {
+        this.selectAlert()
+      } else {
+        this.loading = true
+        var region_id = row[0].region_id
+        if (select) {
+          region_id = this.region_id
+        }
+        region({
+          list: row,
+          region_id: region_id
+        }).then(res => {
+          this.list()
+          this.$message.success(res.msg)
+        }).catch(() => {
+          this.list()
+        })
+      }
     },
     // 是否禁用
-    disable(row) {
-      this.loading = true
-      disable(row).then(res => {
-        this.list()
-        this.$message.success(res.msg)
-      }).catch(() => {
-        this.list()
-      })
+    disable(row, select = false) {
+      if (!row.length) {
+        this.selectAlert()
+      } else {
+        this.loading = true
+        var is_disable = row[0].is_disable
+        if (select) {
+          is_disable = this.is_disable
+        }
+        disable({
+          list: row,
+          is_disable: is_disable
+        }).then(res => {
+          this.list()
+          this.$message.success(res.msg)
+        }).catch(() => {
+          this.list()
+        })
+      }
     },
     // 重置密码
-    pwd(row) {
-      this.pwdDialog = true
-      this.pwdDialogTitle = '会员重置密码：' + row.member_id
-      this.model.member_id = row.member_id
-      this.model.username = row.username
-      this.model.nickname = row.nickname
-      this.model.password = ''
-    },
-    pwdCancel() {
-      this.pwdDialog = false
-      this.reset()
-    },
-    pwdSubmit() {
-      this.$refs['refPwd'].validate(valid => {
-        if (valid) {
-          this.loading = true
-          pwd({
-            member_id: this.model.member_id,
-            password: this.model.password
-          }).then(res => {
-            this.list()
-            this.pwdDialog = false
-            this.$message.success(res.msg)
-          }).catch(() => {
-            this.loading = false
-          })
+    repwd(row, select = false) {
+      if (!row.length) {
+        this.selectAlert()
+      } else {
+        if (!this.password) {
+          this.$message.error('请输入新密码')
+          return false
         }
-      })
-    },
-    region() {
-      regionList({ type: 'tree' }).then(res => {
-        this.regionTree = res.data
-      })
+        this.loading = true
+        repwd({
+          list: row,
+          password: this.password
+        }).then(res => {
+          this.list()
+          this.pwdDialog = false
+          this.$message.success(res.msg)
+        }).catch(() => {
+          this.loading = false
+        })
+      }
     }
   }
 }

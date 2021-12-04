@@ -57,12 +57,23 @@ export function dele(data) {
   })
 }
 /**
+ * 会员设置地区
+ * @param {array} data 请求数据
+ */
+export function region(data) {
+  return request({
+    url: url + 'region',
+    method: 'post',
+    data
+  })
+}
+/**
  * 会员重置密码
  * @param {array} data 请求数据
  */
-export function pwd(data) {
+export function repwd(data) {
   return request({
-    url: url + 'pwd',
+    url: url + 'repwd',
     method: 'post',
     data
   })

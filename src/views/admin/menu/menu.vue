@@ -13,7 +13,15 @@
     <!-- 列表 -->
     <el-table ref="table" v-loading="loading" :data="data" :height="height+50" style="width: 100%" row-key="admin_menu_id" @cell-dblclick="tableCellDbclick">
       <el-table-column prop="menu_name" label="菜单名称" min-width="220" />
-      <el-table-column prop="menu_url" label="菜单链接(roles)" min-width="300" />
+      <el-table-column prop="menu_url" label="菜单链接(roles)" min-width="300">
+        <template slot="header">
+          <span>菜单链接(roles)</span>
+          <el-tooltip placement="top">
+            <div slot="content">双击单元格复制</div>
+            <i class="el-icon-warning" title="" />
+          </el-tooltip>
+        </template>
+      </el-table-column>
       <el-table-column prop="is_disable" label="是否禁用" min-width="95" align="center">
         <template slot="header">
           <span>是否禁用</span>

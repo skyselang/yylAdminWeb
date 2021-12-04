@@ -7,6 +7,8 @@
           <el-select v-model="query.search_field" class="filter-item" style="width:110px;" placeholder="">
             <el-option value="file_name" label="文件名称" />
             <el-option value="file_id" label="文件ID" />
+            <el-option value="file_md5" label="文件MD5" />
+            <el-option value="file_hash" label="文件散列" />
           </el-select>
           <el-input v-model="query.search_value" class="filter-item" style="width:200px;" placeholder="搜索内容" clearable />
           <el-select v-model="query.date_field" class="filter-item" style="width:110px;" placeholder="时间类型">
@@ -153,8 +155,8 @@
                     {{ item.file_name }}
                   </span>
                   <div class="bottom clearfix">
-                    <el-button size="mini" type="text" @click="edit(item,'name')">编辑</el-button>
-                    <el-button size="mini" type="text" @click="edit(item,'url')">链接</el-button>
+                    <el-button size="mini" type="text" :title="'MD5：'+item.file_md5" @click="edit(item,'name')">编辑</el-button>
+                    <el-button size="mini" type="text" :title="'SHA1：'+item.file_hash" @click="edit(item,'url')">链接</el-button>
                     <el-button v-if="item.is_disable" size="mini" type="text" title="点击启用文件" @click="disable([item.file_id],0)">启用</el-button>
                     <el-button v-else size="mini" type="text" title="点击禁用文件" @click="disable([item.file_id],1)">禁用</el-button>
                     <el-button size="mini" type="text" @click="dele([item.file_id])">删除</el-button>
@@ -169,7 +171,7 @@
         <el-empty description="暂无文件" />
       </el-col>
     </el-row>
-    <!-- 批量操作 -->
+    <!-- 选中操作 -->
     <el-row v-show="count > 0">
       <el-col :offset="3" style="margin-top:15px">
         <el-checkbox v-model="checkAll" border size="mini" :indeterminate="checkAllInd" @change="checkAllChange">全选</el-checkbox>
@@ -181,7 +183,7 @@
     </el-row>
     <!-- 分页 -->
     <pagination v-show="count > 0" :total="count" :page.sync="query.page" :limit.sync="query.limit" @pagination="list" />
-    <!-- 选中操作 -->
+    <!-- 选择文件 -->
     <el-row v-show="fileType">
       <el-col style="text-align:right;margin-top:20px;">
         <el-button @click="fileCancel()">取消</el-button>
@@ -236,7 +238,10 @@
         <el-form-item label="文件后缀" prop="file_ext">
           <el-input v-model="model.file_ext" placeholder="" disabled />
         </el-form-item>
-        <el-form-item label="文件哈希" prop="file_hash">
+        <el-form-item label="文件MD5" prop="file_md5">
+          <el-input v-model="model.file_md5" placeholder="" disabled />
+        </el-form-item>
+        <el-form-item label="文件散列" prop="file_hash">
           <el-input v-model="model.file_hash" placeholder="" disabled />
         </el-form-item>
         <el-form-item v-if="model.file_id" label="添加时间" prop="create_time">
