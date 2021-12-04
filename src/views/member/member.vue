@@ -225,7 +225,7 @@ export default {
       count: 0,
       query: {
         page: 1,
-        limit: 12,
+        limit: 15,
         search_field: 'member_id',
         date_field: 'create_time'
       },
@@ -268,7 +268,7 @@ export default {
     }
   },
   created() {
-    this.height = screenHeight(265)
+    this.height = screenHeight(280)
     this.list()
     this.regionList()
   },
