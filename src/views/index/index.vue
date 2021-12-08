@@ -30,6 +30,7 @@ import Count from './components/Count'
 import Member from './components/Member'
 import File from './components/File'
 import Cms from './components/Cms'
+import { message } from '@/api/index'
 
 export default {
   name: 'Dashboard',
@@ -41,9 +42,27 @@ export default {
   },
   created() {
     this.height = screenHeight(100)
+    this.message()
   },
   methods: {
-    checkPermission
+    checkPermission,
+    message() {
+      message().then(res => {
+        this.msgBox(res.data.list[0])
+      }).catch(() => {})
+    },
+    msgBox(msg) {
+      this.$confirm(msg.intro, msg.title, {
+        dangerouslyUseHTMLString: true,
+        confirmButtonText: '查看',
+        cancelButtonText: '取消',
+        closeOnClickModal: false,
+        closeOnPressEscape: false,
+        center: true
+      }).then(() => {
+        this.$router.push(`/admin/system/message-info?id=${msg.admin_message_id}`)
+      }).catch(() => {})
+    }
   }
 }
 </script>
