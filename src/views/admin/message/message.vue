@@ -68,9 +68,8 @@
       <el-table-column prop="sort" label="排序" min-width="80" sortable="custom" />
       <el-table-column prop="admin_user" label="添加用户" min-width="120" show-overflow-tooltip />
       <el-table-column prop="create_time" label="添加时间" min-width="155" sortable="custom" />
-      <el-table-column label="操作" min-width="130" align="right" fixed="right">
+      <el-table-column label="操作" min-width="90" align="right" fixed="right">
         <template slot-scope="{ row }">
-          <el-button size="mini" type="text" @click="info(row)">查看</el-button>
           <el-button size="mini" type="text" @click="edit(row)">修改</el-button>
           <el-button size="mini" type="text" @click="dele([row])">删除</el-button>
         </template>
@@ -190,10 +189,6 @@ export default {
       }).catch(() => {
         this.loading = false
       })
-    },
-    // 详情
-    info(row) {
-      this.$router.push(`/msg?id=${row.admin_message_id}`)
     },
     // 添加、修改
     add() {
