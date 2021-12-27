@@ -1,12 +1,12 @@
 <template>
   <el-card class="box-card">
-    <el-row :gutter="0">
+    <el-row>
       <el-col :xs="24" :sm="18" :md="12">
         <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
           <el-form-item label="logo" prop="logo_id">
-            <el-row :gutter="0">
+            <el-row>
               <el-col :span="10">
-                <el-image style="width:80px; height:100%;" :src="model.logo_url" :preview-src-list="[model.logo_url]" title="点击查看大图">
+                <el-image class="image-logo" :src="model.logo_url" :preview-src-list="[model.logo_url]" title="点击查看大图">
                   <div slot="error" class="image-slot">
                     <i class="el-icon-picture-outline" />
                   </div>
@@ -14,15 +14,16 @@
               </el-col>
               <el-col :span="14">
                 <el-button size="mini" @click="fileUpload('logo', '上传LOGO')">上传LOGO</el-button>
+                <el-button size="mini" @click="fileDelete('logo')">删除</el-button>
                 <br>
-                <span>jpg、png图片，200 x 200，小于 200 KB。</span>
+                <span>jpg、png图片，200 x 200，小于 100 KB。</span>
               </el-col>
             </el-row>
           </el-form-item>
           <el-form-item label="favicon" prop="favicon_id">
-            <el-row :gutter="0">
+            <el-row>
               <el-col :span="10">
-                <el-image style="width:50px; height:100%;" :src="model.favicon_url" :preview-src-list="[model.favicon_url]" title="点击查看大图">
+                <el-image class="image-favicon" :src="model.favicon_url" :preview-src-list="[model.favicon_url]" title="点击查看大图">
                   <div slot="error" class="image-slot">
                     <i class="el-icon-picture-outline" />
                   </div>
@@ -30,24 +31,26 @@
               </el-col>
               <el-col :span="14">
                 <el-button size="mini" @click="fileUpload('favicon', '上传favicon')">上传favicon</el-button>
+                <el-button size="mini" @click="fileDelete('favicon')">删除</el-button>
                 <br>
-                <span>jpg、png、ico图片，128 x 128，小于 100 KB。</span>
+                <span>jpg、png、ico图片，128 x 128，小于 50 KB。</span>
               </el-col>
             </el-row>
           </el-form-item>
           <el-form-item label="登录背景" prop="login_bg_id">
-            <el-row :gutter="0">
+            <el-row>
               <el-col :span="10">
-                <el-image style="width:100px; height:100%;" :src="model.login_bg_url" :preview-src-list="[model.login_bg_url]" title="点击查看大图">
+                <el-image class="image-login-bg" :src="model.login_bg_url" :preview-src-list="[model.login_bg_url]" title="点击查看大图">
                   <div slot="error" class="image-slot">
                     <i class="el-icon-picture-outline" />
                   </div>
                 </el-image>
               </el-col>
               <el-col :span="14">
-                <el-button size="mini" @click="fileUpload('login_bg', '上传背景图')">上传背景图</el-button>
+                <el-button size="mini" @click="fileUpload('login_bg', '上传登录背景')">上传背景图</el-button>
+                <el-button size="mini" @click="fileDelete('login_bg')">删除</el-button>
                 <br>
-                <span>jpg、png图片，1920 x 1080，小于 500 KB。</span>
+                <span>jpg、png图片，1920 x 1080，小于 300 KB。</span>
               </el-col>
             </el-row>
           </el-form-item>
@@ -66,7 +69,8 @@
         </el-form>
       </el-col>
     </el-row>
-    <el-dialog :title="fileTitle" :visible.sync="fileDialog" width="80%" top="1vh">
+    <!-- 文件管理 -->
+    <el-dialog :title="fileTitle" :visible.sync="fileDialog" width="80%" top="1vh" :close-on-click-modal="false" :close-on-press-escape="false">
       <file-manage file-type="image" @fileCancel="fileCancel" @fileSubmit="fileSubmit" />
     </el-dialog>
   </el-card>
@@ -81,6 +85,7 @@ export default {
   components: { FileManage },
   data() {
     return {
+      name: '系统设置',
       loading: false,
       model: {
         logo_id: 0,
@@ -162,7 +167,34 @@ export default {
         this.model.login_bg_id = filelists[0]['file_id']
         this.model.login_bg_url = filelists[0]['file_url']
       }
+    },
+    fileDelete(field = '') {
+      if (field === 'logo') {
+        this.model.logo_id = 0
+        this.model.logo_url = ''
+      } else if (field === 'favicon') {
+        this.model.favicon_id = 0
+        this.model.favicon_url = ''
+      } else if (field === 'login_bg') {
+        this.model.login_bg_id = 0
+        this.model.login_bg_url = ''
+      }
     }
   }
 }
 </script>
+
+<style scoped>
+.image-logo{
+  width: 60px;
+  height: 100%;
+}
+.image-favicon{
+  width: 32px;
+  height: 100%;
+}
+.image-login-bg{
+  width: 100px;
+  height: 100%;
+}
+</style>

@@ -1,19 +1,17 @@
 <template>
   <el-card class="box-card">
-    <el-row :gutter="0">
+    <el-row class="dialog-body" :style="{height:height+'px'}">
       <el-col :xs="24" :sm="18" :md="12">
         <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
-          <el-form-item label="Token名称" prop="token_name">
-            <el-input v-model="model.token_name" type="text" style="width:90%" />
-            <i class="el-icon-warning-outline" title="必须与前端设置一致，否则Token验证失败。" />
+          <el-form-item label="" prop="">
+            <span>开启后，会记录会员日志。</span>
           </el-form-item>
-          <el-form-item label="Token密钥" prop="token_key">
-            <el-input v-model="model.token_key" type="text" style="width:90%" />
-            <i class="el-icon-warning-outline" title="修改后所有会员登录状态失效，需重新登录。" />
+          <el-form-item label="日志记录" prop="log_switch">
+            <el-switch v-model="model.log_switch" :active-value="1" :inactive-value="0" />
           </el-form-item>
-          <el-form-item label="Token有效时间" prop="token_exp">
-            <el-input v-model="model.token_exp" type="number">
-              <template slot="append">小时</template>
+          <el-form-item label="保留时间" prop="log_save_time">
+            <el-input v-model="model.log_save_time" type="number">
+              <template slot="append">天<i class="el-icon-warning-outline" title="日志保留时间，0永久保留" /></template>
             </el-input>
           </el-form-item>
           <el-form-item>
@@ -27,36 +25,39 @@
 </template>
 
 <script>
-import { tokenInfo, tokenEdit } from '@/api/setting'
+import screenHeight from '@/utils/screen-height'
+import { logInfo, logEdit } from '@/api/setting'
 
 export default {
-  name: 'SettingToken',
+  name: 'SettingBaseLog',
   components: {},
   data() {
     return {
+      name: '日志设置',
+      height: 680,
       loading: false,
       model: {
-        token_name: '',
-        token_key: '',
-        token_exp: 720
+        log_switch: 0,
+        log_save_time: 0
       },
       rules: {}
     }
   },
   created() {
+    this.height = screenHeight()
     this.info()
   },
   methods: {
     // 信息
     info() {
-      tokenInfo().then(res => {
+      logInfo().then(res => {
         this.model = res.data
       })
     },
     // 刷新
     refresh() {
       this.loading = true
-      tokenInfo()
+      logInfo()
         .then((res) => {
           this.model = res.data
           this.loading = false
@@ -71,7 +72,7 @@ export default {
       this.$refs['ref'].validate(valid => {
         if (valid) {
           this.loading = true
-          tokenEdit(this.model).then(res => {
+          logEdit(this.model).then(res => {
             this.info()
             this.loading = false
             this.$message.success(res.msg)

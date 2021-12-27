@@ -7,7 +7,10 @@ export default {
   name: 'AdminLogout',
   components: {},
   data() {
-    return { loading: true }
+    return {
+      name: '退出',
+      loading: true
+    }
   },
   created() {
     this.logout()

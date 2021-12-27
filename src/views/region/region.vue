@@ -3,39 +3,63 @@
     <!-- 查询 -->
     <div class="filter-container">
       <el-row>
-        <el-col :xm="24" :sm="22">
-          <el-input v-model="query.region_id" class="filter-item" style="width: 200px;" placeholder="地区ID" clearable />
-          <el-input v-model="query.region_name" class="filter-item" style="width: 200px;" placeholder="名称" clearable />
-          <el-input v-model="query.region_pinyin" class="filter-item" style="width: 200px;" placeholder="拼音" clearable />
+        <el-col>
+          <el-select v-model="query.search_field" class="filter-item ya-search-field" placeholder="搜索字段">
+            <el-option value="region_name" label="名称" />
+            <el-option value="region_pinyin" label="拼音" />
+            <el-option value="region_jianpin" label="简拼" />
+            <el-option value="region_initials" label="首字母" />
+            <el-option value="region_citycode" label="区号" />
+            <el-option value="region_zipcode" label="邮编" />
+            <el-option value="region_pid" label="PID" />
+            <el-option value="region_id" label="ID" />
+          </el-select>
+          <el-input v-model="query.search_value" class="filter-item ya-search-value" placeholder="搜索内容" clearable />
+          <el-select v-model="query.date_field" class="filter-item ya-date-field" placeholder="时间类型">
+            <el-option value="create_time" label="添加时间" />
+            <el-option value="update_time" label="修改时间" />
+          </el-select>
+          <el-date-picker
+            v-model="query.date_value"
+            type="daterange"
+            class="filter-item ya-date-value"
+            value-format="yyyy-MM-dd"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          />
           <el-button class="filter-item" type="primary" @click="search()">查询</el-button>
           <el-button class="filter-item" @click="refresh()">刷新</el-button>
         </el-col>
-        <el-col :xm="24" :sm="2" style="text-align:right;">
-          <el-button class="filter-item" type="primary" @click="add('')">添加</el-button>
+      </el-row>
+      <el-row>
+        <el-col>
+          <el-button @click="dele(selection)">删除</el-button>
+          <el-button type="primary" @click="add('')">添加</el-button>
         </el-col>
       </el-row>
     </div>
     <!-- 列表 -->
-    <el-table v-loading="loading" :data="data" :height="height+50" style="width:100%" row-key="region_id" lazy :load="listLoad" @sort-change="sort">
+    <el-table v-loading="loading" :data="data" :height="height" row-key="region_id" lazy :load="load" @sort-change="sort" @selection-change="select">
+      <el-table-column type="selection" width="42" title="全选/反选" />
       <el-table-column prop="region_name" label="名称" min-width="250" />
       <el-table-column prop="region_pinyin" label="拼音" min-width="250" sortable="custom" />
       <el-table-column prop="region_jianpin" label="简拼" min-width="120" sortable="custom" />
       <el-table-column prop="region_initials" label="首字母" min-width="90" sortable="custom" />
       <el-table-column prop="region_citycode" label="区号" min-width="80" sortable="custom" />
       <el-table-column prop="region_zipcode" label="邮编" min-width="80" sortable="custom" />
-      <el-table-column prop="region_sort" label="排序" min-width="80" sortable="custom" />
-      <el-table-column prop="region_id" label="地区ID" min-width="95" sortable="custom" />
+      <el-table-column prop="region_id" label="ID" min-width="95" sortable="custom" />
       <el-table-column prop="region_pid" label="PID" min-width="95" />
+      <el-table-column prop="region_sort" label="排序" min-width="80" sortable="custom" />
       <el-table-column label="操作" width="130" fixed="right" align="right">
         <template slot-scope="{ row }">
-          <el-button size="mini" type="text" @click="add(row)">添加</el-button>
+          <el-button size="mini" type="text" title="添加下级" @click="add(row)">添加</el-button>
           <el-button size="mini" type="text" @click="edit(row)">修改</el-button>
-          <el-button size="mini" type="text" @click="dele(row)">删除</el-button>
+          <el-button size="mini" type="text" @click="dele([row])">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
     <!-- 添加、修改 -->
-    <el-dialog :title="dialogTitle" :visible.sync="dialog" top="1vh" width="50%" :before-close="cancel">
+    <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false">
       <el-form ref="ref" :rules="rules" :model="model" class="dialog-body" label-width="100px" :style="{height:height+'px'}">
         <el-form-item label="父级" prop="region_pid">
           <el-cascader
@@ -50,48 +74,41 @@
           />
         </el-form-item>
         <el-form-item label="名称" prop="region_name">
-          <el-input v-model="model.region_name" clearable placeholder="请输入名称：北京市" />
+          <el-input v-model="model.region_name" placeholder="请输入名称eg：北京市" clearable />
         </el-form-item>
         <el-form-item label="拼音" prop="region_pinyin">
-          <el-input v-model="model.region_pinyin" clearable placeholder="请输入拼音：Beijing" />
+          <el-input v-model="model.region_pinyin" placeholder="请输入拼音eg：Beijing" clearable />
         </el-form-item>
         <el-form-item label="简拼" prop="region_jianpin">
-          <el-input v-model="model.region_jianpin" clearable placeholder="请输入简拼：BJ" />
+          <el-input v-model="model.region_jianpin" placeholder="请输入简拼eg：BJ" clearable />
         </el-form-item>
         <el-form-item label="首字母" prop="region_initials">
-          <el-input v-model="model.region_initials" clearable placeholder="请输入首字母：B" />
-        </el-form-item>
-        <el-form-item label="排序" prop="region_sort">
-          <el-input v-model="model.region_sort" clearable placeholder="请输入排序：1000" type="number" />
+          <el-input v-model="model.region_initials" placeholder="请输入首字母eg：B" clearable />
         </el-form-item>
         <el-form-item label="区号" prop="region_citycode">
-          <el-input v-model="model.region_citycode" clearable placeholder="请输入区号：010" />
+          <el-input v-model="model.region_citycode" placeholder="请输入区号eg：010" clearable />
         </el-form-item>
         <el-form-item label="邮编" prop="region_zipcode">
-          <el-input v-model="model.region_zipcode" clearable placeholder="请输入邮编：1000" />
+          <el-input v-model="model.region_zipcode" placeholder="请输入邮编eg：1000" clearable />
         </el-form-item>
         <el-form-item label="经度" prop="region_longitude">
-          <el-input v-model="model.region_longitude" clearable placeholder="请输入经度：116.403263" />
+          <el-input v-model="model.region_longitude" placeholder="请输入经度eg：116.403263" clearable />
         </el-form-item>
         <el-form-item label="纬度" prop="region_latitude">
-          <el-input v-model="model.region_latitude" clearable placeholder="请输入纬度：39.915156" />
+          <el-input v-model="model.region_latitude" placeholder="请输入纬度eg：39.915156" clearable />
         </el-form-item>
-        <el-form-item v-if="model.region_id" label="添加时间" prop="">
-          <el-col :span="10">
-            <el-input v-model="model.create_time" clearable placeholder="" disabled />
-          </el-col>
-          <el-col class="line" :span="4" style="text-align:center">修改时间</el-col>
-          <el-col :span="10">
-            <el-input v-model="model.update_time" clearable placeholder="" disabled />
-          </el-col>
+        <el-form-item label="排序" prop="region_sort">
+          <el-input v-model="model.region_sort" type="number" placeholder="请输入排序eg：1000" clearable />
         </el-form-item>
         <el-form-item label="" prop="">
-          <el-col :span="12">
-            <el-link type="info" href="https://www.ip138.com/post/" target="_blank">查询区号邮编</el-link>
-          </el-col>
-          <el-col :span="12">
-            <el-link type="info" href="http://api.map.baidu.com/lbsapi/getpoint/index.html" target="_blank">查询经度纬度</el-link>
-          </el-col>
+          <el-link type="info" href="https://www.ip138.com/post/" style="margin-right:10px" target="_blank">查询区号邮编</el-link>
+          <el-link type="info" href="http://api.map.baidu.com/lbsapi/getpoint/index.html" target="_blank">查询经度纬度</el-link>
+        </el-form-item>
+        <el-form-item v-if="model.region_id" label="添加时间" prop="create_time">
+          <el-input v-model="model.create_time" placeholder="" disabled />
+        </el-form-item>
+        <el-form-item v-if="model.region_id" label="修改时间" prop="update_time">
+          <el-input v-model="model.update_time" placeholder="" disabled />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -104,6 +121,7 @@
 
 <script>
 import screenHeight from '@/utils/screen-height'
+import { arrayColumn } from '@/utils/index'
 import { list, info, add, edit, dele } from '@/api/region'
 
 export default {
@@ -111,11 +129,15 @@ export default {
   components: { },
   data() {
     return {
+      name: '地区',
       height: 680,
       loading: false,
       data: [],
       count: 0,
-      query: {},
+      query: {
+        search_field: 'region_name',
+        date_field: 'create_time'
+      },
       dialog: false,
       dialogTitle: '',
       model: {
@@ -129,15 +151,11 @@ export default {
         region_zipcode: '',
         region_longitude: '',
         region_latitude: '',
-        region_sort: 1000
+        region_sort: 2250
       },
       regionTree: [],
-      regionProps: {
-        expandTrigger: 'click',
-        checkStrictly: true,
-        value: 'region_id',
-        label: 'region_name'
-      },
+      regionProps: { expandTrigger: 'click', checkStrictly: true, value: 'region_id', label: 'region_name' },
+      selection: [],
       rules: {
         region_name: [{ required: true, message: '请输入名称', trigger: 'blur' }]
       }
@@ -146,6 +164,7 @@ export default {
   created() {
     this.height = screenHeight()
     this.list()
+    this.tree()
   },
   methods: {
     // 列表
@@ -160,60 +179,42 @@ export default {
         this.loading = false
       })
     },
-    // 树形列表
+    // 加载
+    load(tree, treeNode, resolve) {
+      list({
+        region_pid: tree.region_id
+      }).then(res => {
+        resolve(res.data.list)
+      })
+    },
+    // 树形
     tree() {
       this.regionTree = []
       list({ type: 'tree' }).then(res => {
         this.regionTree = res.data
       }).catch(() => {})
     },
-    // 添加
+    // 添加修改
     add(row) {
       this.dialog = true
-      this.dialogTitle = '地区添加'
-      this.tree()
+      this.dialogTitle = this.name + '添加'
       if (row) {
         this.model = this.$options.data().model
         this.model.region_pid = row.region_id
-      } else {
-        this.reset()
       }
     },
-    // 修改
     edit(row) {
       this.dialog = true
-      this.dialogTitle = '地区修改：' + row.region_id
-      this.tree()
+      this.dialogTitle = this.name + '修改：' + row.region_id
       info({
         region_id: row.region_id
       }).then(res => {
         this.model = res.data
       })
     },
-    // 删除
-    dele(row) {
-      this.$confirm('确定要删除地区 <span style="color:red">' + row.region_name + ' </span>吗？',
-        '删除地区：' + row.region_id,
-        { type: 'warning', dangerouslyUseHTMLString: true }
-      ).then(() => {
-        this.loading = true
-        dele({
-          region_id: row.region_id
-        }).then(res => {
-          this.list()
-          this.reset()
-          this.$message.success(res.msg)
-        }).catch(() => {
-          this.loading = false
-        })
-      }).catch(() => {})
-    },
-    // 取消
     cancel() {
       this.dialog = false
-      this.reset()
     },
-    // 提交
     submit() {
       this.$refs['ref'].validate(valid => {
         if (valid) {
@@ -240,8 +241,34 @@ export default {
         }
       })
     },
+    // 删除
+    dele(row) {
+      if (!row.length) {
+        this.selectAlert()
+      } else {
+        var title = '删除' + this.name
+        var message = '确定要删除选中的 <span style="color:red">' + row.length + ' </span> 条' + this.name + '吗？'
+        if (row.length === 1) {
+          title = title + '：' + row[0].region_id
+          message = '确定要删除' + this.name + ' <span style="color:red">' + row[0].region_name + ' </span>吗？'
+        }
+        this.$confirm(message, title, { type: 'warning', dangerouslyUseHTMLString: true }).then(() => {
+          this.loading = true
+          dele({
+            ids: arrayColumn(row, 'region_id')
+          }).then(res => {
+            this.list()
+            this.reset()
+            this.$message.success(res.msg)
+          }).catch(() => {
+            this.loading = false
+          })
+        }).catch(() => {})
+      }
+    },
     // 重置
     reset(row) {
+      this.tree()
       if (row) {
         this.model = row
       } else {
@@ -258,7 +285,7 @@ export default {
     },
     // 刷新
     refresh() {
-      this.query = {}
+      this.query = this.$options.data().query
       this.list()
     },
     // 排序
@@ -274,13 +301,12 @@ export default {
         this.list()
       }
     },
-    // 加载
-    listLoad(tree, treeNode, resolve) {
-      list({
-        region_pid: tree.region_id
-      }).then(res => {
-        resolve(res.data.list)
-      })
+    // 选中操作
+    select(selection) {
+      this.selection = selection
+    },
+    selectAlert(message = '') {
+      this.$alert(message || '请选择需要操作的' + this.name, '提示', { type: 'warning', callback: action => {} })
     },
     // 父级选择
     pidChange(value) {

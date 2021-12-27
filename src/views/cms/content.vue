@@ -1,64 +1,103 @@
 <template>
   <div class="app-container">
-    <!-- 查询 -->
+    <!-- 查询、选中操作 -->
     <div class="filter-container">
-      <el-row :gutter="0">
-        <el-col :xs="24" :sm="20">
-          <el-select v-model="query.search_field" class="filter-item" style="width:110px;" placeholder="">
-            <el-option value="content_id" label="内容ID" />
+      <!-- 查询 -->
+      <el-row>
+        <el-col>
+          <el-select v-model="query.search_field" class="filter-item ya-search-field" placeholder="搜索字段">
             <el-option value="name" label="名称" />
             <el-option value="is_top" label="是否置顶" />
             <el-option value="is_hot" label="是否热门" />
             <el-option value="is_rec" label="是否推荐" />
             <el-option value="is_hide" label="是否隐藏" />
+            <el-option value="content_id" label="ID" />
           </el-select>
-          <el-input v-model="query.search_value" class="filter-item" style="width:20%;min-width:150px;" placeholder="搜索内容" clearable />
-          <el-cascader
-            v-model="query.category_id"
-            class="filter-item"
-            :options="categoryData"
-            :props="{checkStrictly: true, value: 'category_id', label: 'category_name'}"
-            style="width:150px"
-            clearable
-            filterable
-            placeholder="分类"
-            @change="categoryChangeQuery"
-          />
-          <el-select v-model="query.date_field" class="filter-item" style="width:110px;" placeholder="时间类型">
+          <el-input v-model="query.search_value" class="filter-item ya-search-value" placeholder="搜索内容" clearable />
+          <el-select v-model="query.date_field" class="filter-item ya-date-field" placeholder="时间类型">
             <el-option value="create_time" label="添加时间" />
             <el-option value="update_time" label="修改时间" />
           </el-select>
           <el-date-picker
             v-model="query.date_value"
             type="daterange"
-            class="filter-item"
-            style="width: 240px;"
-            range-separator="-"
+            class="filter-item ya-date-value"
             value-format="yyyy-MM-dd"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
           />
+          <el-cascader
+            v-model="query.category_id"
+            class="filter-item ya-width-150"
+            :options="categoryData"
+            :props="categoryProps"
+            placeholder="分类"
+            clearable
+            filterable
+            @change="categoryChangeQuery"
+          />
           <el-button class="filter-item" type="primary" @click="search()">查询</el-button>
           <el-button class="filter-item" @click="refresh()">刷新</el-button>
         </el-col>
-        <el-col :xs="24" :sm="4" style="text-align:right;">
-          <el-button class="filter-item" @click="recover()">回收站</el-button>
-          <el-button class="filter-item" type="primary" @click="add()">添加</el-button>
+      </el-row>
+      <!-- 选中操作 -->
+      <el-row>
+        <el-col>
+          <el-button @click="selectOpen('cate')">分类</el-button>
+          <el-button @click="selectOpen('top')">置顶</el-button>
+          <el-button @click="selectOpen('hot')">热门</el-button>
+          <el-button @click="selectOpen('rec')">推荐</el-button>
+          <el-button @click="selectOpen('hide')">隐藏</el-button>
+          <el-button @click="dele(selection)">删除</el-button>
+          <el-button v-permission="['admin/cms.Content/recover']" @click="recover()">回收站</el-button>
+          <el-button type="primary" @click="add()">添加</el-button>
         </el-col>
       </el-row>
+      <el-dialog title="选中操作" :visible.sync="selectDialog" top="20vh" :close-on-click-modal="false" :close-on-press-escape="false">
+        <el-form ref="selectRef" label-width="120px">
+          <el-form-item v-if="selectType==='cate'" label="分类" prop="">
+            <el-cascader
+              v-model="category_id"
+              :options="categoryData"
+              :props="categoryProps"
+              style="width:100%"
+              placeholder="请选择"
+              clearable
+              filterable
+              @change="selectCategoryChange"
+            />
+          </el-form-item>
+          <el-form-item v-else-if="selectType==='top'" label="是否置顶" prop="">
+            <el-switch v-model="is_top" :active-value="1" :inactive-value="0" />
+          </el-form-item>
+          <el-form-item v-else-if="selectType==='hot'" label="是否热门" prop="">
+            <el-switch v-model="is_hot" :active-value="1" :inactive-value="0" />
+          </el-form-item>
+          <el-form-item v-else-if="selectType==='rec'" label="是否推荐" prop="">
+            <el-switch v-model="is_rec" :active-value="1" :inactive-value="0" />
+          </el-form-item>
+          <el-form-item v-else-if="selectType==='hide'" label="是否隐藏" prop="">
+            <el-switch v-model="is_hide" :active-value="1" :inactive-value="0" />
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="selectCancel">取消</el-button>
+          <el-button type="primary" @click="selectSubmit">提交</el-button>
+        </div>
+      </el-dialog>
     </div>
     <!-- 列表 -->
-    <el-table ref="table" v-loading="loading" :data="data" :height="height-50" style="width: 100%" @sort-change="sort" @selection-change="select">
-      <el-table-column type="selection" width="40" title="全选/反选" />
-      <el-table-column prop="content_id" label="内容ID" min-width="100" sortable="custom" />
+    <el-table ref="table" v-loading="loading" :data="data" :height="height" @sort-change="sort" @selection-change="select">
+      <el-table-column type="selection" width="42" title="全选/反选" />
+      <el-table-column prop="content_id" label="ID" min-width="100" sortable="custom" />
       <el-table-column prop="img_url" label="图片" min-width="70" align="center">
         <template slot-scope="scope">
-          <el-image v-if="scope.row.img_url" style="width:40px;height:40px;" :src="scope.row.img_url" :preview-src-list="[scope.row.img_url]" title="点击查看大图" />
+          <el-image v-if="scope.row.img_url" class="ya-img-table" :src="scope.row.img_url" :preview-src-list="[scope.row.img_url]" title="点击查看大图" />
         </template>
       </el-table-column>
       <el-table-column prop="name" label="名称" min-width="230" show-overflow-tooltip />
       <el-table-column prop="category_name" label="分类" min-width="100" show-overflow-tooltip />
-      <el-table-column prop="hits" label="点击量" min-width="90" sortable="custom" />
+      <el-table-column prop="hits" label="点击" min-width="80" sortable="custom" />
       <el-table-column prop="sort" label="排序" min-width="80" sortable="custom" />
       <el-table-column prop="is_top" label="置顶" min-width="80" sortable="custom" align="center">
         <template slot-scope="scope">
@@ -89,121 +128,64 @@
         </template>
       </el-table-column>
     </el-table>
-    <!-- 全选操作 -->
-    <div style="margin-top: 20px">
-      <el-checkbox v-model="selectButton" style="padding-right:10px" title="全选/反选" @change="selectAll()" />
-      <el-button size="mini" type="text" @click="selectOpen('cate')">分类</el-button>
-      <el-button size="mini" type="text" @click="selectOpen('top')">置顶</el-button>
-      <el-button size="mini" type="text" @click="selectOpen('hot')">热门</el-button>
-      <el-button size="mini" type="text" @click="selectOpen('rec')">推荐</el-button>
-      <el-button size="mini" type="text" @click="selectOpen('hide')">隐藏</el-button>
-      <el-button size="mini" type="text" @click="dele(selection)">删除</el-button>
-    </div>
-    <el-dialog title="全选操作" :visible.sync="selectDialog">
-      <el-form ref="selectRef" label-width="100px">
-        <el-form-item v-if="selectType==='cate'" label="分类" prop="">
-          <el-cascader
-            v-model="category_id"
-            class="filter-item"
-            :options="categoryData"
-            :props="{checkStrictly: true, value: 'category_id', label: 'category_name'}"
-            style="width:150px"
-            clearable
-            filterable
-            placeholder="分类"
-            @change="selectCategoryChange"
-          />
-        </el-form-item>
-        <el-form-item v-if="selectType==='top'" label="是否置顶" prop="">
-          <el-switch v-model="is_top" style="margin-left: 10px;" :active-value="1" :inactive-value="0" />
-        </el-form-item>
-        <el-form-item v-if="selectType==='hot'" label="是否热门" prop="">
-          <el-switch v-model="is_hot" style="margin-left: 10px;" :active-value="1" :inactive-value="0" />
-        </el-form-item>
-        <el-form-item v-if="selectType==='rec'" label="是否推荐" prop="">
-          <el-switch v-model="is_rec" style="margin-left: 10px;" :active-value="1" :inactive-value="0" />
-        </el-form-item>
-        <el-form-item v-if="selectType==='hide'" label="是否隐藏" prop="">
-          <el-switch v-model="is_hide" style="margin-left: 10px;" :active-value="1" :inactive-value="0" />
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="selectCancel">取消</el-button>
-        <el-button type="primary" @click="selectSubmit">提交</el-button>
-      </div>
-    </el-dialog>
     <!-- 分页 -->
     <pagination v-show="count > 0" :total="count" :page.sync="query.page" :limit.sync="query.limit" @pagination="list" />
     <!-- 添加、修改 -->
-    <el-dialog :title="dialogTitle" :visible.sync="dialog" width="65%" top="1vh" :before-close="cancel" @opened="dialogOpened()" @closed="dialogClosed()" @close-on-click-modal="false">
+    <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false">
       <el-form ref="ref" :rules="rules" :model="model" class="dialog-body" label-width="100px" :style="{height:height+'px'}">
-        <el-form-item label="分类" prop="category_id" clearable placeholder="请选择">
+        <el-form-item label="分类" prop="category_id" placeholder="请选择" clearable>
           <el-cascader
             v-model="model.category_id"
             :options="categoryData"
-            :props="{checkStrictly: true, value: 'category_id', label: 'category_name'}"
+            :props="categoryProps"
             style="width:100%"
+            placeholder="请选择分类"
             clearable
             filterable
-            placeholder="请选择分类"
             @change="categoryChange"
           />
         </el-form-item>
         <el-form-item label="名称" prop="name">
-          <el-input v-model="model.name" clearable placeholder="请输入名称" />
+          <el-input v-model="model.name" placeholder="请输入名称" clearable />
         </el-form-item>
         <el-form-item label="标题" prop="title">
-          <el-input v-model="model.title" clearable placeholder="title" />
+          <el-input v-model="model.title" placeholder="title" clearable />
         </el-form-item>
         <el-form-item label="关键词" prop="keywords">
-          <el-input v-model="model.keywords" clearable placeholder="keywords" />
+          <el-input v-model="model.keywords" placeholder="keywords" clearable />
         </el-form-item>
         <el-form-item label="描述" prop="description">
-          <el-input v-model="model.description" type="textarea" clearable placeholder="description" />
+          <el-input v-model="model.description" type="textarea" placeholder="description" clearable />
         </el-form-item>
         <el-form-item label="链接" prop="url">
-          <el-input v-model="model.url" clearable placeholder="url" />
+          <el-input v-model="model.url" placeholder="url" clearable />
         </el-form-item>
         <el-form-item label="图片" prop="imgs">
-          <el-row :gutter="0">
+          <el-row>
             <el-col :span="8">
               <el-button size="mini" @click="fileUpload('image', '上传图片')">上传图片</el-button>
             </el-col>
             <el-col :span="16">
-              <div>每张图片大小不超过 500 KB，jpg、png格式。</div>
+              <div>每张图片大小不超过 300 KB，jpg、png格式。</div>
             </el-col>
           </el-row>
-          <el-row :gutter="0">
-            <el-col v-for="(item, index) in model.imgs" :key="index" :span="6" style="border:1px solid #DCDFE6">
-              <el-image style="width:100%;height:100px;" :src="item.file_url" :preview-src-list="[item.file_url]" fit="contain" title="点击查看大图" />
-              <br style="line-height: 0">
-              <el-link :href="item.file_url" :underline="false" :download="item.file_url" target="_blank" style="margin:0 1px">
-                下载<span style="font-size:10px">({{ item.file_size }})</span>
-              </el-link>
-              <el-button size="mini" @click="uploadDele(index)">删除</el-button>
-            </el-col>
-          </el-row>
-        </el-form-item>
-        <el-form-item label="附件" prop="files">
-          <el-row :gutter="0">
-            <el-col :span="8">
-              <el-button size="mini" @click="fileUpload('word', '上传附件')">上传附件</el-button>
-            </el-col>
-            <el-col :span="16">
-              <div>每个附件大小不超过 10 MB。</div>
-            </el-col>
-          </el-row>
-          <el-row v-for="(item, index) in model.files" :key="index" :gutter="0">
-            <el-col :span="16"><el-input v-model="item.file_name" placeholder="名称" clearable /></el-col>
-            <el-col :span="4"><el-input v-model="item.file_size" placeholder="大小" clearable /></el-col>
-            <el-col :span="4">
-              <el-link :href="item.file_url" :underline="false" :download="item.file_url" target="_blank" style="margin:0 10px">下载</el-link>
-              <el-button size="mini" @click="uploadFileDele(index)">删除</el-button>
+          <el-row>
+            <el-col v-for="(item, index) in model.imgs" :key="index" :span="6" class="ya-file">
+              <el-image class="ya-img-form" :src="item.file_url" :preview-src-list="[item.file_url]" fit="contain" title="点击查看大图" />
+              <div>
+                <span class="ya-file-name" :title="item.file_name+'.'+item.file_ext">
+                  {{ item.file_name }}.{{ item.file_ext }}
+                </span>
+                <el-link :href="item.file_url" :underline="false" :download="item.file_url" target="_blank" class="ya-file-link">
+                  下载
+                </el-link>
+                <el-button size="mini" @click="fileImgDele(index)">删除</el-button>
+              </div>
             </el-col>
           </el-row>
         </el-form-item>
         <el-form-item label="视频" prop="videos">
-          <el-row :gutter="0">
+          <el-row>
             <el-col :span="8">
               <el-button size="mini" @click="fileUpload('video', '上传视频')">上传视频</el-button>
             </el-col>
@@ -211,21 +193,59 @@
               <div>每个视频大小不超过 50 MB。</div>
             </el-col>
           </el-row>
-          <el-row v-for="(item, index) in model.videos" :key="index" :gutter="0">
-            <el-col :span="8"><el-input v-model="item.file_name" placeholder="名称" clearable /></el-col>
-            <el-col :span="8"><el-input v-model="item.file_path" placeholder="网址" clearable /></el-col>
-            <el-col :span="4"><el-input v-model="item.file_size" placeholder="大小" clearable /></el-col>
-            <el-col :span="4">
-              <el-link :href="item.file_url" :underline="false" :download="item.file_url" target="_blank" style="margin:0 10px">下载</el-link>
-              <el-button size="mini" @click="uploadVideoDele(index)">删除</el-button>
+          <el-row>
+            <el-col v-for="(item, index) in model.videos" :key="index" :span="6" class="ya-file">
+              <video width="100%" height="100%" controls>
+                <source :src="item.file_url" type="video/mp4">
+                <object :data="item.file_url" width="100%" height="100%">
+                  <embed :src="item.file_url" width="100%" height="100%">
+                </object>
+              </video>
+              <div>
+                <span class="ya-file-name" :title="item.file_name+'.'+item.file_ext">
+                  {{ item.file_name }}.{{ item.file_ext }}
+                </span>
+                <el-link :href="item.file_url" :underline="false" :download="item.file_url" target="_blank" class="ya-file-link">
+                  下载
+                </el-link>
+                <el-button size="mini" @click="fileVideoDele(index)">删除</el-button>
+              </div>
             </el-col>
           </el-row>
         </el-form-item>
-        <el-form-item label="内容" prop="content">
-          <div id="content" />
+        <el-form-item label="附件" prop="files">
+          <el-row>
+            <el-col :span="8">
+              <el-button size="mini" @click="fileUpload('word', '上传附件')">上传附件</el-button>
+            </el-col>
+            <el-col :span="16">
+              <div>每个附件大小不超过 5 MB。</div>
+            </el-col>
+          </el-row>
+          <el-row v-for="(item, index) in model.files" :key="index">
+            <el-col :span="20" class="ya-file-name">
+              <i v-if="item.file_type==='image'" class="el-icon-picture" />
+              <i v-else-if="item.file_type==='audio'" class="el-icon-headset" />
+              <i v-else-if="item.file_type==='video'" class="el-icon-video-play" />
+              <i v-else-if="item.file_type==='word'" class="el-icon-document" />
+              <i v-else class="el-icon-folder" />
+              <span :title="item.file_name+'.'+item.file_ext">
+                {{ item.file_name }}.{{ item.file_ext }}
+              </span>
+            </el-col>
+            <el-col :span="4">
+              <el-link :href="item.file_url" :underline="false" :download="item.file_url" target="_blank" class="ya-file-link">
+                下载
+              </el-link>
+              <el-button size="mini" @click="fileFileDele(index)">删除</el-button>
+            </el-col>
+          </el-row>
         </el-form-item>
         <el-form-item label="排序" prop="sort">
-          <el-input v-model="model.sort" clearable placeholder="" />
+          <el-input v-model="model.sort" type="number" placeholder="sort" clearable />
+        </el-form-item>
+        <el-form-item label="内容" prop="content">
+          <rich-editor v-model="model.content" />
         </el-form-item>
         <el-form-item v-if="model.content_id" label="添加时间" prop="create_time">
           <el-input v-model="model.create_time" disabled />
@@ -243,62 +263,63 @@
       </div>
     </el-dialog>
     <!-- 回收站 -->
-    <el-dialog :title="recoverDialogTitle" :visible.sync="recoverDialog" width="80%" top="1vh">
-      <!-- 回收站查询 -->
+    <el-dialog :title="recoverDialogTitle" :visible.sync="recoverDialog" width="80%" top="1vh" :close-on-click-modal="false" :close-on-press-escape="false">
+      <!-- 回收站查询、选中操作 -->
       <div class="filter-container">
-        <el-row :gutter="0">
-          <el-col :xs="24" :sm="24">
-            <el-select v-model="recoverQuery.search_field" class="filter-item" style="width:110px;" placeholder="">
-              <el-option value="content_id" label="内容ID" />
+        <el-row>
+          <el-col>
+            <el-select v-model="recoverQuery.search_field" class="filter-item ya-search-field" placeholder="搜索字段">
               <el-option value="name" label="名称" />
               <el-option value="is_top" label="是否置顶" />
               <el-option value="is_hot" label="是否热门" />
               <el-option value="is_rec" label="是否推荐" />
               <el-option value="is_hide" label="是否隐藏" />
+              <el-option value="content_id" label="ID" />
             </el-select>
-            <el-input v-model="recoverQuery.search_value" class="filter-item" style="width:200px;" placeholder="搜索内容" clearable />
-            <el-cascader
-              v-model="recoverQuery.category_id"
-              class="filter-item"
-              :options="categoryData"
-              :props="{checkStrictly: true, value: 'category_id', label: 'category_name'}"
-              style="width:200px"
-              clearable
-              filterable
-              placeholder="分类"
-              @change="recoverCategoryChangeQuery"
-            />
-            <el-select v-model="recoverQuery.date_field" class="filter-item" style="width:110px;" placeholder="时间类型">
+            <el-input v-model="recoverQuery.search_value" class="filter-item ya-search-value" placeholder="搜索内容" clearable />
+            <el-select v-model="recoverQuery.date_field" class="filter-item ya-date-field" placeholder="时间类型">
               <el-option value="delete_time" label="删除时间" />
               <el-option value="create_time" label="添加时间" />
             </el-select>
             <el-date-picker
               v-model="recoverQuery.date_value"
               type="daterange"
-              class="filter-item"
-              style="width: 240px;"
-              range-separator="-"
+              class="filter-item ya-date-value"
               value-format="yyyy-MM-dd"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
             />
+            <el-cascader
+              v-model="recoverQuery.category_id"
+              class="filter-item ya-width-150"
+              :options="categoryData"
+              :props="categoryProps"
+              placeholder="分类"
+              clearable
+              filterable
+              @change="recoverCategoryChangeQuery"
+            />
             <el-button class="filter-item" type="primary" @click="recoverSearch()">查询</el-button>
             <el-button class="filter-item" @click="recoverRefresh()">刷新</el-button>
+          </el-col>
+          <el-col>
+            <el-button @click="recoverReco(recoverSelection)">恢复</el-button>
+            <el-button @click="recoverDele(recoverSelection)">删除</el-button>
           </el-col>
         </el-row>
       </div>
       <!-- 回收站列表 -->
-      <el-table ref="recoverRef" v-loading="recoverLoad" :data="recoverData" :height="height-60" style="width: 100%" @sort-change="recoverSort" @selection-change="recoverSelect">
+      <el-table ref="recoverRef" v-loading="recoverLoad" :data="recoverData" :height="height" @sort-change="recoverSort" @selection-change="recoverSelect">
         <el-table-column type="selection" width="40" title="全选/反选" />
         <el-table-column prop="content_id" label="ID" min-width="80" sortable="custom" />
         <el-table-column prop="img_url" label="图片" min-width="70" align="center">
           <template slot-scope="scope">
-            <el-image v-if="scope.row.img_url" style="height:40px;" :src="scope.row.img_url" :preview-src-list="[scope.row.img_url]" title="点击查看大图" />
+            <el-image v-if="scope.row.img_url" class="ya-img-table" :src="scope.row.img_url" :preview-src-list="[scope.row.img_url]" title="点击查看大图" />
           </template>
         </el-table-column>
         <el-table-column prop="name" label="名称" min-width="230" show-overflow-tooltip />
         <el-table-column prop="category_name" label="分类" min-width="100" show-overflow-tooltip />
-        <el-table-column prop="hits" label="点击量" min-width="90" />
+        <el-table-column prop="hits" label="点击" min-width="80" />
         <el-table-column prop="is_top" label="置顶" min-width="60">
           <template slot-scope="scope">
             <el-tag v-if="scope.row.is_top" size="medium">是</el-tag><el-tag v-else type="info">否</el-tag>
@@ -329,37 +350,29 @@
           </template>
         </el-table-column>
       </el-table>
-      <!-- 回收站全选 -->
-      <div style="margin-top: 20px">
-        <el-checkbox v-model="recoverSelectButton" style="padding-right:10px" title="全选/反选" @change="recoverSelectAll()" />
-        <el-button size="mini" type="text" @click="recoverReco(recoverSelection)">恢复</el-button>
-        <el-button size="mini" type="text" @click="recoverDele(recoverSelection)">删除</el-button>
-      </div>
       <!-- 回收站分页 -->
       <pagination v-show="recoverCount > 0" :total="recoverCount" :page.sync="recoverQuery.page" :limit.sync="recoverQuery.limit" @pagination="recoverList" />
     </el-dialog>
     <!-- 文件管理 -->
-    <el-dialog :title="fileTitle" :visible.sync="fileDialog" width="80%" top="1vh">
+    <el-dialog :title="fileTitle" :visible.sync="fileDialog" width="80%" top="1vh" :close-on-click-modal="false" :close-on-press-escape="false">
       <file-manage :file-type="fileType" @fileCancel="fileCancel" @fileSubmit="fileSubmit" />
-    </el-dialog>
-    <!-- 文件管理(编辑器) -->
-    <el-dialog :title="fileTitle" :visible.sync="editorDialog" width="80%" top="1vh">
-      <file-manage :file-type="editorFileType" @fileCancel="fileCancelEd" @fileSubmit="fileSubmitEd" />
     </el-dialog>
   </div>
 </template>
 
 <script>
-import E from 'wangeditor'
 import screenHeight from '@/utils/screen-height'
+import permission from '@/directive/permission/index.js' // 权限判断指令
 import Pagination from '@/components/Pagination'
 import FileManage from '@/components/FileManage'
+import RichEditor from '@/components/RichEditor'
+import { arrayColumn } from '@/utils/index'
 import { list, category, info, add, edit, dele, cate, istop, ishot, isrec, ishide, recover, recoverReco, recoverDele } from '@/api/cms/content'
 
 export default {
   name: 'CmsContent',
-  components: { Pagination, FileManage },
-  directives: { },
+  components: { Pagination, FileManage, RichEditor },
+  directives: { permission },
   data() {
     return {
       name: '内容',
@@ -368,7 +381,7 @@ export default {
       query: {
         page: 1,
         limit: 12,
-        search_field: 'content_id',
+        search_field: 'name',
         date_field: 'create_time'
       },
       data: [],
@@ -387,11 +400,11 @@ export default {
         files: [],
         videos: [],
         content: '',
-        sort: 200
+        sort: 250
       },
       categoryData: [],
+      categoryProps: { checkStrictly: true, value: 'category_id', label: 'category_name' },
       selection: [],
-      selectButton: false,
       selectDialog: false,
       selectType: '',
       is_top: 0,
@@ -400,11 +413,8 @@ export default {
       is_hide: 0,
       category_id: 0,
       fileDialog: false,
-      fileType: 'image',
       fileTitle: '文件管理',
-      editor: null,
-      editorDialog: false,
-      editorFileType: 'image',
+      fileType: 'image',
       rules: {
         category_id: [{ required: true, message: '请选择分类', trigger: 'blur' }],
         name: [{ required: true, message: '请输入名称', trigger: 'blur' }]
@@ -416,12 +426,11 @@ export default {
       recoverCount: 0,
       recoverQuery: {
         page: 1,
-        limit: 10,
-        search_field: 'content_id',
+        limit: 12,
+        search_field: 'name',
         date_field: 'delete_time'
       },
-      recoverSelection: [],
-      recoverSelectButton: false
+      recoverSelection: []
     }
   },
   created() {
@@ -436,30 +445,49 @@ export default {
       list(this.query).then(res => {
         this.data = res.data.list
         this.count = res.data.count
-        this.selectButton = false
         this.loading = false
       }).catch(() => {
         this.loading = false
       })
     },
-    // 添加
+    // 添加修改
     add() {
       this.dialog = true
       this.dialogTitle = this.name + '添加'
-      this.model = this.$options.data().model
+      this.reset()
     },
-    // 修改
     edit(row) {
-      this.loading = true
       this.dialog = true
       this.dialogTitle = this.name + '修改：' + row.content_id
       info({
         content_id: row.content_id
       }).then(res => {
         this.reset(res.data)
-        this.loading = false
-      }).catch(() => {
-        this.loading = false
+      }).catch(() => {})
+    },
+    cancel() {
+      this.reset()
+      this.dialog = false
+    },
+    submit() {
+      this.$refs['ref'].validate(valid => {
+        if (valid) {
+          if (this.model.content_id) {
+            edit(this.model).then(res => {
+              this.dialog = false
+              this.list()
+              this.reset()
+              this.$message.success(res.msg)
+            }).catch(() => {})
+          } else {
+            add(this.model).then(res => {
+              this.dialog = false
+              this.list()
+              this.reset()
+              this.$message.success(res.msg)
+            }).catch(() => {})
+          }
+        }
       })
     },
     // 删除
@@ -476,7 +504,7 @@ export default {
         this.$confirm(message, title, { type: 'warning', dangerouslyUseHTMLString: true }).then(() => {
           this.loading = true
           dele({
-            content: row
+            ids: arrayColumn(row, 'content_id')
           }).then(res => {
             this.list()
             this.$message.success(res.msg)
@@ -485,38 +513,6 @@ export default {
           })
         }).catch(() => {})
       }
-    },
-    // 取消
-    cancel() {
-      this.reset()
-      this.dialog = false
-    },
-    // 提交
-    submit() {
-      this.$refs['ref'].validate(valid => {
-        if (valid) {
-          this.loading = true
-          if (this.model.content_id) {
-            edit(this.model).then(res => {
-              this.dialog = false
-              this.list()
-              this.reset()
-              this.$message.success(res.msg)
-            }).catch(() => {
-              this.loading = false
-            })
-          } else {
-            add(this.model).then(res => {
-              this.dialog = false
-              this.list()
-              this.reset()
-              this.$message.success(res.msg)
-            }).catch(() => {
-              this.loading = false
-            })
-          }
-        }
-      })
     },
     // 重置
     reset(row) {
@@ -557,19 +553,12 @@ export default {
         this.list()
       }
     },
-    // 全选操作
+    // 选中操作
     select(selection) {
       this.selection = selection
     },
     selectAlert(message = '') {
-      this.$alert(message || '请选择需要操作的' + this.name, '提示', { confirmButtonText: '确定', callback: action => {} })
-    },
-    selectAll() {
-      if (this.selectButton) {
-        this.$refs.table.toggleAllSelection()
-      } else {
-        this.$refs.table.clearSelection()
-      }
+      this.$alert(message || '请选择需要操作的' + this.name, '提示', { type: 'warning', callback: action => {} })
     },
     selectOpen(selectType) {
       if (!this.selection.length) {
@@ -602,12 +591,14 @@ export default {
       }
     },
     selectCategoryChange(value) {
-      this.category_id = value[value.length - 1]
+      if (value) {
+        this.category_id = value[value.length - 1]
+      }
     },
     // 设置分类
     setcate(row) {
       cate({
-        content: row,
+        ids: arrayColumn(row, 'content_id'),
         category_id: this.category_id
       }).then(res => {
         this.list()
@@ -628,7 +619,7 @@ export default {
           is_top = this.is_top
         }
         istop({
-          content: row,
+          ids: arrayColumn(row, 'content_id'),
           is_top: is_top
         }).then(res => {
           this.list()
@@ -650,7 +641,7 @@ export default {
           is_hot = this.is_hot
         }
         ishot({
-          content: row,
+          ids: arrayColumn(row, 'content_id'),
           is_hot: is_hot
         }).then(res => {
           this.list()
@@ -672,7 +663,7 @@ export default {
           is_rec = this.is_rec
         }
         isrec({
-          content: row,
+          ids: arrayColumn(row, 'content_id'),
           is_rec: is_rec
         }).then(res => {
           this.list()
@@ -694,7 +685,7 @@ export default {
           is_hide = this.is_hide
         }
         ishide({
-          content: row,
+          ids: arrayColumn(row, 'content_id'),
           is_hide: is_hide
         }).then(res => {
           this.list()
@@ -711,7 +702,7 @@ export default {
         this.categoryData = res.data.list
       }).catch(() => {})
     },
-    // 分类选择
+    // 分类选择（添加修改）
     categoryChange(value) {
       if (value) {
         this.model.category_id = value[value.length - 1]
@@ -723,162 +714,44 @@ export default {
         this.query.category_id = value[value.length - 1]
       }
     },
-    // 上传图片、附件、视频
-    fileUpload(filetype, fileTitle = '文件管理') {
-      this.fileType = filetype
+    // 上传图片、视频、附件
+    fileUpload(fileType, fileTitle = '文件管理') {
+      this.fileType = fileType
       this.fileTitle = fileTitle
       this.fileDialog = true
     },
     fileCancel() {
       this.fileDialog = false
     },
-    fileSubmit(filelists, filetype) {
+    fileSubmit(fileList, fileType) {
       this.fileDialog = false
       this.fileTitle = ''
-      const file_len = filelists.length
-      if (filelists) {
-        for (let i = 0; i < file_len; i++) {
-          if (filetype === 'image') {
-            this.model.imgs.push(filelists[i])
-          } else if (filetype === 'word') {
-            this.model.files.push(filelists[i])
-          } else if (filetype === 'video') {
-            this.model.videos.push(filelists[i])
-          }
-        }
-      }
-    },
-    fileCancelEd() {
-      this.editorDialog = false
-    },
-    fileSubmitEd(filelists, filetype) {
-      this.editorDialog = false
-      this.fileTitle = ''
-      const file_len = filelists.length
-      if (filelists) {
-        for (let i = 0; i < file_len; i++) {
-          if (filetype === 'image') {
-            this.editor.cmd.do(
-              'insertHTML',
-              `<img file-ids="${filelists[i]['file_id']}" src="${filelists[i]['file_url']}" style="max-width:50%;"/>`
-            )
-          } else if (filetype === 'word') {
-            this.editor.cmd.do(
-              'insertHTML',
-              `<a file-ids="${filelists[i]['file_id']}" href="${filelists[i]['file_url']}" download="${filelists[i]['file_url']}" target="_blank">${filelists[i]['file_name']}</el-link>`
-            )
+      const fileLength = fileList.length
+      if (fileLength) {
+        for (let i = 0; i < fileLength; i++) {
+          if (fileType === 'image') {
+            this.model.imgs.push(fileList[i])
+          } else if (fileType === 'video') {
+            this.model.videos.push(fileList[i])
           } else {
-            this.editor.cmd.do(
-              'insertHTML',
-              `<video width="50%" height="50%" controls>
-                <source file-ids="${filelists[i]['file_id']}" src="${filelists[i]['file_url']}" type="video/mp4">
-                <object file-ids="${filelists[i]['file_id']}" data="${filelists[i]['file_url']}" width="50%" height="50%">
-                  <embed file-ids="${filelists[i]['file_id']}" src="${filelists[i]['file_url']}" width="50%" height="50%">
-                </object>
-              </video>`
-            )
+            this.model.files.push(fileList[i])
           }
         }
       }
     },
-    uploadDele(index) {
+    fileImgDele(index) {
       this.model.imgs.splice(index, 1)
     },
-    uploadFileDele(index) {
-      this.model.files.splice(index, 1)
-    },
-    uploadVideoDele(index) {
+    fileVideoDele(index) {
       this.model.videos.splice(index, 1)
     },
-    // 富文本编辑器
-    dialogOpened() {
-      const that = this
-      // 扩展菜单
-      const { BtnMenu } = E
-      class upimg extends BtnMenu {
-        constructor(editor) {
-          const $elem = E.$(`<div class="w-e-menu" data-title="上传图片"><el-button>图片</el-button></div>`)
-          super($elem, editor)
-        }
-        clickHandler() {
-          that.editorFileType = 'image'
-          that.fileTitle = '上传图片'
-          that.editorDialog = true
-        }
-        tryChangeActive() {}
-      }
-      class upfile extends BtnMenu {
-        constructor(editor) {
-          const $elem = E.$(`<div class="w-e-menu" data-title="上传附件"><el-button>附件</el-button></div>`)
-          super($elem, editor)
-        }
-        clickHandler() {
-          that.editorFileType = 'word'
-          that.fileTitle = '上传附件'
-          that.editorDialog = true
-        }
-        tryChangeActive() {}
-      }
-      class upvideo extends BtnMenu {
-        constructor(editor) {
-          const $elem = E.$(`<div class="w-e-menu" data-title="上传视频"><el-button>视频</el-button></div>`)
-          super($elem, editor)
-        }
-        clickHandler() {
-          that.editorFileType = 'video'
-          that.fileTitle = '上传视频'
-          that.editorDialog = true
-        }
-        tryChangeActive() {}
-      }
-      class clear extends BtnMenu {
-        constructor(editor) {
-          const $elem = E.$(`<div class="w-e-menu" data-title="清空内容"><el-button>清空</el-button></div>`)
-          super($elem, editor)
-        }
-        clickHandler() {
-          that.editor.txt.clear()
-        }
-        tryChangeActive() {}
-      }
-      that.editor = new E('#content')
-      that.editor.config.excludeMenus = ['image', 'video']
-      that.editor.menus.extend('upimgKey', upimg)
-      that.editor.config.menus = that.editor.config.menus.concat('upimgKey')
-      that.editor.menus.extend('upfileKey', upfile)
-      that.editor.config.menus = that.editor.config.menus.concat('upfileKey')
-      that.editor.menus.extend('upvideoKey', upvideo)
-      that.editor.config.menus = that.editor.config.menus.concat('upvideoKey')
-      that.editor.menus.extend('clearKey', clear)
-      that.editor.config.menus = that.editor.config.menus.concat('clearKey')
-
-      that.editor.config.height = 500
-      that.editor.config.focus = false
-      that.editor.config.placeholder = ''
-      that.editor.config.onchange = (newHtml) => {
-        that.model.content = newHtml
-      }
-      that.editor.create()
-      that.editor.txt.html(that.model.content)
-    },
-    dialogClosed() {
-      this.editor.destroy()
-      this.editor = null
+    fileFileDele(index) {
+      this.model.files.splice(index, 1)
     },
     // 回收站
     recover() {
       this.recoverDialog = true
       this.recoverDialogTitle = this.name + '回收站'
-      this.recoverList()
-    },
-    // 回收站查询
-    recoverSearch() {
-      this.recoverQuery.page = 1
-      this.recoverList()
-    },
-    // 回收站刷新
-    recoverRefresh() {
-      this.recoverQuery = this.$options.data().recoverQuery
       this.recoverList()
     },
     // 回收站列表
@@ -887,14 +760,26 @@ export default {
       recover(this.recoverQuery).then(res => {
         this.recoverData = res.data.list
         this.recoverCount = res.data.count
-        this.recoverSelectButton = false
         this.recoverLoad = false
-        this.$nextTick(() => {
-          this.$refs['recoverRef'].doLayout()
-        })
       }).catch(() => {
         this.recoverLoad = false
       })
+    },
+    // 回收站查询
+    recoverSearch() {
+      this.recoverQuery.page = 1
+      this.recoverList()
+    },
+    // 回收站查询-分类选择
+    recoverCategoryChangeQuery(value) {
+      if (value) {
+        this.recoverQuery.category_id = value[value.length - 1]
+      }
+    },
+    // 回收站刷新
+    recoverRefresh() {
+      this.recoverQuery = this.$options.data().recoverQuery
+      this.recoverList()
     },
     // 回收站排序
     recoverSort(sort) {
@@ -923,7 +808,7 @@ export default {
         this.$confirm(message, title, { type: 'warning', dangerouslyUseHTMLString: true }).then(() => {
           this.recoverLoad = true
           recoverReco({
-            content: row
+            ids: arrayColumn(row, 'content_id')
           }).then(res => {
             this.list()
             this.recoverList()
@@ -948,7 +833,7 @@ export default {
         this.$confirm(message, title, { type: 'warning', dangerouslyUseHTMLString: true }).then(() => {
           this.recoverLoad = true
           recoverDele({
-            content: row
+            ids: arrayColumn(row, 'content_id')
           }).then(res => {
             this.recoverList()
             this.$message.success(res.msg)
@@ -958,23 +843,30 @@ export default {
         }).catch(() => {})
       }
     },
-    // 回收站选择
+    // 回收站多选
     recoverSelect(selection) {
       this.recoverSelection = selection
-    },
-    recoverSelectAll() {
-      if (this.recoverSelectButton) {
-        this.$refs.recoverRef.toggleAllSelection()
-      } else {
-        this.$refs.recoverRef.clearSelection()
-      }
-    },
-    // 回收站分类选择（查询）
-    recoverCategoryChangeQuery(value) {
-      if (value) {
-        this.recoverQuery.category_id = value[value.length - 1]
-      }
     }
   }
 }
 </script>
+
+<style scoped>
+.ya-file{
+  text-align: center;
+  border: 1px solid #DCDFE6;
+}
+.ya-file-name{
+  display: block;
+  height: 24px;
+  line-height: 24px;
+  padding: 0 4px;
+  font-size: 12px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.ya-file-link{
+  margin-right: 6px;
+}
+</style>

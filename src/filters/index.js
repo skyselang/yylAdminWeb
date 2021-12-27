@@ -1,6 +1,3 @@
-// 导入parseTime、formatTime并设置为filter
-export { parseTime, formatTime } from '@/utils'
-
 /**
  * 如果时间是复数，则显示复数标签
  * @param {number} time

@@ -57,6 +57,17 @@ export function dele(data) {
   })
 }
 /**
+ * 菜单设置父级
+ * @param {array} data 请求数据
+ */
+export function pid(data) {
+  return request({
+    url: url + 'pid',
+    method: 'post',
+    data
+  })
+}
+/**
  * 菜单是否禁用
  * @param {array} data 请求数据
  */

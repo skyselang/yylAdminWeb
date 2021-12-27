@@ -8,8 +8,8 @@
               <span>会员</span>
             </div>
             <div class="text">
-              <el-row :gutter="0">
-                <el-col :span="24" class="color-tot" title="总数">
+              <el-row>
+                <el-col class="color-tot" title="总数">
                   {{ number.total }}
                 </el-col>
               </el-row>
@@ -22,7 +22,7 @@
               <span>今天</span>
             </div>
             <div class="text">
-              <el-row :gutter="0">
+              <el-row>
                 <el-col :span="12" class="color-new" title="新增会员">
                   {{ number.today }}
                 </el-col>
@@ -39,7 +39,7 @@
               <span>昨天</span>
             </div>
             <div class="text">
-              <el-row :gutter="0">
+              <el-row>
                 <el-col :span="12" class="color-new" title="新增会员">
                   {{ number.yesterday }}
                 </el-col>
@@ -56,7 +56,7 @@
               <span>本周</span>
             </div>
             <div class="text">
-              <el-row :gutter="0">
+              <el-row>
                 <el-col :span="12" class="color-new" title="新增会员">
                   {{ number.yesterday }}
                 </el-col>
@@ -73,7 +73,7 @@
               <span>上周</span>
             </div>
             <div class="text">
-              <el-row :gutter="0">
+              <el-row>
                 <el-col :span="12" class="color-new" title="新增会员">
                   {{ number.yesterday }}
                 </el-col>
@@ -90,7 +90,7 @@
               <span>本月</span>
             </div>
             <div class="text">
-              <el-row :gutter="0">
+              <el-row>
                 <el-col :span="12" class="color-new" title="新增会员">
                   {{ number.yesterday }}
                 </el-col>
@@ -107,7 +107,7 @@
               <span>上月</span>
             </div>
             <div class="text">
-              <el-row :gutter="0">
+              <el-row>
                 <el-col :span="12" class="color-new" title="新增会员">
                   {{ number.yesterday }}
                 </el-col>
@@ -119,28 +119,27 @@
           </el-card>
         </el-col>
       </el-row>
-      <el-row :gutter="0">
-        <el-col :sm="24">
+      <el-row>
+        <el-col>
           <el-date-picker
             v-model="date"
             type="daterange"
-            range-separator="-"
             value-format="yyyy-MM-dd"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-            style="max-width:280px"
-            @change="echartMemberDateChange()"
+            @change="echartMemberDateChange"
           />
         </el-col>
       </el-row>
-      <el-row :gutter="0">
-        <el-col :sm="24">
-          <div id="echartMemberDate" style="height:450px" />
+      <el-row>
+        <el-col>
+          <div id="echartMemberDate" :style="{height:height-300+'px'}" />
         </el-col>
       </el-row>
-      <el-row :gutter="0">
-        <el-col :sm="24">
-          <div id="echartMemberCount" style="height:450px" />
+      <el-divider />
+      <el-row>
+        <el-col>
+          <div id="echartMemberCount" :style="{height:height-300+'px'}" />
         </el-col>
       </el-row>
     </el-card>
@@ -169,6 +168,7 @@ export default {
   directives: { },
   data() {
     return {
+      name: '会员统计',
       height: 680,
       loading: false,
       number: {

@@ -1,12 +1,11 @@
 <template>
   <div style="margin-bottom:15px">
     <el-card v-loading="loading" style="text-align:center">
-      <el-row :gutter="0">
-        <el-col :sm="24">
+      <el-row>
+        <el-col>
           <el-date-picker
             v-model="date"
             type="daterange"
-            range-separator="-"
             value-format="yyyy-MM-dd"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
@@ -15,8 +14,8 @@
           />
         </el-col>
       </el-row>
-      <el-row :gutter="0">
-        <el-col :sm="24">
+      <el-row>
+        <el-col>
           <div id="echartIndexMember" style="height:450px" />
         </el-col>
       </el-row>

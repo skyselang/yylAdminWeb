@@ -75,29 +75,27 @@
       </el-row>
     </el-card>
     <el-card v-loading="loadDate" class="box-card">
-      <el-row :gutter="0">
-        <el-col :sm="24">
+      <el-row>
+        <el-col>
           <el-date-picker
             v-model="date.date"
             type="daterange"
-            range-separator="-"
             value-format="yyyy-MM-dd"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-            style="max-width:280px"
             @change="echartUserDateChange()"
           />
         </el-col>
       </el-row>
-      <el-row :gutter="0">
-        <el-col :sm="24">
+      <el-row>
+        <el-col>
           <div id="echartUserDate" :style="{height:height-100+'px'}" />
         </el-col>
       </el-row>
     </el-card>
     <el-card class="box-card" :body-style="cardBodyStyle">
-      <el-row :gutter="0">
-        <el-col :sm="24">
+      <el-row>
+        <el-col>
           <el-date-picker
             v-model="field.date"
             type="daterange"
@@ -114,14 +112,14 @@
         </el-col>
       </el-row>
       <el-divider />
-      <el-row v-loading="loadField" :gutter="0">
-        <el-col :sm="24">
+      <el-row v-loading="loadField">
+        <el-col>
           <div id="echartUserLine" :style="{height:height+'px'}" />
         </el-col>
       </el-row>
       <el-divider />
-      <el-row v-loading="loadField" :gutter="0">
-        <el-col :sm="24">
+      <el-row v-loading="loadField">
+        <el-col>
           <div id="echartUserPie" :style="{height:height+'px'}" />
         </el-col>
       </el-row>

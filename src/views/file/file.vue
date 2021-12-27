@@ -9,7 +9,9 @@ export default {
   name: 'FileFile',
   components: { FileManage },
   data() {
-    return {}
+    return {
+      name: '文件管理'
+    }
   },
   created() {},
   methods: {}

@@ -1,8 +1,12 @@
 <template>
   <div class="login-container" :style="{backgroundImage:'url('+login_bg_url+')' }">
-    <el-form ref="ref" :model="model" :rules="rules" class="login-form" label-position="left">
-      <div class="title-container">
-        <h3 class="title">{{ system_name }}</h3>
+    <el-form ref="ref" class="login-form" :model="model" :rules="rules" label-position="left">
+      <div class="login-title">
+        <h3 class="login-title-name">{{ system_name }}</h3>
+      </div>
+      <div class="login-logo">
+        <el-image v-if="logo_url" class="login-logo-img" :src="logo_url" fit="contain" />
+        <div v-else style="height:60px" />
       </div>
       <el-form-item prop="username">
         <el-input v-model="model.username" type="text" placeholder="账号/手机/邮箱" prefix-icon="el-icon-user" autocomplete="on" clearable />
@@ -15,28 +19,31 @@
           <el-input v-model="model.captcha_code" placeholder="请输入验证码" prefix-icon="el-icon-picture" autocomplete="off" clearable />
         </el-col>
         <el-col :span="11">
-          <el-image :src="captcha_src" fit="fill" alt="验证码" title="点击刷新验证码" style="width:200px;height:36px;float:right" @click="captcha" />
+          <el-image class="login-captcha" :src="captcha_src" fit="fill" alt="验证码" title="点击刷新验证码" @click="captcha" />
         </el-col>
       </el-form-item>
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
+      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px" @click.native.prevent="handleLogin">登录</el-button>
     </el-form>
   </div>
 </template>
 
 <script>
 import { captcha, setting } from '@/api/admin/login'
+import { delMessage } from '@/utils/auth'
 
 export default {
   name: 'AdminLogin',
   components: {},
   data() {
     return {
+      name: '登录',
       system_name: '',
       loading: false,
       redirect: undefined,
       otherQuery: {},
       captcha_src: '',
       captcha_switch: 0,
+      logo_url: '',
       login_bg_url: '',
       model: {
         username: '',
@@ -90,8 +97,9 @@ export default {
       this.model.captcha_code = ''
       setting().then(res => {
         this.captchaSet(res)
-        this.system_name = res.data.system_name
         this.login_bg_url = res.data.login_bg_url
+        this.system_name = res.data.system_name
+        this.logo_url = res.data.logo_url
         this.$store.dispatch('settings/changeSetting', { key: 'systemName', value: res.data.system_name })
         this.$store.dispatch('settings/changeSetting', { key: 'pageTitle', value: res.data.page_title })
         this.$store.dispatch('settings/changeSetting', { key: 'logoUrl', value: res.data.logo_url })
@@ -104,6 +112,7 @@ export default {
         if (valid) {
           this.loading = true
           this.$store.dispatch('user/login', this.model).then(() => {
+            delMessage()
             this.$router.push({
               path: this.redirect || '/',
               query: this.otherQuery
@@ -141,23 +150,38 @@ export default {
 
   .login-form {
     position: relative;
-    width: 520px;
-    max-width: 100%;
     padding: 160px 35px 0;
     margin: 0 auto;
+    width: 520px;
+    max-width: 100%;
     overflow: hidden;
   }
 
-  .title-container {
+  .login-title {
     position: relative;
 
-    .title {
-      font-size: 26px;
-      color: #eee;
-      margin: 0px auto 40px auto;
+    .login-title-name {
+      margin: 0px auto 30px auto;
       text-align: center;
       font-weight: bold;
+      font-size: 26px;
+      color: #eee;
     }
+  }
+
+  .login-logo {
+    margin-bottom: 10px;
+    text-align: center;
+
+    .login-logo-img {
+      height: 130px;
+    }
+  }
+
+  .login-captcha {
+    float: right;
+    width: 200px;
+    height: 36px;
   }
 }
 </style>

@@ -1,34 +1,67 @@
 <template>
   <div class="app-container">
-    <!-- 查询 -->
+    <!-- 查询、选中操作 -->
     <div class="filter-container">
-      <el-row :gutter="0">
-        <el-col :xs="24" :sm="20">
-          <el-input v-model="query.group_name" class="filter-item" style="width: 200px;" placeholder="名称" clearable />
-          <el-input v-model="query.group_desc" class="filter-item" style="width: 200px;" placeholder="描述" clearable />
+      <!-- 查询 -->
+      <el-row>
+        <el-col>
+          <el-select v-model="query.search_field" class="filter-item ya-search-field" placeholder="搜索字段">
+            <el-option value="group_name" label="名称" />
+            <el-option value="group_desc" label="描述" />
+            <el-option value="is_disable" label="是否禁用" />
+            <el-option value="group_id" label="ID" />
+          </el-select>
+          <el-input v-model="query.search_value" class="filter-item ya-search-value" placeholder="搜索内容" clearable />
+          <el-select v-model="query.date_field" class="filter-item ya-date-field" placeholder="时间类型">
+            <el-option value="create_time" label="添加时间" />
+            <el-option value="update_time" label="修改时间" />
+          </el-select>
+          <el-date-picker
+            v-model="query.date_value"
+            type="daterange"
+            class="filter-item ya-date-value"
+            value-format="yyyy-MM-dd"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          />
           <el-button class="filter-item" type="primary" @click="search()">查询</el-button>
           <el-button class="filter-item" @click="refresh()">刷新</el-button>
         </el-col>
-        <el-col :xs="24" :sm="4" style="text-align:right;">
-          <el-button class="filter-item" type="primary" @click="add()">添加</el-button>
+      </el-row>
+      <!-- 选中操作 -->
+      <el-row>
+        <el-col>
+          <el-button @click="selectOpen('disable')">禁用</el-button>
+          <el-button @click="dele(selection)">删除</el-button>
+          <el-button type="primary" @click="add()">添加</el-button>
         </el-col>
       </el-row>
+      <el-dialog title="选中操作" :visible.sync="selectDialog" top="20vh" :close-on-click-modal="false" :close-on-press-escape="false">
+        <el-form ref="selectRef" label-width="120px">
+          <el-form-item v-if="selectType==='disable'" label="禁用" prop="">
+            <el-switch v-model="is_disable" :active-value="1" :inactive-value="0" />
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="selectCancel">取消</el-button>
+          <el-button type="primary" @click="selectSubmit">提交</el-button>
+        </div>
+      </el-dialog>
     </div>
     <!-- 列表 -->
-    <el-table v-loading="loading" :data="datas" :height="height-50" style="width: 100%" @sort-change="sort" @selection-change="select">
-      <el-table-column type="selection" width="40" />
-      <el-table-column prop="group_id" label="分组ID" min-width="100" sortable="custom" />
+    <el-table v-loading="loading" :data="data" :height="height" @sort-change="sort" @selection-change="select">
+      <el-table-column type="selection" width="40" title="全选/反选" />
+      <el-table-column prop="group_id" label="ID" min-width="100" sortable="custom" />
       <el-table-column prop="group_name" label="名称" min-width="120" />
       <el-table-column prop="group_desc" label="描述" min-width="130" />
       <el-table-column prop="group_sort" label="排序" min-width="100" sortable="custom" />
-      <el-table-column prop="create_time" label="添加时间" min-width="160" sortable="custom" />
-      <el-table-column prop="update_time" label="修改时间" min-width="160" sortable="custom" />
-      <el-table-column prop="is_disable" label="是否禁用" min-width="110" sortable="custom" align="center">
+      <el-table-column prop="is_disable" label="禁用" min-width="110" sortable="custom" align="center">
         <template slot-scope="scope">
-          <el-switch v-if="scope.row.is_disable" v-model="scope.row.is_disable" :active-value="1" :inactive-value="0" @change="disable([scope.row],0)" />
-          <el-switch v-else v-model="scope.row.is_disable" :active-value="1" :inactive-value="0" @change="disable([scope.row],1)" />
+          <el-switch v-model="scope.row.is_disable" :active-value="1" :inactive-value="0" @change="disable([scope.row])" />
         </template>
       </el-table-column>
+      <el-table-column prop="create_time" label="添加时间" min-width="160" sortable="custom" />
+      <el-table-column prop="update_time" label="修改时间" min-width="160" sortable="custom" />
       <el-table-column label="操作" min-width="85" align="right">
         <template slot-scope="{ row }">
           <el-button size="mini" type="text" @click="edit(row)">修改</el-button>
@@ -36,15 +69,10 @@
         </template>
       </el-table-column>
     </el-table>
-    <div style="margin-top: 20px">
-      <el-button size="mini" type="text" @click="disable(selection,0)">启用</el-button>
-      <el-button size="mini" type="text" @click="disable(selection,1)">禁用</el-button>
-      <el-button size="mini" type="text" @click="dele(selection)">删除</el-button>
-    </div>
     <!-- 分页 -->
     <pagination v-show="count > 0" :total="count" :page.sync="query.page" :limit.sync="query.limit" @pagination="list" />
     <!-- 添加、修改 -->
-    <el-dialog :title="dialogTitle" :visible.sync="dialog" :before-close="cancel">
+    <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false">
       <el-form ref="ref" :rules="rules" :model="model" label-width="100px" class="dialog-body">
         <el-form-item label="名称" prop="group_name">
           <el-input v-model="model.group_name" placeholder="请输入名称" clearable />
@@ -55,20 +83,14 @@
         <el-form-item label="排序" prop="group_sort">
           <el-input v-model="model.group_sort" type="number" />
         </el-form-item>
-        <el-form-item label="是否禁用">
-          <el-select v-model="model.is_disable" class="filter-item" placeholder="">
-            <el-option :value="0" label="否" />
-            <el-option :value="1" label="是" />
-          </el-select>
+        <el-form-item label="禁用" prop="is_disable">
+          <el-switch v-model="model.is_disable" :active-value="1" :inactive-value="0" />
         </el-form-item>
-        <el-form-item v-if="model.group_id" label="添加时间" prop="">
-          <el-col :span="10">
-            <el-input v-model="model.create_time" clearable placeholder="" disabled />
-          </el-col>
-          <el-col class="line" :span="4" style="text-align:center">修改时间</el-col>
-          <el-col :span="10">
-            <el-input v-model="model.update_time" clearable placeholder="" disabled />
-          </el-col>
+        <el-form-item v-if="model.group_id" label="添加时间" prop="create_time">
+          <el-input v-model="model.create_time" disabled />
+        </el-form-item>
+        <el-form-item v-if="model.group_id" label="修改时间" prop="update_time">
+          <el-input v-model="model.update_time" disabled />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -82,6 +104,7 @@
 <script>
 import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination'
+import { arrayColumn } from '@/utils/index'
 import { list, info, add, edit, dele, disable } from '@/api/file/group'
 
 export default {
@@ -92,11 +115,13 @@ export default {
       name: '文件分组',
       height: 680,
       loading: false,
-      datas: [],
+      data: [],
       count: 0,
       query: {
         page: 1,
-        limit: 12
+        limit: 12,
+        search_field: 'group_name',
+        date_field: 'create_time'
       },
       dialog: false,
       dialogTitle: '',
@@ -104,10 +129,13 @@ export default {
         group_id: '',
         group_name: '',
         group_desc: '',
-        group_sort: 50,
+        group_sort: 250,
         is_disable: 0
       },
       selection: [],
+      selectDialog: false,
+      selectType: '',
+      is_disable: 0,
       rules: {
         group_name: [{ required: true, message: '请输入名称', trigger: 'blur' }]
       }
@@ -122,35 +150,12 @@ export default {
     list() {
       this.loading = true
       list(this.query).then(res => {
-        this.datas = res.data.list
+        this.data = res.data.list
         this.count = res.data.count
         this.loading = false
       }).catch(() => {
         this.loading = false
       })
-    },
-    // 查询
-    search() {
-      this.query.page = 1
-      this.list()
-    },
-    // 刷新
-    refresh() {
-      this.query = this.$options.data().query
-      this.list()
-    },
-    // 排序
-    sort(sort) {
-      this.query.sort_field = sort.prop
-      this.query.sort_value = ''
-      if (sort.order === 'ascending') {
-        this.query.sort_value = 'asc'
-        this.list()
-      }
-      if (sort.order === 'descending') {
-        this.query.sort_value = 'desc'
-        this.list()
-      }
     },
     // 添加修改
     add() {
@@ -199,7 +204,7 @@ export default {
     },
     // 删除
     dele(row) {
-      if (row.length === 0) {
+      if (!row.length) {
         this.selectAlert()
       } else {
         var title = '删除' + this.name
@@ -211,7 +216,7 @@ export default {
         this.$confirm(message, title, { type: 'warning', dangerouslyUseHTMLString: true }).then(() => {
           this.loading = true
           dele({
-            group: row
+            ids: arrayColumn(row, 'group_id')
           }).then(res => {
             this.list()
             this.$message.success(res.msg)
@@ -220,31 +225,6 @@ export default {
           })
         }).catch(() => {})
       }
-    },
-    // 禁用启用
-    disable(row, is_disable = 0) {
-      if (row.length === 0) {
-        this.selectAlert()
-      } else {
-        this.loading = true
-        disable({
-          group: row,
-          is_disable: is_disable
-        }).then(res => {
-          this.list()
-          this.$message.success(res.msg)
-        }).catch(() => {
-          this.list()
-          this.loading = false
-        })
-      }
-    },
-    // 选择
-    select(selection) {
-      this.selection = selection
-    },
-    selectAlert(message = '') {
-      this.$alert(message || '请选择需要操作的' + this.name, '提示', { confirmButtonText: '确定', callback: action => {} })
     },
     // 重置
     reset(row) {
@@ -255,6 +235,81 @@ export default {
       }
       if (this.$refs['ref'] !== undefined) {
         this.$refs['ref'].resetFields()
+        this.$refs['ref'].clearValidate()
+      }
+    },
+    // 查询
+    search() {
+      this.query.page = 1
+      this.list()
+    },
+    // 刷新
+    refresh() {
+      this.query = this.$options.data().query
+      this.list()
+    },
+    // 排序
+    sort(sort) {
+      this.query.sort_field = sort.prop
+      this.query.sort_value = ''
+      if (sort.order === 'ascending') {
+        this.query.sort_value = 'asc'
+        this.list()
+      }
+      if (sort.order === 'descending') {
+        this.query.sort_value = 'desc'
+        this.list()
+      }
+    },
+    // 选中操作
+    select(selection) {
+      this.selection = selection
+    },
+    selectAlert(message = '') {
+      this.$alert(message || '请选择需要操作的' + this.name, '提示', { type: 'warning', callback: action => {} })
+    },
+    selectOpen(selectType) {
+      if (!this.selection.length) {
+        this.selectAlert()
+      } else {
+        this.selectDialog = true
+        this.selectType = selectType
+      }
+    },
+    selectCancel() {
+      this.selectDialog = false
+    },
+    selectSubmit() {
+      if (!this.selection.length) {
+        this.selectAlert()
+      } else {
+        const type = this.selectType
+        if (type === 'disable') {
+          this.disable(this.selection, true)
+        }
+        this.selectDialog = false
+      }
+    },
+    // 是否禁用
+    disable(row, select = false) {
+      if (!row.length) {
+        this.selectAlert()
+      } else {
+        this.loading = true
+        var is_disable = row[0].is_disable
+        if (select) {
+          is_disable = this.is_disable
+        }
+        disable({
+          ids: arrayColumn(row, 'group_id'),
+          is_disable: is_disable
+        }).then(res => {
+          this.list()
+          this.$message.success(res.msg)
+        }).catch(() => {
+          this.list()
+          this.loading = false
+        })
       }
     }
   }

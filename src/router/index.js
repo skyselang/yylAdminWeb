@@ -429,12 +429,12 @@ export const asyncRoutes = [
       icon: 'el-icon-s-tools',
       roles: [
         'admin/admin.Message/list',
-        'admin/admin.Message/info',
         'admin/admin.Setting/cacheInfo',
         'admin/admin.Setting/tokenInfo',
         'admin/admin.Setting/captchaInfo',
         'admin/admin.Setting/logInfo',
         'admin/admin.Setting/apiInfo',
+        'admin/admin.Setting/systemInfo',
         'admin/admin.Apidoc/apidoc',
         'admin/admin.Utils/utils'
       ]
@@ -452,17 +452,6 @@ export const asyncRoutes = [
           roles: ['admin/admin.Message/list']
         },
         component: () => import('@/views/admin/message/message')
-      },
-      {
-        path: 'message-info',
-        name: 'AdminSystemMessageInfo',
-        meta: {
-          title: '消息信息',
-          icon: 'el-icon-s-tools',
-          roles: ['admin/admin.Message/info']
-        },
-        component: () => import('@/views/admin/message/message-info'),
-        hidden: true
       },
       {
         path: 'setting',

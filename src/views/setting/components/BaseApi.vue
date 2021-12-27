@@ -1,6 +1,6 @@
 <template>
   <el-card class="box-card">
-    <el-row :gutter="0">
+    <el-row class="dialog-body" :style="{height:height+'px'}">
       <el-col :xs="24" :sm="18" :md="12">
         <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
           <el-form-item label="" prop="">
@@ -30,13 +30,16 @@
 </template>
 
 <script>
+import screenHeight from '@/utils/screen-height'
 import { apiInfo, apiEdit } from '@/api/setting'
 
 export default {
-  name: 'SettingApi',
+  name: 'SettingBaseApi',
   components: {},
   data() {
     return {
+      name: '接口设置',
+      height: 680,
       loading: false,
       model: {
         api_rate_num: 3,
@@ -46,6 +49,7 @@ export default {
     }
   },
   created() {
+    this.height = screenHeight()
     this.info()
   },
   methods: {

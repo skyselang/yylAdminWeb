@@ -6,7 +6,7 @@
 import screenHeight from '@/utils/screen-height'
 
 export default {
-  name: 'Toollu',
+  name: 'UtilsToollu',
   components: {},
   data() {
     return {

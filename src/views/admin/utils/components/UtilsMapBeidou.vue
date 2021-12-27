@@ -6,11 +6,11 @@
 import screenHeight from '@/utils/screen-height'
 
 export default {
-  name: 'MapTencent',
+  name: 'UtilsMapBeidou',
   components: {},
   data() {
     return {
-      src: 'https://lbs.qq.com/tool/getpoint/index.html',
+      src: 'http://www.beidou.gov.cn/',
       height: 500
     }
   },

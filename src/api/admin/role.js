@@ -2,6 +2,17 @@ import request from '@/utils/request'
 const url = '/admin/admin.Role/'
 // ----------------角色管理----------------
 /**
+ * 菜单列表
+ * @param {array} params 请求参数
+ */
+export function menu(params) {
+  return request({
+    url: url + 'menu',
+    method: 'get',
+    params: params
+  })
+}
+/**
  * 角色列表
  * @param {array} params 请求参数
  */

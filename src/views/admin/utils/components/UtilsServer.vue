@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="dialog-body" :style="{height:height+'px'}">
     <el-row :gutter="8">
       <el-col :sm="24" :md="12">
         <el-card class="box-card">
@@ -142,17 +142,20 @@
 </template>
 
 <script>
+import screenHeight from '@/utils/screen-height'
 import { server } from '@/api/admin/utils'
 
 export default {
-  name: 'Server',
+  name: 'UtilsServer',
   data() {
     return {
+      height: 680,
       loading: false,
       model: {}
     }
   },
   created() {
+    this.height = screenHeight()
     this.server()
   },
   methods: {

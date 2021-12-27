@@ -1,5 +1,5 @@
 <template>
-  <el-card class="box-card">
+  <el-card class="box-card dialog-body" :style="{height:height+'px'}">
     <div slot="header" class="clearfix">
       <span>生成二维码</span>
     </div>
@@ -23,13 +23,15 @@
 </template>
 
 <script>
+import screenHeight from '@/utils/screen-height'
 import QrcodeVue from 'qrcode.vue'
 
 export default {
-  name: 'Qrcode',
+  name: 'UtilsQrcode',
   components: { QrcodeVue },
   data() {
     return {
+      height: 680,
       model: {
         str: '',
         url: '',
@@ -39,7 +41,9 @@ export default {
       rules: {}
     }
   },
-  created() {},
+  created() {
+    this.height = screenHeight()
+  },
   methods: {
     clear() {
       this.model.str = ''

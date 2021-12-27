@@ -1,11 +1,11 @@
 <template>
   <div>
     <el-card v-loading="loading" class="box-card">
-      <el-row :gutter="0">
+      <el-row>
         <el-col :xs="24" :sm="18" :md="12">
           <el-form ref="ref" :rules="rules" :model="model" class="dialog-body" label-width="120px">
             <el-form-item label="头像">
-              <el-avatar v-if="model.avatar_url" shape="circle" fit="contain" :size="100" :src="model.avatar_url" />
+              <el-avatar v-if="model.avatar_url" :src="model.avatar_url" fit="contain" shape="circle" :size="100" />
               <el-avatar v-else icon="el-icon-user-solid" :size="100" />
             </el-form-item>
             <el-form-item label="账号" prop="username">
@@ -29,7 +29,7 @@
             <el-form-item v-if="model.admin_user_id" label="修改时间" prop="update_time">
               <el-input v-model="model.update_time" placeholder="" />
             </el-form-item>
-            <el-form-item v-if="model.admin_user_id" label="登录时间" prop="update_time">
+            <el-form-item v-if="model.admin_user_id" label="登录时间" prop="login_time">
               <el-input v-model="model.login_time" placeholder="" />
             </el-form-item>
             <el-form-item v-if="model.admin_user_id" label="退出时间" prop="logout_time">
@@ -53,6 +53,7 @@ export default {
   components: {},
   data() {
     return {
+      name: '我的信息',
       loading: false,
       model: {
         avatar: '',
@@ -73,6 +74,7 @@ export default {
     this.info()
   },
   methods: {
+    // 信息
     info(msg = false) {
       this.loading = true
       info({
@@ -87,6 +89,7 @@ export default {
         this.loading = false
       })
     },
+    // 刷新
     refresh() {
       this.info(true)
     }

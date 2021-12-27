@@ -56,6 +56,17 @@ export function dele(data) {
   })
 }
 /**
+ * 接口父级
+ * @param {array} data 请求数据
+ */
+export function pid(data) {
+  return request({
+    url: url + 'pid',
+    method: 'post',
+    data
+  })
+}
+/**
  * 接口是否禁用
  * @param {array} data 请求数据
  */

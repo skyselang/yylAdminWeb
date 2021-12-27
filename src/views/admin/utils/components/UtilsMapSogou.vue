@@ -6,11 +6,11 @@
 import screenHeight from '@/utils/screen-height'
 
 export default {
-  name: 'MapBeidou',
+  name: 'UtilsMapSogou',
   components: {},
   data() {
     return {
-      src: 'http://www.beidou.gov.cn/',
+      src: 'https://map.sogou.com/api/documentation/javascript/api2.5/examples_doc/event-arguments.html',
       height: 500
     }
   },

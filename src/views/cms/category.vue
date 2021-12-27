@@ -1,116 +1,122 @@
 <template>
   <div class="app-container">
-    <!-- 查询 -->
+    <!-- 查询、选中操作 -->
     <div class="filter-container">
-      <el-row :gutter="0">
-        <el-col :span="24" style="text-align:right;">
-          <el-checkbox v-model="isExpandAll" class="filter-item" border @change="expandAll">收起</el-checkbox>
-          <el-button class="filter-item" style="margin-left:10px" @click="refresh()">刷新</el-button>
-          <el-button class="filter-item" type="primary" @click="add()">添加</el-button>
+      <el-row>
+        <el-col>
+          <el-button class="filter-item" @click="refresh()">刷新</el-button>
         </el-col>
       </el-row>
+      <!-- 选中操作 -->
+      <el-row>
+        <el-col>
+          <div>
+            <el-checkbox v-model="isExpandAll" border @change="expandAll">收起</el-checkbox>
+            <el-button class="ya-margin-left" @click="selectOpen('pid')">父级</el-button>
+            <el-button @click="selectOpen('hide')">隐藏</el-button>
+            <el-button @click="dele(selection)">删除</el-button>
+            <el-button type="primary" @click="add()">添加</el-button>
+          </div>
+        </el-col>
+      </el-row>
+      <el-dialog title="选中操作" :visible.sync="selectDialog" top="20vh" :close-on-click-modal="false" :close-on-press-escape="false">
+        <el-form ref="selectRef" label-width="120px">
+          <el-form-item v-if="selectType==='pid'" label="分类父级" prop="">
+            <el-cascader
+              v-model="category_pid"
+              :options="data"
+              :props="categoryProps"
+              style="width:100%"
+              placeholder="分类"
+              clearable
+              filterable
+              @change="selectCategoryChange"
+            />
+          </el-form-item>
+          <el-form-item v-if="selectType==='hide'" label="隐藏" prop="">
+            <el-switch v-model="is_hide" :active-value="1" :inactive-value="0" />
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="selectCancel">取消</el-button>
+          <el-button type="primary" @click="selectSubmit">提交</el-button>
+        </div>
+      </el-dialog>
     </div>
     <!-- 列表 -->
-    <el-table ref="table" v-loading="loading" :data="data" :height="height" style="width: 100%" row-key="category_id" @selection-change="select">
-      <el-table-column type="selection" width="40" />
-      <el-table-column prop="category_name" label="分类名称" min-width="250" show-overflow-tooltip />
-      <el-table-column prop="category_id" label="分类ID" min-width="80" />
-      <el-table-column prop="is_hide" label="是否隐藏" min-width="80" align="center">
+    <el-table ref="table" v-loading="loading" :data="data" :height="height+30" row-key="category_id" @selection-change="select">
+      <el-table-column type="selection" width="42" title="全选/反选" />
+      <el-table-column prop="category_name" label="名称" min-width="250" show-overflow-tooltip />
+      <el-table-column prop="category_id" label="ID" min-width="80" />
+      <el-table-column prop="is_hide" label="隐藏" min-width="80">
         <template slot-scope="scope">
           <el-switch v-model="scope.row.is_hide" :active-value="1" :inactive-value="0" @change="ishide([scope.row])" />
         </template>
       </el-table-column>
+      <el-table-column prop="sort" label="排序" min-width="80" />
       <el-table-column prop="create_time" label="添加时间" min-width="160" />
       <el-table-column prop="update_time" label="修改时间" min-width="160" />
-      <el-table-column prop="sort" label="排序" min-width="80" />
       <el-table-column label="操作" min-width="120" align="right" fixed="right">
         <template slot-scope="{ row }">
-          <el-button size="mini" type="text" @click="add(row)">添加</el-button>
+          <el-button size="mini" type="text" title="添加下级" @click="add(row)">添加</el-button>
           <el-button size="mini" type="text" @click="edit(row)">修改</el-button>
           <el-button size="mini" type="text" @click="dele([row])">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
-    <!-- 全选操作 -->
-    <div style="margin-top: 20px">
-      <el-checkbox v-model="selectButton" style="padding-right:10px" title="全选/反选" @change="selectAll()" />
-      <el-button size="mini" type="text" @click="selectOpen('pid')">父级</el-button>
-      <el-button size="mini" type="text" @click="selectOpen('hide')">隐藏</el-button>
-      <el-button size="mini" type="text" @click="dele(selection)">删除</el-button>
-    </div>
-    <el-dialog title="全选操作" :visible.sync="selectDialog">
-      <el-form ref="selectRef" label-width="100px">
-        <el-form-item v-if="selectType==='pid'" label="分类父级" prop="">
-          <el-cascader
-            v-model="category_pid"
-            class="filter-item"
-            :options="data"
-            :props="{checkStrictly: true, value: 'category_id', label: 'category_name'}"
-            style="width:150px"
-            clearable
-            filterable
-            placeholder="分类"
-            @change="selectCategoryChange"
-          />
-        </el-form-item>
-        <el-form-item v-if="selectType==='hide'" label="是否隐藏" prop="">
-          <el-switch v-model="is_hide" style="margin-left: 10px;" :active-value="1" :inactive-value="0" />
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="selectCancel">取消</el-button>
-        <el-button type="primary" @click="selectSubmit">提交</el-button>
-      </div>
-    </el-dialog>
     <!-- 添加、修改 -->
-    <el-dialog :title="dialogTitle" :visible.sync="dialog" top="1vh" width="65%" :before-close="cancel" :close-on-click-modal="false">
+    <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false">
       <el-form ref="ref" :rules="rules" :model="model" class="dialog-body" label-width="100px" :style="{height:height+'px'}">
-        <el-form-item label="分类父级" prop="category_pid">
+        <el-form-item label="父级" prop="category_pid">
           <el-cascader
             v-model="model.category_pid"
             :options="data"
-            :props="{checkStrictly: true, value: 'category_id', label: 'category_name'}"
+            :props="categoryProps"
             style="width:100%"
+            placeholder="一级分类"
             clearable
             filterable
-            placeholder="一级分类"
             @change="categoryChange"
           />
         </el-form-item>
-        <el-form-item label="分类名称" prop="category_name">
-          <el-input v-model="model.category_name" clearable placeholder="请输入分类名称" />
+        <el-form-item label="名称" prop="category_name">
+          <el-input v-model="model.category_name" placeholder="请输入分类名称" clearable />
         </el-form-item>
         <el-form-item label="标题" prop="title">
-          <el-input v-model="model.title" clearable placeholder="title" />
+          <el-input v-model="model.title" placeholder="title" clearable />
         </el-form-item>
         <el-form-item label="关键词" prop="keywords">
-          <el-input v-model="model.keywords" clearable placeholder="keywords" />
+          <el-input v-model="model.keywords" placeholder="keywords" clearable />
         </el-form-item>
         <el-form-item label="描述" prop="description">
-          <el-input v-model="model.description" type="textarea" clearable placeholder="description" />
+          <el-input v-model="model.description" type="textarea" placeholder="description" clearable />
         </el-form-item>
         <el-form-item label="图片" prop="imgs">
-          <el-row :gutter="0">
+          <el-row>
             <el-col :span="8">
               <el-button size="mini" @click="fileUpload()">上传图片</el-button>
             </el-col>
             <el-col :span="16">
-              <div>每张图片大小不超过 500 KB，jpg、png格式。</div>
+              <div>每张图片大小不超过 300 KB，jpg、png格式。</div>
             </el-col>
           </el-row>
-          <el-row :gutter="0">
-            <el-col v-for="(item, index) in model.imgs" :key="index" :span="6" style="border:1px solid #DCDFE6">
-              <el-image style="width:100%;height:100px;" :src="item.file_url" :preview-src-list="[item.file_url]" fit="contain" title="点击查看大图" />
-              <br style="line-height: 0">
-              <el-link :href="item.file_url" :underline="false" :download="item.file_url" target="_blank" style="margin:0 1px">
-                下载<span style="font-size:10px">({{ item.file_size }})</span>
-              </el-link>
-              <el-button size="mini" @click="uploadDele(index)">删除</el-button>
+          <el-row>
+            <el-col v-for="(item, index) in model.imgs" :key="index" :span="6" class="ya-file">
+              <el-image class="ya-img-form" :src="item.file_url" :preview-src-list="[item.file_url]" fit="contain" title="点击查看大图" />
+              <div>
+                <span class="ya-file-name" :title="item.file_name+'.'+item.file_ext">
+                  {{ item.file_name }}.{{ item.file_ext }}
+                </span>
+                <el-link :href="item.file_url" :underline="false" :download="item.file_url" target="_blank" class="ya-file-link">
+                  下载
+                </el-link>
+                <el-button size="mini" @click="fileDele(index)">删除</el-button>
+              </div>
             </el-col>
           </el-row>
         </el-form-item>
         <el-form-item label="排序" prop="sort">
-          <el-input v-model="model.sort" clearable placeholder="200" />
+          <el-input v-model="model.sort" placeholder="250" clearable />
         </el-form-item>
         <el-form-item v-if="model.category_id" label="添加时间" prop="create_time">
           <el-input v-model="model.create_time" disabled />
@@ -124,7 +130,8 @@
         <el-button type="primary" @click="submit">提交</el-button>
       </div>
     </el-dialog>
-    <el-dialog title="上传图片" :visible.sync="fileDialog" width="80%" top="1vh">
+    <!-- 文件管理 -->
+    <el-dialog title="上传图片" :visible.sync="fileDialog" width="80%" top="1vh" :close-on-click-modal="false" :close-on-press-escape="false">
       <file-manage file-type="image" @fileCancel="fileCancel" @fileSubmit="fileSubmit" />
     </el-dialog>
   </div>
@@ -133,6 +140,7 @@
 <script>
 import screenHeight from '@/utils/screen-height'
 import FileManage from '@/components/FileManage'
+import { arrayColumn } from '@/utils/index'
 import { list, info, add, edit, dele, pid, ishide } from '@/api/cms/category'
 
 export default {
@@ -155,8 +163,9 @@ export default {
         keywords: '',
         description: '',
         imgs: [],
-        sort: 200
+        sort: 250
       },
+      categoryProps: { checkStrictly: true, value: 'category_id', label: 'category_name' },
       isExpandAll: true,
       selection: [],
       selectButton: false,
@@ -186,7 +195,7 @@ export default {
         this.loading = false
       })
     },
-    // 添加
+    // 添加修改
     add(row) {
       this.dialog = true
       this.dialogTitle = this.name + '添加'
@@ -195,50 +204,19 @@ export default {
         this.model.category_pid = row.category_id
       }
     },
-    // 修改
     edit(row) {
-      this.loading = true
       this.dialog = true
       this.dialogTitle = this.name + '修改：' + row.category_id
       info({
         category_id: row.category_id
       }).then(res => {
         this.reset(res.data)
-        this.loading = false
-      }).catch(() => {
-        this.loading = false
-      })
+      }).catch(() => {})
     },
-    // 删除
-    dele(row) {
-      if (!row.length) {
-        this.selectAlert()
-      } else {
-        var title = '删除' + this.name
-        var message = '确定要删除选中的 <span style="color:red">' + row.length + ' </span> 条' + this.name + '吗？'
-        if (row.length === 1) {
-          title = title + '：' + row[0].category_id
-          message = '确定要删除' + this.name + ' <span style="color:red">' + row[0].category_name + ' </span>吗？'
-        }
-        this.$confirm(message, title, { type: 'warning', dangerouslyUseHTMLString: true }).then(() => {
-          this.loading = true
-          dele({
-            category: row
-          }).then(res => {
-            this.list()
-            this.$message.success(res.msg)
-          }).catch(() => {
-            this.loading = false
-          })
-        }).catch(() => {})
-      }
-    },
-    // 取消
     cancel() {
       this.reset()
       this.dialog = false
     },
-    // 提交
     submit() {
       this.$refs['ref'].validate(valid => {
         if (valid) {
@@ -265,10 +243,29 @@ export default {
         }
       })
     },
-    // 刷新
-    refresh() {
-      this.reset()
-      this.list()
+    // 删除
+    dele(row) {
+      if (!row.length) {
+        this.selectAlert()
+      } else {
+        var title = '删除' + this.name
+        var message = '确定要删除选中的 <span style="color:red">' + row.length + ' </span> 条' + this.name + '吗？'
+        if (row.length === 1) {
+          title = title + '：' + row[0].category_id
+          message = '确定要删除' + this.name + ' <span style="color:red">' + row[0].category_name + ' </span>吗？'
+        }
+        this.$confirm(message, title, { type: 'warning', dangerouslyUseHTMLString: true }).then(() => {
+          this.loading = true
+          dele({
+            ids: arrayColumn(row, 'category_id')
+          }).then(res => {
+            this.list()
+            this.$message.success(res.msg)
+          }).catch(() => {
+            this.loading = false
+          })
+        }).catch(() => {})
+      }
     },
     // 重置
     reset(row) {
@@ -281,6 +278,12 @@ export default {
         this.$refs['ref'].resetFields()
         this.$refs['ref'].clearValidate()
       }
+      this
+    },
+    // 刷新
+    refresh() {
+      this.reset()
+      this.list()
     },
     // 收起
     expandAll(e) {
@@ -294,19 +297,37 @@ export default {
         }
       })
     },
-    // 全选操作
+    // 分类选择（添加修改）
+    categoryChange(value) {
+      if (value) {
+        this.model.category_pid = value[value.length - 1]
+      }
+    },
+    // 上传图片
+    fileUpload() {
+      this.fileDialog = true
+    },
+    fileCancel() {
+      this.fileDialog = false
+    },
+    fileSubmit(filelist) {
+      this.fileDialog = false
+      const file_len = filelist.length
+      if (file_len) {
+        for (let i = 0; i < file_len; i++) {
+          this.model.imgs.push(filelist[i])
+        }
+      }
+    },
+    fileDele(index) {
+      this.model.imgs.splice(index, 1)
+    },
+    // 选中操作
     select(selection) {
       this.selection = selection
     },
     selectAlert(message = '') {
       this.$alert(message || '请选择需要操作的' + this.name, '提示', { confirmButtonText: '确定', callback: action => {} })
-    },
-    selectAll() {
-      if (this.selectButton) {
-        this.$refs.table.toggleAllSelection()
-      } else {
-        this.$refs.table.clearSelection()
-      }
     },
     selectOpen(selectType) {
       if (!this.selection.length) {
@@ -333,12 +354,14 @@ export default {
       }
     },
     selectCategoryChange(value) {
-      this.category_pid = value[value.length - 1]
+      if (value) {
+        this.category_pid = value[value.length - 1]
+      }
     },
     // 设置父级
     setpid(row) {
       pid({
-        category: row,
+        ids: arrayColumn(row, 'category_id'),
         category_pid: this.category_pid
       }).then(res => {
         this.selectDialog = false
@@ -359,7 +382,7 @@ export default {
           is_hide = this.is_hide
         }
         ishide({
-          category: row,
+          ids: arrayColumn(row, 'category_id'),
           is_hide: is_hide
         }).then(res => {
           this.list()
@@ -369,32 +392,27 @@ export default {
           this.loading = false
         })
       }
-    },
-    // 分类父级选择
-    categoryChange(value) {
-      if (value) {
-        this.model.category_pid = value[value.length - 1]
-      }
-    },
-    // 上传图片
-    fileUpload() {
-      this.fileDialog = true
-    },
-    fileCancel() {
-      this.fileDialog = false
-    },
-    fileSubmit(filelists) {
-      this.fileDialog = false
-      const file_len = filelists.length
-      if (filelists) {
-        for (let i = 0; i < file_len; i++) {
-          this.model.imgs.push(filelists[i])
-        }
-      }
-    },
-    uploadDele(index) {
-      this.model.imgs.splice(index, 1)
     }
   }
 }
 </script>
+
+<style scoped>
+.ya-file{
+  text-align: center;
+  border: 1px solid #DCDFE6;
+}
+.ya-file-name{
+  display: block;
+  height: 24px;
+  line-height: 24px;
+  padding: 0 4px;
+  font-size: 12px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.ya-file-link{
+  margin-right: 6px;
+}
+</style>

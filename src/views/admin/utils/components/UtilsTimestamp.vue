@@ -1,5 +1,5 @@
 <template>
-  <el-card class="box-card">
+  <el-card class="box-card dialog-body" :style="{height:height+'px'}">
     <div slot="header" class="clearfix">
       <span>时间戳转换</span>
     </div>
@@ -24,14 +24,16 @@
 </template>
 
 <script>
+import screenHeight from '@/utils/screen-height'
 import clip from '@/utils/clipboard'
 import { timestamp } from '@/api/admin/utils'
 
 export default {
-  name: 'Timestamp',
+  name: 'UtilsTimestamp',
   components: {},
   data() {
     return {
+      height: 680,
       model: {
         type: 'timestamp',
         value: '',
@@ -41,7 +43,9 @@ export default {
       rules: {}
     }
   },
-  created() { },
+  created() {
+    this.height = screenHeight()
+  },
   methods: {
     value(type) {
       this.model.type = type

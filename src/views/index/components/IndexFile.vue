@@ -1,8 +1,8 @@
 <template>
   <div>
     <el-card v-loading="loading">
-      <el-row :gutter="0">
-        <el-col :sm="24">
+      <el-row>
+        <el-col>
           <div id="echartIndexFile" style="height:500px; width:100%" />
         </el-col>
       </el-row>

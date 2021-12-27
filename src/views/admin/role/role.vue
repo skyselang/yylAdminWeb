@@ -1,58 +1,93 @@
 <template>
   <div class="app-container">
-    <!-- 查询 -->
+    <!-- 查询、选中操作 -->
     <div class="filter-container">
-      <el-row :gutter="0">
-        <el-col :xs="24" :sm="22">
-          <el-input v-model="query.role_name" class="filter-item" style="width: 200px;" placeholder="名称" clearable />
-          <el-input v-model="query.role_desc" class="filter-item" style="width: 200px;" placeholder="描述" clearable />
+      <!-- 查询 -->
+      <el-row>
+        <el-col>
+          <el-select v-model="query.search_field" class="filter-item ya-search-field" placeholder="搜索字段">
+            <el-option value="role_name" label="名称" />
+            <el-option value="role_desc" label="描述" />
+            <el-option value="is_disable" label="是否禁用" />
+            <el-option value="admin_role_id" label="ID" />
+          </el-select>
+          <el-input v-model="query.search_value" class="filter-item ya-search-value" placeholder="搜索内容" clearable />
+          <el-select v-model="query.date_field" class="filter-item ya-date-field" placeholder="时间类型">
+            <el-option value="create_time" label="添加时间" />
+            <el-option value="update_time" label="修改时间" />
+          </el-select>
+          <el-date-picker
+            v-model="query.date_value"
+            type="daterange"
+            class="filter-item ya-date-value"
+            value-format="yyyy-MM-dd"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          />
           <el-button class="filter-item" type="primary" @click="search()">查询</el-button>
           <el-button class="filter-item" @click="refresh()">刷新</el-button>
         </el-col>
-        <el-col :xs="24" :sm="2" style="text-align:right;">
-          <el-button class="filter-item" type="primary" @click="add()">添加</el-button>
+      </el-row>
+      <!-- 选中操作 -->
+      <el-row>
+        <el-col>
+          <el-button @click="selectOpen('disable')">禁用</el-button>
+          <el-button @click="dele(selection)">删除</el-button>
+          <el-button type="primary" @click="add()">添加</el-button>
         </el-col>
       </el-row>
+      <el-dialog title="选中操作" :visible.sync="selectDialog" top="20vh" :close-on-click-modal="false" :close-on-press-escape="false">
+        <el-form ref="selectRef" label-width="120px">
+          <el-form-item v-if="selectType==='disable'" label="是否禁用" prop="">
+            <el-switch v-model="is_disable" :active-value="1" :inactive-value="0" />
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="selectCancel">取消</el-button>
+          <el-button type="primary" @click="selectSubmit">提交</el-button>
+        </div>
+      </el-dialog>
     </div>
     <!-- 列表 -->
-    <el-table v-loading="loading" :data="datas" :height="height" style="width: 100%" @sort-change="sort">
-      <el-table-column prop="admin_role_id" label="角色ID" min-width="100" sortable="custom" />
-      <el-table-column prop="role_name" label="名称" min-width="120" />
+    <el-table v-loading="loading" :data="datas" :height="height" @sort-change="sort" @selection-change="select">
+      <el-table-column type="selection" width="42" title="全选/反选" />
+      <el-table-column prop="admin_role_id" label="ID" min-width="100" sortable="custom" />
+      <el-table-column prop="role_name" label="名称" min-width="160" />
       <el-table-column prop="role_desc" label="描述" min-width="130" />
       <el-table-column prop="role_sort" label="排序" min-width="100" sortable="custom" />
       <el-table-column prop="create_time" label="添加时间" min-width="160" sortable="custom" />
       <el-table-column prop="update_time" label="修改时间" min-width="160" sortable="custom" />
       <el-table-column prop="is_disable" label="是否禁用" min-width="110" align="center" sortable="custom">
         <template slot-scope="scope">
-          <el-switch v-model="scope.row.is_disable" :active-value="1" :inactive-value="0" @change="isDisable(scope.row)" />
+          <el-switch v-model="scope.row.is_disable" :active-value="1" :inactive-value="0" @change="disable([scope.row])" />
         </template>
       </el-table-column>
       <el-table-column label="操作" min-width="130" align="right" fixed="right">
         <template slot-scope="{ row }">
           <el-button size="mini" type="text" @click="userShow(row)">用户</el-button>
           <el-button size="mini" type="text" @click="edit(row)">修改</el-button>
-          <el-button size="mini" type="text" @click="dele(row)">删除</el-button>
+          <el-button size="mini" type="text" @click="dele([row])">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
     <!-- 分页 -->
     <pagination v-show="count > 0" :total="count" :page.sync="query.page" :limit.sync="query.limit" @pagination="list" />
     <!-- 添加、修改 -->
-    <el-dialog :title="dialogTitle" :visible.sync="dialog" top="1vh" width="50%" :before-close="cancel">
+    <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false">
       <el-form ref="ref" :rules="rules" :model="model" label-width="100px" class="dialog-body" :style="{height:height+'px'}">
         <el-form-item label="名称" prop="role_name">
           <el-input v-model="model.role_name" placeholder="请输入角色名称" clearable />
         </el-form-item>
         <el-form-item label="描述" prop="role_desc">
-          <el-input v-model="model.role_desc" clearable />
+          <el-input v-model="model.role_desc" placeholder="" clearable />
         </el-form-item>
-        <el-form-item label="排序" prop="role_sort">
+        <el-form-item label="排序" prop="role_sort" placeholder="250">
           <el-input v-model="model.role_sort" type="number" />
         </el-form-item>
         <el-form-item label="菜单">
           <el-tree
             ref="menuRef"
-            :data="menuTree"
+            :data="menuData"
             :default-checked-keys="model.admin_menu_ids"
             :props="{children: 'children',label: 'menu_name'}"
             :expand-on-click-node="false"
@@ -85,8 +120,8 @@
       </div>
     </el-dialog>
     <!-- 用户列表 -->
-    <el-dialog :title="userDialogTitle" :visible.sync="userDialog" width="65%" top="1vh">
-      <el-table ref="userRef" v-loading="userLoad" :data="userData" :height="height+30" style="width: 100%" @sort-change="userSort">
+    <el-dialog :title="userDialogTitle" :visible.sync="userDialog" width="65%" top="5vh" :close-on-click-modal="false" :close-on-press-escape="false">
+      <el-table ref="userRef" v-loading="userLoad" :data="userData" :height="height" @sort-change="userSort">
         <el-table-column prop="admin_user_id" label="用户ID" min-width="100" sortable="custom" />
         <el-table-column prop="username" label="账号" min-width="120" sortable="custom" />
         <el-table-column prop="nickname" label="昵称" min-width="120" />
@@ -115,21 +150,24 @@
 <script>
 import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination'
-import { list as menuTree } from '@/api/admin/menu'
-import { list, info, add, edit, dele, disable, user, userRemove } from '@/api/admin/role'
+import { arrayColumn } from '@/utils/index'
+import { menu, list, info, add, edit, dele, disable, user, userRemove } from '@/api/admin/role'
 
 export default {
   name: 'AdminRole',
   components: { Pagination },
   data() {
     return {
+      name: '角色',
       height: 680,
       loading: false,
       datas: [],
       count: 0,
       query: {
         page: 1,
-        limit: 15
+        limit: 15,
+        search_field: 'role_name',
+        date_field: 'create_time'
       },
       dialog: false,
       dialogTitle: '',
@@ -138,12 +176,16 @@ export default {
         admin_menu_ids: [],
         role_name: '',
         role_desc: '',
-        role_sort: 200
+        role_sort: 250
       },
+      menuData: [],
+      selection: [],
+      selectDialog: false,
+      selectType: '',
+      is_disable: 0,
       rules: {
         role_name: [{ required: true, message: '请输入角色名称', trigger: 'blur' }]
       },
-      menuTree: [],
       userDialog: false,
       userDialogTitle: '',
       userLoad: false,
@@ -155,6 +197,7 @@ export default {
   created() {
     this.height = screenHeight()
     this.list()
+    this.menu()
   },
   methods: {
     // 列表
@@ -168,53 +211,34 @@ export default {
         this.loading = false
       })
     },
-    // 添加
+    // 菜单
+    menu() {
+      menu().then(res => {
+        this.menuData = res.data.list
+      }).catch(() => {
+      })
+    },
+    // 添加修改
     add() {
       this.dialog = true
       this.dialogTitle = '角色添加'
-      menuTree().then(res => {
-        this.menuTree = res.data.list
+      menu().then(res => {
+        this.menuData = res.data.list
       })
       this.reset()
     },
-    // 修改
     edit(row) {
       this.dialog = true
       this.dialogTitle = '角色修改：' + row.admin_role_id
-      menuTree().then(res => {
-        this.menuTree = res.data.list
-      })
       info({
         admin_role_id: row.admin_role_id
       }).then(res => {
         this.reset(res.data)
       })
     },
-    // 删除
-    dele(row) {
-      this.$confirm(
-        '确定要删除角色 <span style="color:red">' + row.role_name + ' </span>吗？',
-        '删除角色：' + row.admin_role_id,
-        { type: 'warning', dangerouslyUseHTMLString: true }
-      ).then(() => {
-        this.loading = true
-        dele({
-          admin_role_id: row.admin_role_id
-        }).then(res => {
-          this.reset()
-          this.list()
-          this.$message.success(res.msg)
-        }).catch(() => {
-          this.loading = false
-        })
-      }).catch(() => {})
-    },
-    // 取消
     cancel() {
       this.dialog = false
-      this.reset()
     },
-    // 提交
     submit() {
       this.$refs['ref'].validate(valid => {
         if (valid) {
@@ -240,6 +264,30 @@ export default {
           }
         }
       })
+    },
+    // 删除
+    dele(row) {
+      if (!row.length) {
+        this.selectAlert()
+      } else {
+        var title = '删除' + this.name
+        var message = '确定要删除选中的 <span style="color:red">' + row.length + ' </span> 条' + this.name + '吗？'
+        if (row.length === 1) {
+          title = title + '：' + row[0].admin_role_id
+          message = '确定要删除' + this.name + ' <span style="color:red">' + row[0].role_name + ' </span>吗？'
+        }
+        this.$confirm(message, title, { type: 'warning', dangerouslyUseHTMLString: true }).then(() => {
+          this.loading = true
+          dele({
+            ids: arrayColumn(row, 'admin_role_id')
+          }).then(res => {
+            this.list()
+            this.$message.success(res.msg)
+          }).catch(() => {
+            this.loading = false
+          })
+        }).catch(() => {})
+      }
     },
     // 重置
     reset(row) {
@@ -275,19 +323,56 @@ export default {
         this.list()
       }
     },
+    // 选中操作
+    select(selection) {
+      this.selection = selection
+    },
+    selectAlert(message = '') {
+      this.$alert(message || '请选择需要操作的' + this.name, '提示', { type: 'warning', callback: action => {} })
+    },
+    selectOpen(selectType) {
+      if (!this.selection.length) {
+        this.selectAlert()
+      } else {
+        this.selectDialog = true
+        this.selectType = selectType
+      }
+    },
+    selectCancel() {
+      this.selectDialog = false
+    },
+    selectSubmit() {
+      if (!this.selection.length) {
+        this.selectAlert()
+      } else {
+        const type = this.selectType
+        if (type === 'disable') {
+          this.disable(this.selection, true)
+        }
+        this.selectDialog = false
+      }
+    },
     // 是否禁用
-    isDisable(row) {
-      this.loading = true
-      disable({
-        admin_role_id: row.admin_role_id,
-        is_disable: row.is_disable
-      }).then(res => {
-        this.list()
-        this.$message.success(res.msg)
-      }).catch(() => {
-        this.list()
-        this.loading = false
-      })
+    disable(row, select = false) {
+      if (!row.length) {
+        this.selectAlert()
+      } else {
+        this.loading = true
+        var is_disable = row[0].is_disable
+        if (select) {
+          is_disable = this.is_disable
+        }
+        disable({
+          ids: arrayColumn(row, 'admin_role_id'),
+          is_disable: is_disable
+        }).then(res => {
+          this.list()
+          this.$message.success(res.msg)
+        }).catch(() => {
+          this.list()
+          this.loading = false
+        })
+      }
     },
     // 菜单选择
     menuCheck(data, node) {
@@ -337,9 +422,6 @@ export default {
         this.userData = res.data.list
         this.userCount = res.data.count
         this.userLoad = false
-        this.$nextTick(() => {
-          this.$refs['userRef'].doLayout()
-        })
       }).catch(() => {
         this.userLoad = false
       })

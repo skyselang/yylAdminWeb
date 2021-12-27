@@ -6,11 +6,12 @@
           <el-form ref="ref" :rules="rules" :model="model" label-width="120px">
             <el-form-item label="头像" prop="avatar_url">
               <el-col :span="10">
-                <el-avatar v-if="model.avatar_url" shape="circle" fit="contain" :size="100" :src="model.avatar_url" />
+                <el-avatar v-if="model.avatar_url" :src="model.avatar_url" :size="100" fit="contain" shape="circle" />
                 <el-avatar v-else icon="el-icon-user-solid" :size="100" />
               </el-col>
               <el-col :span="14">
                 <el-button size="mini" @click="fileUpload()">上传头像</el-button>
+                <el-button size="mini" @click="fileDelete('avatar')">删除</el-button>
                 <br>
                 <span>jpg、png图片，小于100kb，宽高1:1</span>
               </el-col>
@@ -35,7 +36,8 @@
         </el-col>
       </el-row>
     </el-card>
-    <el-dialog title="上传头像" :visible.sync="fileDialog" width="80%" top="1vh">
+    <!-- 文件管理 -->
+    <el-dialog title="上传头像" :visible.sync="fileDialog" width="80%" top="1vh" :close-on-click-modal="false" :close-on-press-escape="false">
       <file-manage file-type="image" @fileCancel="fileCancel" @fileSubmit="fileSubmit" />
     </el-dialog>
   </div>
@@ -71,6 +73,7 @@ export default {
     this.info()
   },
   methods: {
+    // 信息
     info() {
       info({
         admin_user_id: this.model.admin_user_id
@@ -81,6 +84,7 @@ export default {
         store.commit('user/SET_NICKNAME', res.data.nickname)
       })
     },
+    // 提交
     submit() {
       this.$refs['ref'].validate(valid => {
         if (valid) {
@@ -95,6 +99,7 @@ export default {
         }
       })
     },
+    // 刷新
     refresh() {
       this.loading = true
       this.info()
@@ -111,6 +116,12 @@ export default {
       this.fileDialog = false
       this.model.avatar_id = filelists[0]['file_id']
       this.model.avatar_url = filelists[0]['file_url']
+    },
+    fileDelete(field = '') {
+      if (field === 'avatar') {
+        this.model.avatar_id = 0
+        this.model.avatar_url = ''
+      }
     }
   }
 }

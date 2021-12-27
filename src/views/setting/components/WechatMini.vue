@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-card class="box-card">
-      <el-row :gutter="0">
+      <el-row class="dialog-body" :style="{height:height+'px'}">
         <el-col :xs="24" :sm="18" :md="12">
           <el-form ref="ref" :model="model" :rules="rules" label-width="130px">
             <el-form-item label="名称" prop="name">
@@ -16,7 +16,7 @@
             </el-form-item>
             <el-form-item label="二维码" prop="qrcode_url">
               <el-col :span="10">
-                <el-image style="width:100px; height:100px;" :src="model.qrcode_url" :preview-src-list="[model.qrcode_url]" title="点击查看大图">
+                <el-image class="ya-img-form" :src="model.qrcode_url" :preview-src-list="[model.qrcode_url]" title="点击查看大图">
                   <div slot="error" class="image-slot">
                     <i class="el-icon-picture-outline" />
                   </div>
@@ -24,6 +24,7 @@
               </el-col>
               <el-col :span="14">
                 <el-button size="mini" @click="fileUpload()">上传二维码</el-button>
+                <el-button size="mini" @click="fileDelete()">删除</el-button>
                 <br>
                 <span>jpg、png图片，小于200kb，宽高1:1</span>
               </el-col>
@@ -46,13 +47,14 @@
         </el-col>
       </el-row>
     </el-card>
-    <el-dialog title="上传二维码" :visible.sync="fileDialog" width="80%" top="1vh">
+    <el-dialog title="上传二维码" :visible.sync="fileDialog" width="80%" top="1vh" :close-on-click-modal="false" :close-on-press-escape="false">
       <file-manage file-type="image" @fileCancel="fileCancel" @fileSubmit="fileSubmit" />
     </el-dialog>
   </div>
 </template>
 
 <script>
+import screenHeight from '@/utils/screen-height'
 import clip from '@/utils/clipboard'
 import FileManage from '@/components/FileManage'
 import { miniInfo, miniEdit } from '@/api/setting-wechat'
@@ -62,14 +64,16 @@ export default {
   components: { FileManage },
   data() {
     return {
+      name: '微信小程序',
+      height: 680,
       loading: false,
       model: {
         name: '',
         origin_id: '',
-        appid: '',
-        appsecret: '',
         qrcode_id: 0,
-        qrcode_url: ''
+        qrcode_url: '',
+        appid: '',
+        appsecret: ''
       },
       fileDialog: false,
       rules: {
@@ -79,6 +83,7 @@ export default {
     }
   },
   created() {
+    this.height = screenHeight()
     this.info()
   },
   methods: {
@@ -129,6 +134,10 @@ export default {
       this.fileDialog = false
       this.model.qrcode_id = filelists[0]['file_id']
       this.model.qrcode_url = filelists[0]['file_url']
+    },
+    fileDelete() {
+      this.model.qrcode_id = 0
+      this.model.qrcode_url = ''
     },
     // 复制
     copy(text, event) {

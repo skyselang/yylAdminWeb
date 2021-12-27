@@ -1,5 +1,5 @@
 <template>
-  <el-card class="box-card">
+  <el-card class="box-card dialog-body" :style="{height:height+'px'}">
     <div slot="header" class="clearfix">
       <span>字符串转换</span>
     </div>
@@ -43,14 +43,16 @@
 </template>
 
 <script>
+import screenHeight from '@/utils/screen-height'
 import clip from '@/utils/clipboard'
 import { strtran } from '@/api/admin/utils'
 
 export default {
-  name: 'Strtran',
+  name: 'UtilsStrtran',
   components: {},
   data() {
     return {
+      height: 680,
       model: {
         str: '',
         len: '',
@@ -62,7 +64,9 @@ export default {
       rules: {}
     }
   },
-  created() {},
+  created() {
+    this.height = screenHeight()
+  },
   methods: {
     clear() {
       this.model = this.$options.data().model

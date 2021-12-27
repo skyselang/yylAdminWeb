@@ -1,9 +1,9 @@
 <template>
   <div>
     <el-card class="box-card">
-      <el-row :gutter="0">
+      <el-row>
         <el-col :xs="24" :sm="18" :md="12">
-          <el-form ref="settingRef" label-width="120px">
+          <el-form ref="ref" label-width="120px">
             <el-form-item label="设置主题">
               <theme-picker @change="themeChange" />
             </el-form-item>
@@ -17,7 +17,7 @@
               <el-switch v-model="sidebarLogo" class="drawer-switch" />
             </el-form-item>
             <el-form-item label="本地缓存">
-              <el-button :loading="lccLoading" type="primary" size="mini" @click="localCacheClear">清除</el-button>
+              <el-button :loading="loading" type="primary" size="mini" @click="localCacheClear">清除</el-button>
               <i class="el-icon-warning-outline" title="清除后需要重新登录" />
             </el-form-item>
           </el-form>
@@ -35,7 +35,8 @@ export default {
   components: { ThemePicker },
   data() {
     return {
-      lccLoading: false
+      name: '我的设置',
+      loading: false
     }
   },
   computed: {
@@ -86,7 +87,7 @@ export default {
     },
     // 本地缓存清除
     localCacheClear() {
-      this.lccLoading = true
+      this.loading = true
 
       localStorage.clear()
       sessionStorage.clear()
@@ -100,7 +101,7 @@ export default {
 
       this.$router.push('/login')
 
-      this.lccLoading = false
+      this.loading = false
       this.$message.success('本地缓存已清除')
     }
   }

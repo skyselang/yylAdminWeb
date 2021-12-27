@@ -1,5 +1,5 @@
 <template>
-  <el-card class="box-card">
+  <el-card class="box-card dialog-body" :style="{height:height+'px'}">
     <div slot="header" class="clearfix">
       <span>字节转换</span>
     </div>
@@ -45,14 +45,16 @@
 </template>
 
 <script>
+import screenHeight from '@/utils/screen-height'
 import clip from '@/utils/clipboard'
 import { bytetran } from '@/api/admin/utils'
 
 export default {
-  name: 'Byte',
+  name: 'UtilsBytetran',
   components: {},
   data() {
     return {
+      height: 680,
       model: {
         type: '',
         value: '',
@@ -66,7 +68,9 @@ export default {
       rules: {}
     }
   },
-  created() { },
+  created() {
+    this.height = screenHeight()
+  },
   methods: {
     value(type) {
       this.model.type = type

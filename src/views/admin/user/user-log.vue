@@ -2,37 +2,49 @@
   <div class="app-container">
     <!-- 查询 -->
     <div class="filter-container">
-      <el-row :gutter="0">
-        <el-col :xs="24" :sm="20">
-          <el-select v-model="query.log_type" class="filter-item" style="width:110px;" placeholder="日志类型" clearable>
-            <el-option :value="1" label="登录日志" />
-            <el-option :value="2" label="操作日志" />
+      <el-row>
+        <el-col>
+          <el-select v-model="query.search_field" class="filter-item ya-search-field" placeholder="搜索字段">
+            <el-option value="username" label="用户账号" />
+            <el-option value="admin_user_id" label="用户ID" />
+            <el-option value="menu_url" label="菜单链接" />
+            <el-option value="menu_name" label="菜单名称" />
+            <el-option value="request_ip" label="请求IP" />
+            <el-option value="request_region" label="请求地区" />
+            <el-option value="request_isp" label="请求ISP" />
+            <el-option value="admin_user_log_id" label="ID" />
           </el-select>
-          <el-input v-model="query.user_keyword" class="filter-item" style="width: 150px;" placeholder="用户账号/昵称" clearable />
-          <el-input v-model="query.request_keyword" class="filter-item" style="width: 155px;" placeholder="请求IP/地区/ISP" clearable />
-          <el-input v-model="query.menu_keyword" class="filter-item" style="width: 250px;" placeholder="菜单链接/名称" clearable />
+          <el-input v-model="query.search_value" class="filter-item ya-search-value" placeholder="搜索内容" clearable />
+          <el-select v-model="query.date_field" class="filter-item ya-search-field" placeholder="时间字段">
+            <el-option value="create_time" label="请求时间" />
+          </el-select>
           <el-date-picker
             v-model="query.date_value"
             type="daterange"
-            class="filter-item"
-            style="width: 240px;"
-            range-separator="-"
+            class="filter-item ya-date-value"
             value-format="yyyy-MM-dd"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
           />
-          <el-input v-model="query.response_code" class="filter-item" style="width: 100px;" placeholder="返回码" clearable />
+          <el-select v-model="query.log_type" class="filter-item ya-search-field" placeholder="日志类型" clearable>
+            <el-option :value="1" label="登录日志" />
+            <el-option :value="2" label="操作日志" />
+          </el-select>
           <el-button class="filter-item" type="primary" @click="search()">查询</el-button>
           <el-button class="filter-item" @click="refresh()">刷新</el-button>
         </el-col>
-        <el-col :xs="24" :sm="4" style="text-align:right;">
-          <el-button v-permission="['admin/admin.UserLog/clear']" class="filter-item" title="日志清除" @click="clear()">清除</el-button>
+      </el-row>
+      <el-row>
+        <el-col>
+          <el-button @click="dele(selection)">删除</el-button>
+          <el-button v-permission="['admin/admin.UserLog/clear']" title="日志清除" @click="clear()">清除</el-button>
         </el-col>
       </el-row>
     </div>
     <!-- 列表 -->
-    <el-table v-loading="loading" :data="data" :height="height" style="width: 100%" @sort-change="sort">
-      <el-table-column prop="admin_user_log_id" label="日志ID" min-width="100" sortable="custom" />
+    <el-table v-loading="loading" :data="data" :height="height" @sort-change="sort" @selection-change="select">
+      <el-table-column type="selection" width="42" title="全选/反选" />
+      <el-table-column prop="admin_user_log_id" label="ID" min-width="100" sortable="custom" />
       <el-table-column prop="username" label="用户账号" min-width="110" show-overflow-tooltip />
       <el-table-column prop="menu_url" label="菜单链接" min-width="240" show-overflow-tooltip />
       <el-table-column prop="menu_name" label="菜单名称" min-width="140" show-overflow-tooltip />
@@ -53,49 +65,37 @@
     <!-- 分页 -->
     <pagination v-show="count > 0" :total="count" :page.sync="query.page" :limit.sync="query.limit" @pagination="list" />
     <!-- 详情 -->
-    <el-dialog :title="dialogTitle" :visible.sync="dialog" top="1vh" width="50%" :before-close="cancel">
+    <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false">
       <el-form ref="ref" :rules="rules" :model="model" label-width="100px" class="dialog-body" :style="{height:height+'px'}">
         <el-form-item label="用户ID" prop="admin_user_id">
-          <el-col :span="10">
-            <el-input v-model="model.admin_user_id" />
-          </el-col>
-          <el-col class="line" :span="4" style="text-align:center">用户昵称</el-col>
-          <el-col :span="10">
-            <el-input v-model="model.nickname" />
-          </el-col>
+          <el-input v-model="model.admin_user_id" />
+        </el-form-item>
+        <el-form-item label="用户昵称" prop="nickname">
+          <el-input v-model="model.nickname" />
         </el-form-item>
         <el-form-item label="用户账号" prop="username">
           <el-input v-model="model.username" />
         </el-form-item>
         <el-form-item label="菜单ID" prop="admin_menu_id">
-          <el-col :span="10">
-            <el-input v-model="model.admin_menu_id" />
-          </el-col>
-          <el-col class="line" :span="4" style="text-align:center">菜单名称</el-col>
-          <el-col :span="10">
-            <el-input v-model="model.menu_name" />
-          </el-col>
+          <el-input v-model="model.admin_menu_id" />
+        </el-form-item>
+        <el-form-item label="菜单名称" prop="menu_name">
+          <el-input v-model="model.menu_name" />
         </el-form-item>
         <el-form-item label="菜单链接" prop="menu_url">
           <el-input v-model="model.menu_url" />
         </el-form-item>
         <el-form-item label="请求方式" prop="request_method">
-          <el-col :span="10">
-            <el-input v-model="model.request_method" />
-          </el-col>
-          <el-col class="line" :span="4" style="text-align:center">请求IP</el-col>
-          <el-col :span="10">
-            <el-input v-model="model.request_ip" />
-          </el-col>
+          <el-input v-model="model.request_method" />
+        </el-form-item>
+        <el-form-item label="请求IP" prop="request_ip">
+          <el-input v-model="model.request_ip" />
         </el-form-item>
         <el-form-item label="请求地区" prop="request_region">
-          <el-col :span="10">
-            <el-input v-model="model.request_region" />
-          </el-col>
-          <el-col class="line" :span="4" style="text-align:center">请求ISP</el-col>
-          <el-col :span="10">
-            <el-input v-model="model.request_isp" />
-          </el-col>
+          <el-input v-model="model.request_region" />
+        </el-form-item>
+        <el-form-item label="请求ISP" prop="request_isp">
+          <el-input v-model="model.request_isp" />
         </el-form-item>
         <el-form-item label="请求时间" prop="create_time">
           <el-input v-model="model.create_time" />
@@ -116,35 +116,32 @@
       </div>
     </el-dialog>
     <!-- 清除 -->
-    <el-dialog :title="clearDialogTitle" :visible.sync="clearDialog" :before-close="clearCancel">
+    <el-dialog :title="clearDialogTitle" :visible.sync="clearDialog" :before-close="clearCancel" :close-on-click-modal="false" :close-on-press-escape="false">
       <el-form ref="clearRef" :rules="clearRules" :model="clearModel" label-width="100px" class="dialog-body">
         <el-form-item label="用户ID" prop="admin_user_id">
-          <el-input v-model="clearModel.admin_user_id" type="number" clearable />
+          <el-input v-model="clearModel.admin_user_id" clearable />
         </el-form-item>
         <el-form-item label="用户账号" prop="username">
-          <el-input v-model="clearModel.username" type="text" clearable />
+          <el-input v-model="clearModel.username" clearable />
         </el-form-item>
         <el-form-item label="菜单ID" prop="admin_menu_id">
-          <el-input v-model="clearModel.admin_menu_id" type="number" clearable />
+          <el-input v-model="clearModel.admin_menu_id" clearable />
         </el-form-item>
         <el-form-item label="菜单链接" prop="menu_url">
-          <el-input v-model="clearModel.menu_url" type="text" clearable />
+          <el-input v-model="clearModel.menu_url" clearable />
         </el-form-item>
         <el-form-item label="日期范围" prop="date_value">
           <el-date-picker
             v-model="clearModel.date_value"
             type="daterange"
             class="filter-item"
-            range-separator="-"
             value-format="yyyy-MM-dd"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
           />
         </el-form-item>
-        <el-form-item label="">
-          <p>*清除后不可恢复</p>
-          <p>*根据填写的条件清除</p>
-          <p>*不填写清除条件将清空所有</p>
+        <el-form-item label="清空所有" prop="clean">
+          <el-switch v-model="clearModel.clean" :active-value="1" :inactive-value="0" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -159,6 +156,7 @@
 import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination'
 import permission from '@/directive/permission/index.js' // 权限判断指令
+import { arrayColumn } from '@/utils'
 import { list, info, dele, clear } from '@/api/admin/user-log'
 
 export default {
@@ -167,17 +165,21 @@ export default {
   directives: { permission },
   data() {
     return {
+      name: '用户日志',
       height: 680,
       loading: false,
       data: [],
       count: 0,
       query: {
         page: 1,
-        limit: 15
+        limit: 15,
+        search_field: 'username',
+        date_field: 'create_time'
       },
       dialog: false,
       dialogTitle: '',
       model: {},
+      selection: [],
       rules: {},
       clearDialog: false,
       clearDialogTitle: '',
@@ -186,7 +188,8 @@ export default {
         username: '',
         admin_menu_id: '',
         menu_url: '',
-        date_value: []
+        date_value: [],
+        clean: 0
       },
       clearRules: {}
     }
@@ -209,36 +212,38 @@ export default {
     },
     // 详情
     info(row) {
-      this.loading = true
       this.dialog = true
-      this.dialogTitle = '日志管理详情：' + row.admin_user_log_id
+      this.dialogTitle = this.name + '详情：' + row.admin_user_log_id
       info({
         admin_user_log_id: row.admin_user_log_id
       }).then(res => {
         this.reset(res.data)
-        this.loading = false
       }).catch(() => {
-        this.loading = false
       })
     },
     // 删除
     dele(row) {
-      this.$confirm(
-        '确定要删除日志ID：<span style="color:red">' + row.admin_user_log_id + ' </span>吗？',
-        '删除日志：' + row.admin_user_log_id,
-        { type: 'warning', dangerouslyUseHTMLString: true }
-      ).then(() => {
-        this.loading = true
-        dele({
-          admin_user_log_id: row.admin_user_log_id
-        }).then(res => {
-          this.list()
-          this.reset()
-          this.$message.success(res.msg)
-        }).catch(() => {
-          this.loading = false
-        })
-      })
+      if (!row.length) {
+        this.selectAlert()
+      } else {
+        var title = '删除' + this.name
+        var message = '确定要删除选中的 <span style="color:red">' + row.length + ' </span> 条' + this.name + '吗？'
+        if (row.length === 1) {
+          title = title + '：' + row[0].admin_user_log_id
+          message = '确定要删除' + this.name + ' <span style="color:red">' + row[0].admin_user_log_id + ' </span>吗？'
+        }
+        this.$confirm(message, title, { type: 'warning', dangerouslyUseHTMLString: true }).then(() => {
+          this.loading = true
+          dele({
+            ids: arrayColumn(row, 'admin_user_log_id')
+          }).then(res => {
+            this.list()
+            this.$message.success(res.msg)
+          }).catch(() => {
+            this.loading = false
+          })
+        }).catch(() => {})
+      }
     },
     // 取消
     cancel() {
@@ -251,11 +256,11 @@ export default {
       this.dialog = false
     },
     // 重置
-    reset(row = '') {
-      if (row === '') {
-        this.model = this.$options.data().model
-      } else {
+    reset(row) {
+      if (row) {
         this.model = row
+      } else {
+        this.model = this.$options.data().model
       }
     },
     // 查询
@@ -281,23 +286,28 @@ export default {
         this.list()
       }
     },
+    // 选中操作
+    select(selection) {
+      this.selection = selection
+    },
+    selectAlert(message = '') {
+      this.$alert(message || '请选择需要操作的' + this.name, '提示', { type: 'warning', callback: action => {} })
+    },
     // 清除
     clear() {
       this.clearDialog = true
-      this.clearDialogTitle = '日志管理清除'
+      this.clearDialogTitle = this.name + '清除'
     },
     clearCancel() {
       this.clearDialog = false
     },
     clearSubmit() {
-      this.loading = true
       clear(this.clearModel).then(res => {
         this.list()
         this.clearDialog = false
         this.clearModel = this.$options.data().clearModel
-        this.$message.success('已清除日志记录 ' + res.data.count + ' 条')
+        this.$message.success('已清除' + this.name + '记录 ' + res.data.count + ' 条')
       }).catch(() => {
-        this.loading = false
       })
     }
   }

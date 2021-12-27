@@ -65,7 +65,7 @@ export default {
       width: 32px;
       height: 32px;
       vertical-align: middle;
-      margin-right: 12px;
+      margin-right: 2px;
     }
 
     & .sidebar-title {

@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container dialog-body" :style="{height:height+120+'px'}">
+  <div class="app-container dialog-body" :style="{height:height+'px'}">
     <el-card v-loading="loadNum" class="box-card">
       <el-row :gutter="10">
         <el-col :sm="4">
@@ -75,54 +75,48 @@
       </el-row>
     </el-card>
     <el-card v-loading="loadDate" class="box-card">
-      <el-row :gutter="0">
-        <el-col :sm="24">
+      <el-row>
+        <el-col>
           <el-date-picker
             v-model="date.date"
             type="daterange"
-            range-separator="-"
             value-format="yyyy-MM-dd"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-            style="max-width:280px"
-            @change="echartDateChange()"
+            @change="echartDateChange"
           />
         </el-col>
       </el-row>
-      <el-row :gutter="0">
-        <el-col :sm="24">
-          <div id="echartDate" :style="{height:height-100+'px'}" />
+      <el-row>
+        <el-col>
+          <div id="echartDate" :style="{height:height-300+'px'}" />
         </el-col>
       </el-row>
-    </el-card>
-    <el-card class="box-card">
-      <el-row :gutter="0">
-        <el-col :sm="24">
+      <el-divider />
+      <el-row>
+        <el-col>
           <el-date-picker
             v-model="field.date"
             type="daterange"
-            range-separator="-"
             value-format="yyyy-MM-dd"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-            style="max-width:280px"
-            @change="echartFieldChange()"
+            @change="echartFieldChange"
           />
-          <el-select v-model="fieldValue" placeholder="请选择" @change="echartFieldChange()">
+          <el-select v-model="fieldValue" placeholder="请选择" @change="echartFieldChange">
             <el-option v-for="item in fieldType" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
         </el-col>
       </el-row>
-      <el-divider />
-      <el-row v-loading="loadField" :gutter="0">
-        <el-col :sm="24">
-          <div id="echartFieldLine" :style="{height:height+'px'}" />
+      <el-row v-loading="loadField">
+        <el-col>
+          <div id="echartFieldLine" :style="{height:height-300+'px'}" />
         </el-col>
       </el-row>
       <el-divider />
-      <el-row v-loading="loadField" :gutter="0">
-        <el-col :sm="24">
-          <div id="echartFieldPie" :style="{height:height+'px'}" />
+      <el-row v-loading="loadField">
+        <el-col>
+          <div id="echartFieldPie" :style="{height:height-300+'px'}" />
         </el-col>
       </el-row>
     </el-card>
@@ -150,6 +144,7 @@ export default {
   components: { },
   data() {
     return {
+      name: '会员日志统计',
       height: 600,
       loadNum: false,
       loadDate: false,
@@ -203,7 +198,7 @@ export default {
     }
   },
   created() {
-    this.height = screenHeight()
+    this.height = screenHeight(100)
     this.stat()
   },
   methods: {

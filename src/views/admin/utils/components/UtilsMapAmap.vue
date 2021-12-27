@@ -6,11 +6,11 @@
 import screenHeight from '@/utils/screen-height'
 
 export default {
-  name: 'MapBaidu',
+  name: 'UtilsMapAmap',
   components: {},
   data() {
     return {
-      src: 'https://api.map.baidu.com/lbsapi/getpoint/index.html',
+      src: 'https://lbs.amap.com/console/show/picker',
       height: 500
     }
   },

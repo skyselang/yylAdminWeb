@@ -6,11 +6,11 @@
 import screenHeight from '@/utils/screen-height'
 
 export default {
-  name: 'MapSogou',
+  name: 'UtilsMapTencent',
   components: {},
   data() {
     return {
-      src: 'https://map.sogou.com/api/documentation/javascript/api2.5/examples_doc/event-arguments.html',
+      src: 'https://lbs.qq.com/tool/getpoint/index.html',
       height: 500
     }
   },

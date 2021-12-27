@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-card v-loading="loading" class="box-card">
-      <el-row :gutter="0">
+      <el-row>
         <el-col :xs="24" :sm="18" :md="12">
           <el-form ref="ref" :rules="rules" :model="model" label-width="120px">
             <el-form-item label="旧密码" prop="password_old">
@@ -31,7 +31,7 @@ export default {
   name: 'UserCenterPwd',
   components: {},
   data() {
-    var validatePwdConfirm = (rule, value, callback) => {
+    var validatePasswordConfirm = (rule, value, callback) => {
       if (value !== this.model.password_new) {
         callback(new Error('两次输入的新密码不一致'))
       } else {
@@ -39,6 +39,7 @@ export default {
       }
     }
     return {
+      name: '修改密码',
       loading: false,
       model: {
         password_old: '',
@@ -48,14 +49,16 @@ export default {
       rules: {
         password_old: [{ required: true, message: '请输入旧密码', trigger: 'blur' }],
         password_new: [{ required: true, message: '请输入新密码', trigger: 'blur' }],
-        password_confirm: [{ required: true, message: '请再次输入新密码', trigger: 'blur' }, { validator: validatePwdConfirm, trigger: 'blur' }]
+        password_confirm: [{ required: true, message: '请再次输入新密码', trigger: 'blur' }, { validator: validatePasswordConfirm, trigger: 'blur' }]
       }
     }
   },
   methods: {
+    // 重置
     reset() {
       this.$refs['ref'].resetFields()
     },
+    // 提交
     submit() {
       this.$refs['ref'].validate(valid => {
         if (valid) {

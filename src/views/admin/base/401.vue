@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-row>
       <el-col :span="12" :offset="6">
-        <el-result icon="warning" title="401" sub-title="没有权限" />
+        <el-result icon="warning" title="401" sub-title="没有权限访问" />
       </el-col>
     </el-row>
     <el-row>

@@ -2,22 +2,60 @@
   <div class="app-container">
     <!-- 查询 -->
     <div class="filter-container">
-      <el-row :gutter="0">
-        <el-col :xs="24" :sm="22">
-          <el-input v-model="query.username" class="filter-item" style="width: 150px;" placeholder="账号" clearable />
-          <el-input v-model="query.nickname" class="filter-item" style="width: 150px;" placeholder="昵称" clearable />
-          <el-input v-model="query.email" class="filter-item" style="width: 250px;" placeholder="邮箱" clearable />
+      <el-row>
+        <el-col>
+          <el-select v-model="query.search_field" class="filter-item ya-search-field" placeholder="搜索字段">
+            <el-option value="username" label="账号" />
+            <el-option value="nickname" label="昵称" />
+            <el-option value="phone" label="手机" />
+            <el-option value="email" label="邮箱" />
+          </el-select>
+          <el-input v-model="query.search_value" class="filter-item ya-search-value" placeholder="搜索内容" clearable />
+          <el-select v-model="query.date_field" class="filter-item ya-date-field" placeholder="时间类型">
+            <el-option value="create_time" label="添加时间" />
+            <el-option value="update_time" label="修改时间" />
+            <el-option value="login_time" label="登录时间" />
+            <el-option value="logout_time" label="退出时间" />
+          </el-select>
+          <el-date-picker
+            v-model="query.date_value"
+            type="daterange"
+            class="filter-item ya-date-value"
+            value-format="yyyy-MM-dd"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          />
           <el-button class="filter-item" type="primary" @click="search()">查询</el-button>
           <el-button class="filter-item" @click="refresh()">刷新</el-button>
         </el-col>
-        <el-col :xs="24" :sm="2" style="text-align:right;">
-          <el-button class="filter-item" type="primary" @click="add()">添加</el-button>
+      </el-row>
+      <el-row>
+        <el-col>
+          <el-button @click="selectOpen('super')">超管</el-button>
+          <el-button @click="selectOpen('disable')">禁用</el-button>
+          <el-button @click="dele(selection)">删除</el-button>
+          <el-button type="primary" @click="add()">添加</el-button>
         </el-col>
       </el-row>
+      <el-dialog title="选中操作" :visible.sync="selectDialog" top="20vh" :close-on-click-modal="false" :close-on-press-escape="false">
+        <el-form ref="selectRef" label-width="120px">
+          <el-form-item v-if="selectType==='super'" label="是否超管" prop="">
+            <el-switch v-model="is_super" :active-value="1" :inactive-value="0" />
+          </el-form-item>
+          <el-form-item v-else-if="selectType==='disable'" label="是否禁用" prop="">
+            <el-switch v-model="is_disable" :active-value="1" :inactive-value="0" />
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="selectCancel">取消</el-button>
+          <el-button type="primary" @click="selectSubmit">提交</el-button>
+        </div>
+      </el-dialog>
     </div>
     <!-- 列表 -->
-    <el-table v-loading="loading" :data="datas" :height="height" style="width: 100%" @sort-change="sort">
-      <el-table-column prop="admin_user_id" label="用户ID" min-width="100" sortable="custom" />
+    <el-table v-loading="loading" :data="datas" :height="height" @sort-change="sort" @selection-change="select">
+      <el-table-column type="selection" width="42" title="全选/反选" />
+      <el-table-column prop="admin_user_id" label="ID" min-width="100" sortable="custom" />
       <el-table-column prop="username" label="账号" min-width="120" sortable="custom" show-overflow-tooltip />
       <el-table-column prop="nickname" label="昵称" min-width="120" sortable="custom" show-overflow-tooltip />
       <el-table-column prop="email" label="邮箱" min-width="250" sortable="custom" show-overflow-tooltip />
@@ -32,7 +70,7 @@
       </el-table-column>
       <el-table-column prop="is_disable" label="禁用" min-width="75" sortable="custom" align="center">
         <template slot-scope="scope">
-          <el-switch v-model="scope.row.is_disable" :active-value="1" :inactive-value="0" @change="isProhibit(scope.row)" />
+          <el-switch v-model="scope.row.is_disable" :active-value="1" :inactive-value="0" @change="isDisable(scope.row)" />
         </template>
       </el-table-column>
       <el-table-column label="操作" min-width="160" align="right" fixed="right">
@@ -47,7 +85,7 @@
     <!-- 分页 -->
     <pagination v-show="count > 0" :total="count" :page.sync="query.page" :limit.sync="query.limit" @pagination="list" />
     <!-- 添加、修改 -->
-    <el-dialog :title="dialogTitle" :visible.sync="dialog" top="1vh" width="50%" :before-close="cancel">
+    <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false">
       <el-form ref="ref" :model="model" :rules="rules" class="dialog-body" label-width="100px" :style="{height:height+'px'}">
         <el-form-item label="头像" prop="avatar_url">
           <el-col :span="10">
@@ -56,6 +94,7 @@
           </el-col>
           <el-col :span="14">
             <el-button size="mini" @click="fileUpload()">上传头像</el-button>
+            <el-button size="mini" @click="fileDelete('avatar')">删除</el-button>
             <br>
             <span>jpg、png图片，小于100kb，宽高1:1</span>
           </el-col>
@@ -82,31 +121,22 @@
           <el-input v-model="model.sort" type="number" />
         </el-form-item>
         <el-form-item v-if="model.admin_user_id" label="登录IP" prop="login_ip">
-          <el-col :span="10">
-            <el-input v-model="model.login_ip" disabled />
-          </el-col>
-          <el-col class="line" :span="4" style="text-align:center">登录地区</el-col>
-          <el-col :span="10">
-            <el-input v-model="model.login_region" disabled />
-          </el-col>
+          <el-input v-model="model.login_ip" disabled />
+        </el-form-item>
+        <el-form-item v-if="model.admin_user_id" label="登录地区" prop="login_region">
+          <el-input v-model="model.login_region" disabled />
         </el-form-item>
         <el-form-item v-if="model.admin_user_id" label="登录时间" prop="login_time">
-          <el-col :span="10">
-            <el-input v-model="model.login_time" disabled />
-          </el-col>
-          <el-col class="line" :span="4" style="text-align:center">退出时间</el-col>
-          <el-col :span="10">
-            <el-input v-model="model.logout_time" disabled />
-          </el-col>
+          <el-input v-model="model.login_time" disabled />
+        </el-form-item>
+        <el-form-item v-if="model.admin_user_id" label="退出时间" prop="logout_time">
+          <el-input v-model="model.logout_time" disabled />
         </el-form-item>
         <el-form-item v-if="model.admin_user_id" label="添加时间" prop="create_time">
-          <el-col :span="10">
-            <el-input v-model="model.create_time" disabled />
-          </el-col>
-          <el-col class="line" :span="4" style="text-align:center">修改时间</el-col>
-          <el-col :span="10">
-            <el-input v-model="model.update_time" disabled />
-          </el-col>
+          <el-input v-model="model.create_time" disabled />
+        </el-form-item>
+        <el-form-item v-if="model.admin_user_id" label="修改时间" prop="update_time">
+          <el-input v-model="model.update_time" disabled />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -201,20 +231,23 @@ export default {
   components: { Pagination, FileManage },
   data() {
     return {
+      name: '用户',
       height: 680,
       loading: false,
       datas: [],
       count: 0,
       query: {
         page: 1,
-        limit: 15
+        limit: 15,
+        search_field: 'username',
+        date_field: 'create_time'
       },
       dialog: false,
       dialogTitle: '',
       model: {
-        avatar: '',
-        avatar_url: '',
         admin_user_id: '',
+        avatar_id: 0,
+        avatar_url: '',
         admin_role_ids: [],
         admin_menu_ids: [],
         menu_ids: [],
@@ -224,7 +257,7 @@ export default {
         phone: '',
         email: '',
         remark: '',
-        sort: 200,
+        sort: 250,
         login_ip: '',
         login_region: '',
         login_time: '',
@@ -232,6 +265,11 @@ export default {
         create_time: '',
         update_time: ''
       },
+      selection: [],
+      selectDialog: false,
+      selectType: '',
+      is_super: 0,
+      is_disable: 0,
       fileDialog: false,
       ruleDialog: false,
       roleData: [],
@@ -286,21 +324,27 @@ export default {
     },
     // 删除
     dele(row) {
-      this.$confirm(
-        '确定要删除用户 <span style="color:red">' + row.username + ' </span>吗？',
-        '删除用户：' + row.admin_user_id,
-        { type: 'warning', dangerouslyUseHTMLString: true }
-      ).then(() => {
-        this.loading = true
-        dele({
-          admin_user_id: row.admin_user_id
-        }).then(res => {
-          this.list()
-          this.$message.success(res.msg)
-        }).catch(() => {
-          this.loading = false
-        })
-      }).catch(() => {})
+      if (!row.length) {
+        this.selectAlert()
+      } else {
+        var title = '删除' + this.name
+        var message = '确定要删除选中的 <span style="color:red">' + row.length + ' </span> 条' + this.name + '吗？'
+        if (row.length === 1) {
+          title = title + '：' + row[0].content_id
+          message = '确定要删除' + this.name + ' <span style="color:red">' + row[0].name + ' </span>吗？'
+        }
+        this.$confirm(message, title, { type: 'warning', dangerouslyUseHTMLString: true }).then(() => {
+          this.loading = true
+          dele({
+            content: row
+          }).then(res => {
+            this.list()
+            this.$message.success(res.msg)
+          }).catch(() => {
+            this.loading = false
+          })
+        }).catch(() => {})
+      }
     },
     // 取消
     cancel() {
@@ -362,6 +406,37 @@ export default {
         this.list()
       }
     },
+    // 选中操作
+    select(selection) {
+      this.selection = selection
+    },
+    selectAlert(message = '') {
+      this.$alert(message || '请选择需要操作的' + this.name, '提示', { type: 'warning', callback: action => {} })
+    },
+    selectOpen(selectType) {
+      if (!this.selection.length) {
+        this.selectAlert()
+      } else {
+        this.selectDialog = true
+        this.selectType = selectType
+      }
+    },
+    selectCancel() {
+      this.selectDialog = false
+    },
+    selectSubmit() {
+      if (!this.selection.length) {
+        this.selectAlert()
+      } else {
+        const type = this.selectType
+        if (type === 'super') {
+          this.isSuper(this.selection, true)
+        } else if (type === 'disable') {
+          this.isDisable(this.selection, true)
+        }
+        this.selectDialog = false
+      }
+    },
     // 上传头像
     fileUpload() {
       this.fileDialog = true
@@ -369,26 +444,40 @@ export default {
     fileCancel() {
       this.fileDialog = false
     },
-    fileSubmit(filelists) {
+    fileSubmit(filelist) {
       this.fileDialog = false
-      this.model.avatar_id = filelists[0]['file_id']
-      this.model.avatar_url = filelists[0]['file_url']
+      this.model.avatar_id = filelist[0]['file_id']
+      this.model.avatar_url = filelist[0]['file_url']
+    },
+    fileDelete(field = '') {
+      if (field === 'avatar') {
+        this.model.avatar_id = 0
+        this.model.avatar_url = ''
+      }
     },
     // 是否超管
-    isSuper(row) {
-      this.loading = true
-      issuper({
-        admin_user_id: row.admin_user_id,
-        is_super: row.is_super
-      }).then(res => {
-        this.list()
-        this.$message.success(res.msg)
-      }).catch(() => {
-        this.list()
-      })
+    isSuper(row, select = false) {
+      if (!row.length) {
+        this.selectAlert()
+      } else {
+        this.loading = true
+        var is_super = row[0].is_super
+        if (select) {
+          is_super = this.is_super
+        }
+        issuper({
+          ids: row.admin_user_id,
+          is_super: is_super
+        }).then(res => {
+          this.list()
+          this.$message.success(res.msg)
+        }).catch(() => {
+          this.list()
+        })
+      }
     },
     // 是否禁用
-    isProhibit(row) {
+    isDisable(row, select = false) {
       this.loading = true
       disable({
         admin_user_id: row.admin_user_id,

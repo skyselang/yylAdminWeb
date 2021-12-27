@@ -4,13 +4,13 @@
       <el-tab-pane v-if="checkPermission(['admin/admin.Utils/strrand','admin/admin.Utils/strtran'])" label="字符串" lazy>
         <el-row :gutter="8">
           <el-col v-permission="['admin/admin.Utils/strrand']" :xs="24" :sm="12">
-            <div class=" filter-container">
-              <strrand />
+            <div class="filter-container">
+              <utils-strrand />
             </div>
           </el-col>
           <el-col v-permission="['admin/admin.Utils/strtran']" :xs="24" :sm="12">
             <div class="filter-container">
-              <Strtran />
+              <utils-strtran />
             </div>
           </el-col>
         </el-row>
@@ -19,7 +19,7 @@
         <el-row :gutter="8">
           <el-col :xs="24" :sm="12">
             <div class="filter-container">
-              <Timestamp />
+              <utils-timestamp />
             </div>
           </el-col>
         </el-row>
@@ -28,7 +28,7 @@
         <el-row :gutter="8">
           <el-col :xs="24" :sm="12">
             <div class="filter-container">
-              <Qrcode />
+              <utils-qrcode />
             </div>
           </el-col>
         </el-row>
@@ -37,7 +37,7 @@
         <el-row :gutter="8">
           <el-col :xs="24" :sm="12">
             <div class="filter-container">
-              <Byte />
+              <utils-bytetran />
             </div>
           </el-col>
         </el-row>
@@ -46,34 +46,34 @@
         <el-row :gutter="8">
           <el-col :xs="24" :sm="12">
             <div class="filter-container">
-              <Ip />
+              <utils-ipinfo />
             </div>
           </el-col>
         </el-row>
       </el-tab-pane>
       <el-tab-pane v-if="checkPermission(['admin/admin.Utils/map'])" label="地图" lazy>
         <el-row :gutter="8">
-          <el-col :xs="24" :sm="24">
+          <el-col>
             <div class="filter-container">
-              <Map />
+              <utils-map />
             </div>
           </el-col>
         </el-row>
       </el-tab-pane>
       <el-tab-pane v-if="checkPermission(['admin/admin.Utils/server'])" label="服务器" lazy>
-        <el-row :gutter="8" class="dialog-body" :style="{height:height+60+'px'}">
-          <el-col :xs="24" :sm="24">
+        <el-row :gutter="8">
+          <el-col>
             <div class="filter-container">
-              <Server />
+              <utils-server />
             </div>
           </el-col>
         </el-row>
       </el-tab-pane>
       <el-tab-pane v-if="checkPermission(['admin/admin.Utils/toollu'])" label="在线工具" lazy>
-        <el-row :gutter="8" class="dialog-body" :style="{height:height+60+'px'}">
-          <el-col :xs="24" :sm="24">
+        <el-row :gutter="8">
+          <el-col>
             <div class="filter-container">
-              <Toollu />
+              <utils-toollu />
             </div>
           </el-col>
         </el-row>
@@ -83,31 +83,28 @@
 </template>
 
 <script>
-import screenHeight from '@/utils/screen-height'
 import checkPermission from '@/utils/permission' // 权限判断函数
 import permission from '@/directive/permission/index.js' // 权限判断指令
-import Strtran from './components/Strtran'
-import Strrand from './components/Strrand'
-import Timestamp from './components/Timestamp'
-import Qrcode from './components/Qrcode'
-import Byte from './components/Byte'
-import Ip from './components/Ip'
-import Map from './components/Map'
-import Server from './components/Server'
-import Toollu from './components/Toollu'
+import UtilsStrtran from './components/UtilsStrtran'
+import UtilsStrrand from './components/UtilsStrrand'
+import UtilsTimestamp from './components/UtilsTimestamp'
+import UtilsQrcode from './components/UtilsQrcode'
+import UtilsBytetran from './components/UtilsBytetran'
+import UtilsIpinfo from './components/UtilsIpinfo'
+import UtilsMap from './components/UtilsMap'
+import UtilsServer from './components/UtilsServer'
+import UtilsToollu from './components/UtilsToollu'
 
 export default {
   name: 'AdminSystemUtils',
-  components: { Strtran, Strrand, Timestamp, Qrcode, Byte, Ip, Map, Server, Toollu },
+  components: { UtilsStrtran, UtilsStrrand, UtilsTimestamp, UtilsQrcode, UtilsBytetran, UtilsIpinfo, UtilsMap, UtilsServer, UtilsToollu },
   directives: { permission },
   data() {
     return {
-      height: 680
+      name: '实用工具'
     }
   },
-  created() {
-    this.height = screenHeight()
-  },
+  created() {},
   methods: {
     checkPermission
   }

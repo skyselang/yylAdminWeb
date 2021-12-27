@@ -2,16 +2,18 @@
   <el-card class="box-card">
     <el-row :gutter="0">
       <el-col :xs="24" :sm="18" :md="12">
-        <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
-          <el-form-item label="注册验证码" prop="captcha_register">
-            <el-switch v-model="model.captcha_register" :active-value="1" :inactive-value="0" />
+        <el-form ref="ref" :model="model" label-width="120px">
+          <el-form-item label="缓存类型" prop="type">
+            <el-input v-model="model.type" />
           </el-form-item>
-          <el-form-item label="登录验证码" prop="captcha_login">
-            <el-switch v-model="model.captcha_login" :active-value="1" :inactive-value="0" />
+          <el-form-item label="清除缓存" prop="">
+            <el-button :loading="loading" type="primary" title="清除缓存" @click="submit()">清除</el-button>
           </el-form-item>
-          <el-form-item>
+          <el-form-item label="" prop="">
+            <span>手动清除所有缓存（后台登录状态不会清除）。</span>
+          </el-form-item>
+          <el-form-item label="">
             <el-button :loading="loading" @click="refresh()">刷新</el-button>
-            <el-button :loading="loading" type="primary" @click="submit()">提交</el-button>
           </el-form-item>
         </el-form>
       </el-col>
@@ -20,17 +22,16 @@
 </template>
 
 <script>
-import { captchaInfo, captchaEdit } from '@/api/setting'
+import { cacheInfo, cacheClear } from '@/api/admin/setting'
 
 export default {
-  name: 'SettingCaptcha',
+  name: 'AdminSettingCache',
   components: {},
   data() {
     return {
       loading: false,
       model: {
-        captcha_register: 0,
-        captcha_login: 0
+        type: ''
       },
       rules: {}
     }
@@ -41,14 +42,14 @@ export default {
   methods: {
     // 信息
     info() {
-      captchaInfo().then(res => {
+      cacheInfo().then(res => {
         this.model = res.data
       })
     },
     // 刷新
     refresh() {
       this.loading = true
-      captchaInfo()
+      cacheInfo()
         .then((res) => {
           this.model = res.data
           this.loading = false
@@ -58,12 +59,12 @@ export default {
           this.loading = false
         })
     },
-    // 提交
+    // 清空
     submit() {
       this.$refs['ref'].validate(valid => {
         if (valid) {
           this.loading = true
-          captchaEdit(this.model).then(res => {
+          cacheClear().then(res => {
             this.info()
             this.loading = false
             this.$message.success(res.msg)

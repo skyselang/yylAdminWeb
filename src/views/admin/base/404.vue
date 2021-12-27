@@ -6,15 +6,15 @@
       </el-col>
     </el-row>
     <el-row>
-      <el-col :span="6" :offset="6" class="yyl-center yyl-top">
+      <el-col :span="6" :offset="6" class="ya-center ya-top">
         <el-button icon="el-icon-arrow-left" @click="back">返回</el-button>
       </el-col>
-      <el-col :span="6" class="yyl-center yyl-top">
+      <el-col :span="6" class="ya-center ya-top">
         <el-button icon="el-icon-s-home" @click="dashboard">控制台</el-button>
       </el-col>
     </el-row>
     <el-row>
-      <el-col :span="12" :offset="6" class="yyl-center yyl-top">
+      <el-col :span="12" :offset="6" class="ya-center ya-top">
         <a href="https://gitee.com/skyselang/yylAdmin" target="_blank" title="">
           <img src="https://gitee.com/skyselang/yylAdmin/widgets/widget_card.svg?colors=4183c4,ffffff,ffffff,e3e9ed,666666,9b9b9b" alt="" srcset="">
         </a>
@@ -45,10 +45,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.yyl-top {
+.ya-top {
   margin-top: 2vh;
 }
-.yyl-center {
+.ya-center {
   text-align: center;
 }
 </style>

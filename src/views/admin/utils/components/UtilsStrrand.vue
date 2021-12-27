@@ -1,5 +1,5 @@
 <template>
-  <el-card class="box-card">
+  <el-card class="box-card dialog-body" :style="{height:height+'px'}">
     <div slot="header" class="clearfix">
       <span>随机字符串</span>
     </div>
@@ -32,14 +32,16 @@
 </template>
 
 <script>
+import screenHeight from '@/utils/screen-height'
 import clip from '@/utils/clipboard'
 import { strrand } from '@/api/admin/utils'
 
 export default {
-  name: 'Strrand',
+  name: 'UtilsStrrand',
   components: {},
   data() {
     return {
+      height: 680,
       model: {
         idss: [
           { id: 1, name: '数字' },
@@ -59,6 +61,7 @@ export default {
     }
   },
   created() {
+    this.height = screenHeight()
     this.lens()
   },
   methods: {

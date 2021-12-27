@@ -1,5 +1,5 @@
 <template>
-  <el-card class="box-card">
+  <el-card class="box-card dialog-body" :style="{height:height+'px'}">
     <div slot="header" class="clearfix">
       <span>IP信息</span>
     </div>
@@ -49,10 +49,11 @@ import clip from '@/utils/clipboard'
 import { ipinfo } from '@/api/admin/utils'
 
 export default {
-  name: 'Ip',
+  name: 'UtilsIpinfo',
   components: {},
   data() {
     return {
+      height: 680,
       model: {
         ip: '',
         country: '',

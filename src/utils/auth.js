@@ -43,3 +43,14 @@ export function getAvatar() {
 export function delAvatar() {
   return Cookies.remove(AvatarKey)
 }
+
+const MessageKey = 'Message'
+export function setMessage(message) {
+  return Cookies.set(MessageKey, message)
+}
+export function getMessage() {
+  return Cookies.get(MessageKey)
+}
+export function delMessage() {
+  return Cookies.remove(MessageKey)
+}

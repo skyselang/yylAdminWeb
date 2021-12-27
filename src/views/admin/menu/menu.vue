@@ -1,49 +1,65 @@
 <template>
   <div class="app-container">
-    <!-- 添加 -->
+    <!-- 添加、选中操作 -->
     <div class="filter-container">
-      <el-row :gutter="0">
-        <el-col :xs="24" :sm="24" style="text-align:right;">
-          <el-checkbox v-model="isExpandAll" class="filter-item" border @change="expandAll">收起</el-checkbox>
+      <el-row>
+        <el-col>
           <el-button class="filter-item" @click="refresh()">刷新</el-button>
-          <el-button class="filter-item" type="primary" @click="add()">添加</el-button>
         </el-col>
+      </el-row>
+      <!-- 选中操作 -->
+      <el-row>
+        <el-col>
+          <el-checkbox v-model="isExpandAll" border @change="expandAll">收起</el-checkbox>
+          <el-button class="ya-margin-left" @click="selectOpen('pid')">父级</el-button>
+          <el-button @click="selectOpen('unlogin')">登录</el-button>
+          <el-button @click="selectOpen('unauth')">权限</el-button>
+          <el-button @click="selectOpen('disable')">禁用</el-button>
+          <el-button @click="dele(selection)">删除</el-button>
+          <el-button type="primary" @click="add()">添加</el-button>
+        </el-col>
+        <el-dialog title="选中操作" :visible.sync="selectDialog" top="20vh" :close-on-click-modal="false" :close-on-press-escape="false">
+          <el-form ref="selectRef" label-width="120px">
+            <el-form-item v-if="selectType==='pid'" label="父级" prop="">
+              <el-cascader
+                v-model="menu_pid"
+                :options="data"
+                :props="props"
+                style="width:100%"
+                placeholder="请选择"
+                clearable
+                filterable
+                @change="selectPidChange"
+              />
+            </el-form-item>
+            <el-form-item v-else-if="selectType==='unlogin'" label="无需登录" prop="">
+              <el-switch v-model="is_unlogin" :active-value="1" :inactive-value="0" />
+            </el-form-item>
+            <el-form-item v-else-if="selectType==='unauth'" label="无需权限" prop="">
+              <el-switch v-model="is_unauth" :active-value="1" :inactive-value="0" />
+            </el-form-item>
+            <el-form-item v-else-if="selectType==='disable'" label="是否禁用" prop="">
+              <el-switch v-model="is_disable" :active-value="1" :inactive-value="0" />
+            </el-form-item>
+          </el-form>
+          <div slot="footer" class="dialog-footer">
+            <el-button @click="selectCancel">取消</el-button>
+            <el-button type="primary" @click="selectSubmit">提交</el-button>
+          </div>
+        </el-dialog>
       </el-row>
     </div>
     <!-- 列表 -->
-    <el-table ref="table" v-loading="loading" :data="data" :height="height+50" style="width: 100%" row-key="admin_menu_id" @cell-dblclick="tableCellDbclick">
+    <el-table ref="table" v-loading="loading" :data="data" :height="height" row-key="admin_menu_id" @selection-change="select" @cell-dblclick="tableCellDbclick">
+      <el-table-column type="selection" width="42" title="全选/反选" />
       <el-table-column prop="menu_name" label="菜单名称" min-width="220" />
       <el-table-column prop="menu_url" label="菜单链接(roles)" min-width="300">
         <template slot="header">
           <span>菜单链接(roles)</span>
           <el-tooltip placement="top">
             <div slot="content">双击单元格复制</div>
-            <i class="el-icon-warning" title="" />
+            <i class="el-icon-warning" />
           </el-tooltip>
-        </template>
-      </el-table-column>
-      <el-table-column prop="is_disable" label="是否禁用" min-width="95" align="center">
-        <template slot="header">
-          <span>是否禁用</span>
-          <el-tooltip placement="top">
-            <div slot="content">开启后无法访问</div>
-            <i class="el-icon-warning" title="" />
-          </el-tooltip>
-        </template>
-        <template slot-scope="scope">
-          <el-switch v-if="scope.row.menu_url" v-model="scope.row.is_disable" :active-value="1" :inactive-value="0" @change="disable(scope.row)" />
-        </template>
-      </el-table-column>
-      <el-table-column prop="is_unauth" label="无需权限" min-width="95" align="center">
-        <template slot="header">
-          <span>无需权限</span>
-          <el-tooltip placement="top">
-            <div slot="content">开启后不用分配权限也可以访问</div>
-            <i class="el-icon-warning" title="" />
-          </el-tooltip>
-        </template>
-        <template slot-scope="scope">
-          <el-switch v-if="scope.row.menu_url" v-model="scope.row.is_unauth" :active-value="1" :inactive-value="0" @change="unauth(scope.row)" />
         </template>
       </el-table-column>
       <el-table-column prop="is_unlogin" label="无需登录" min-width="95" align="center">
@@ -51,30 +67,54 @@
           <span>无需登录</span>
           <el-tooltip placement="top">
             <div slot="content">开启后不用登录就可以访问，如登录</div>
-            <i class="el-icon-warning" title="" />
+            <i class="el-icon-warning" />
           </el-tooltip>
         </template>
         <template slot-scope="scope">
-          <el-switch v-if="scope.row.menu_url" v-model="scope.row.is_unlogin" :active-value="1" :inactive-value="0" @change="unlogin(scope.row)" />
+          <el-switch v-if="scope.row.menu_url" v-model="scope.row.is_unlogin" :active-value="1" :inactive-value="0" @change="unlogin([scope.row])" />
         </template>
       </el-table-column>
-      <el-table-column prop="admin_menu_id" label="菜单ID" min-width="65" />
+      <el-table-column prop="is_unauth" label="无需权限" min-width="95" align="center">
+        <template slot="header">
+          <span>无需权限</span>
+          <el-tooltip placement="top">
+            <div slot="content">开启后不用分配权限也可以访问</div>
+            <i class="el-icon-warning" />
+          </el-tooltip>
+        </template>
+        <template slot-scope="scope">
+          <el-switch v-if="scope.row.menu_url" v-model="scope.row.is_unauth" :active-value="1" :inactive-value="0" @change="unauth([scope.row])" />
+        </template>
+      </el-table-column>
+      <el-table-column prop="is_disable" label="禁用" min-width="85" align="center">
+        <template slot="header">
+          <span>禁用</span>
+          <el-tooltip placement="top">
+            <div slot="content">开启后无法访问</div>
+            <i class="el-icon-warning" />
+          </el-tooltip>
+        </template>
+        <template slot-scope="scope">
+          <el-switch v-if="scope.row.menu_url" v-model="scope.row.is_disable" :active-value="1" :inactive-value="0" @change="disable([scope.row])" />
+        </template>
+      </el-table-column>
+      <el-table-column prop="admin_menu_id" label="ID" min-width="65" />
       <el-table-column prop="menu_sort" label="排序" min-width="60" />
-      <el-table-column label="操作" min-width="200" align="right">
+      <el-table-column label="操作" min-width="250" align="right">
         <template slot-scope="{ row }">
           <el-button size="mini" type="text" @click="roleShow(row)">角色</el-button>
           <el-button size="mini" type="text" @click="userShow(row,'admin_menu_id')">用户</el-button>
-          <el-button size="mini" type="text" @click="add(row)">添加</el-button>
+          <el-button size="mini" type="text" title="添加下级" @click="add(row)">添加</el-button>
           <el-button size="mini" type="text" @click="edit(row)">修改</el-button>
-          <el-button size="mini" type="text" @click="dele(row)">删除</el-button>
+          <el-button size="mini" type="text" @click="dele([row])">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
     <!-- 添加、修改 -->
-    <el-dialog :title="dialogTitle" :visible.sync="dialog" top="1vh" width="50%" :before-close="cancel">
+    <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false">
       <el-form ref="ref" :rules="rules" :model="model" class="dialog-body" label-width="100px" :style="{height:height+'px'}">
         <el-form-item label="菜单父级" prop="menu_pid">
-          <el-cascader v-model="model.menu_pid" :options="data" :props="props" style="width:100%" clearable filterable placeholder="一级菜单" @change="pidChange" />
+          <el-cascader v-model="model.menu_pid" :options="data" :props="props" style="width:100%" placeholder="一级菜单" clearable filterable @change="pidChange" />
         </el-form-item>
         <el-form-item label="菜单名称" prop="menu_name">
           <el-input v-model="model.menu_name" clearable placeholder="请输入菜单名称" />
@@ -85,7 +125,7 @@
           </el-input>
         </el-form-item>
         <el-form-item label="菜单排序" prop="menu_sort">
-          <el-input v-model="model.menu_sort" type="number" placeholder="200" />
+          <el-input v-model="model.menu_sort" type="number" placeholder="250" />
         </el-form-item>
         <el-form-item label="快速添加" prop="">
           <el-checkbox v-model="model.add_list">列表</el-checkbox>
@@ -117,8 +157,8 @@
       </div>
     </el-dialog>
     <!-- 角色 -->
-    <el-dialog :title="roleDialogTitle" :visible.sync="roleDialog" width="65%" top="1vh">
-      <el-table ref="roleRef" v-loading="roleLoad" :data="roleData" :height="height+30" style="width: 100%" @sort-change="roleSort">
+    <el-dialog :title="roleDialogTitle" :visible.sync="roleDialog" width="65%" top="5vh" :close-on-click-modal="false" :close-on-press-escape="false">
+      <el-table ref="roleRef" v-loading="roleLoad" :data="roleData" :height="height" @sort-change="roleSort">
         <el-table-column prop="admin_role_id" label="角色ID" min-width="100" sortable="custom" />
         <el-table-column prop="role_name" label="角色" min-width="120" sortable="custom" />
         <el-table-column prop="role_desc" label="描述" min-width="130" />
@@ -137,8 +177,8 @@
       <pagination v-show="roleCount > 0" :total="roleCount" :page.sync="roleQuery.page" :limit.sync="roleQuery.limit" @pagination="roleList" />
     </el-dialog>
     <!-- 用户 -->
-    <el-dialog :title="userDialogTitle" :visible.sync="userDialog" width="65%" top="1vh">
-      <el-table ref="userRef" v-loading="userLoad" :data="userData" :height="height+30" style="width: 100%" @sort-change="userSort">
+    <el-dialog :title="userDialogTitle" :visible.sync="userDialog" width="65%" top="5vh" :close-on-click-modal="false" :close-on-press-escape="false">
+      <el-table ref="userRef" v-loading="userLoad" :data="userData" :height="height" @sort-change="userSort">
         <el-table-column prop="admin_user_id" label="用户ID" min-width="100" sortable="custom" />
         <el-table-column prop="username" label="账号" min-width="120" sortable="custom" />
         <el-table-column prop="nickname" label="昵称" min-width="120" />
@@ -165,10 +205,11 @@
 </template>
 
 <script>
-import clip from '@/utils/clipboard'
 import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination'
-import { list, info, add, edit, dele, disable, unauth, unlogin, role, roleRemove, user, userRemove } from '@/api/admin/menu'
+import clip from '@/utils/clipboard'
+import { arrayColumn } from '@/utils/index'
+import { list, info, add, edit, dele, pid, disable, unauth, unlogin, role, roleRemove, user, userRemove } from '@/api/admin/menu'
 
 export default {
   name: 'AdminMenu',
@@ -183,13 +224,12 @@ export default {
       props: { checkStrictly: true, value: 'admin_menu_id', label: 'menu_name' },
       dialog: false,
       dialogTitle: '',
-      isExpandAll: true,
       model: {
         admin_menu_id: '',
         menu_pid: 0,
         menu_name: '',
         menu_url: '',
-        menu_sort: 200,
+        menu_sort: 250,
         add_list: false,
         add_info: false,
         add_add: false,
@@ -201,6 +241,14 @@ export default {
         edit_edit: false,
         edit_dele: false
       },
+      isExpandAll: true,
+      selection: [],
+      selectDialog: false,
+      selectType: '',
+      menu_pid: 0,
+      is_unlogin: 0,
+      is_unauth: 0,
+      is_disable: 0,
       rules: {
         menu_name: [{ required: true, message: '请输入菜单名称', trigger: 'blur' }]
       },
@@ -234,66 +282,29 @@ export default {
         this.loading = false
       })
     },
-    // 收起
-    expandAll(e) {
-      this.expandFor(this.data, !e)
-    },
-    expandFor(data, isExpand) {
-      data.forEach(i => {
-        this.$refs.table.toggleRowExpansion(i, isExpand)
-        if (i.children) {
-          this.expandFor(i.children, isExpand)
-        }
-      })
-    },
-    // 添加
+    // 添加修改
     add(row) {
       this.dialog = true
-      this.dialogTitle = '菜单添加'
+      this.dialogTitle = this.name + '添加'
       this.model = this.$options.data().model
       if (row) {
         this.model.menu_pid = row.admin_menu_id
       }
     },
-    // 修改
     edit(row) {
-      this.loading = true
       this.dialog = true
-      this.dialogTitle = '菜单修改：' + row.admin_menu_id
+      this.dialogTitle = this.name + '修改：' + row.admin_menu_id
       info({
         admin_menu_id: row.admin_menu_id
       }).then(res => {
         this.reset(res.data)
-        this.loading = false
       }).catch(() => {
-        this.loading = false
       })
     },
-    // 删除
-    dele(row) {
-      this.$confirm(
-        '确定要删除菜单 <span style="color:red">' + row.menu_name + ' </span>吗？',
-        '删除菜单：' + row.admin_menu_id,
-        { type: 'warning', dangerouslyUseHTMLString: true }
-      ).then(() => {
-        this.loading = true
-        dele({
-          admin_menu_id: row.admin_menu_id
-        }).then(res => {
-          this.list()
-          this.reset()
-          this.$message.success(res.msg)
-        }).catch(() => {
-          this.loading = false
-        })
-      }).catch(() => {})
-    },
-    // 取消
     cancel() {
       this.reset()
       this.dialog = false
     },
-    // 提交
     submit() {
       this.$refs['ref'].validate(valid => {
         if (valid) {
@@ -320,15 +331,34 @@ export default {
         }
       })
     },
+    // 删除
+    dele(row) {
+      if (!row.length) {
+        this.selectAlert()
+      } else {
+        var title = '删除' + this.name
+        var message = '确定要删除选中的 <span style="color:red">' + row.length + ' </span> 条' + this.name + '吗？'
+        if (row.length === 1) {
+          title = title + '：' + row[0].admin_menu_id
+          message = '确定要删除' + this.name + ' <span style="color:red">' + row[0].menu_name + ' </span>吗？'
+        }
+        this.$confirm(message, title, { type: 'warning', dangerouslyUseHTMLString: true }).then(() => {
+          this.loading = true
+          dele({
+            ids: arrayColumn(row, 'admin_menu_id')
+          }).then(res => {
+            this.list()
+            this.$message.success(res.msg)
+          }).catch(() => {
+            this.loading = false
+          })
+        }).catch(() => {})
+      }
+    },
     // 重置
     reset(row) {
       if (row) {
         this.model = row
-        this.model.add_list = false
-        this.model.add_info = false
-        this.model.add_add = false
-        this.model.add_edit = false
-        this.model.add_dele = false
       } else {
         this.model = this.$options.data().model
       }
@@ -340,61 +370,128 @@ export default {
     refresh() {
       this.list()
     },
-    // 是否禁用
-    disable(row) {
-      this.loading = true
-      disable({
-        admin_menu_id: row.admin_menu_id,
-        is_disable: row.is_disable
-      }).then(res => {
-        this.list()
-        this.$message.success(res.msg)
-      }).catch(() => {
-        this.list()
-        this.loading = false
+    // 收起
+    expandAll(e) {
+      this.expandFor(this.data, !e)
+    },
+    expandFor(data, isExpand) {
+      data.forEach(i => {
+        this.$refs.table.toggleRowExpansion(i, isExpand)
+        if (i.children) {
+          this.expandFor(i.children, isExpand)
+        }
       })
     },
-    // 无需权限
-    unauth(row) {
-      this.loading = true
-      unauth({
-        admin_menu_id: row.admin_menu_id,
-        is_unauth: row.is_unauth
+    // 选中操作
+    select(selection) {
+      this.selection = selection
+    },
+    selectAlert(message = '') {
+      this.$alert(message || '请选择需要操作的' + this.name, '提示', { type: 'warning', callback: action => {} })
+    },
+    selectOpen(selectType) {
+      if (!this.selection.length) {
+        this.selectAlert()
+      } else {
+        this.selectDialog = true
+        this.selectType = selectType
+      }
+    },
+    selectCancel() {
+      this.selectDialog = false
+    },
+    selectSubmit() {
+      if (!this.selection.length) {
+        this.selectAlert()
+      } else {
+        const type = this.selectType
+        if (type === 'pid') {
+          this.setpid(this.selection)
+        } else if (type === 'unlogin') {
+          this.unlogin(this.selection, true)
+        } else if (type === 'unauth') {
+          this.unauth(this.selection, true)
+        } else if (type === 'disable') {
+          this.disable(this.selection, true)
+        }
+        this.selectDialog = false
+      }
+    },
+    selectPidChange(value) {
+      if (value) {
+        this.menu_pid = value[value.length - 1]
+      }
+    },
+    // 设置父级
+    setpid(row) {
+      pid({
+        ids: arrayColumn(row, 'admin_menu_id'),
+        menu_pid: this.menu_pid
       }).then(res => {
         this.list()
+        this.selectDialog = false
         this.$message.success(res.msg)
       }).catch(() => {
         this.list()
-        this.loading = false
       })
     },
     // 无需登录
-    unlogin(row) {
-      if (row.is_unlogin === 1) {
-        this.$confirm(
-          '确定要设置菜单 <span style="color:red">' + row.menu_name + ' </span>为无需登录吗？<br>开启后不用登录就可以访问！请谨慎设置！',
-          '无需登录：' + row.admin_menu_id,
-          { type: 'warning', dangerouslyUseHTMLString: true }
-        ).then(() => {
-          this.loading = true
-          unlogin({
-            admin_menu_id: row.admin_menu_id,
-            is_unlogin: row.is_unlogin
-          }).then(res => {
-            this.list()
-            this.$message.success(res.msg)
-          }).catch(() => {
-            this.list()
-            this.loading = false
-          })
-        }).catch(() => {
-          this.list()
-        })
+    unlogin(row, select = false) {
+      if (!row.length) {
+        this.selectAlert()
       } else {
         this.loading = true
+        var is_unlogin = row[0].is_unlogin
+        if (select) {
+          is_unlogin = this.is_unlogin
+        }
         unlogin({
-          admin_menu_id: row.admin_menu_id,
-          is_unlogin: row.is_unlogin
+          ids: arrayColumn(row, 'admin_menu_id'),
+          is_unlogin: is_unlogin
+        }).then(res => {
+          this.list()
+          this.$message.success(res.msg)
+        }).catch(() => {
+          this.list()
+          this.loading = false
+        })
+      }
+    },
+    // 无需权限
+    unauth(row, select = false) {
+      if (!row.length) {
+        this.selectAlert()
+      } else {
+        this.loading = true
+        var is_unauth = row[0].is_unauth
+        if (select) {
+          is_unauth = this.is_unauth
+        }
+        unauth({
+          ids: arrayColumn(row, 'admin_menu_id'),
+          is_unauth: is_unauth
+        }).then(res => {
+          this.list()
+          this.$message.success(res.msg)
+        }).catch(() => {
+          this.list()
+          this.loading = false
+        })
+      }
+    },
+    // 是否禁用
+    disable(row, select = false) {
+      if (!row.length) {
+        this.selectAlert()
+      } else {
+        this.loading = true
+        var is_disable = row[0].is_disable
+        if (select) {
+          is_disable = this.is_disable
+        }
+        disable({
+          ids: arrayColumn(row, 'admin_menu_id'),
+          is_disable: is_disable
         }).then(res => {
           this.list()
           this.$message.success(res.msg)
@@ -424,9 +521,6 @@ export default {
         this.roleData = res.data.list
         this.roleCount = res.data.count
         this.roleLoad = false
-        this.$nextTick(() => {
-          this.$refs['roleRef'].doLayout()
-        })
       }).catch(() => {
         this.roleLoad = false
       })
@@ -484,9 +578,6 @@ export default {
         this.userData = res.data.list
         this.userCount = res.data.count
         this.userLoad = false
-        this.$nextTick(() => {
-          this.$refs['userRef'].doLayout()
-        })
       }).catch(() => {
         this.userLoad = false
       })

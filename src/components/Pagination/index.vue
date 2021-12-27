@@ -1,6 +1,7 @@
 <template>
-  <div :class="{'hidden': hidden }" class="pagination-container">
+  <div :class="{'hidden': hidden }" class="pagination-container" :style="{'text-align':align}">
     <el-pagination
+      :small="small"
       :background="background"
       :current-page.sync="currentPage"
       :page-size.sync="pageSize"
@@ -20,6 +21,10 @@ import { scrollTo } from '@/utils/scroll-to'
 export default {
   name: 'Pagination',
   props: {
+    align: {
+      type: String,
+      default: 'left'
+    },
     total: {
       required: true,
       type: Number
@@ -51,6 +56,10 @@ export default {
       default: true
     },
     hidden: {
+      type: Boolean,
+      default: false
+    },
+    small: {
       type: Boolean,
       default: false
     }
@@ -92,7 +101,6 @@ export default {
 
 <style scoped>
 .pagination-container {
-  text-align: right;
   padding-top: 0;
   margin-top: 20px;
 }
