@@ -26,7 +26,7 @@ export default {
     id: { type: String, default: 'wangeditor' + randomString() },
     content: { type: String, default: '' },
     excludeMenus: { type: Array, default() { return ['image', 'video'] } },
-    zIndexid: { type: Number, default: 500 },
+    zIndex: { type: Number, default: 10000 },
     height: { type: Number, default: 500 },
     focus: { type: Boolean, default: false },
     placeholder: { type: String, default: '' }
