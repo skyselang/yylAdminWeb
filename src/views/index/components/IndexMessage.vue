@@ -1,8 +1,8 @@
 <template>
   <div>
-    <el-dialog :title="dialogTitle" :visible.sync="dialog" top="15vh" center :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false">
+    <el-dialog :title="dialogTitle" :visible.sync="dialog" top="10vh" center :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false">
       <!-- 列表 -->
-      <el-table ref="table" v-loading="loading" :data="data" :height="height" :show-header="false">
+      <el-table ref="table" v-loading="loading" :data="data" :height="height-200" :show-header="false">
         <el-table-column prop="title" min-width="300" show-overflow-tooltip>
           <template slot-scope="scope">
             <span :style="{'color':scope.row.color}">{{ scope.row.title }}</span>
@@ -22,14 +22,11 @@
         <el-button type="text" size="mini" @click="submit">关闭</el-button>
       </div>
     </el-dialog>
-    <el-dialog :title="infoTitle" :visible.sync="infoDialog" top="15vh" center :close-on-click-modal="false" :close-on-press-escape="false">
-      <el-form ref="ref" :model="model" label-width="0" class="dialog-body" :style="{height:height+100+'px'}">
+    <el-dialog :title="infoTitle" :visible.sync="infoDialog" top="9vh" center :close-on-click-modal="false" :close-on-press-escape="false">
+      <!-- 详情 -->
+      <el-form ref="ref" :model="model" label-width="0" class="dialog-body" :style="{height:height+'px'}">
         <el-form-item label="" prop="" style="text-align:center">
-          <h2>{{ model.title }}</h2>
           <span>{{ model.create_time }}</span>
-        </el-form-item>
-        <el-form-item label="" prop="intro" style="text-align:center">
-          <div v-html="model.intro" />
         </el-form-item>
         <el-form-item label="" prop="content">
           <div v-html="model.content" />
@@ -58,6 +55,8 @@ export default {
       },
       data: [],
       count: 0,
+      dialog: false,
+      dialogTitle: '消息',
       model: {
         admin_message_id: '',
         title: '',
@@ -65,14 +64,12 @@ export default {
         content: '',
         create_time: ''
       },
-      dialog: false,
-      dialogTitle: '消息',
-      infoTitle: '详情',
+      infoTitle: '消息',
       infoDialog: false
     }
   },
   created() {
-    this.height = screenHeight(500)
+    this.height = screenHeight()
     this.list()
   },
   methods: {

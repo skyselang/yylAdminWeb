@@ -47,7 +47,7 @@ export default {
     }
   },
   created() {
-    this.height = screenHeight()
+    this.height = screenHeight(210)
     this.info()
   },
   methods: {

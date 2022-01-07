@@ -9,7 +9,6 @@
             value-format="yyyy-MM-dd"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-            style="max-width:280px"
             @change="echartIndexMemberChange()"
           />
         </el-col>

@@ -10,8 +10,8 @@ export default {
   components: {},
   data() {
     return {
-      src: 'http://www.beidou.gov.cn/',
-      height: 500
+      height: 500,
+      src: 'http://www.beidou.gov.cn/'
     }
   },
   created() {

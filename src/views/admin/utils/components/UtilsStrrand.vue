@@ -61,7 +61,7 @@ export default {
     }
   },
   created() {
-    this.height = screenHeight()
+    this.height = screenHeight(180)
     this.lens()
   },
   methods: {

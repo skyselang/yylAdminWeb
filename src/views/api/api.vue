@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <!-- 查询、选中操作 -->
+    <!-- 查询操作 -->
     <div class="filter-container">
       <!-- 查询 -->
       <el-row>
@@ -15,29 +15,34 @@
           <el-button class="ya-margin-left" @click="selectOpen('pid')">父级</el-button>
           <el-button @click="selectOpen('disable')">禁用</el-button>
           <el-button @click="selectOpen('unlogin')">登录</el-button>
-          <el-button @click="dele(selection)">删除</el-button>
+          <el-button @click="selectOpen('dele')">删除</el-button>
           <el-button type="primary" @click="add()">添加</el-button>
         </el-col>
       </el-row>
       <el-dialog title="选中操作" :visible.sync="selectDialog" top="20vh" :close-on-click-modal="false" :close-on-press-escape="false">
         <el-form ref="selectRef" label-width="120px">
+          <el-form-item :label="name+'ID'" prop="">
+            <el-input v-model="selectIds" type="textarea" :rows="2" disabled />
+          </el-form-item>
           <el-form-item v-if="selectType==='pid'" label="父级" prop="">
             <el-cascader
               v-model="api_pid"
               :options="data"
               :props="props"
               style="width:100%"
-              placeholder="请选择"
               clearable
               filterable
               @change="selectPidChange"
             />
           </el-form-item>
-          <el-form-item v-if="selectType==='disable'" label="禁用" prop="">
+          <el-form-item v-if="selectType==='disable'" label="是否禁用" prop="">
             <el-switch v-model="is_disable" :active-value="1" :inactive-value="0" />
           </el-form-item>
           <el-form-item v-if="selectType==='unlogin'" label="无需登录" prop="">
             <el-switch v-model="is_unlogin" :active-value="1" :inactive-value="0" />
+          </el-form-item>
+          <el-form-item v-else-if="selectType==='dele'" label="" prop="">
+            <span style="color:red">确定要删除选中的{{ name }}吗？</span>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -47,7 +52,7 @@
       </el-dialog>
     </div>
     <!-- 列表 -->
-    <el-table ref="table" v-loading="loading" :data="data" :height="height" row-key="api_id" @selection-change="select" @cell-dblclick="tableCellDbclick">
+    <el-table ref="table" v-loading="loading" :data="data" :height="height" :row-key="idkey" @selection-change="select" @cell-dblclick="tableCellDbclick">
       <el-table-column type="selection" width="42" title="全选/反选" />
       <el-table-column prop="api_name" label="接口名称" min-width="210" />
       <el-table-column prop="api_url" label="接口链接" min-width="300" />
@@ -75,19 +80,19 @@
           <el-switch v-if="scope.row.api_url" v-model="scope.row.is_unlogin" :active-value="1" :inactive-value="0" @change="unlogin([scope.row])" />
         </template>
       </el-table-column>
-      <el-table-column prop="api_id" label="ID" min-width="80" />
+      <el-table-column :prop="idkey" label="ID" min-width="80" />
       <el-table-column prop="api_sort" label="排序" min-width="80" />
       <el-table-column label="操作" min-width="130" align="right" fixed="right">
         <template slot-scope="{ row }">
           <el-button size="mini" type="text" title="添加下级" @click="add(row)">添加</el-button>
           <el-button size="mini" type="text" @click="edit(row)">修改</el-button>
-          <el-button size="mini" type="text" @click="dele([row])">删除</el-button>
+          <el-button size="mini" type="text" @click="selectOpen('dele',row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
-    <!-- 添加、修改 -->
+    <!-- 添加修改 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false">
-      <el-form ref="ref" :rules="rules" :model="model" class="dialog-body" label-width="100px" :style="{height:height+'px'}">
+      <el-form ref="ref" :rules="rules" :model="model" label-width="100px" class="dialog-body" :style="{height:height+'px'}">
         <el-form-item label="接口父级" prop="api_pid">
           <el-cascader
             v-model="model.api_pid"
@@ -111,10 +116,10 @@
         <el-form-item label="接口排序" prop="api_sort">
           <el-input v-model="model.api_sort" type="number" placeholder="250" />
         </el-form-item>
-        <el-form-item v-if="model.api_id" label="添加时间" prop="create_time">
+        <el-form-item v-if="model[idkey]" label="添加时间" prop="create_time">
           <el-input v-model="model.create_time" disabled />
         </el-form-item>
-        <el-form-item v-if="model.api_id" label="修改时间" prop="update_time">
+        <el-form-item v-if="model[idkey]" label="修改时间" prop="update_time">
           <el-input v-model="model.update_time" disabled />
         </el-form-item>
       </el-form>
@@ -133,7 +138,7 @@ import { arrayColumn } from '@/utils/index'
 import { list, info, add, edit, dele, pid, disable, unlogin } from '@/api/api'
 
 export default {
-  name: 'SettingApi',
+  name: 'Api',
   components: { },
   directives: { },
   data() {
@@ -141,6 +146,7 @@ export default {
       name: '接口',
       height: 680,
       loading: false,
+      idkey: 'api_id',
       data: [],
       dialog: false,
       dialogTitle: '',
@@ -153,20 +159,22 @@ export default {
         api_url: '',
         api_sort: 250
       },
+      rules: {
+        api_name: [{ required: true, message: '请输入接口名称', trigger: 'blur' }]
+      },
       isExpandAll: true,
       selection: [],
+      selectIds: '',
+      selectTitle: '选中操作',
       selectDialog: false,
       selectType: '',
       api_pid: 0,
       is_disable: 0,
-      is_unlogin: 0,
-      rules: {
-        api_name: [{ required: true, message: '请输入接口名称', trigger: 'blur' }]
-      }
+      is_unlogin: 0
     }
   },
   created() {
-    this.height = screenHeight()
+    this.height = screenHeight(210)
     this.list()
   },
   methods: {
@@ -185,17 +193,17 @@ export default {
     add(row) {
       this.dialog = true
       this.dialogTitle = this.name + '添加'
-      this.model = this.$options.data().model
+      this.reset()
       if (row) {
-        this.model.api_pid = row.api_id
+        this.model.api_pid = row[this.idkey]
       }
     },
     edit(row) {
       this.dialog = true
-      this.dialogTitle = this.name + '修改：' + row.api_id
-      info({
-        api_id: row.api_id
-      }).then(res => {
+      this.dialogTitle = this.name + '修改：' + row[this.idkey]
+      var id = {}
+      id[this.idkey] = row[this.idkey]
+      info(id).then(res => {
         this.reset(res.data)
       }).catch(() => {})
     },
@@ -207,10 +215,9 @@ export default {
       this.$refs['ref'].validate(valid => {
         if (valid) {
           this.loading = true
-          if (this.model.api_id) {
+          if (this.model[this.idkey]) {
             edit(this.model).then(res => {
               this.list()
-              this.reset()
               this.dialog = false
               this.$message.success(res.msg)
             }).catch(() => {
@@ -219,7 +226,6 @@ export default {
           } else {
             add(this.model).then(res => {
               this.list()
-              this.reset()
               this.dialog = false
               this.$message.success(res.msg)
             }).catch(() => {
@@ -228,30 +234,6 @@ export default {
           }
         }
       })
-    },
-    // 删除
-    dele(row) {
-      if (!row.length) {
-        this.selectAlert()
-      } else {
-        var title = '删除' + this.name
-        var message = '确定要删除选中的 <span style="color:red">' + row.length + ' </span> 条' + this.name + '吗？'
-        if (row.length === 1) {
-          title = title + '：' + row[0].api_id
-          message = '确定要删除' + this.name + ' <span style="color:red">' + row[0].api_name + ' </span>吗？'
-        }
-        this.$confirm(message, title, { type: 'warning', dangerouslyUseHTMLString: true }).then(() => {
-          this.loading = true
-          dele({
-            ids: arrayColumn(row, 'api_id')
-          }).then(res => {
-            this.list()
-            this.$message.success(res.msg)
-          }).catch(() => {
-            this.loading = false
-          })
-        }).catch(() => {})
-      }
     },
     // 刷新
     refresh() {
@@ -283,9 +265,13 @@ export default {
     // 选中操作
     select(selection) {
       this.selection = selection
+      this.selectIds = this.selectGetIds(selection).toString()
     },
-    selectAlert(message = '') {
-      this.$alert(message || '请选择需要操作的' + this.name, '提示', { type: 'warning', callback: action => {} })
+    selectGetIds(selection) {
+      return arrayColumn(selection, this.idkey)
+    },
+    selectAlert() {
+      this.$alert('请选择需要操作的' + this.name, '提示', { type: 'warning', callback: action => {} })
     },
     selectOpen(selectType, selectRow = '') {
       if (selectRow) {
@@ -295,6 +281,16 @@ export default {
       if (!this.selection.length) {
         this.selectAlert()
       } else {
+        this.selectTitle = '选中操作'
+        if (selectType === 'pid') {
+          this.selectTitle = '设置父级'
+        } else if (selectType === 'disable') {
+          this.selectTitle = '是否禁用'
+        } else if (selectType === 'unlogin') {
+          this.selectTitle = '无需登录'
+        } else if (selectType === 'dele') {
+          this.selectTitle = '删除' + this.name
+        }
         this.selectDialog = true
         this.selectType = selectType
       }
@@ -306,26 +302,24 @@ export default {
       if (!this.selection.length) {
         this.selectAlert()
       } else {
-        const type = this.selectType
-        if (type === 'pid') {
-          this.setpid(this.selection, true)
-        } else if (type === 'disable') {
+        const selectType = this.selectType
+        if (selectType === 'pid') {
+          this.setpid(this.selection)
+        } else if (selectType === 'disable') {
           this.disable(this.selection, true)
-        } else if (type === 'unlogin') {
+        } else if (selectType === 'unlogin') {
           this.unlogin(this.selection, true)
+        } else if (selectType === 'dele') {
+          this.dele(this.selection)
         }
         this.selectDialog = false
-      }
-    },
-    selectPidChange(value) {
-      if (value) {
-        this.api_pid = value[value.length - 1]
+        this.selectType = selectType
       }
     },
     // 设置父级
     setpid(row) {
       pid({
-        ids: arrayColumn(row, 'api_id'),
+        ids: this.selectGetIds(row),
         api_pid: this.api_pid
       }).then(res => {
         this.list()
@@ -346,7 +340,7 @@ export default {
           is_disable = this.is_disable
         }
         disable({
-          ids: arrayColumn(row, 'api_id'),
+          ids: this.selectGetIds(row),
           is_disable: is_disable
         }).then(res => {
           this.list()
@@ -368,7 +362,7 @@ export default {
           is_unlogin = this.is_unlogin
         }
         unlogin({
-          ids: arrayColumn(row, 'api_id'),
+          ids: this.selectGetIds(row),
           is_unlogin: is_unlogin
         }).then(res => {
           this.list()
@@ -379,10 +373,31 @@ export default {
         })
       }
     },
+    // 删除
+    dele(row) {
+      if (!row.length) {
+        this.selectAlert()
+      } else {
+        this.loading = true
+        dele({
+          ids: this.selectGetIds(row)
+        }).then(res => {
+          this.list()
+          this.$message.success(res.msg)
+        }).catch(() => {
+          this.loading = false
+        })
+      }
+    },
     // 父级选择
     pidChange(value) {
       if (value) {
         this.model.api_pid = value[value.length - 1]
+      }
+    },
+    selectPidChange(value) {
+      if (value) {
+        this.api_pid = value[value.length - 1]
       }
     },
     // 复制

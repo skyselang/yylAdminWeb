@@ -1,7 +1,8 @@
 <template>
   <div class="app-container">
-    <!-- 查询、选中操作 -->
+    <!-- 查询操作 -->
     <div class="filter-container">
+      <!-- 刷新 -->
       <el-row>
         <el-col>
           <el-button class="filter-item" @click="refresh()">刷新</el-button>
@@ -10,24 +11,24 @@
       <!-- 选中操作 -->
       <el-row>
         <el-col>
-          <div>
-            <el-checkbox v-model="isExpandAll" border @change="expandAll">收起</el-checkbox>
-            <el-button class="ya-margin-left" @click="selectOpen('pid')">父级</el-button>
-            <el-button @click="selectOpen('hide')">隐藏</el-button>
-            <el-button @click="dele(selection)">删除</el-button>
-            <el-button type="primary" @click="add()">添加</el-button>
-          </div>
+          <el-checkbox v-model="isExpandAll" border @change="expandAll">收起</el-checkbox>
+          <el-button class="ya-margin-left" title="设置父级" @click="selectOpen('pid')">父级</el-button>
+          <el-button @click="selectOpen('hide')">隐藏</el-button>
+          <el-button @click="selectOpen('dele')">删除</el-button>
+          <el-button type="primary" @click="add()">添加</el-button>
         </el-col>
       </el-row>
-      <el-dialog title="选中操作" :visible.sync="selectDialog" top="20vh" :close-on-click-modal="false" :close-on-press-escape="false">
+      <el-dialog :title="selectTitle" :visible.sync="selectDialog" top="20vh" :close-on-click-modal="false" :close-on-press-escape="false">
         <el-form ref="selectRef" label-width="120px">
+          <el-form-item :label="name+'ID'" prop="">
+            <el-input v-model="selectIds" type="textarea" :rows="2" disabled />
+          </el-form-item>
           <el-form-item v-if="selectType==='pid'" label="分类父级" prop="">
             <el-cascader
               v-model="category_pid"
               :options="data"
               :props="categoryProps"
               style="width:100%"
-              placeholder="分类"
               clearable
               filterable
               @change="selectCategoryChange"
@@ -35,6 +36,9 @@
           </el-form-item>
           <el-form-item v-if="selectType==='hide'" label="隐藏" prop="">
             <el-switch v-model="is_hide" :active-value="1" :inactive-value="0" />
+          </el-form-item>
+          <el-form-item v-else-if="selectType==='dele'" label="" prop="">
+            <span style="color:red">确定要删除选中的{{ name }}吗？</span>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -44,10 +48,10 @@
       </el-dialog>
     </div>
     <!-- 列表 -->
-    <el-table ref="table" v-loading="loading" :data="data" :height="height+30" row-key="category_id" @selection-change="select">
+    <el-table ref="table" v-loading="loading" :data="data" :height="height+30" :row-key="idkey" @selection-change="select">
       <el-table-column type="selection" width="42" title="全选/反选" />
       <el-table-column prop="category_name" label="名称" min-width="250" show-overflow-tooltip />
-      <el-table-column prop="category_id" label="ID" min-width="80" />
+      <el-table-column :prop="idkey" label="ID" min-width="100" />
       <el-table-column prop="is_hide" label="隐藏" min-width="80">
         <template slot-scope="scope">
           <el-switch v-model="scope.row.is_hide" :active-value="1" :inactive-value="0" @change="ishide([scope.row])" />
@@ -60,7 +64,7 @@
         <template slot-scope="{ row }">
           <el-button size="mini" type="text" title="添加下级" @click="add(row)">添加</el-button>
           <el-button size="mini" type="text" @click="edit(row)">修改</el-button>
-          <el-button size="mini" type="text" @click="dele([row])">删除</el-button>
+          <el-button size="mini" type="text" @click="selectOpen('dele',row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -110,7 +114,7 @@
                 <el-link :href="item.file_url" :underline="false" :download="item.file_url" target="_blank" class="ya-file-link">
                   下载
                 </el-link>
-                <el-button size="mini" @click="fileDele(index)">删除</el-button>
+                <el-button size="mini" @click="fileDelete(index)">删除</el-button>
               </div>
             </el-col>
           </el-row>
@@ -118,10 +122,10 @@
         <el-form-item label="排序" prop="sort">
           <el-input v-model="model.sort" placeholder="250" clearable />
         </el-form-item>
-        <el-form-item v-if="model.category_id" label="添加时间" prop="create_time">
+        <el-form-item v-if="model[idkey]" label="添加时间" prop="create_time">
           <el-input v-model="model.create_time" disabled />
         </el-form-item>
-        <el-form-item v-if="model.category_id" label="修改时间" prop="update_time">
+        <el-form-item v-if="model[idkey]" label="修改时间" prop="update_time">
           <el-input v-model="model.update_time" disabled />
         </el-form-item>
       </el-form>
@@ -152,6 +156,7 @@ export default {
       name: '内容分类',
       height: 680,
       loading: false,
+      idkey: 'category_id',
       data: [],
       dialog: false,
       dialogTitle: '',
@@ -165,18 +170,19 @@ export default {
         imgs: [],
         sort: 250
       },
+      rules: {
+        category_name: [{ required: true, message: '请输入分类名称', trigger: 'blur' }]
+      },
       categoryProps: { checkStrictly: true, value: 'category_id', label: 'category_name' },
       isExpandAll: true,
       selection: [],
-      selectButton: false,
+      selectIds: '',
+      selectTitle: '选中操作',
       selectDialog: false,
       selectType: '',
       category_pid: '',
       is_hide: 0,
-      fileDialog: false,
-      rules: {
-        category_name: [{ required: true, message: '请输入分类名称', trigger: 'blur' }]
-      }
+      fileDialog: false
     }
   },
   created() {
@@ -201,15 +207,15 @@ export default {
       this.dialogTitle = this.name + '添加'
       this.model = this.$options.data().model
       if (row) {
-        this.model.category_pid = row.category_id
+        this.model.category_pid = row[this.idkey]
       }
     },
     edit(row) {
       this.dialog = true
-      this.dialogTitle = this.name + '修改：' + row.category_id
-      info({
-        category_id: row.category_id
-      }).then(res => {
+      this.dialogTitle = this.name + '修改：' + row[this.idkey]
+      var id = {}
+      id[this.idkey] = row[this.idkey]
+      info(id).then(res => {
         this.reset(res.data)
       }).catch(() => {})
     },
@@ -221,20 +227,18 @@ export default {
       this.$refs['ref'].validate(valid => {
         if (valid) {
           this.loading = true
-          if (this.model.category_id) {
+          if (this.model[this.idkey]) {
             edit(this.model).then(res => {
-              this.dialog = false
               this.list()
-              this.reset()
+              this.dialog = false
               this.$message.success(res.msg)
             }).catch(() => {
               this.loading = false
             })
           } else {
             add(this.model).then(res => {
-              this.dialog = false
               this.list()
-              this.reset()
+              this.dialog = false
               this.$message.success(res.msg)
             }).catch(() => {
               this.loading = false
@@ -242,30 +246,6 @@ export default {
           }
         }
       })
-    },
-    // 删除
-    dele(row) {
-      if (!row.length) {
-        this.selectAlert()
-      } else {
-        var title = '删除' + this.name
-        var message = '确定要删除选中的 <span style="color:red">' + row.length + ' </span> 条' + this.name + '吗？'
-        if (row.length === 1) {
-          title = title + '：' + row[0].category_id
-          message = '确定要删除' + this.name + ' <span style="color:red">' + row[0].category_name + ' </span>吗？'
-        }
-        this.$confirm(message, title, { type: 'warning', dangerouslyUseHTMLString: true }).then(() => {
-          this.loading = true
-          dele({
-            ids: arrayColumn(row, 'category_id')
-          }).then(res => {
-            this.list()
-            this.$message.success(res.msg)
-          }).catch(() => {
-            this.loading = false
-          })
-        }).catch(() => {})
-      }
     },
     // 重置
     reset(row) {
@@ -278,7 +258,6 @@ export default {
         this.$refs['ref'].resetFields()
         this.$refs['ref'].clearValidate()
       }
-      this
     },
     // 刷新
     refresh() {
@@ -297,42 +276,33 @@ export default {
         }
       })
     },
-    // 分类选择（添加修改）
-    categoryChange(value) {
-      if (value) {
-        this.model.category_pid = value[value.length - 1]
-      }
-    },
-    // 上传图片
-    fileUpload() {
-      this.fileDialog = true
-    },
-    fileCancel() {
-      this.fileDialog = false
-    },
-    fileSubmit(filelist) {
-      this.fileDialog = false
-      const file_len = filelist.length
-      if (file_len) {
-        for (let i = 0; i < file_len; i++) {
-          this.model.imgs.push(filelist[i])
-        }
-      }
-    },
-    fileDele(index) {
-      this.model.imgs.splice(index, 1)
-    },
     // 选中操作
     select(selection) {
       this.selection = selection
+      this.selectIds = this.selectGetIds(selection).toString()
     },
-    selectAlert(message = '') {
-      this.$alert(message || '请选择需要操作的' + this.name, '提示', { confirmButtonText: '确定', callback: action => {} })
+    selectGetIds(selection) {
+      return arrayColumn(selection, this.idkey)
     },
-    selectOpen(selectType) {
+    selectAlert() {
+      this.$alert('请选择需要操作的' + this.name, '提示', { type: 'warning', callback: action => {} })
+    },
+    selectOpen(selectType, selectRow = '') {
+      if (selectRow) {
+        this.$refs['table'].clearSelection()
+        this.$refs['table'].toggleRowSelection(selectRow)
+      }
       if (!this.selection.length) {
         this.selectAlert()
       } else {
+        this.selectTitle = '选中操作'
+        if (selectType === 'pid') {
+          this.selectTitle = '设置父级'
+        } else if (selectType === 'hide') {
+          this.selectTitle = '是否隐藏'
+        } else if (selectType === 'dele') {
+          this.selectTitle = '删除' + this.name
+        }
         this.selectDialog = true
         this.selectType = selectType
       }
@@ -346,26 +316,23 @@ export default {
       } else {
         const type = this.selectType
         if (type === 'pid') {
-          this.setpid(this.selection, true)
+          this.setpid(this.selection)
         } else if (type === 'hide') {
           this.ishide(this.selection, true)
+        } else if (type === 'dele') {
+          this.dele(this.selection)
         }
         this.selectDialog = false
-      }
-    },
-    selectCategoryChange(value) {
-      if (value) {
-        this.category_pid = value[value.length - 1]
       }
     },
     // 设置父级
     setpid(row) {
       pid({
-        ids: arrayColumn(row, 'category_id'),
+        ids: this.selectGetIds(row),
         category_pid: this.category_pid
       }).then(res => {
-        this.selectDialog = false
         this.list()
+        this.selectDialog = false
         this.$message.success(res.msg)
       }).catch(() => {
         this.list()
@@ -382,7 +349,7 @@ export default {
           is_hide = this.is_hide
         }
         ishide({
-          ids: arrayColumn(row, 'category_id'),
+          ids: this.selectGetIds(row),
           is_hide: is_hide
         }).then(res => {
           this.list()
@@ -392,6 +359,51 @@ export default {
           this.loading = false
         })
       }
+    },
+    // 删除
+    dele(row) {
+      if (!row.length) {
+        this.selectAlert()
+      } else {
+        dele({
+          ids: this.selectGetIds(row)
+        }).then(res => {
+          this.list()
+          this.$message.success(res.msg)
+        }).catch(() => {
+          this.loading = false
+        })
+      }
+    },
+    // 父级选择
+    categoryChange(value) {
+      if (value) {
+        this.model.category_pid = value[value.length - 1]
+      }
+    },
+    selectCategoryChange(value) {
+      if (value) {
+        this.category_pid = value[value.length - 1]
+      }
+    },
+    // 上传图片
+    fileUpload() {
+      this.fileDialog = true
+    },
+    fileCancel() {
+      this.fileDialog = false
+    },
+    fileSubmit(filelist) {
+      this.fileDialog = false
+      const fileLength = filelist.length
+      if (fileLength) {
+        for (let i = 0; i < fileLength; i++) {
+          this.model.imgs.push(filelist[i])
+        }
+      }
+    },
+    fileDelete(index) {
+      this.model.imgs.splice(index, 1)
     }
   }
 }

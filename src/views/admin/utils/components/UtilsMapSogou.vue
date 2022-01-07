@@ -10,8 +10,8 @@ export default {
   components: {},
   data() {
     return {
-      src: 'https://map.sogou.com/api/documentation/javascript/api2.5/examples_doc/event-arguments.html',
-      height: 500
+      height: 500,
+      src: 'https://map.sogou.com/api/documentation/javascript/api2.5/examples_doc/event-arguments.html'
     }
   },
   created() {

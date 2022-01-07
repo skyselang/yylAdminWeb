@@ -45,6 +45,7 @@
 </template>
 
 <script>
+import screenHeight from '@/utils/screen-height'
 import clip from '@/utils/clipboard'
 import { ipinfo } from '@/api/admin/utils'
 
@@ -65,7 +66,9 @@ export default {
       rules: {}
     }
   },
-  created() {},
+  created() {
+    this.height = screenHeight(180)
+  },
   methods: {
     clear() {
       this.model = this.$options.data().model

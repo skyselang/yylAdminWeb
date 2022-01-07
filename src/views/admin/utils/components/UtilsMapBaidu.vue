@@ -10,8 +10,8 @@ export default {
   components: {},
   data() {
     return {
-      src: 'https://api.map.baidu.com/lbsapi/getpoint/index.html',
-      height: 500
+      height: 500,
+      src: 'https://api.map.baidu.com/lbsapi/getpoint/index.html'
     }
   },
   created() {

@@ -1,7 +1,8 @@
 <template>
   <div class="app-container">
-    <!-- 查询 -->
+    <!-- 查询操作 -->
     <div class="filter-container">
+      <!-- 查询 -->
       <el-row>
         <el-col>
           <el-select v-model="query.search_field" class="filter-item ya-search-field" placeholder="搜索字段">
@@ -9,10 +10,11 @@
             <el-option value="admin_user_id" label="用户ID" />
             <el-option value="menu_url" label="菜单链接" />
             <el-option value="menu_name" label="菜单名称" />
+            <el-option value="admin_menu_id" label="菜单ID" />
             <el-option value="request_ip" label="请求IP" />
             <el-option value="request_region" label="请求地区" />
             <el-option value="request_isp" label="请求ISP" />
-            <el-option value="admin_user_log_id" label="ID" />
+            <el-option :value="idkey" label="ID" />
           </el-select>
           <el-input v-model="query.search_value" class="filter-item ya-search-value" placeholder="搜索内容" clearable />
           <el-select v-model="query.date_field" class="filter-item ya-search-field" placeholder="时间字段">
@@ -34,17 +36,32 @@
           <el-button class="filter-item" @click="refresh()">刷新</el-button>
         </el-col>
       </el-row>
+      <!-- 选中操作 -->
       <el-row>
         <el-col>
-          <el-button @click="dele(selection)">删除</el-button>
+          <el-button @click="selectOpen('dele')">删除</el-button>
           <el-button v-permission="['admin/admin.UserLog/clear']" title="日志清除" @click="clear()">清除</el-button>
         </el-col>
       </el-row>
+      <el-dialog :title="selectTitle" :visible.sync="selectDialog" top="20vh" :close-on-click-modal="false" :close-on-press-escape="false">
+        <el-form ref="selectRef" label-width="120px">
+          <el-form-item :label="name+'ID'" prop="">
+            <el-input v-model="selectIds" type="textarea" :rows="2" disabled />
+          </el-form-item>
+          <el-form-item v-if="selectType==='dele'" label="" prop="">
+            <span style="color:red">确定要删除选中的{{ name }}吗？</span>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="selectCancel">取消</el-button>
+          <el-button type="primary" @click="selectSubmit">提交</el-button>
+        </div>
+      </el-dialog>
     </div>
     <!-- 列表 -->
-    <el-table v-loading="loading" :data="data" :height="height" @sort-change="sort" @selection-change="select">
+    <el-table ref="table" v-loading="loading" :data="data" :height="height" @sort-change="sort" @selection-change="select">
       <el-table-column type="selection" width="42" title="全选/反选" />
-      <el-table-column prop="admin_user_log_id" label="ID" min-width="100" sortable="custom" />
+      <el-table-column :prop="idkey" label="ID" min-width="100" sortable="custom" />
       <el-table-column prop="username" label="用户账号" min-width="110" show-overflow-tooltip />
       <el-table-column prop="menu_url" label="菜单链接" min-width="240" show-overflow-tooltip />
       <el-table-column prop="menu_name" label="菜单名称" min-width="140" show-overflow-tooltip />
@@ -58,7 +75,7 @@
       <el-table-column label="操作" min-width="85" align="right" fixed="right">
         <template slot-scope="{ row }">
           <el-button size="mini" type="text" @click="info(row)">详情</el-button>
-          <el-button size="mini" type="text" @click="dele(row)">删除</el-button>
+          <el-button size="mini" type="text" @click="selectOpen('dele',row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -168,6 +185,7 @@ export default {
       name: '用户日志',
       height: 680,
       loading: false,
+      idkey: 'admin_user_log_id',
       data: [],
       count: 0,
       query: {
@@ -179,8 +197,12 @@ export default {
       dialog: false,
       dialogTitle: '',
       model: {},
-      selection: [],
       rules: {},
+      selection: [],
+      selectIds: '',
+      selectTitle: '选中操作',
+      selectDialog: false,
+      selectType: '',
       clearDialog: false,
       clearDialogTitle: '',
       clearModel: {
@@ -213,44 +235,18 @@ export default {
     // 详情
     info(row) {
       this.dialog = true
-      this.dialogTitle = this.name + '详情：' + row.admin_user_log_id
-      info({
-        admin_user_log_id: row.admin_user_log_id
-      }).then(res => {
+      this.dialogTitle = this.name + '详情：' + row[this.idkey]
+      var id = {}
+      id[this.idkey] = row[this.idkey]
+      info(id).then(res => {
         this.reset(res.data)
       }).catch(() => {
       })
     },
-    // 删除
-    dele(row) {
-      if (!row.length) {
-        this.selectAlert()
-      } else {
-        var title = '删除' + this.name
-        var message = '确定要删除选中的 <span style="color:red">' + row.length + ' </span> 条' + this.name + '吗？'
-        if (row.length === 1) {
-          title = title + '：' + row[0].admin_user_log_id
-          message = '确定要删除' + this.name + ' <span style="color:red">' + row[0].admin_user_log_id + ' </span>吗？'
-        }
-        this.$confirm(message, title, { type: 'warning', dangerouslyUseHTMLString: true }).then(() => {
-          this.loading = true
-          dele({
-            ids: arrayColumn(row, 'admin_user_log_id')
-          }).then(res => {
-            this.list()
-            this.$message.success(res.msg)
-          }).catch(() => {
-            this.loading = false
-          })
-        }).catch(() => {})
-      }
-    },
-    // 取消
     cancel() {
       this.reset()
       this.dialog = false
     },
-    // 确认
     submit() {
       this.reset()
       this.dialog = false
@@ -289,9 +285,59 @@ export default {
     // 选中操作
     select(selection) {
       this.selection = selection
+      this.selectIds = this.selectGetIds(selection).toString()
     },
-    selectAlert(message = '') {
-      this.$alert(message || '请选择需要操作的' + this.name, '提示', { type: 'warning', callback: action => {} })
+    selectGetIds(selection) {
+      return arrayColumn(selection, this.idkey)
+    },
+    selectAlert() {
+      this.$alert('请选择需要操作的' + this.name, '提示', { type: 'warning', callback: action => {} })
+    },
+    selectOpen(selectType, selectRow = '') {
+      if (selectRow) {
+        this.$refs['table'].clearSelection()
+        this.$refs['table'].toggleRowSelection(selectRow)
+      }
+      if (!this.selection.length) {
+        this.selectAlert()
+      } else {
+        this.selectTitle = '选中操作'
+        if (selectType === 'dele') {
+          this.selectTitle = '删除' + this.name
+        }
+        this.selectDialog = true
+        this.selectType = selectType
+      }
+    },
+    selectCancel() {
+      this.selectDialog = false
+    },
+    selectSubmit() {
+      if (!this.selection.length) {
+        this.selectAlert()
+      } else {
+        const selectType = this.selectType
+        if (selectType === 'dele') {
+          this.dele(this.selection)
+        }
+        this.selectDialog = false
+      }
+    },
+    // 删除
+    dele(row) {
+      if (!row.length) {
+        this.selectAlert()
+      } else {
+        this.loading = true
+        dele({
+          ids: this.selectGetIds(row)
+        }).then(res => {
+          this.list()
+          this.$message.success(res.msg)
+        }).catch(() => {
+          this.loading = false
+        })
+      }
     },
     // 清除
     clear() {

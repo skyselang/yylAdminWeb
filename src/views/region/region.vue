@@ -1,7 +1,8 @@
 <template>
   <div class="app-container">
-    <!-- 查询 -->
+    <!-- 查询操作 -->
     <div class="filter-container">
+      <!-- 操作 -->
       <el-row>
         <el-col>
           <el-select v-model="query.search_field" class="filter-item ya-search-field" placeholder="搜索字段">
@@ -12,7 +13,7 @@
             <el-option value="region_citycode" label="区号" />
             <el-option value="region_zipcode" label="邮编" />
             <el-option value="region_pid" label="PID" />
-            <el-option value="region_id" label="ID" />
+            <el-option :value="idkey" label="ID" />
           </el-select>
           <el-input v-model="query.search_value" class="filter-item ya-search-value" placeholder="搜索内容" clearable />
           <el-select v-model="query.date_field" class="filter-item ya-date-field" placeholder="时间类型">
@@ -31,15 +32,44 @@
           <el-button class="filter-item" @click="refresh()">刷新</el-button>
         </el-col>
       </el-row>
+      <!-- 选中操作 -->
       <el-row>
         <el-col>
-          <el-button @click="dele(selection)">删除</el-button>
+          <el-button @click="selectOpen('pid')">父级</el-button>
+          <el-button @click="selectOpen('dele')">删除</el-button>
           <el-button type="primary" @click="add('')">添加</el-button>
         </el-col>
       </el-row>
+      <el-dialog :title="selectTitle" :visible.sync="selectDialog" top="20vh" :close-on-click-modal="false" :close-on-press-escape="false">
+        <el-form ref="selectRef" label-width="120px">
+          <el-form-item :label="name+'ID'" prop="">
+            <el-input v-model="selectIds" type="textarea" :rows="2" disabled />
+          </el-form-item>
+          <el-form-item v-if="selectType==='pid'" label="父级" prop="">
+            <el-cascader
+              :key="selectPidKey"
+              v-model="region_pid"
+              :options="regionTree"
+              :props="regionProps"
+              style="width:100%"
+              placeholder="一级地区"
+              clearable
+              filterable
+              @change="selectPidChange"
+            />
+          </el-form-item>
+          <el-form-item v-if="selectType==='dele'" label="" prop="">
+            <span style="color:red">确定要删除选中的{{ name }}吗？</span>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="selectCancel">取消</el-button>
+          <el-button type="primary" @click="selectSubmit">提交</el-button>
+        </div>
+      </el-dialog>
     </div>
     <!-- 列表 -->
-    <el-table v-loading="loading" :data="data" :height="height" row-key="region_id" lazy :load="load" @sort-change="sort" @selection-change="select">
+    <el-table ref="table" :key="tbKey" v-loading="loading" :data="data" :height="height" :row-key="idkey" lazy :load="load" @sort-change="sort" @selection-change="select">
       <el-table-column type="selection" width="42" title="全选/反选" />
       <el-table-column prop="region_name" label="名称" min-width="250" />
       <el-table-column prop="region_pinyin" label="拼音" min-width="250" sortable="custom" />
@@ -47,7 +77,7 @@
       <el-table-column prop="region_initials" label="首字母" min-width="90" sortable="custom" />
       <el-table-column prop="region_citycode" label="区号" min-width="80" sortable="custom" />
       <el-table-column prop="region_zipcode" label="邮编" min-width="80" sortable="custom" />
-      <el-table-column prop="region_id" label="ID" min-width="95" sortable="custom" />
+      <el-table-column :prop="idkey" label="ID" min-width="95" sortable="custom" />
       <el-table-column prop="region_pid" label="PID" min-width="95" />
       <el-table-column prop="region_sort" label="排序" min-width="80" sortable="custom" />
       <el-table-column label="操作" width="130" fixed="right" align="right">
@@ -58,18 +88,19 @@
         </template>
       </el-table-column>
     </el-table>
-    <!-- 添加、修改 -->
+    <!-- 添加修改 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false">
       <el-form ref="ref" :rules="rules" :model="model" class="dialog-body" label-width="100px" :style="{height:height+'px'}">
         <el-form-item label="父级" prop="region_pid">
           <el-cascader
+            :key="pidKey"
             v-model="model.region_pid"
             :options="regionTree"
             :props="regionProps"
             style="width:100%"
+            placeholder="一级地区"
             clearable
             filterable
-            placeholder="一级地区"
             @change="pidChange"
           />
         </el-form-item>
@@ -98,16 +129,16 @@
           <el-input v-model="model.region_latitude" placeholder="请输入纬度eg：39.915156" clearable />
         </el-form-item>
         <el-form-item label="排序" prop="region_sort">
-          <el-input v-model="model.region_sort" type="number" placeholder="请输入排序eg：1000" clearable />
+          <el-input v-model="model.region_sort" type="number" placeholder="请输入排序eg：2250" clearable />
         </el-form-item>
         <el-form-item label="" prop="">
           <el-link type="info" href="https://www.ip138.com/post/" style="margin-right:10px" target="_blank">查询区号邮编</el-link>
           <el-link type="info" href="http://api.map.baidu.com/lbsapi/getpoint/index.html" target="_blank">查询经度纬度</el-link>
         </el-form-item>
-        <el-form-item v-if="model.region_id" label="添加时间" prop="create_time">
+        <el-form-item v-if="model.create_time" label="添加时间" prop="create_time">
           <el-input v-model="model.create_time" placeholder="" disabled />
         </el-form-item>
-        <el-form-item v-if="model.region_id" label="修改时间" prop="update_time">
+        <el-form-item v-if="model.update_time" label="修改时间" prop="update_time">
           <el-input v-model="model.update_time" placeholder="" disabled />
         </el-form-item>
       </el-form>
@@ -122,7 +153,7 @@
 <script>
 import screenHeight from '@/utils/screen-height'
 import { arrayColumn } from '@/utils/index'
-import { list, info, add, edit, dele } from '@/api/region'
+import { list, info, add, edit, pid, dele } from '@/api/region'
 
 export default {
   name: 'SettingRegion',
@@ -132,6 +163,8 @@ export default {
       name: '地区',
       height: 680,
       loading: false,
+      idkey: 'region_id',
+      tbKey: 1,
       data: [],
       count: 0,
       query: {
@@ -140,6 +173,7 @@ export default {
       },
       dialog: false,
       dialogTitle: '',
+      pidKey: 500,
       model: {
         region_id: '',
         region_pid: 0,
@@ -153,16 +187,22 @@ export default {
         region_latitude: '',
         region_sort: 2250
       },
+      rules: {
+        region_name: [{ required: true, message: '请输入名称', trigger: 'blur' }]
+      },
       regionTree: [],
       regionProps: { expandTrigger: 'click', checkStrictly: true, value: 'region_id', label: 'region_name' },
       selection: [],
-      rules: {
-        region_name: [{ required: true, message: '请输入名称', trigger: 'blur' }]
-      }
+      selectIds: '',
+      selectTitle: '选中操作',
+      selectDialog: false,
+      selectType: '',
+      region_pid: 0,
+      selectPidKey: 1000
     }
   },
   created() {
-    this.height = screenHeight()
+    this.height = screenHeight() + 50
     this.list()
     this.tree()
   },
@@ -180,9 +220,12 @@ export default {
       })
     },
     // 加载
-    load(tree, treeNode, resolve) {
+    load(row, treeNode, resolve) {
+      console.log(row)
+      console.log(treeNode)
+      console.log(resolve)
       list({
-        region_pid: tree.region_id
+        region_pid: row[this.idkey]
       }).then(res => {
         resolve(res.data.list)
       })
@@ -198,17 +241,18 @@ export default {
     add(row) {
       this.dialog = true
       this.dialogTitle = this.name + '添加'
+      this.reset()
       if (row) {
-        this.model = this.$options.data().model
-        this.model.region_pid = row.region_id
+        this.model.region_pid = row[this.idkey]
       }
     },
     edit(row) {
       this.dialog = true
-      this.dialogTitle = this.name + '修改：' + row.region_id
-      info({
-        region_id: row.region_id
-      }).then(res => {
+      this.dialogTitle = this.name + '修改：' + row[this.idkey]
+      this.reset()
+      var id = {}
+      id[this.idkey] = row[this.idkey]
+      info(id).then(res => {
         this.model = res.data
       })
     },
@@ -219,7 +263,7 @@ export default {
       this.$refs['ref'].validate(valid => {
         if (valid) {
           this.loading = true
-          if (this.model.region_id) {
+          if (this.model[this.idkey]) {
             edit(this.model).then(res => {
               this.list()
               this.reset()
@@ -241,33 +285,11 @@ export default {
         }
       })
     },
-    // 删除
-    dele(row) {
-      if (!row.length) {
-        this.selectAlert()
-      } else {
-        var title = '删除' + this.name
-        var message = '确定要删除选中的 <span style="color:red">' + row.length + ' </span> 条' + this.name + '吗？'
-        if (row.length === 1) {
-          title = title + '：' + row[0].region_id
-          message = '确定要删除' + this.name + ' <span style="color:red">' + row[0].region_name + ' </span>吗？'
-        }
-        this.$confirm(message, title, { type: 'warning', dangerouslyUseHTMLString: true }).then(() => {
-          this.loading = true
-          dele({
-            ids: arrayColumn(row, 'region_id')
-          }).then(res => {
-            this.list()
-            this.reset()
-            this.$message.success(res.msg)
-          }).catch(() => {
-            this.loading = false
-          })
-        }).catch(() => {})
-      }
-    },
     // 重置
     reset(row) {
+      ++this.tbKey
+      ++this.pidKey
+      ++this.selectPidKey
       this.tree()
       if (row) {
         this.model = row
@@ -276,6 +298,9 @@ export default {
       }
       if (this.$refs['ref'] !== undefined) {
         this.$refs['ref'].resetFields()
+      }
+      if (this.$refs['table'] !== undefined) {
+        this.$refs['table'].doLayout()
       }
     },
     // 查询
@@ -304,14 +329,88 @@ export default {
     // 选中操作
     select(selection) {
       this.selection = selection
+      this.selectIds = this.selectGetIds(selection).toString()
     },
-    selectAlert(message = '') {
-      this.$alert(message || '请选择需要操作的' + this.name, '提示', { type: 'warning', callback: action => {} })
+    selectGetIds(selection) {
+      return arrayColumn(selection, this.idkey)
+    },
+    selectAlert() {
+      this.$alert('请选择需要操作的' + this.name, '提示', { type: 'warning', callback: action => {} })
+    },
+    selectOpen(selectType, selectRow = '') {
+      if (selectRow) {
+        this.$refs['table'].clearSelection()
+        this.$refs['table'].toggleRowSelection(selectRow)
+      }
+      if (!this.selection.length) {
+        this.selectAlert()
+      } else {
+        this.selectTitle = '选中操作'
+        if (selectType === 'pid') {
+          this.selectTitle = '设置父级'
+        } else if (selectType === 'dele') {
+          this.selectTitle = '删除' + this.name
+        }
+        this.selectDialog = true
+        this.selectType = selectType
+      }
+    },
+    selectCancel() {
+      this.selectDialog = false
+    },
+    selectSubmit() {
+      if (!this.selection.length) {
+        this.selectAlert()
+      } else {
+        const selectType = this.selectType
+        if (selectType === 'pid') {
+          this.setpid(this.selection)
+        } else if (selectType === 'dele') {
+          this.dele(this.selection)
+        }
+        this.selectDialog = false
+      }
+    },
+    // 设置父级
+    setpid(row) {
+      pid({
+        ids: this.selectGetIds(row),
+        region_pid: this.region_pid
+      }).then(res => {
+        this.list()
+        this.reset()
+        this.selectDialog = false
+        this.$message.success(res.msg)
+      }).catch(() => {
+        this.list()
+      })
+    },
+    // 删除
+    dele(row) {
+      if (!row.length) {
+        this.selectAlert()
+      } else {
+        this.loading = true
+        dele({
+          ids: this.selectGetIds(row)
+        }).then(res => {
+          this.list()
+          this.reset()
+          this.$message.success(res.msg)
+        }).catch(() => {
+          this.loading = false
+        })
+      }
     },
     // 父级选择
     pidChange(value) {
       if (value) {
         this.model.region_pid = value[value.length - 1]
+      }
+    },
+    selectPidChange(value) {
+      if (value) {
+        this.region_pid = value[value.length - 1]
       }
     }
   }

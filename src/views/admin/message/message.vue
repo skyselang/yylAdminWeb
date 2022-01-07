@@ -1,14 +1,15 @@
 <template>
   <div class="app-container">
-    <!-- 查询 -->
+    <!-- 查询操作 -->
     <div class="filter-container">
+      <!-- 查询 -->
       <el-row>
         <el-col class="ya-margin-bottom">
           <el-select v-model="query.search_field" class="ya-search-field" placeholder="搜索字段">
             <el-option value="title" label="标题" />
-            <el-option value="admin_user" label="添加用户" />
+            <el-option value="username" label="添加用户" />
             <el-option value="admin_user_id" label="用户ID" />
-            <el-option value="admin_message_id" label="ID" />
+            <el-option :value="idkey" label="ID" />
           </el-select>
           <el-input v-model="query.search_value" class="ya-search-value" placeholder="搜索内容" clearable />
           <el-select v-model="query.date_field" class="ya-search-field" placeholder="时间字段">
@@ -33,14 +34,20 @@
       <el-row>
         <el-col>
           <el-button @click="selectOpen('isopen')">开启</el-button>
-          <el-button @click="dele(selection)">删除</el-button>
+          <el-button @click="selectOpen('dele')">删除</el-button>
           <el-button type="primary" @click="add()">添加</el-button>
         </el-col>
       </el-row>
-      <el-dialog title="选中操作" :visible.sync="selectDialog" top="20vh">
+      <el-dialog :title="selectTitle" :visible.sync="selectDialog" top="20vh" :close-on-click-modal="false" :close-on-press-escape="false">
         <el-form ref="selectRef" label-width="120px">
+          <el-form-item :label="name+'ID'" prop="">
+            <el-input v-model="selectIds" type="textarea" :rows="2" disabled />
+          </el-form-item>
           <el-form-item v-if="selectType==='isopen'" label="开启" prop="">
             <el-switch v-model="is_open" :active-value="1" :inactive-value="0" />
+          </el-form-item>
+          <el-form-item v-else-if="selectType==='dele'" label="" prop="">
+            <span style="color:red">确定要删除选中的{{ name }}吗？</span>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -52,13 +59,13 @@
     <!-- 列表 -->
     <el-table ref="table" v-loading="loading" :data="data" :height="height" @sort-change="sort" @selection-change="select">
       <el-table-column type="selection" width="42" title="全选/反选" />
-      <el-table-column prop="admin_message_id" label="ID" min-width="100" sortable="custom" />
-      <el-table-column prop="title" label="标题" min-width="250" show-overflow-tooltip>
+      <el-table-column :prop="idkey" label="ID" min-width="100" sortable="custom" />
+      <el-table-column prop="title" label="标题" min-width="260" show-overflow-tooltip>
         <template slot-scope="scope">
           <span :style="{'color':scope.row.color}">{{ scope.row.title }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="is_open" label="开启" min-width="80" sortable="custom" align="center">
+      <el-table-column prop="is_open" label="开启" min-width="80" sortable="custom">
         <template slot-scope="scope">
           <el-switch v-model="scope.row.is_open" :active-value="1" :inactive-value="0" @change="isopen([scope.row])" />
         </template>
@@ -71,19 +78,19 @@
       <el-table-column label="操作" min-width="90" align="right" fixed="right">
         <template slot-scope="{ row }">
           <el-button size="mini" type="text" @click="edit(row)">修改</el-button>
-          <el-button size="mini" type="text" @click="dele([row])">删除</el-button>
+          <el-button size="mini" type="text" @click="selectOpen('dele',row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
     <!-- 分页 -->
     <pagination v-show="count > 0" :total="count" :page.sync="query.page" :limit.sync="query.limit" @pagination="list" />
-    <!-- 添加、修改 -->
+    <!-- 添加修改 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false">
       <el-form ref="ref" :model="model" :rules="rules" class="dialog-body" label-width="100px" :style="{height:height+'px'}">
         <el-form-item label="标题" prop="title">
           <el-input v-model="model.title" placeholder="请输入标题" clearable />
         </el-form-item>
-        <el-form-item label="颜色" prop="color">
+        <el-form-item label="标题颜色" prop="color">
           <el-color-picker v-model="model.color" />
         </el-form-item>
         <el-form-item label="排序" prop="sort">
@@ -104,16 +111,16 @@
         <el-form-item label="内容" prop="content">
           <rich-editor v-model="model.content" />
         </el-form-item>
-        <el-form-item v-if="model.admin_message_id" label="用户" prop="admin_user">
+        <el-form-item v-if="model[idkey]" label="用户" prop="admin_user">
           <el-input v-model="model.admin_user" disabled />
         </el-form-item>
-        <el-form-item v-if="model.admin_message_id" label="用户ID" prop="admin_user_id">
+        <el-form-item v-if="model[idkey]" label="用户ID" prop="admin_user_id">
           <el-input v-model="model.admin_user_id" disabled />
         </el-form-item>
-        <el-form-item v-if="model.admin_message_id" label="添加时间" prop="create_time">
+        <el-form-item v-if="model[idkey]" label="添加时间" prop="create_time">
           <el-input v-model="model.create_time" disabled />
         </el-form-item>
-        <el-form-item v-if="model.admin_message_id" label="修改时间" prop="update_time">
+        <el-form-item v-if="model[idkey]" label="修改时间" prop="update_time">
           <el-input v-model="model.update_time" disabled />
         </el-form-item>
       </el-form>
@@ -129,6 +136,7 @@
 import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination'
 import RichEditor from '@/components/RichEditor'
+import { arrayColumn } from '@/utils/index'
 import { list, info, add, edit, dele, isopen } from '@/api/admin/message'
 
 export default {
@@ -139,6 +147,7 @@ export default {
       name: '消息',
       height: 680,
       loading: false,
+      idkey: 'admin_message_id',
       query: {
         page: 1,
         limit: 15,
@@ -169,6 +178,8 @@ export default {
         open_time_end: [{ required: true, message: '请输入结束时间', trigger: 'blur' }]
       },
       selection: [],
+      selectIds: '',
+      selectTitle: '选中操作',
       selectDialog: false,
       selectType: '',
       is_open: 0
@@ -190,7 +201,7 @@ export default {
         this.loading = false
       })
     },
-    // 添加、修改
+    // 添加修改
     add() {
       this.dialog = true
       this.dialogTitle = this.name + '添加'
@@ -198,11 +209,11 @@ export default {
     },
     edit(row) {
       this.dialog = true
-      this.dialogTitle = this.name + '修改：' + row.admin_message_id
-      info({
-        admin_message_id: row.admin_message_id
-      }).then(res => {
-        this.model = res.data
+      this.dialogTitle = this.name + '修改：' + row[this.idkey]
+      var id = {}
+      id[this.idkey] = row[this.idkey]
+      info(id).then(res => {
+        this.reset(res.data)
       })
     },
     cancel() {
@@ -233,33 +244,13 @@ export default {
         }
       })
     },
-    // 删除
-    dele(row) {
-      if (!row.length) {
-        this.selectAlert()
-      } else {
-        var title = '删除' + this.name
-        var message = '确定要删除选中的 <span style="color:red">' + row.length + ' </span> 条' + this.name + '记录吗？'
-        if (row.length === 1) {
-          title = title + '：' + row[0].admin_message_id
-          message = '确定要删除' + this.name + ' <span style="color:red">' + row[0].title + ' </span>吗？'
-        }
-        this.$confirm(message, title, { type: 'warning', dangerouslyUseHTMLString: true }).then(() => {
-          this.loading = true
-          dele({
-            list: row
-          }).then(res => {
-            this.list()
-            this.$message.success(res.msg)
-          }).catch(() => {
-            this.loading = false
-          })
-        }).catch(() => {})
-      }
-    },
     // 重置
-    reset() {
-      this.model = this.$options.data().model
+    reset(row) {
+      if (row) {
+        this.model = row
+      } else {
+        this.model = this.$options.data().model
+      }
       if (this.$refs['ref'] !== undefined) {
         this.$refs['ref'].resetFields()
       }
@@ -290,14 +281,28 @@ export default {
     // 选中操作
     select(selection) {
       this.selection = selection
+      this.selectIds = this.selectGetIds(selection).toString()
     },
-    selectAlert(message = '') {
-      this.$alert(message || '请选择需要操作的' + this.name, '提示', { type: 'warning', callback: action => {} })
+    selectGetIds(selection) {
+      return arrayColumn(selection, this.idkey)
     },
-    selectOpen(selectType) {
+    selectAlert() {
+      this.$alert('请选择需要操作的' + this.name, '提示', { type: 'warning', callback: action => {} })
+    },
+    selectOpen(selectType, selectRow = '') {
+      if (selectRow) {
+        this.$refs['table'].clearSelection()
+        this.$refs['table'].toggleRowSelection(selectRow)
+      }
       if (!this.selection.length) {
         this.selectAlert()
       } else {
+        this.selectTitle = '选中操作'
+        if (selectType === 'isopen') {
+          this.selectTitle = '是否开启'
+        } else if (selectType === 'dele') {
+          this.selectTitle = '删除' + this.name
+        }
         this.selectDialog = true
         this.selectType = selectType
       }
@@ -309,9 +314,11 @@ export default {
       if (!this.selection.length) {
         this.selectAlert()
       } else {
-        const type = this.selectType
-        if (type === 'isopen') {
+        const selectType = this.selectType
+        if (selectType === 'isopen') {
           this.isopen(this.selection, true)
+        } else if (selectType === 'dele') {
+          this.dele(this.selection)
         }
         this.selectDialog = false
       }
@@ -327,13 +334,29 @@ export default {
           is_open = this.is_open
         }
         isopen({
-          list: row,
+          ids: this.selectGetIds(row),
           is_open: is_open
         }).then(res => {
           this.list()
           this.$message.success(res.msg)
         }).catch(() => {
           this.list()
+        })
+      }
+    },
+    // 删除
+    dele(row) {
+      if (!row.length) {
+        this.selectAlert()
+      } else {
+        this.loading = true
+        dele({
+          ids: this.selectGetIds(row)
+        }).then(res => {
+          this.list()
+          this.$message.success(res.msg)
+        }).catch(() => {
+          this.loading = false
         })
       }
     }

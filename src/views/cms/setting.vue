@@ -2,7 +2,7 @@
   <div class="app-container">
     <!-- 内容 -->
     <el-card class="box-card">
-      <el-row>
+      <el-row class="dialog-body" :style="{height:height+'px'}">
         <el-col :xs="24" :sm="18" :md="12">
           <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
             <el-tabs>
@@ -19,8 +19,7 @@
                     <el-col :span="14">
                       <el-button size="mini" @click="fileUpload('logo', '上传logo')">上传logo</el-button>
                       <el-button size="mini" @click="fileDelete('logo')">删除</el-button>
-                      <br>
-                      <span>jpg、png图片，小于200KB。</span>
+                      <p>jpg、png图片，小于200KB。</p>
                     </el-col>
                   </el-row>
                 </el-form-item>
@@ -56,8 +55,7 @@
                     <el-col :span="14">
                       <el-button size="mini" @click="fileUpload('off_acc', '上传二维码')">上传二维码</el-button>
                       <el-button size="mini" @click="fileDelete('off_acc')">删除</el-button>
-                      <br>
-                      <span>jpg、png图片，小于200KB。</span>
+                      <p>jpg、png图片，小于200KB。</p>
                     </el-col>
                   </el-row>
                 </el-form-item>
@@ -97,6 +95,7 @@
 </template>
 
 <script>
+import screenHeight from '@/utils/screen-height'
 import FileManage from '@/components/FileManage'
 import { info, edit } from '@/api/cms/setting'
 
@@ -105,6 +104,7 @@ export default {
   components: { FileManage },
   data() {
     return {
+      height: 680,
       loading: false,
       model: {
         logo_id: '',
@@ -133,6 +133,7 @@ export default {
     }
   },
   created() {
+    this.height = screenHeight(160)
     this.info()
   },
   methods: {
@@ -145,15 +146,13 @@ export default {
     // 刷新
     refresh() {
       this.loading = true
-      info()
-        .then((res) => {
-          this.model = res.data
-          this.loading = false
-          this.$message.success(res.msg)
-        })
-        .catch(() => {
-          this.loading = false
-        })
+      info().then((res) => {
+        this.model = res.data
+        this.loading = false
+        this.$message.success(res.msg)
+      }).catch(() => {
+        this.loading = false
+      })
     },
     // 提交
     submit() {

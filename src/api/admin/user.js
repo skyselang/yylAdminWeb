@@ -57,17 +57,6 @@ export function dele(data) {
   })
 }
 /**
- * 用户重置密码
- * @param {array} data 请求数据
- */
-export function pwd(data) {
-  return request({
-    url: url + 'pwd',
-    method: 'post',
-    data
-  })
-}
-/**
  * 用户分配权限
  * @param {array} data 请求数据
  */
@@ -87,12 +76,12 @@ export function rule(data, method = 'get') {
   }
 }
 /**
- * 用户是否禁用
+ * 用户重置密码
  * @param {array} data 请求数据
  */
-export function disable(data) {
+export function pwd(data) {
   return request({
-    url: url + 'disable',
+    url: url + 'pwd',
     method: 'post',
     data
   })
@@ -104,6 +93,17 @@ export function disable(data) {
 export function issuper(data) {
   return request({
     url: url + 'super',
+    method: 'post',
+    data
+  })
+}
+/**
+ * 用户是否禁用
+ * @param {array} data 请求数据
+ */
+export function disable(data) {
+  return request({
+    url: url + 'disable',
     method: 'post',
     data
   })

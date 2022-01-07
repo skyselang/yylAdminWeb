@@ -10,8 +10,8 @@ export default {
   components: {},
   data() {
     return {
-      src: 'https://lbs.amap.com/console/show/picker',
-      height: 500
+      height: 500,
+      src: 'https://lbs.amap.com/console/show/picker'
     }
   },
   created() {

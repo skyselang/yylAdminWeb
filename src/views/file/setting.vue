@@ -19,7 +19,7 @@
                   </div>
                 </el-card>
               </el-form-item>
-              <el-form-item label="AccessKey" prop="qiniu_access_key" class="margin-bottom">
+              <el-form-item label="AccessKey" prop="qiniu_access_key" class="ya-margin-bottom">
                 <el-input v-model="model.qiniu_access_key" clearable>
                   <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.qiniu_access_key, $event)" />
                 </el-input>
@@ -27,7 +27,7 @@
               <el-form-item label="">
                 <el-col class="line">AccessKey（AK） 在 [ 七牛云 > 个人中心 > 密钥管理 ] 设置和获取</el-col>
               </el-form-item>
-              <el-form-item label="SecretKey" prop="qiniu_secret_key" class="margin-bottom">
+              <el-form-item label="SecretKey" prop="qiniu_secret_key" class="ya-margin-bottom">
                 <el-input v-model="model.qiniu_secret_key" clearable>
                   <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.qiniu_secret_key, $event)" />
                 </el-input>
@@ -35,7 +35,7 @@
               <el-form-item label="">
                 <el-col class="line">SecretKey（SK） 在 [ 七牛云 > 个人中心 > 密钥管理 ] 设置和获取</el-col>
               </el-form-item>
-              <el-form-item label="空间名称" prop="qiniu_bucket" class="margin-bottom">
+              <el-form-item label="空间名称" prop="qiniu_bucket" class="ya-margin-bottom">
                 <el-input v-model="model.qiniu_bucket" clearable>
                   <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.qiniu_bucket, $event)" />
                 </el-input>
@@ -43,7 +43,7 @@
               <el-form-item label="">
                 <el-col class="line">空间名称 在 [ 七牛云 > 对象存储 > 空间管理] 设置和获取</el-col>
               </el-form-item>
-              <el-form-item label="外链域名" prop="qiniu_domain" class="margin-bottom">
+              <el-form-item label="外链域名" prop="qiniu_domain" class="ya-margin-bottom">
                 <el-input v-model="model.qiniu_domain" clearable>
                   <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.qiniu_domain, $event)" />
                 </el-input>
@@ -62,7 +62,7 @@
                   </div>
                 </el-card>
               </el-form-item>
-              <el-form-item label="AccessKey ID" prop="aliyun_access_key_id" class="margin-bottom">
+              <el-form-item label="AccessKey ID" prop="aliyun_access_key_id" class="ya-margin-bottom">
                 <el-input v-model="model.aliyun_access_key_id" clearable>
                   <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.aliyun_access_key_id, $event)" />
                 </el-input>
@@ -70,7 +70,7 @@
               <el-form-item label="">
                 <el-col class="line">AccessKey ID 在 [ 阿里云 > 个人中心 > AccessKey 管理 ] 设置和获取</el-col>
               </el-form-item>
-              <el-form-item label="AccessKey Secret" prop="aliyun_access_key_secret" class="margin-bottom">
+              <el-form-item label="AccessKey Secret" prop="aliyun_access_key_secret" class="ya-margin-bottom">
                 <el-input v-model="model.aliyun_access_key_secret" clearable>
                   <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.aliyun_access_key_secret, $event)" />
                 </el-input>
@@ -78,7 +78,7 @@
               <el-form-item label="">
                 <el-col class="line">AccessKey Secret 在 [ 阿里云 > 个人中心 > AccessKey 管理 ] 设置和获取</el-col>
               </el-form-item>
-              <el-form-item label="Bucket名称" prop="aliyun_bucket" class="margin-bottom">
+              <el-form-item label="Bucket名称" prop="aliyun_bucket" class="ya-margin-bottom">
                 <el-input v-model="model.aliyun_bucket" clearable>
                   <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.aliyun_bucket, $event)" />
                 </el-input>
@@ -86,7 +86,7 @@
               <el-form-item label="">
                 <el-col class="line">Bucket 名称 在 [ 阿里云 > 对象存储 > Bucket 列表 ] 获取</el-col>
               </el-form-item>
-              <el-form-item label="Bucket域名" prop="aliyun_bucket_domain" class="margin-bottom">
+              <el-form-item label="Bucket域名" prop="aliyun_bucket_domain" class="ya-margin-bottom">
                 <el-input v-model="model.aliyun_bucket_domain" clearable>
                   <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.aliyun_bucket_domain, $event)" />
                 </el-input>
@@ -94,7 +94,7 @@
               <el-form-item label="">
                 <el-col class="line">Bucket 域名 在 [ 阿里云 > 对象存储 > Bucket 列表 > Bucket 概览 ] 获取</el-col>
               </el-form-item>
-              <el-form-item label="Endpoint地域节点" prop="aliyun_endpoint" class="margin-bottom">
+              <el-form-item label="Endpoint地域节点" prop="aliyun_endpoint" class="ya-margin-bottom">
                 <el-input v-model="model.aliyun_endpoint" clearable>
                   <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.aliyun_endpoint, $event)" />
                 </el-input>
@@ -113,7 +113,7 @@
                   </div>
                 </el-card>
               </el-form-item>
-              <el-form-item label="SecretId" prop="tencent_secret_id" class="margin-bottom">
+              <el-form-item label="SecretId" prop="tencent_secret_id" class="ya-margin-bottom">
                 <el-input v-model="model.tencent_secret_id" clearable>
                   <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.tencent_secret_id, $event)" />
                 </el-input>
@@ -121,7 +121,7 @@
               <el-form-item label="">
                 <el-col class="line">SecretId 在 [ 腾讯云 > 个人中心 > 访问管理 > API密钥 ] 设置和获取</el-col>
               </el-form-item>
-              <el-form-item label="SecretKey" prop="tencent_secret_key" class="margin-bottom">
+              <el-form-item label="SecretKey" prop="tencent_secret_key" class="ya-margin-bottom">
                 <el-input v-model="model.tencent_secret_key" clearable>
                   <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.tencent_secret_key, $event)" />
                 </el-input>
@@ -129,7 +129,7 @@
               <el-form-item label="">
                 <el-col class="line">SecretKey 在 [ 腾讯云 > 个人中心 > 访问管理 > API密钥 ] 设置和获取</el-col>
               </el-form-item>
-              <el-form-item label="存储桶名称" prop="tencent_bucket" class="margin-bottom">
+              <el-form-item label="存储桶名称" prop="tencent_bucket" class="ya-margin-bottom">
                 <el-input v-model="model.tencent_bucket" clearable>
                   <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.tencent_bucket, $event)" />
                 </el-input>
@@ -137,7 +137,7 @@
               <el-form-item label="">
                 <el-col class="line">存储桶名称 在 [ 腾讯云 > 对象存储 > 存储桶列表 ] 获取</el-col>
               </el-form-item>
-              <el-form-item label="所属地域" prop="tencent_region" class="margin-bottom">
+              <el-form-item label="所属地域" prop="tencent_region" class="ya-margin-bottom">
                 <el-input v-model="model.tencent_region" clearable>
                   <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.tencent_region, $event)" />
                 </el-input>
@@ -145,7 +145,7 @@
               <el-form-item label="">
                 <el-col class="line">所属地域 在 [ 腾讯云 > 对象存储 > 存储桶列表 ] 获取。如：ap-guangzhou</el-col>
               </el-form-item>
-              <el-form-item label="访问域名" prop="tencent_domain" class="margin-bottom">
+              <el-form-item label="访问域名" prop="tencent_domain" class="ya-margin-bottom">
                 <el-input v-model="model.tencent_domain" clearable>
                   <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.tencent_domain, $event)" />
                 </el-input>
@@ -164,7 +164,7 @@
                   </div>
                 </el-card>
               </el-form-item>
-              <el-form-item label="Access Key" prop="baidu_access_key" class="margin-bottom">
+              <el-form-item label="Access Key" prop="baidu_access_key" class="ya-margin-bottom">
                 <el-input v-model="model.baidu_access_key" clearable>
                   <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.baidu_access_key, $event)" />
                 </el-input>
@@ -172,7 +172,7 @@
               <el-form-item label="">
                 <el-col class="line">Access Key 在 [ 百度云 > 个人中心 > 安全认证 > Access Key ] 设置和获取</el-col>
               </el-form-item>
-              <el-form-item label="Secret Key" prop="baidu_secret_key" class="margin-bottom">
+              <el-form-item label="Secret Key" prop="baidu_secret_key" class="ya-margin-bottom">
                 <el-input v-model="model.baidu_secret_key" clearable>
                   <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.baidu_secret_key, $event)" />
                 </el-input>
@@ -180,7 +180,7 @@
               <el-form-item label="">
                 <el-col class="line">Secret Key 在 [ 百度云 > 个人中心 > 安全认证 > Access Key ] 设置和获取</el-col>
               </el-form-item>
-              <el-form-item label="Bucket名称" prop="baidu_bucket" class="margin-bottom">
+              <el-form-item label="Bucket名称" prop="baidu_bucket" class="ya-margin-bottom">
                 <el-input v-model="model.baidu_bucket" clearable>
                   <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.baidu_bucket, $event)" />
                 </el-input>
@@ -188,7 +188,7 @@
               <el-form-item label="">
                 <el-col class="line">Bucket 名称 在 [ 百度云 > 对象存储 > Bucket 列表 ] 获取。如：yyladmin</el-col>
               </el-form-item>
-              <el-form-item label="官方域名" prop="baidu_domain" class="margin-bottom">
+              <el-form-item label="官方域名" prop="baidu_domain" class="ya-margin-bottom">
                 <el-input v-model="model.baidu_domain" clearable>
                   <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.baidu_domain, $event)" />
                 </el-input>
@@ -196,7 +196,7 @@
               <el-form-item label="">
                 <el-col class="line">官方域名 在 [ 百度云 > 对象存储 > 发布管理 ] 获取。如：yyladmin.gz.bcebos.com</el-col>
               </el-form-item>
-              <el-form-item label="所属地域" prop="baidu_endpoint" class="margin-bottom">
+              <el-form-item label="所属地域" prop="baidu_endpoint" class="ya-margin-bottom">
                 <el-input v-model="model.baidu_endpoint" clearable>
                   <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.baidu_endpoint, $event)" />
                 </el-input>
@@ -218,7 +218,7 @@
             </div>
           </el-tab-pane>
           <el-tab-pane label="上传限制" lazy>
-            <el-form-item label="图片格式" prop="image_ext" class="margin-bottom">
+            <el-form-item label="图片格式" prop="image_ext" class="ya-margin-bottom">
               <el-col :span="11">
                 <el-input v-model="model.image_ext" clearable />
               </el-col>
@@ -237,7 +237,7 @@
               </el-col>
             </el-form-item>
 
-            <el-form-item label="视频格式" prop="video_ext" class="margin-bottom">
+            <el-form-item label="视频格式" prop="video_ext" class="ya-margin-bottom">
               <el-col :span="11">
                 <el-input v-model="model.video_ext" clearable />
               </el-col>
@@ -256,7 +256,7 @@
               </el-col>
             </el-form-item>
 
-            <el-form-item label="音频格式" prop="audio_ext" class="margin-bottom">
+            <el-form-item label="音频格式" prop="audio_ext" class="ya-margin-bottom">
               <el-col :span="11">
                 <el-input v-model="model.audio_ext" clearable />
               </el-col>
@@ -275,7 +275,7 @@
               </el-col>
             </el-form-item>
 
-            <el-form-item label="文档格式" prop="word_ext" class="margin-bottom">
+            <el-form-item label="文档格式" prop="word_ext" class="ya-margin-bottom">
               <el-col :span="11">
                 <el-input v-model="model.word_ext" clearable />
               </el-col>
@@ -294,7 +294,7 @@
               </el-col>
             </el-form-item>
 
-            <el-form-item label="其它格式" prop="other_ext" class="margin-bottom">
+            <el-form-item label="其它格式" prop="other_ext" class="ya-margin-bottom">
               <el-col :span="11">
                 <el-input v-model="model.other_ext" clearable />
               </el-col>
@@ -397,7 +397,7 @@ export default {
     }
   },
   created() {
-    this.height = screenHeight()
+    this.height = screenHeight(220)
     this.info()
   },
   methods: {
@@ -459,7 +459,7 @@ export default {
 </script>
 
 <style scoped>
-.margin-bottom {
+.ya-margin-bottom {
   margin-bottom: 5px;
 }
 </style>

@@ -1,7 +1,8 @@
 <template>
   <div class="app-container">
-    <!-- 添加、选中操作 -->
+    <!-- 添加操作 -->
     <div class="filter-container">
+      <!-- 刷新 -->
       <el-row>
         <el-col>
           <el-button class="filter-item" @click="refresh()">刷新</el-button>
@@ -15,18 +16,20 @@
           <el-button @click="selectOpen('unlogin')">登录</el-button>
           <el-button @click="selectOpen('unauth')">权限</el-button>
           <el-button @click="selectOpen('disable')">禁用</el-button>
-          <el-button @click="dele(selection)">删除</el-button>
+          <el-button @click="selectOpen('dele')">删除</el-button>
           <el-button type="primary" @click="add()">添加</el-button>
         </el-col>
-        <el-dialog title="选中操作" :visible.sync="selectDialog" top="20vh" :close-on-click-modal="false" :close-on-press-escape="false">
+        <el-dialog :title="selectTitle" :visible.sync="selectDialog" top="20vh" :close-on-click-modal="false" :close-on-press-escape="false">
           <el-form ref="selectRef" label-width="120px">
+            <el-form-item :label="name+'ID'" prop="">
+              <el-input v-model="selectIds" type="textarea" :rows="2" disabled />
+            </el-form-item>
             <el-form-item v-if="selectType==='pid'" label="父级" prop="">
               <el-cascader
                 v-model="menu_pid"
                 :options="data"
                 :props="props"
                 style="width:100%"
-                placeholder="请选择"
                 clearable
                 filterable
                 @change="selectPidChange"
@@ -41,6 +44,9 @@
             <el-form-item v-else-if="selectType==='disable'" label="是否禁用" prop="">
               <el-switch v-model="is_disable" :active-value="1" :inactive-value="0" />
             </el-form-item>
+            <el-form-item v-else-if="selectType==='dele'" label="" prop="">
+              <span style="color:red">确定要删除选中的{{ name }}吗？</span>
+            </el-form-item>
           </el-form>
           <div slot="footer" class="dialog-footer">
             <el-button @click="selectCancel">取消</el-button>
@@ -50,7 +56,7 @@
       </el-row>
     </div>
     <!-- 列表 -->
-    <el-table ref="table" v-loading="loading" :data="data" :height="height" row-key="admin_menu_id" @selection-change="select" @cell-dblclick="tableCellDbclick">
+    <el-table ref="table" v-loading="loading" :data="data" :height="height" :row-key="idkey" @selection-change="select" @cell-dblclick="tableCellDbclick">
       <el-table-column type="selection" width="42" title="全选/反选" />
       <el-table-column prop="menu_name" label="菜单名称" min-width="220" />
       <el-table-column prop="menu_url" label="菜单链接(roles)" min-width="300">
@@ -98,19 +104,19 @@
           <el-switch v-if="scope.row.menu_url" v-model="scope.row.is_disable" :active-value="1" :inactive-value="0" @change="disable([scope.row])" />
         </template>
       </el-table-column>
-      <el-table-column prop="admin_menu_id" label="ID" min-width="65" />
+      <el-table-column :prop="idkey" label="ID" min-width="65" />
       <el-table-column prop="menu_sort" label="排序" min-width="60" />
-      <el-table-column label="操作" min-width="250" align="right">
+      <el-table-column label="操作" min-width="195" align="right">
         <template slot-scope="{ row }">
           <el-button size="mini" type="text" @click="roleShow(row)">角色</el-button>
-          <el-button size="mini" type="text" @click="userShow(row,'admin_menu_id')">用户</el-button>
+          <el-button size="mini" type="text" @click="userShow(row,idkey)">用户</el-button>
           <el-button size="mini" type="text" title="添加下级" @click="add(row)">添加</el-button>
           <el-button size="mini" type="text" @click="edit(row)">修改</el-button>
-          <el-button size="mini" type="text" @click="dele([row])">删除</el-button>
+          <el-button size="mini" type="text" @click="selectOpen('dele',row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
-    <!-- 添加、修改 -->
+    <!-- 添加修改 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false">
       <el-form ref="ref" :rules="rules" :model="model" class="dialog-body" label-width="100px" :style="{height:height+'px'}">
         <el-form-item label="菜单父级" prop="menu_pid">
@@ -134,7 +140,7 @@
           <el-checkbox v-model="model.add_edit">修改</el-checkbox>
           <el-checkbox v-model="model.add_dele">删除</el-checkbox>
         </el-form-item>
-        <el-form-item v-if="model.admin_menu_id" label="快速修改" prop="">
+        <el-form-item v-if="model[idkey]" label="快速修改" prop="">
           <el-checkbox v-model="model.edit_list">列表</el-checkbox>
           <el-checkbox v-model="model.edit_info">信息</el-checkbox>
           <el-checkbox v-model="model.edit_add">添加</el-checkbox>
@@ -142,12 +148,12 @@
           <el-checkbox v-model="model.edit_dele">删除</el-checkbox>
         </el-form-item>
         <el-form-item label="" prop="">
-          <span>快速添加<span v-if="model.admin_menu_id">、修改</span>，需要输入菜单链接：应用/控制器，不含操作</span>
+          <span>快速添加<span v-if="model[idkey]">、修改</span>，需要输入菜单链接：应用/控制器，不含操作</span>
         </el-form-item>
-        <el-form-item v-if="model.admin_menu_id" label="添加时间" prop="create_time">
+        <el-form-item v-if="model.create_time" label="添加时间" prop="create_time">
           <el-input v-model="model.create_time" disabled />
         </el-form-item>
-        <el-form-item v-if="model.admin_menu_id" label="修改时间" prop="update_time">
+        <el-form-item v-if="model.update_time" label="修改时间" prop="update_time">
           <el-input v-model="model.update_time" disabled />
         </el-form-item>
       </el-form>
@@ -195,7 +201,7 @@
         </el-table-column>
         <el-table-column label="操作" min-width="80" align="right" fixed="right">
           <template slot-scope="{ row }">
-            <el-button v-if="userQuery.admin_menu_id" size="mini" type="text" @click="userRemove(row)">解除</el-button>
+            <el-button v-if="userQuery[idkey]" size="mini" type="text" @click="userRemove(row)">解除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -220,6 +226,7 @@ export default {
       name: '菜单',
       height: 680,
       loading: false,
+      idkey: 'admin_menu_id',
       data: [],
       props: { checkStrictly: true, value: 'admin_menu_id', label: 'menu_name' },
       dialog: false,
@@ -241,17 +248,19 @@ export default {
         edit_edit: false,
         edit_dele: false
       },
+      rules: {
+        menu_name: [{ required: true, message: '请输入菜单名称', trigger: 'blur' }]
+      },
       isExpandAll: true,
       selection: [],
+      selectIds: '',
+      selectTitle: '选中操作',
       selectDialog: false,
       selectType: '',
       menu_pid: 0,
       is_unlogin: 0,
       is_unauth: 0,
       is_disable: 0,
-      rules: {
-        menu_name: [{ required: true, message: '请输入菜单名称', trigger: 'blur' }]
-      },
       roleDialog: false,
       roleDialogTitle: '',
       roleLoad: false,
@@ -267,7 +276,7 @@ export default {
     }
   },
   created() {
-    this.height = screenHeight()
+    this.height = screenHeight(210)
     this.list()
   },
   methods: {
@@ -288,15 +297,15 @@ export default {
       this.dialogTitle = this.name + '添加'
       this.model = this.$options.data().model
       if (row) {
-        this.model.menu_pid = row.admin_menu_id
+        this.model.menu_pid = row[this.idkey]
       }
     },
     edit(row) {
       this.dialog = true
-      this.dialogTitle = this.name + '修改：' + row.admin_menu_id
-      info({
-        admin_menu_id: row.admin_menu_id
-      }).then(res => {
+      this.dialogTitle = this.name + '修改：' + row[this.idkey]
+      var id = {}
+      id[this.idkey] = row[this.idkey]
+      info(id).then(res => {
         this.reset(res.data)
       }).catch(() => {
       })
@@ -309,20 +318,18 @@ export default {
       this.$refs['ref'].validate(valid => {
         if (valid) {
           this.loading = true
-          if (this.model.admin_menu_id) {
+          if (this.model[this.idkey]) {
             edit(this.model).then(res => {
-              this.dialog = false
               this.list()
-              this.reset()
+              this.dialog = false
               this.$message.success(res.msg)
             }).catch(() => {
               this.loading = false
             })
           } else {
             add(this.model).then(res => {
-              this.dialog = false
               this.list()
-              this.reset()
+              this.dialog = false
               this.$message.success(res.msg)
             }).catch(() => {
               this.loading = false
@@ -330,30 +337,6 @@ export default {
           }
         }
       })
-    },
-    // 删除
-    dele(row) {
-      if (!row.length) {
-        this.selectAlert()
-      } else {
-        var title = '删除' + this.name
-        var message = '确定要删除选中的 <span style="color:red">' + row.length + ' </span> 条' + this.name + '吗？'
-        if (row.length === 1) {
-          title = title + '：' + row[0].admin_menu_id
-          message = '确定要删除' + this.name + ' <span style="color:red">' + row[0].menu_name + ' </span>吗？'
-        }
-        this.$confirm(message, title, { type: 'warning', dangerouslyUseHTMLString: true }).then(() => {
-          this.loading = true
-          dele({
-            ids: arrayColumn(row, 'admin_menu_id')
-          }).then(res => {
-            this.list()
-            this.$message.success(res.msg)
-          }).catch(() => {
-            this.loading = false
-          })
-        }).catch(() => {})
-      }
     },
     // 重置
     reset(row) {
@@ -385,14 +368,34 @@ export default {
     // 选中操作
     select(selection) {
       this.selection = selection
+      this.selectIds = this.selectGetIds(selection).toString()
     },
-    selectAlert(message = '') {
-      this.$alert(message || '请选择需要操作的' + this.name, '提示', { type: 'warning', callback: action => {} })
+    selectGetIds(selection) {
+      return arrayColumn(selection, this.idkey)
     },
-    selectOpen(selectType) {
+    selectAlert() {
+      this.$alert('请选择需要操作的' + this.name, '提示', { type: 'warning', callback: action => {} })
+    },
+    selectOpen(selectType, selectRow = '') {
+      if (selectRow) {
+        this.$refs['table'].clearSelection()
+        this.$refs['table'].toggleRowSelection(selectRow)
+      }
       if (!this.selection.length) {
         this.selectAlert()
       } else {
+        this.selectTitle = '选中操作'
+        if (selectType === 'pid') {
+          this.selectTitle = '设置父级'
+        } else if (selectType === 'unlogin') {
+          this.selectTitle = '无需登录'
+        } else if (selectType === 'unauth') {
+          this.selectTitle = '无需权限'
+        } else if (selectType === 'disable') {
+          this.selectTitle = '是否禁用'
+        } else if (selectType === 'dele') {
+          this.selectTitle = '删除' + this.name
+        }
         this.selectDialog = true
         this.selectType = selectType
       }
@@ -404,17 +407,20 @@ export default {
       if (!this.selection.length) {
         this.selectAlert()
       } else {
-        const type = this.selectType
-        if (type === 'pid') {
+        const selectType = this.selectType
+        if (selectType === 'pid') {
           this.setpid(this.selection)
-        } else if (type === 'unlogin') {
+        } else if (selectType === 'unlogin') {
           this.unlogin(this.selection, true)
-        } else if (type === 'unauth') {
+        } else if (selectType === 'unauth') {
           this.unauth(this.selection, true)
-        } else if (type === 'disable') {
+        } else if (selectType === 'disable') {
           this.disable(this.selection, true)
+        } else if (selectType === 'dele') {
+          this.dele(this.selection)
         }
         this.selectDialog = false
+        this.selectType = selectType
       }
     },
     selectPidChange(value) {
@@ -425,7 +431,7 @@ export default {
     // 设置父级
     setpid(row) {
       pid({
-        ids: arrayColumn(row, 'admin_menu_id'),
+        ids: this.selectGetIds(row),
         menu_pid: this.menu_pid
       }).then(res => {
         this.list()
@@ -446,7 +452,7 @@ export default {
           is_unlogin = this.is_unlogin
         }
         unlogin({
-          ids: arrayColumn(row, 'admin_menu_id'),
+          ids: this.selectGetIds(row),
           is_unlogin: is_unlogin
         }).then(res => {
           this.list()
@@ -468,7 +474,7 @@ export default {
           is_unauth = this.is_unauth
         }
         unauth({
-          ids: arrayColumn(row, 'admin_menu_id'),
+          ids: this.selectGetIds(row),
           is_unauth: is_unauth
         }).then(res => {
           this.list()
@@ -490,13 +496,29 @@ export default {
           is_disable = this.is_disable
         }
         disable({
-          ids: arrayColumn(row, 'admin_menu_id'),
+          ids: this.selectGetIds(row),
           is_disable: is_disable
         }).then(res => {
           this.list()
           this.$message.success(res.msg)
         }).catch(() => {
           this.list()
+          this.loading = false
+        })
+      }
+    },
+    // 删除
+    dele(row) {
+      if (!row.length) {
+        this.selectAlert()
+      } else {
+        this.loading = true
+        dele({
+          ids: this.selectGetIds(row)
+        }).then(res => {
+          this.list()
+          this.$message.success(res.msg)
+        }).catch(() => {
           this.loading = false
         })
       }

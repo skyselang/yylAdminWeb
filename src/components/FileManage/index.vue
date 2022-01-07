@@ -58,7 +58,7 @@
         </el-upload>
       </el-col>
     </el-row>
-    <!-- 筛选/列表 -->
+    <!-- 筛选列表 -->
     <el-row :gutter="3">
       <!-- 筛选 -->
       <el-col :span="3" class="dialog-body" :style="{height:height+'px'}">
@@ -181,7 +181,7 @@
     <pagination v-show="count > 0" :total="count" :page.sync="query.page" :limit.sync="query.limit" @pagination="list" />
     <!-- 修改 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" append-to-body :close-on-click-modal="false" :close-on-press-escape="false">
-      <el-form ref="ref" :rules="rules" :model="model" class="dialog-body" label-width="100px" :style="{height:height+'px'}">
+      <el-form ref="ref" :rules="rules" :model="model" label-width="100px" class="dialog-body" :style="{height:height+'px'}">
         <el-form-item label="文件分组" prop="group_id">
           <el-select v-model="model.group_id" placeholder="未分组" clearable>
             <el-option v-for="(item, index) in group" :key="index" :value="item.group_id" :label="item.group_name" />
@@ -200,17 +200,17 @@
         </el-form-item>
         <el-form-item label="文件名称" prop="file_name">
           <el-input v-model="model.file_name" placeholder="" :title="model.file_name">
-            <el-link slot="append" :href="model.file_url" :underline="false" :download="model.file_url" target="_blank">下载</el-link>
+            <el-link slot="append" icon="el-icon-download" title="下载" :href="model.file_url" :underline="false" :download="model.file_url" target="_blank" />
           </el-input>
         </el-form-item>
         <el-form-item label="文件路径" prop="file_path">
           <el-input v-model="model.file_path" placeholder="" :title="model.file_path" disabled>
-            <el-button slot="append" @click="copy(model.file_path, $event)">复制</el-button>
+            <el-button slot="append" icon="el-icon-copy-document" title="复制" @click="copy(model.file_path, $event)" />
           </el-input>
         </el-form-item>
         <el-form-item label="文件链接" prop="file_url">
           <el-input v-model="model.file_url" placeholder="" :title="model.file_url" disabled>
-            <el-button slot="append" @click="copy(model.file_url, $event)">复制</el-button>
+            <el-button slot="append" icon="el-icon-copy-document" title="复制" @click="copy(model.file_url, $event)" />
           </el-input>
         </el-form-item>
         <el-form-item label="存储方式" prop="storage">
@@ -225,10 +225,14 @@
           <el-input v-model="model.file_ext" placeholder="" disabled />
         </el-form-item>
         <el-form-item label="文件MD5" prop="file_md5">
-          <el-input v-model="model.file_md5" placeholder="" disabled />
+          <el-input v-model="model.file_md5" placeholder="" disabled>
+            <el-button slot="append" icon="el-icon-copy-document" title="复制" @click="copy(model.file_md5, $event)" />
+          </el-input>
         </el-form-item>
         <el-form-item label="文件散列" prop="file_hash">
-          <el-input v-model="model.file_hash" placeholder="" disabled />
+          <el-input v-model="model.file_hash" placeholder="" disabled>
+            <el-button slot="append" icon="el-icon-copy-document" title="复制" @click="copy(model.file_hash, $event)" />
+          </el-input>
         </el-form-item>
         <el-form-item v-if="model.file_id" label="添加时间" prop="create_time">
           <el-input v-model="model.create_time" disabled />
@@ -312,7 +316,7 @@
           <el-button @click="recoverDele(recoverCheckedIds)">删除</el-button>
         </el-col>
       </el-row>
-      <!-- 回收站筛选/列表 -->
+      <!-- 回收站筛选列表 -->
       <el-row :gutter="3">
         <!-- 回收站筛选 -->
         <el-col :span="3" class="dialog-body" :style="{height:height+'px'}">
@@ -480,6 +484,9 @@ export default {
         file_url: '',
         sort: 250
       },
+      rules: {
+        file_name: [{ required: true, message: '请输入文件名称', trigger: 'blur' }]
+      },
       group: [],
       storage: [],
       filetype: [],
@@ -494,9 +501,6 @@ export default {
       uploadData: { group_id: 0 },
       uploadLimit: 9,
       uploadFilelist: [],
-      rules: {
-        file_name: [{ required: true, message: '请输入文件名称', trigger: 'blur' }]
-      },
       groupDialog: false,
       groupTitle: '',
       groupModel: {
@@ -619,12 +623,12 @@ export default {
         var message = '确定要删除选中的 <span style="color:red">' + row.length + ' </span> 个' + this.name + '吗？'
         if (row.length === 1) {
           title = title + '：' + row[0]
-          message = '确定要删除' + this.name + ' <span style="color:red">' + row[0].file_name + ' </span>吗？'
+          message = '确定要删除' + this.name + ' <span style="color:red">' + row[0] + ' </span>吗？'
         }
         this.$confirm(message, title, { type: 'warning', dangerouslyUseHTMLString: true }).then(() => {
           this.loading = true
           dele({
-            file_ids: row
+            ids: row
           }).then(res => {
             this.list()
             this.reset()
@@ -673,8 +677,8 @@ export default {
         this.model = this.$options.data().model
       }
       this.group_id = 0
-      this.checkedIds = []
       this.checkAll = false
+      this.checkedIds = []
       this.checkAllInd = false
       if (this.$refs['ref'] !== undefined) {
         this.$refs['ref'].resetFields()
@@ -700,7 +704,7 @@ export default {
       } else {
         this.loading = true
         grouping({
-          file_ids: this.checkedIds,
+          ids: this.checkedIds,
           group_id: this.group_id
         }).then(res => {
           this.list()
@@ -743,7 +747,7 @@ export default {
           ).then(() => {
             this.loading = true
             disable({
-              file_ids: row,
+              ids: row,
               is_disable: is_disable
             }).then(res => {
               this.list()
@@ -757,7 +761,7 @@ export default {
         } else {
           this.loading = true
           disable({
-            file_ids: row,
+            ids: row,
             is_disable: is_disable
           }).then(res => {
             this.list()
@@ -960,7 +964,7 @@ export default {
         this.$confirm(message, title, { type: 'warning', dangerouslyUseHTMLString: true }).then(() => {
           this.recoverLoad = true
           recoverReco({
-            file_ids: row
+            ids: row
           }).then(res => {
             this.list()
             this.recoverList()
@@ -986,7 +990,7 @@ export default {
         this.$confirm(message, title, { type: 'warning', dangerouslyUseHTMLString: true }).then(() => {
           this.recoverLoad = true
           recoverDele({
-            file_ids: row
+            ids: row
           }).then(res => {
             this.recoverList()
             this.$message.success(res.msg)

@@ -10,8 +10,8 @@ export default {
   components: {},
   data() {
     return {
-      src: 'https://lbs.qq.com/tool/getpoint/index.html',
-      height: 500
+      height: 500,
+      src: 'https://lbs.qq.com/tool/getpoint/index.html'
     }
   },
   created() {

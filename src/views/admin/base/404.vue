@@ -25,7 +25,7 @@
 
 <script>
 export default {
-  name: 'Error404',
+  name: 'AdminBase404',
   data() {
     return {}
   },

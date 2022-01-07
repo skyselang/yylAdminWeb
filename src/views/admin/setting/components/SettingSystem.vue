@@ -1,5 +1,5 @@
 <template>
-  <el-card class="box-card">
+  <el-card class="box-card dialog-body" :style="{height:height+'px'}">
     <el-row>
       <el-col :xs="24" :sm="18" :md="12">
         <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
@@ -15,8 +15,7 @@
               <el-col :span="14">
                 <el-button size="mini" @click="fileUpload('logo', '上传LOGO')">上传LOGO</el-button>
                 <el-button size="mini" @click="fileDelete('logo')">删除</el-button>
-                <br>
-                <span>jpg、png图片，200 x 200，小于 100 KB。</span>
+                <p>jpg、png图片，200 x 200，小于 100 KB。</p>
               </el-col>
             </el-row>
           </el-form-item>
@@ -32,8 +31,7 @@
               <el-col :span="14">
                 <el-button size="mini" @click="fileUpload('favicon', '上传favicon')">上传favicon</el-button>
                 <el-button size="mini" @click="fileDelete('favicon')">删除</el-button>
-                <br>
-                <span>jpg、png、ico图片，128 x 128，小于 50 KB。</span>
+                <p>jpg、png、ico图片，128 x 128，小于 50 KB。</p>
               </el-col>
             </el-row>
           </el-form-item>
@@ -49,8 +47,7 @@
               <el-col :span="14">
                 <el-button size="mini" @click="fileUpload('login_bg', '上传登录背景')">上传背景图</el-button>
                 <el-button size="mini" @click="fileDelete('login_bg')">删除</el-button>
-                <br>
-                <span>jpg、png图片，1920 x 1080，小于 300 KB。</span>
+                <p>jpg、png图片，1920 x 1080，小于 300 KB。</p>
               </el-col>
             </el-row>
           </el-form-item>
@@ -77,6 +74,7 @@
 </template>
 
 <script>
+import screenHeight from '@/utils/screen-height'
 import FileManage from '@/components/FileManage'
 import { systemInfo, systemEdit } from '@/api/admin/setting'
 
@@ -104,6 +102,7 @@ export default {
     }
   },
   created() {
+    this.height = screenHeight(180)
     this.info()
   },
   methods: {

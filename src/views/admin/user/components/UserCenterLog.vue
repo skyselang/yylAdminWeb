@@ -10,7 +10,7 @@
             <el-option value="request_ip" label="请求IP" />
             <el-option value="request_region" label="请求地区" />
             <el-option value="request_isp" label="请求ISP" />
-            <el-option value="admin_user_log_id" label="ID" />
+            <el-option :value="idkey" label="ID" />
           </el-select>
           <el-input v-model="query.search_value" class="ya-search-value" placeholder="搜索内容" clearable />
           <el-select v-model="query.date_field" class="ya-search-field" placeholder="时间字段">
@@ -35,7 +35,7 @@
     </div>
     <!-- 列表 -->
     <el-table v-loading="loading" :data="data" :height="height" @sort-change="sort">
-      <el-table-column prop="admin_user_log_id" label="ID" min-width="100" sortable="custom" />
+      <el-table-column :prop="idkey" label="ID" min-width="100" sortable="custom" />
       <el-table-column prop="menu_url" label="菜单链接" min-width="250" show-overflow-tooltip />
       <el-table-column prop="menu_name" label="菜单名称" min-width="150" show-overflow-tooltip />
       <el-table-column prop="request_method" label="请求方式 " min-width="110" />
@@ -62,6 +62,7 @@ export default {
       name: '我的日志',
       height: 680,
       loading: true,
+      idkey: 'admin_user_log_id',
       query: {
         page: 1,
         limit: 15,

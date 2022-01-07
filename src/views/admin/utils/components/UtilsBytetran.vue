@@ -69,7 +69,7 @@ export default {
     }
   },
   created() {
-    this.height = screenHeight()
+    this.height = screenHeight(180)
   },
   methods: {
     value(type) {

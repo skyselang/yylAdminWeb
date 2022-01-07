@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <!-- 查询、选中操作 -->
+    <!-- 查询操作 -->
     <div class="filter-container">
       <!-- 查询 -->
       <el-row>
@@ -11,7 +11,7 @@
             <el-option value="is_hot" label="是否热门" />
             <el-option value="is_rec" label="是否推荐" />
             <el-option value="is_hide" label="是否隐藏" />
-            <el-option value="content_id" label="ID" />
+            <el-option :value="idkey" label="ID" />
           </el-select>
           <el-input v-model="query.search_value" class="filter-item ya-search-value" placeholder="搜索内容" clearable />
           <el-select v-model="query.date_field" class="filter-item ya-date-field" placeholder="时间类型">
@@ -48,20 +48,22 @@
           <el-button @click="selectOpen('hot')">热门</el-button>
           <el-button @click="selectOpen('rec')">推荐</el-button>
           <el-button @click="selectOpen('hide')">隐藏</el-button>
-          <el-button @click="dele(selection)">删除</el-button>
+          <el-button @click="selectOpen('dele')">删除</el-button>
           <el-button v-permission="['admin/cms.Content/recover']" @click="recover()">回收站</el-button>
           <el-button type="primary" @click="add()">添加</el-button>
         </el-col>
       </el-row>
-      <el-dialog title="选中操作" :visible.sync="selectDialog" top="20vh" :close-on-click-modal="false" :close-on-press-escape="false">
+      <el-dialog :title="selectTitle" :visible.sync="selectDialog" top="20vh" :close-on-click-modal="false" :close-on-press-escape="false">
         <el-form ref="selectRef" label-width="120px">
+          <el-form-item :label="name+'ID'" prop="">
+            <el-input v-model="selectIds" type="textarea" :rows="2" disabled />
+          </el-form-item>
           <el-form-item v-if="selectType==='cate'" label="分类" prop="">
             <el-cascader
               v-model="category_id"
               :options="categoryData"
               :props="categoryProps"
               style="width:100%"
-              placeholder="请选择"
               clearable
               filterable
               @change="selectCategoryChange"
@@ -79,6 +81,9 @@
           <el-form-item v-else-if="selectType==='hide'" label="是否隐藏" prop="">
             <el-switch v-model="is_hide" :active-value="1" :inactive-value="0" />
           </el-form-item>
+          <el-form-item v-else-if="selectType==='dele'" label="" prop="">
+            <span style="color:red">确定要删除选中的{{ name }}吗？</span>
+          </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="selectCancel">取消</el-button>
@@ -89,8 +94,8 @@
     <!-- 列表 -->
     <el-table ref="table" v-loading="loading" :data="data" :height="height" @sort-change="sort" @selection-change="select">
       <el-table-column type="selection" width="42" title="全选/反选" />
-      <el-table-column prop="content_id" label="ID" min-width="100" sortable="custom" />
-      <el-table-column prop="img_url" label="图片" min-width="70" align="center">
+      <el-table-column :prop="idkey" label="ID" min-width="100" sortable="custom" />
+      <el-table-column prop="img_url" label="图片" min-width="70">
         <template slot-scope="scope">
           <el-image v-if="scope.row.img_url" class="ya-img-table" :src="scope.row.img_url" :preview-src-list="[scope.row.img_url]" title="点击查看大图" />
         </template>
@@ -99,22 +104,22 @@
       <el-table-column prop="category_name" label="分类" min-width="100" show-overflow-tooltip />
       <el-table-column prop="hits" label="点击" min-width="80" sortable="custom" />
       <el-table-column prop="sort" label="排序" min-width="80" sortable="custom" />
-      <el-table-column prop="is_top" label="置顶" min-width="80" sortable="custom" align="center">
+      <el-table-column prop="is_top" label="置顶" min-width="80" sortable="custom">
         <template slot-scope="scope">
           <el-switch v-model="scope.row.is_top" :active-value="1" :inactive-value="0" @change="istop([scope.row])" />
         </template>
       </el-table-column>
-      <el-table-column prop="is_hot" label="热门" min-width="80" sortable="custom" align="center">
+      <el-table-column prop="is_hot" label="热门" min-width="80" sortable="custom">
         <template slot-scope="scope">
           <el-switch v-model="scope.row.is_hot" :active-value="1" :inactive-value="0" @change="ishot([scope.row])" />
         </template>
       </el-table-column>
-      <el-table-column prop="is_rec" label="推荐" min-width="80" sortable="custom" align="center">
+      <el-table-column prop="is_rec" label="推荐" min-width="80" sortable="custom">
         <template slot-scope="scope">
           <el-switch v-model="scope.row.is_rec" :active-value="1" :inactive-value="0" @change="isrec([scope.row])" />
         </template>
       </el-table-column>
-      <el-table-column prop="is_hide" label="隐藏" min-width="80" sortable="custom" align="center">
+      <el-table-column prop="is_hide" label="隐藏" min-width="80" sortable="custom">
         <template slot-scope="scope">
           <el-switch v-model="scope.row.is_hide" :active-value="1" :inactive-value="0" @change="ishide([scope.row])" />
         </template>
@@ -124,22 +129,21 @@
       <el-table-column label="操作" min-width="85" align="right" fixed="right">
         <template slot-scope="{ row }">
           <el-button size="mini" type="text" @click="edit(row)">修改</el-button>
-          <el-button size="mini" type="text" @click="dele([row])">删除</el-button>
+          <el-button size="mini" type="text" @click="selectOpen('dele',row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
     <!-- 分页 -->
     <pagination v-show="count > 0" :total="count" :page.sync="query.page" :limit.sync="query.limit" @pagination="list" />
-    <!-- 添加、修改 -->
+    <!-- 添加修改 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false">
-      <el-form ref="ref" :rules="rules" :model="model" class="dialog-body" label-width="100px" :style="{height:height+'px'}">
-        <el-form-item label="分类" prop="category_id" placeholder="请选择" clearable>
+      <el-form ref="ref" :rules="rules" :model="model" label-width="100px" class="dialog-body" :style="{height:height+'px'}">
+        <el-form-item label="分类" prop="category_id">
           <el-cascader
             v-model="model.category_id"
             :options="categoryData"
             :props="categoryProps"
             style="width:100%"
-            placeholder="请选择分类"
             clearable
             filterable
             @change="categoryChange"
@@ -247,7 +251,7 @@
         <el-form-item label="内容" prop="content">
           <rich-editor v-model="model.content" />
         </el-form-item>
-        <el-form-item v-if="model.content_id" label="添加时间" prop="create_time">
+        <el-form-item v-if="model[idkey]" label="添加时间" prop="create_time">
           <el-input v-model="model.create_time" disabled />
         </el-form-item>
         <el-form-item v-if="model.update_time" label="修改时间" prop="update_time">
@@ -264,8 +268,9 @@
     </el-dialog>
     <!-- 回收站 -->
     <el-dialog :title="recoverDialogTitle" :visible.sync="recoverDialog" width="80%" top="1vh" :close-on-click-modal="false" :close-on-press-escape="false">
-      <!-- 回收站查询、选中操作 -->
+      <!-- 回收站查询操作 -->
       <div class="filter-container">
+        <!-- 查询 -->
         <el-row>
           <el-col>
             <el-select v-model="recoverQuery.search_field" class="filter-item ya-search-field" placeholder="搜索字段">
@@ -274,7 +279,7 @@
               <el-option value="is_hot" label="是否热门" />
               <el-option value="is_rec" label="是否推荐" />
               <el-option value="is_hide" label="是否隐藏" />
-              <el-option value="content_id" label="ID" />
+              <el-option :value="idkey" label="ID" />
             </el-select>
             <el-input v-model="recoverQuery.search_value" class="filter-item ya-search-value" placeholder="搜索内容" clearable />
             <el-select v-model="recoverQuery.date_field" class="filter-item ya-date-field" placeholder="时间类型">
@@ -302,16 +307,36 @@
             <el-button class="filter-item" type="primary" @click="recoverSearch()">查询</el-button>
             <el-button class="filter-item" @click="recoverRefresh()">刷新</el-button>
           </el-col>
+        </el-row>
+        <!-- 选中操作 -->
+        <el-row>
           <el-col>
-            <el-button @click="recoverReco(recoverSelection)">恢复</el-button>
-            <el-button @click="recoverDele(recoverSelection)">删除</el-button>
+            <el-button @click="recoverSelectOpen('reco')">恢复</el-button>
+            <el-button @click="recoverSelectOpen('dele')">删除</el-button>
           </el-col>
         </el-row>
+        <el-dialog :title="recoverSelectTitle" :visible.sync="recoverSelectDialog" top="20vh" append-to-body :close-on-click-modal="false" :close-on-press-escape="false">
+          <el-form label-width="120px">
+            <el-form-item :label="name+'ID'" prop="">
+              <el-input v-model="recoverSelectIds" type="textarea" :rows="2" disabled />
+            </el-form-item>
+            <el-form-item v-if="recoverSelectType==='reco'" label="" prop="">
+              <span>确定要恢复选中的{{ name }}吗？</span>
+            </el-form-item>
+            <el-form-item v-else-if="recoverSelectType==='dele'" label="" prop="">
+              <span style="color:red">确定要彻底删除选中的{{ name }}吗？删除后不可恢复！</span>
+            </el-form-item>
+          </el-form>
+          <div slot="footer" class="dialog-footer">
+            <el-button @click="recoverSelectCancel">取消</el-button>
+            <el-button type="primary" @click="recoverSelectSubmit">提交</el-button>
+          </div>
+        </el-dialog>
       </div>
       <!-- 回收站列表 -->
       <el-table ref="recoverRef" v-loading="recoverLoad" :data="recoverData" :height="height" @sort-change="recoverSort" @selection-change="recoverSelect">
-        <el-table-column type="selection" width="40" title="全选/反选" />
-        <el-table-column prop="content_id" label="ID" min-width="80" sortable="custom" />
+        <el-table-column type="selection" width="42" title="全选/反选" />
+        <el-table-column :prop="idkey" label="ID" min-width="80" sortable="custom" />
         <el-table-column prop="img_url" label="图片" min-width="70" align="center">
           <template slot-scope="scope">
             <el-image v-if="scope.row.img_url" class="ya-img-table" :src="scope.row.img_url" :preview-src-list="[scope.row.img_url]" title="点击查看大图" />
@@ -345,8 +370,8 @@
         <el-table-column prop="delete_time" label="删除时间" min-width="155" sortable="custom" />
         <el-table-column label="操作" min-width="85" align="right" fixed="right">
           <template slot-scope="{ row }">
-            <el-button size="mini" type="text" @click="recoverReco([row])">恢复</el-button>
-            <el-button size="mini" type="text" @click="recoverDele([row])">删除</el-button>
+            <el-button size="mini" type="text" @click="recoverSelectOpen('reco',row)">恢复</el-button>
+            <el-button size="mini" type="text" @click="recoverSelectOpen('dele',row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -378,6 +403,7 @@ export default {
       name: '内容',
       height: 680,
       loading: false,
+      idkey: 'content_id',
       query: {
         page: 1,
         limit: 12,
@@ -402,23 +428,22 @@ export default {
         content: '',
         sort: 250
       },
-      categoryData: [],
-      categoryProps: { checkStrictly: true, value: 'category_id', label: 'category_name' },
-      selection: [],
-      selectDialog: false,
-      selectType: '',
-      is_top: 0,
-      is_hot: 0,
-      is_rec: 0,
-      is_hide: 0,
-      category_id: 0,
-      fileDialog: false,
-      fileTitle: '文件管理',
-      fileType: 'image',
       rules: {
         category_id: [{ required: true, message: '请选择分类', trigger: 'blur' }],
         name: [{ required: true, message: '请输入名称', trigger: 'blur' }]
       },
+      categoryData: [],
+      categoryProps: { checkStrictly: true, value: 'category_id', label: 'category_name' },
+      selection: [],
+      selectIds: '',
+      selectTitle: '选中操作',
+      selectDialog: false,
+      selectType: '',
+      category_id: 0,
+      is_top: 0,
+      is_hot: 0,
+      is_rec: 0,
+      is_hide: 0,
       recoverDialog: false,
       recoverDialogTitle: '',
       recoverLoad: false,
@@ -430,7 +455,14 @@ export default {
         search_field: 'name',
         date_field: 'delete_time'
       },
-      recoverSelection: []
+      recoverSelection: [],
+      recoverSelectIds: '',
+      recoverSelectTitle: '选中操作',
+      recoverSelectDialog: false,
+      recoverSelectType: '',
+      fileDialog: false,
+      fileTitle: '文件管理',
+      fileType: 'image'
     }
   },
   created() {
@@ -458,61 +490,35 @@ export default {
     },
     edit(row) {
       this.dialog = true
-      this.dialogTitle = this.name + '修改：' + row.content_id
-      info({
-        content_id: row.content_id
-      }).then(res => {
+      this.dialogTitle = this.name + '修改：' + row[this.idkey]
+      var id = {}
+      id[this.idkey] = row[this.idkey]
+      info(id).then(res => {
         this.reset(res.data)
       }).catch(() => {})
     },
     cancel() {
-      this.reset()
       this.dialog = false
+      this.reset()
     },
     submit() {
       this.$refs['ref'].validate(valid => {
         if (valid) {
-          if (this.model.content_id) {
+          if (this.model[this.idkey]) {
             edit(this.model).then(res => {
-              this.dialog = false
               this.list()
-              this.reset()
+              this.dialog = false
               this.$message.success(res.msg)
             }).catch(() => {})
           } else {
             add(this.model).then(res => {
-              this.dialog = false
               this.list()
-              this.reset()
+              this.dialog = false
               this.$message.success(res.msg)
             }).catch(() => {})
           }
         }
       })
-    },
-    // 删除
-    dele(row) {
-      if (!row.length) {
-        this.selectAlert()
-      } else {
-        var title = '删除' + this.name
-        var message = '确定要删除选中的 <span style="color:red">' + row.length + ' </span> 条' + this.name + '吗？'
-        if (row.length === 1) {
-          title = title + '：' + row[0].content_id
-          message = '确定要删除' + this.name + ' <span style="color:red">' + row[0].name + ' </span>吗？'
-        }
-        this.$confirm(message, title, { type: 'warning', dangerouslyUseHTMLString: true }).then(() => {
-          this.loading = true
-          dele({
-            ids: arrayColumn(row, 'content_id')
-          }).then(res => {
-            this.list()
-            this.$message.success(res.msg)
-          }).catch(() => {
-            this.loading = false
-          })
-        }).catch(() => {})
-      }
     },
     // 重置
     reset(row) {
@@ -537,8 +543,8 @@ export default {
     // 刷新
     refresh() {
       this.query = this.$options.data().query
-      this.category()
       this.list()
+      this.category()
     },
     // 排序
     sort(sort) {
@@ -556,14 +562,36 @@ export default {
     // 选中操作
     select(selection) {
       this.selection = selection
+      this.selectIds = this.selectGetIds(selection).toString()
     },
-    selectAlert(message = '') {
-      this.$alert(message || '请选择需要操作的' + this.name, '提示', { type: 'warning', callback: action => {} })
+    selectGetIds(selection) {
+      return arrayColumn(selection, this.idkey)
     },
-    selectOpen(selectType) {
+    selectAlert() {
+      this.$alert('请选择需要操作的' + this.name, '提示', { type: 'warning', callback: action => {} })
+    },
+    selectOpen(selectType, selectRow = '') {
+      if (selectRow) {
+        this.$refs['table'].clearSelection()
+        this.$refs['table'].toggleRowSelection(selectRow)
+      }
       if (!this.selection.length) {
         this.selectAlert()
       } else {
+        this.selectTitle = '选中操作'
+        if (selectType === 'cate') {
+          this.selectTitle = '设置分类'
+        } else if (selectType === 'top') {
+          this.selectTitle = '是否置顶'
+        } else if (selectType === 'hot') {
+          this.selectTitle = '是否热门'
+        } else if (selectType === 'rec') {
+          this.selectTitle = '是否推荐'
+        } else if (selectType === 'hide') {
+          this.selectTitle = '是否隐藏'
+        } else if (selectType === 'dele') {
+          this.selectTitle = '删除' + this.name
+        }
         this.selectDialog = true
         this.selectType = selectType
       }
@@ -575,30 +603,27 @@ export default {
       if (!this.selection.length) {
         this.selectAlert()
       } else {
-        const type = this.selectType
-        if (type === 'cate') {
+        const selectType = this.selectType
+        if (selectType === 'cate') {
           this.setcate(this.selection)
-        } else if (type === 'top') {
+        } else if (selectType === 'top') {
           this.istop(this.selection, true)
-        } else if (type === 'hot') {
+        } else if (selectType === 'hot') {
           this.ishot(this.selection, true)
-        } else if (type === 'rec') {
+        } else if (selectType === 'rec') {
           this.isrec(this.selection, true)
-        } else if (type === 'hide') {
+        } else if (selectType === 'hide') {
           this.ishide(this.selection, true)
+        } else if (selectType === 'dele') {
+          this.dele(this.selection)
         }
         this.selectDialog = false
-      }
-    },
-    selectCategoryChange(value) {
-      if (value) {
-        this.category_id = value[value.length - 1]
       }
     },
     // 设置分类
     setcate(row) {
       cate({
-        ids: arrayColumn(row, 'content_id'),
+        ids: this.selectGetIds(row),
         category_id: this.category_id
       }).then(res => {
         this.list()
@@ -619,7 +644,7 @@ export default {
           is_top = this.is_top
         }
         istop({
-          ids: arrayColumn(row, 'content_id'),
+          ids: this.selectGetIds(row),
           is_top: is_top
         }).then(res => {
           this.list()
@@ -641,7 +666,7 @@ export default {
           is_hot = this.is_hot
         }
         ishot({
-          ids: arrayColumn(row, 'content_id'),
+          ids: this.selectGetIds(row),
           is_hot: is_hot
         }).then(res => {
           this.list()
@@ -663,7 +688,7 @@ export default {
           is_rec = this.is_rec
         }
         isrec({
-          ids: arrayColumn(row, 'content_id'),
+          ids: this.selectGetIds(row),
           is_rec: is_rec
         }).then(res => {
           this.list()
@@ -685,7 +710,7 @@ export default {
           is_hide = this.is_hide
         }
         ishide({
-          ids: arrayColumn(row, 'content_id'),
+          ids: this.selectGetIds(row),
           is_hide: is_hide
         }).then(res => {
           this.list()
@@ -696,22 +721,162 @@ export default {
         })
       }
     },
-    // 分类获取
+    // 删除
+    dele(row) {
+      if (!row.length) {
+        this.selectAlert()
+      } else {
+        this.loading = true
+        dele({
+          ids: this.selectGetIds(row)
+        }).then(res => {
+          this.list()
+          this.$message.success(res.msg)
+        }).catch(() => {
+          this.loading = false
+        })
+      }
+    },
+    // 分类选择
     category() {
       category().then(res => {
         this.categoryData = res.data.list
       }).catch(() => {})
     },
-    // 分类选择（添加修改）
     categoryChange(value) {
       if (value) {
         this.model.category_id = value[value.length - 1]
       }
     },
-    // 分类选择（查询）
     categoryChangeQuery(value) {
       if (value) {
         this.query.category_id = value[value.length - 1]
+      }
+    },
+    selectCategoryChange(value) {
+      if (value) {
+        this.category_id = value[value.length - 1]
+      }
+    },
+    recoverCategoryChangeQuery(value) {
+      if (value) {
+        this.recoverQuery.category_id = value[value.length - 1]
+      }
+    },
+    // 回收站
+    recover() {
+      this.recoverDialog = true
+      this.recoverDialogTitle = this.name + '回收站'
+      this.recoverList()
+    },
+    // 回收站查询
+    recoverSearch() {
+      this.recoverQuery.page = 1
+      this.recoverList()
+    },
+    // 回收站刷新
+    recoverRefresh() {
+      this.recoverQuery = this.$options.data().recoverQuery
+      this.recoverList()
+    },
+    // 回收站列表
+    recoverList() {
+      this.recoverLoad = true
+      recover(this.recoverQuery).then(res => {
+        this.recoverData = res.data.list
+        this.recoverCount = res.data.count
+        this.recoverLoad = false
+      }).catch(() => {
+        this.recoverLoad = false
+      })
+    },
+    // 回收站排序
+    recoverSort(sort) {
+      this.recoverQuery.sort_field = sort.prop
+      this.recoverQuery.sort_value = ''
+      if (sort.order === 'ascending') {
+        this.recoverQuery.sort_value = 'asc'
+        this.recoverList()
+      }
+      if (sort.order === 'descending') {
+        this.recoverQuery.sort_value = 'desc'
+        this.recoverList()
+      }
+    },
+    // 回收站选中操作
+    recoverSelect(selection) {
+      this.recoverSelection = selection
+      this.recoverSelectIds = this.recoverSelectGetIds(selection).toString()
+    },
+    recoverSelectGetIds(selection) {
+      return arrayColumn(selection, this.idkey)
+    },
+    recoverSelectAlert() {
+      this.$alert('请选择需要操作的' + this.name, '提示', { type: 'warning', callback: action => {} })
+    },
+    recoverSelectOpen(selectType, selectRow = '') {
+      if (selectRow) {
+        this.$refs['recoverRef'].clearSelection()
+        this.$refs['recoverRef'].toggleRowSelection(selectRow)
+      }
+      if (!this.recoverSelection.length) {
+        this.selectAlert()
+      } else {
+        this.recoverSelectTitle = '选中操作'
+        if (selectType === 'reco') {
+          this.recoverSelectTitle = '恢复' + this.name
+        } else if (selectType === 'dele') {
+          this.recoverSelectTitle = '删除' + this.name
+        }
+        this.recoverSelectDialog = true
+        this.recoverSelectType = selectType
+      }
+    },
+    recoverSelectCancel() {
+      this.recoverSelectDialog = false
+    },
+    recoverSelectSubmit() {
+      if (!this.recoverSelection.length) {
+        this.selectAlert()
+      } else {
+        const recoverSelectType = this.recoverSelectType
+        if (recoverSelectType === 'reco') {
+          this.recoverReco(this.recoverSelection)
+        } else if (recoverSelectType === 'dele') {
+          this.recoverDele(this.recoverSelection)
+        }
+        this.recoverSelectDialog = false
+      }
+    },
+    // 回收站恢复
+    recoverReco(row) {
+      if (!row.length) {
+        this.selectAlert()
+      } else {
+        recoverReco({
+          ids: this.recoverSelectGetIds(row)
+        }).then(res => {
+          this.list()
+          this.recoverList()
+          this.$message.success(res.msg)
+        }).catch(() => {
+          this.recoverLoad = false
+        })
+      }
+    },
+    // 回收站删除
+    recoverDele(row) {
+      if (!row.length) {
+        this.selectAlert()
+      } else {
+        recoverDele({
+          ids: this.recoverSelectGetIds(row)
+        }).then(res => {
+          this.recoverList()
+          this.$message.success(res.msg)
+        }).catch(() => {
+          this.recoverLoad = false
+        })
       }
     },
     // 上传图片、视频、附件
@@ -747,105 +912,6 @@ export default {
     },
     fileFileDele(index) {
       this.model.files.splice(index, 1)
-    },
-    // 回收站
-    recover() {
-      this.recoverDialog = true
-      this.recoverDialogTitle = this.name + '回收站'
-      this.recoverList()
-    },
-    // 回收站列表
-    recoverList() {
-      this.recoverLoad = true
-      recover(this.recoverQuery).then(res => {
-        this.recoverData = res.data.list
-        this.recoverCount = res.data.count
-        this.recoverLoad = false
-      }).catch(() => {
-        this.recoverLoad = false
-      })
-    },
-    // 回收站查询
-    recoverSearch() {
-      this.recoverQuery.page = 1
-      this.recoverList()
-    },
-    // 回收站查询-分类选择
-    recoverCategoryChangeQuery(value) {
-      if (value) {
-        this.recoverQuery.category_id = value[value.length - 1]
-      }
-    },
-    // 回收站刷新
-    recoverRefresh() {
-      this.recoverQuery = this.$options.data().recoverQuery
-      this.recoverList()
-    },
-    // 回收站排序
-    recoverSort(sort) {
-      this.recoverQuery.sort_field = sort.prop
-      this.recoverQuery.sort_value = ''
-      if (sort.order === 'ascending') {
-        this.recoverQuery.sort_value = 'asc'
-        this.recoverList()
-      }
-      if (sort.order === 'descending') {
-        this.recoverQuery.sort_value = 'desc'
-        this.recoverList()
-      }
-    },
-    // 回收站恢复
-    recoverReco(row) {
-      if (!row.length) {
-        this.selectAlert()
-      } else {
-        var title = '恢复' + this.name
-        var message = '确定要恢复选中的 <span style="color:red">' + row.length + ' </span> 条' + this.name + '吗？'
-        if (row.length === 1) {
-          title = title + '：' + row[0].content_id
-          message = '确定要恢复' + this.name + ' <span style="color:red">' + row[0].name + ' </span>吗？'
-        }
-        this.$confirm(message, title, { type: 'warning', dangerouslyUseHTMLString: true }).then(() => {
-          this.recoverLoad = true
-          recoverReco({
-            ids: arrayColumn(row, 'content_id')
-          }).then(res => {
-            this.list()
-            this.recoverList()
-            this.$message.success(res.msg)
-          }).catch(() => {
-            this.recoverLoad = false
-          })
-        }).catch(() => {})
-      }
-    },
-    // 回收站删除
-    recoverDele(row) {
-      if (!row.length) {
-        this.selectAlert()
-      } else {
-        var title = '彻底删除' + this.name
-        var message = '确定要彻底删除选中的 <span style="color:red">' + row.length + ' </span> 条' + this.name + '吗？'
-        if (row.length === 1) {
-          title = title + '：' + row[0].content_id
-          message = '确定要彻底删除' + this.name + ' <span style="color:red">' + row[0].name + ' </span>吗？'
-        }
-        this.$confirm(message, title, { type: 'warning', dangerouslyUseHTMLString: true }).then(() => {
-          this.recoverLoad = true
-          recoverDele({
-            ids: arrayColumn(row, 'content_id')
-          }).then(res => {
-            this.recoverList()
-            this.$message.success(res.msg)
-          }).catch(() => {
-            this.recoverLoad = false
-          })
-        }).catch(() => {})
-      }
-    },
-    // 回收站多选
-    recoverSelect(selection) {
-      this.recoverSelection = selection
     }
   }
 }

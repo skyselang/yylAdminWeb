@@ -46,6 +46,17 @@ export function edit(data) {
   })
 }
 /**
+ * 地区父级
+ * @param {array} data 请求数据
+ */
+export function pid(data) {
+  return request({
+    url: url + 'pid',
+    method: 'post',
+    data
+  })
+}
+/**
  * 地区删除
  * @param {array} data 请求数据
  */

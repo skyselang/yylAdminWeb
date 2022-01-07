@@ -1,5 +1,5 @@
 <template>
-  <el-card class="box-card">
+  <el-card class="box-card dialog-body" :style="{height:height+'px'}">
     <el-row :gutter="0">
       <el-col :xs="24" :sm="18" :md="12">
         <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
@@ -27,6 +27,7 @@
 </template>
 
 <script>
+import screenHeight from '@/utils/screen-height'
 import { tokenInfo, tokenEdit } from '@/api/admin/setting'
 
 export default {
@@ -34,6 +35,8 @@ export default {
   components: {},
   data() {
     return {
+      name: 'Token设置',
+      height: 680,
       loading: false,
       model: {
         token_name: '',
@@ -44,6 +47,7 @@ export default {
     }
   },
   created() {
+    this.height = screenHeight(180)
     this.info()
   },
   methods: {

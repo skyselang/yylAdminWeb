@@ -10,12 +10,12 @@ export default {
   components: {},
   data() {
     return {
-      src: 'https://tool.lu/',
-      height: 600
+      height: 600,
+      src: 'https://tool.lu/'
     }
   },
   created() {
-    this.height = screenHeight(190)
+    this.height = screenHeight(180)
   },
   methods: {}
 }

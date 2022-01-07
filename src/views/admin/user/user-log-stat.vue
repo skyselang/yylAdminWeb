@@ -103,7 +103,6 @@
             value-format="yyyy-MM-dd"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-            style="max-width:280px"
             @change="echartFieldChange()"
           />
           <el-select v-model="fieldValue" placeholder="请选择" @change="echartFieldChange()">
