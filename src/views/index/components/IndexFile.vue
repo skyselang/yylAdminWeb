@@ -30,6 +30,7 @@ export default {
   components: { },
   data() {
     return {
+      name: '文件统计',
       loading: false,
       date_pie: {
         count: 0,

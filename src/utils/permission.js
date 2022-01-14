@@ -1,6 +1,7 @@
 import store from '@/store'
 
 /**
+ * 权限验证
  * @param {Array} value
  * @returns {Boolean}
  */
@@ -14,7 +15,6 @@ export default function checkPermission(value) {
     })
     return hasPermission
   } else {
-    console.error(`need roles! Like v-permission="['admin','editor']"`)
     return false
   }
 }

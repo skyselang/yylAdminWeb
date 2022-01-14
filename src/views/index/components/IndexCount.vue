@@ -21,6 +21,7 @@ export default {
   components: { },
   data() {
     return {
+      name: '总数统计',
       loading: false,
       data: [],
       cardBodyStyle: {

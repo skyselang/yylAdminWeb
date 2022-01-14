@@ -54,6 +54,7 @@ export default {
   components: {},
   data() {
     return {
+      name: 'IP信息',
       height: 680,
       model: {
         ip: '',

@@ -31,7 +31,7 @@ import screenHeight from '@/utils/screen-height'
 import { tokenInfo, tokenEdit } from '@/api/setting'
 
 export default {
-  name: 'SettingBaseToken',
+  name: 'SettingToken',
   components: {},
   data() {
     return {

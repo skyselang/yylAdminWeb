@@ -28,6 +28,7 @@ export default {
   components: { },
   data() {
     return {
+      name: '内容统计',
       loading: false
     }
   },
@@ -51,7 +52,7 @@ export default {
       var option = {
         title: {
           text: '内容',
-          subtext: '分类：' + data.category + '，内容：' + data.count,
+          subtext: '分类：' + data.category + '，内容：' + data.content,
           left: 'center'
         },
         tooltip: {

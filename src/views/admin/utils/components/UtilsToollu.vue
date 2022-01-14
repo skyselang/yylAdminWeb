@@ -10,6 +10,7 @@ export default {
   components: {},
   data() {
     return {
+      name: '在线工具',
       height: 600,
       src: 'https://tool.lu/'
     }

@@ -90,7 +90,7 @@
     </el-table>
     <!-- 添加修改 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false">
-      <el-form ref="ref" :rules="rules" :model="model" class="dialog-body" label-width="100px" :style="{height:height+'px'}">
+      <el-form ref="ref" :rules="rules" :model="model" label-width="100px" class="dialog-body" :style="{height:height-50+'px'}">
         <el-form-item label="父级" prop="region_pid">
           <el-cascader
             :key="pidKey"

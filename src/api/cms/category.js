@@ -57,7 +57,7 @@ export function dele(data) {
   })
 }
 /**
- * 内容分类设置父级
+ * 内容分类修改父级
  * @param {array} data 请求数据
  */
 export function pid(data) {

@@ -7,7 +7,7 @@ Math.easeInOutQuad = function(t, b, c, d) {
   return -c / 2 * (t * (t - 2) - 1) + b
 }
 
-// requestAnimationFrame for Smart Animating http://goo.gl/sx5sts
+// requestAnimationFrame for Smart Animating
 var requestAnimFrame = (function() {
   return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || function(callback) { window.setTimeout(callback, 1000 / 60) }
 })()

@@ -34,7 +34,7 @@ import screenHeight from '@/utils/screen-height'
 import { apiInfo, apiEdit } from '@/api/setting'
 
 export default {
-  name: 'SettingBaseApi',
+  name: 'SettingApi',
   components: {},
   data() {
     return {

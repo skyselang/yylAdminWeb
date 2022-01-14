@@ -32,7 +32,9 @@ export default {
   name: 'AdminUserCenter',
   components: { UserCenterInfo, UserCenterEdit, UserCenterPwd, UserCenterLog, UserCenterSetting },
   data() {
-    return {}
+    return {
+      name: '个人中心'
+    }
   },
   methods: {
     checkPermission

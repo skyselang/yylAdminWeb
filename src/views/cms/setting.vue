@@ -104,6 +104,7 @@ export default {
   components: { FileManage },
   data() {
     return {
+      name: '内容设置',
       height: 680,
       loading: false,
       model: {

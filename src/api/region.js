@@ -46,23 +46,23 @@ export function edit(data) {
   })
 }
 /**
- * 地区父级
- * @param {array} data 请求数据
- */
-export function pid(data) {
-  return request({
-    url: url + 'pid',
-    method: 'post',
-    data
-  })
-}
-/**
  * 地区删除
  * @param {array} data 请求数据
  */
 export function dele(data) {
   return request({
     url: url + 'dele',
+    method: 'post',
+    data
+  })
+}
+/**
+ * 地区修改父级
+ * @param {array} data 请求数据
+ */
+export function pid(data) {
+  return request({
+    url: url + 'pid',
     method: 'post',
     data
   })

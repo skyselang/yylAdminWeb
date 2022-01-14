@@ -1,7 +1,9 @@
 <script>
 export default {
   data() {
-    return {}
+    return {
+      name: '跳转页面'
+    }
   },
   created() {
     const { params, query } = this.$route

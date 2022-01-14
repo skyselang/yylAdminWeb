@@ -63,23 +63,45 @@ export function dele(data) {
   })
 }
 /**
+ * 文件修改分组
+ * @param {array} data 请求数据
+ */
+export function editgroup(data) {
+  return request({
+    url: url + 'editgroup',
+    method: 'post',
+    data
+  })
+}
+/**
+ * 文件修改类型
+ * @param {array} data 请求数据
+ */
+export function edittype(data) {
+  return request({
+    url: url + 'edittype',
+    method: 'post',
+    data
+  })
+}
+/**
+ * 文件修改域名
+ * @param {array} data 请求数据
+ */
+export function editdomain(data) {
+  return request({
+    url: url + 'editdomain',
+    method: 'post',
+    data
+  })
+}
+/**
  * 文件是否禁用
  * @param {array} data 请求数据
  */
 export function disable(data) {
   return request({
     url: url + 'disable',
-    method: 'post',
-    data
-  })
-}
-/**
- * 文件修改分组
- * @param {array} data 请求数据
- */
-export function grouping(data) {
-  return request({
-    url: url + 'grouping',
     method: 'post',
     data
   })

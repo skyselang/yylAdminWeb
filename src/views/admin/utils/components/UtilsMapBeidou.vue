@@ -10,6 +10,7 @@ export default {
   components: {},
   data() {
     return {
+      name: '北斗导航',
       height: 500,
       src: 'http://www.beidou.gov.cn/'
     }

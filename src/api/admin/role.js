@@ -68,7 +68,7 @@ export function dele(data) {
   })
 }
 /**
- * 角色禁用
+ * 角色是否禁用
  * @param {array} data 请求数据
  */
 export function disable(data) {

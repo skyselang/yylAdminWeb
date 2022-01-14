@@ -10,6 +10,7 @@ export default {
   components: {},
   data() {
     return {
+      name: '搜狗地图',
       height: 500,
       src: 'https://map.sogou.com/api/documentation/javascript/api2.5/examples_doc/event-arguments.html'
     }

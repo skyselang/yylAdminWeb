@@ -56,23 +56,12 @@ export function dele(data) {
   })
 }
 /**
- * 接口父级
+ * 接口修改父级
  * @param {array} data 请求数据
  */
 export function pid(data) {
   return request({
     url: url + 'pid',
-    method: 'post',
-    data
-  })
-}
-/**
- * 接口是否禁用
- * @param {array} data 请求数据
- */
-export function disable(data) {
-  return request({
-    url: url + 'disable',
     method: 'post',
     data
   })
@@ -84,6 +73,17 @@ export function disable(data) {
 export function unlogin(data) {
   return request({
     url: url + 'unlogin',
+    method: 'post',
+    data
+  })
+}
+/**
+ * 接口是否禁用
+ * @param {array} data 请求数据
+ */
+export function disable(data) {
+  return request({
+    url: url + 'disable',
     method: 'post',
     data
   })

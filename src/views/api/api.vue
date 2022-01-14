@@ -11,20 +11,20 @@
       <!-- 选中操作 -->
       <el-row>
         <el-col>
-          <el-checkbox v-model="isExpandAll" border @change="expandAll">收起</el-checkbox>
-          <el-button class="ya-margin-left" @click="selectOpen('pid')">父级</el-button>
-          <el-button @click="selectOpen('disable')">禁用</el-button>
-          <el-button @click="selectOpen('unlogin')">登录</el-button>
+          <el-checkbox v-model="isExpandAll" border title="收起/展开" @change="expandAll">收起</el-checkbox>
+          <el-button class="ya-margin-left" title="修改父级" @click="selectOpen('editpid')">父级</el-button>
+          <el-button title="是否禁用" @click="selectOpen('disable')">禁用</el-button>
+          <el-button title="无需登录" @click="selectOpen('unlogin')">登录</el-button>
           <el-button @click="selectOpen('dele')">删除</el-button>
           <el-button type="primary" @click="add()">添加</el-button>
         </el-col>
       </el-row>
-      <el-dialog title="选中操作" :visible.sync="selectDialog" top="20vh" :close-on-click-modal="false" :close-on-press-escape="false">
+      <el-dialog :title="selectTitle" :visible.sync="selectDialog" top="20vh" :close-on-click-modal="false" :close-on-press-escape="false">
         <el-form ref="selectRef" label-width="120px">
           <el-form-item :label="name+'ID'" prop="">
             <el-input v-model="selectIds" type="textarea" :rows="2" disabled />
           </el-form-item>
-          <el-form-item v-if="selectType==='pid'" label="父级" prop="">
+          <el-form-item v-if="selectType==='editpid'" label="父级" prop="">
             <el-cascader
               v-model="api_pid"
               :options="data"
@@ -52,13 +52,21 @@
       </el-dialog>
     </div>
     <!-- 列表 -->
-    <el-table ref="table" v-loading="loading" :data="data" :height="height" :row-key="idkey" @selection-change="select" @cell-dblclick="tableCellDbclick">
+    <el-table ref="table" v-loading="loading" :data="data" :height="height" :row-key="idkey" default-expand-all @selection-change="select" @cell-dblclick="cellDbclick">
       <el-table-column type="selection" width="42" title="全选/反选" />
       <el-table-column prop="api_name" label="接口名称" min-width="210" />
-      <el-table-column prop="api_url" label="接口链接" min-width="300" />
+      <el-table-column prop="api_url" label="接口链接" min-width="300">
+        <template slot="header">
+          <span>接口链接</span>
+          <el-tooltip placement="top">
+            <div slot="content">权限标识（双击单元格复制）</div>
+            <i class="el-icon-warning" />
+          </el-tooltip>
+        </template>
+      </el-table-column>
       <el-table-column prop="is_disable" label="是否禁用" min-width="95" align="center">
         <template slot="header">
-          <span>是否禁用 </span>
+          <span>是否禁用</span>
           <el-tooltip placement="top">
             <div slot="content">开启后无法访问</div>
             <i class="el-icon-info" title="" />
@@ -70,7 +78,7 @@
       </el-table-column>
       <el-table-column prop="is_unlogin" label="无需登录" min-width="95" align="center">
         <template slot="header">
-          <span>无需登录 </span>
+          <span>无需登录</span>
           <el-tooltip placement="top">
             <div slot="content">开启后不用登录也可以访问，如登录注册等</div>
             <i class="el-icon-info" title="" />
@@ -92,7 +100,7 @@
     </el-table>
     <!-- 添加修改 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false">
-      <el-form ref="ref" :rules="rules" :model="model" label-width="100px" class="dialog-body" :style="{height:height+'px'}">
+      <el-form ref="ref" :rules="rules" :model="model" label-width="100px" class="dialog-body" :style="{height:height-50+'px'}">
         <el-form-item label="接口父级" prop="api_pid">
           <el-cascader
             v-model="model.api_pid"
@@ -138,7 +146,7 @@ import { arrayColumn } from '@/utils/index'
 import { list, info, add, edit, dele, pid, disable, unlogin } from '@/api/api'
 
 export default {
-  name: 'Api',
+  name: 'SettingApi',
   components: { },
   directives: { },
   data() {
@@ -155,14 +163,13 @@ export default {
         api_id: '',
         api_pid: 0,
         api_name: '',
-        api_method: 'GET',
         api_url: '',
         api_sort: 250
       },
       rules: {
         api_name: [{ required: true, message: '请输入接口名称', trigger: 'blur' }]
       },
-      isExpandAll: true,
+      isExpandAll: false,
       selection: [],
       selectIds: '',
       selectTitle: '选中操作',
@@ -183,7 +190,7 @@ export default {
       this.loading = true
       list().then(res => {
         this.data = res.data.list
-        this.isExpandAll = true
+        this.isExpandAll = false
         this.loading = false
       }).catch(() => {
         this.loading = false
@@ -282,8 +289,8 @@ export default {
         this.selectAlert()
       } else {
         this.selectTitle = '选中操作'
-        if (selectType === 'pid') {
-          this.selectTitle = '设置父级'
+        if (selectType === 'editpid') {
+          this.selectTitle = '修改父级'
         } else if (selectType === 'disable') {
           this.selectTitle = '是否禁用'
         } else if (selectType === 'unlogin') {
@@ -303,8 +310,8 @@ export default {
         this.selectAlert()
       } else {
         const selectType = this.selectType
-        if (selectType === 'pid') {
-          this.setpid(this.selection)
+        if (selectType === 'editpid') {
+          this.editpid(this.selection)
         } else if (selectType === 'disable') {
           this.disable(this.selection, true)
         } else if (selectType === 'unlogin') {
@@ -317,7 +324,7 @@ export default {
       }
     },
     // 设置父级
-    setpid(row) {
+    editpid(row) {
       pid({
         ids: this.selectGetIds(row),
         api_pid: this.api_pid
@@ -404,8 +411,8 @@ export default {
     copy(text, event) {
       clip(text, event)
     },
-    // 表格单元格双击
-    tableCellDbclick(row, column, cell, event) {
+    // 单元格双击复制
+    cellDbclick(row, column, cell, event) {
       this.copy(row[column.property], event)
     }
   }

@@ -24,7 +24,7 @@ import screenHeight from '@/utils/screen-height'
 import { captchaInfo, captchaEdit } from '@/api/setting'
 
 export default {
-  name: 'SettingBaseCaptcha',
+  name: 'SettingCaptcha',
   components: {},
   data() {
     return {

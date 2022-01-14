@@ -57,7 +57,7 @@ export function dele(data) {
   })
 }
 /**
- * 留言是否已读
+ * 留言已读
  * @param {array} data 请求数据
  */
 export function isread(data) {

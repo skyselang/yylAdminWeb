@@ -5,7 +5,7 @@ import { getAdminToken } from '@/utils/auth'
 
 // 创建axios实例
 const service = axios.create({
-  baseURL: process.env.VUE_APP_BASE_API, // 接口地址
+  baseURL: process.env.VUE_APP_BASE_API, // 接口基础地址
   // withCredentials: true, // 跨域请求时发送Cookie
   timeout: 60000 // 请求超时时间
 })
@@ -15,7 +15,7 @@ service.interceptors.request.use(
   config => {
     // 发送请求之前
     if (store.getters.adminToken) {
-      // 让每个请求头部带上AdminToken
+      // 设置请求头部 AdminToken
       config.headers['AdminToken'] = getAdminToken()
     }
     return config
@@ -40,7 +40,7 @@ service.interceptors.response.use(
     if (res.code === 200) {
       return res
     } else {
-      // 返回码401：AdminToken无效
+      // 返回码401：AdminToken 无效
       if (res.code === 401) {
         MessageBox.confirm(res.msg, '提示', {
           confirmButtonText: '重新登录',

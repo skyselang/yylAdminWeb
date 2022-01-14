@@ -43,3 +43,14 @@ export function getFaviconUrl() {
 export function delFaviconUrl() {
   return Cookies.remove(FaviconUrlKey)
 }
+
+const NoticeKey = 'Notice'
+export function setNotice(notice) {
+  return Cookies.set(NoticeKey, notice)
+}
+export function getNotice() {
+  return Cookies.get(NoticeKey)
+}
+export function delNotice() {
+  return Cookies.remove(NoticeKey)
+}

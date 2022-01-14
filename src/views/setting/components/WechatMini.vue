@@ -60,7 +60,7 @@ import FileManage from '@/components/FileManage'
 import { miniInfo, miniEdit } from '@/api/setting-wechat'
 
 export default {
-  name: 'SettingWechatMini',
+  name: 'WechatMini',
   components: { FileManage },
   data() {
     return {

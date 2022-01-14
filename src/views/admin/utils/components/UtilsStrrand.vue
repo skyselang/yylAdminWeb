@@ -41,6 +41,7 @@ export default {
   components: {},
   data() {
     return {
+      name: '随机字符串',
       height: 680,
       model: {
         idss: [

@@ -20,14 +20,14 @@
         </el-col>
       </el-row>
     </div>
-    <index-message />
+    <index-notice />
   </div>
 </template>
 
 <script>
 import screenHeight from '@/utils/screen-height'
 import checkPermission from '@/utils/permission' // 权限判断函数
-import IndexMessage from './components/IndexMessage'
+import IndexNotice from './components/IndexNotice'
 import IndexCount from './components/IndexCount'
 import IndexMember from './components/IndexMember'
 import IndexCms from './components/IndexCms'
@@ -35,9 +35,10 @@ import IndexFile from './components/IndexFile'
 
 export default {
   name: 'Dashboard',
-  components: { IndexMessage, IndexCount, IndexMember, IndexFile, IndexCms },
+  components: { IndexNotice, IndexCount, IndexMember, IndexFile, IndexCms },
   data() {
     return {
+      name: '控制台',
       height: 680
     }
   },

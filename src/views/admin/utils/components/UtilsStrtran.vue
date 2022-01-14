@@ -52,6 +52,7 @@ export default {
   components: {},
   data() {
     return {
+      name: '字符串转换',
       height: 680,
       model: {
         str: '',

@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 const url = '/admin/Setting/'
-// ----------------基础管理----------------
+// ----------------管理管理----------------
 /**
  * Token设置信息
  * @param {array} params 请求数据

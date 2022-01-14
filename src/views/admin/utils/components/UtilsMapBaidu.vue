@@ -10,6 +10,7 @@ export default {
   components: {},
   data() {
     return {
+      name: '百度地图',
       height: 500,
       src: 'https://api.map.baidu.com/lbsapi/getpoint/index.html'
     }

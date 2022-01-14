@@ -9,6 +9,7 @@
             <el-option value="title" label="标题" />
             <el-option value="username" label="添加用户" />
             <el-option value="admin_user_id" label="用户ID" />
+            <el-option value="is_open" label="是否开启" />
             <el-option :value="idkey" label="ID" />
           </el-select>
           <el-input v-model="query.search_value" class="ya-search-value" placeholder="搜索内容" clearable />
@@ -34,6 +35,7 @@
       <el-row>
         <el-col>
           <el-button @click="selectOpen('isopen')">开启</el-button>
+          <el-button @click="selectOpen('opentime')">时间</el-button>
           <el-button @click="selectOpen('dele')">删除</el-button>
           <el-button type="primary" @click="add()">添加</el-button>
         </el-col>
@@ -45,6 +47,11 @@
           </el-form-item>
           <el-form-item v-if="selectType==='isopen'" label="开启" prop="">
             <el-switch v-model="is_open" :active-value="1" :inactive-value="0" />
+          </el-form-item>
+          <el-form-item v-else-if="selectType==='opentime'" label="开启时间" prop="">
+            <el-date-picker v-model="open_time_start" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" default-time="00:00:00" placeholder="开始时间" />
+            <span>至</span>
+            <el-date-picker v-model="open_time_end" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" default-time="23:59:59" placeholder="结束时间" />
           </el-form-item>
           <el-form-item v-else-if="selectType==='dele'" label="" prop="">
             <span style="color:red">确定要删除选中的{{ name }}吗？</span>
@@ -86,18 +93,18 @@
     <pagination v-show="count > 0" :total="count" :page.sync="query.page" :limit.sync="query.limit" @pagination="list" />
     <!-- 添加修改 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false">
-      <el-form ref="ref" :model="model" :rules="rules" class="dialog-body" label-width="100px" :style="{height:height+'px'}">
+      <el-form ref="ref" :model="model" :rules="rules" label-width="100px" class="dialog-body" :style="{height:height+'px'}">
         <el-form-item label="标题" prop="title">
           <el-input v-model="model.title" placeholder="请输入标题" clearable />
         </el-form-item>
         <el-form-item label="标题颜色" prop="color">
           <el-color-picker v-model="model.color" />
         </el-form-item>
-        <el-form-item label="排序" prop="sort">
-          <el-input v-model="model.sort" type="number" />
-        </el-form-item>
         <el-form-item label="开启" prop="is_open">
           <el-switch v-model="model.is_open" :active-value="1" :inactive-value="0" />
+        </el-form-item>
+        <el-form-item label="排序" prop="sort">
+          <el-input v-model="model.sort" type="number" />
         </el-form-item>
         <el-form-item label="开始时间" prop="open_time_start">
           <el-date-picker v-model="model.open_time_start" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" default-time="00:00:00" placeholder="开启开始时间" />
@@ -137,17 +144,17 @@ import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination'
 import RichEditor from '@/components/RichEditor'
 import { arrayColumn } from '@/utils/index'
-import { list, info, add, edit, dele, isopen } from '@/api/admin/message'
+import { list, info, add, edit, dele, isopen, opentime } from '@/api/admin/notice'
 
 export default {
-  name: 'AdminSystemMessage',
+  name: 'AdminSystemNotice',
   components: { Pagination, RichEditor },
   data() {
     return {
-      name: '消息',
+      name: '公告',
       height: 680,
       loading: false,
-      idkey: 'admin_message_id',
+      idkey: 'admin_notice_id',
       query: {
         page: 1,
         limit: 15,
@@ -159,7 +166,7 @@ export default {
       dialog: false,
       dialogTitle: '',
       model: {
-        admin_message_id: '',
+        admin_notice_id: '',
         admin_user_id: 0,
         admin_user: '',
         title: '',
@@ -182,11 +189,13 @@ export default {
       selectTitle: '选中操作',
       selectDialog: false,
       selectType: '',
-      is_open: 0
+      is_open: 0,
+      open_time_start: '',
+      open_time_end: ''
     }
   },
   created() {
-    this.height = screenHeight(280)
+    this.height = screenHeight()
     this.list()
   },
   methods: {
@@ -224,7 +233,7 @@ export default {
       this.$refs['ref'].validate(valid => {
         if (valid) {
           this.loading = true
-          if (this.model.admin_message_id) {
+          if (this.model.admin_notice_id) {
             edit(this.model).then(res => {
               this.list()
               this.dialog = false
@@ -300,6 +309,8 @@ export default {
         this.selectTitle = '选中操作'
         if (selectType === 'isopen') {
           this.selectTitle = '是否开启'
+        } else if (selectType === 'opentime') {
+          this.selectTitle = '开启时间'
         } else if (selectType === 'dele') {
           this.selectTitle = '删除' + this.name
         }
@@ -317,6 +328,8 @@ export default {
         const selectType = this.selectType
         if (selectType === 'isopen') {
           this.isopen(this.selection, true)
+        } else if (selectType === 'opentime') {
+          this.opentime(this.selection)
         } else if (selectType === 'dele') {
           this.dele(this.selection)
         }
@@ -336,6 +349,24 @@ export default {
         isopen({
           ids: this.selectGetIds(row),
           is_open: is_open
+        }).then(res => {
+          this.list()
+          this.$message.success(res.msg)
+        }).catch(() => {
+          this.list()
+        })
+      }
+    },
+    // 开启时间
+    opentime(row) {
+      if (!row.length) {
+        this.selectAlert()
+      } else {
+        this.loading = true
+        opentime({
+          ids: this.selectGetIds(row),
+          open_time_start: this.open_time_start,
+          open_time_end: this.open_time_end
         }).then(res => {
           this.list()
           this.$message.success(res.msg)

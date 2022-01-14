@@ -31,7 +31,7 @@
       <!-- 选中操作 -->
       <el-row>
         <el-col>
-          <el-button @click="selectOpen('disable')">禁用</el-button>
+          <el-button title="是否禁用" @click="selectOpen('disable')">禁用</el-button>
           <el-button @click="selectOpen('dele')">删除</el-button>
           <el-button type="primary" @click="add()">添加</el-button>
         </el-col>
@@ -78,7 +78,7 @@
     </el-table>
     <!-- 分页 -->
     <pagination v-show="count > 0" :total="count" :page.sync="query.page" :limit.sync="query.limit" @pagination="list" />
-    <!-- 添加、修改 -->
+    <!-- 添加修改 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false">
       <el-form ref="ref" v-loading="dialogLoad" :rules="rules" :model="model" label-width="100px" class="dialog-body" :style="{height:height+'px'}">
         <el-form-item label="名称" prop="role_name">
@@ -92,17 +92,17 @@
         </el-form-item>
         <el-form-item label="菜单">
           <span>
-            <el-checkbox v-model="menuCheckAll" title="全选" @change="menuCheckAllChange">全选</el-checkbox>
-            <el-checkbox v-model="menuExpandAll" title="全选" @change="menuExpandAllChange">展开</el-checkbox>
+            <el-checkbox v-model="menuCheckAll" title="全选/反选" @change="menuCheckAllChange">全选</el-checkbox>
+            <el-checkbox v-model="menuExpandAll" title="收起/展开" @change="menuExpandAllChange">收起</el-checkbox>
           </span>
           <el-tree
-            :key="menuKey"
             ref="menuRef"
+            :key="menuKey"
             :data="menuData"
-            :props="{children: 'children', label: 'menu_name'}"
-            :expand-on-click-node="false"
+            :props="menuProps"
             :default-checked-keys="model.admin_menu_ids"
-            :default-expand-all="menuExpandAll"
+            :expand-on-click-node="false"
+            :default-expand-all="true"
             :check-strictly="false"
             node-key="admin_menu_id"
             highlight-current
@@ -194,8 +194,9 @@ export default {
       },
       menuKey: 1,
       menuData: [],
+      menuProps: { children: 'children', label: 'menu_name' },
       menuCheckAll: false,
-      menuExpandAll: true,
+      menuExpandAll: false,
       selection: [],
       selectIds: '',
       selectTitle: '选中操作',
@@ -222,6 +223,7 @@ export default {
       list(this.query).then(res => {
         this.datas = res.data.list
         this.count = res.data.count
+        this.menuExpandAll = false
         this.loading = false
       }).catch(() => {
         this.loading = false
@@ -264,18 +266,18 @@ export default {
           this.loading = true
           if (this.model[this.idkey]) {
             edit(this.model).then(res => {
+              this.dialog = false
               this.list()
               this.reset()
-              this.dialog = false
               this.$message.success(res.msg)
             }).catch(() => {
               this.loading = false
             })
           } else {
             add(this.model).then(res => {
+              this.dialog = false
               this.list()
               this.reset()
-              this.dialog = false
               this.$message.success(res.msg)
             }).catch(() => {
               this.loading = false
@@ -288,7 +290,7 @@ export default {
     reset(row) {
       ++this.menuKey
       this.menuCheckAll = false
-      this.menuExpandAll = true
+      this.menuExpandAll = false
       if (row) {
         this.model = row
       } else {
@@ -420,12 +422,10 @@ export default {
       this.model.admin_menu_ids = this.$refs.menuRef.getCheckedKeys()
     },
     menuExpandAllChange() {
-      this.menuExpandAllSet()
-    },
-    menuExpandAllSet() {
+      const expanded = !this.menuExpandAll
       const length = this.$refs.menuRef.store._getAllNodes().length
       for (let i = 0; i < length; i++) {
-        this.$refs.menuRef.store._getAllNodes()[i].expanded = this.menuExpandAll
+        this.$refs.menuRef.store._getAllNodes()[i].expanded = expanded
       }
     },
     // 用户显示

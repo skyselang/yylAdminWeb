@@ -29,7 +29,7 @@
 
 <script>
 import { captcha, setting } from '@/api/admin/login'
-import { delMessage } from '@/utils/auth'
+import { delNotice } from '@/utils/settings'
 
 export default {
   name: 'AdminLogin',
@@ -112,7 +112,7 @@ export default {
         if (valid) {
           this.loading = true
           this.$store.dispatch('user/login', this.model).then(() => {
-            delMessage()
+            delNotice()
             this.$router.push({
               path: this.redirect || '/',
               query: this.otherQuery
@@ -161,7 +161,7 @@ export default {
     position: relative;
 
     .login-title-name {
-      margin: 0px auto 30px auto;
+      margin: 0px auto 22px auto;
       text-align: center;
       font-weight: bold;
       font-size: 26px;
@@ -170,7 +170,7 @@ export default {
   }
 
   .login-logo {
-    margin-bottom: 10px;
+    margin-bottom: 22px;
     text-align: center;
 
     .login-logo-img {

@@ -42,6 +42,7 @@ export default {
   components: { },
   data() {
     return {
+      name: '会员统计',
       loading: false,
       date: []
     }

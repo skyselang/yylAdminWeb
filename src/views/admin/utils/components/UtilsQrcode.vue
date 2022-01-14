@@ -31,6 +31,7 @@ export default {
   components: { QrcodeVue },
   data() {
     return {
+      name: '二维码',
       height: 680,
       model: {
         str: '',

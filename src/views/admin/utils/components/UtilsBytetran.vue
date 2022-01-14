@@ -54,6 +54,7 @@ export default {
   components: {},
   data() {
     return {
+      name: '字节转换',
       height: 680,
       model: {
         type: '',

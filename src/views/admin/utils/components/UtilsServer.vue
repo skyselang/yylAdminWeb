@@ -147,6 +147,7 @@ export default {
   name: 'UtilsServer',
   data() {
     return {
+      name: '服务器信息',
       height: 680,
       loading: false,
       model: {}

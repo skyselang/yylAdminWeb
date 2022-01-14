@@ -13,17 +13,6 @@ export function index(params) {
   })
 }
 /**
- * 消息
- * @param {array} params 请求参数
- */
-export function message(params) {
-  return request({
-    url: url + 'message',
-    method: 'get',
-    params: params
-  })
-}
-/**
  * 总数统计
  * @param {array} params 请求参数
  */
@@ -67,3 +56,15 @@ export function file(params) {
     params: params
   })
 }
+/**
+ * 公告
+ * @param {array} params 请求参数
+ */
+export function notice(params) {
+  return request({
+    url: url + 'notice',
+    method: 'get',
+    params: params
+  })
+}
+

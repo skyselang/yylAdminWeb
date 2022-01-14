@@ -57,7 +57,7 @@ export function dele(data) {
   })
 }
 /**
- * 会员设置地区
+ * 会员修改地区
  * @param {array} data 请求数据
  */
 export function region(data) {

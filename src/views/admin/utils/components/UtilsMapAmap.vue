@@ -10,6 +10,7 @@ export default {
   components: {},
   data() {
     return {
+      name: '高德地图',
       height: 500,
       src: 'https://lbs.amap.com/console/show/picker'
     }

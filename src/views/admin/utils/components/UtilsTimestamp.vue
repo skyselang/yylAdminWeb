@@ -33,6 +33,7 @@ export default {
   components: {},
   data() {
     return {
+      name: '时间戳转换',
       height: 680,
       model: {
         type: 'timestamp',

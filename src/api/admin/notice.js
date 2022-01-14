@@ -1,8 +1,8 @@
 import request from '@/utils/request'
-const url = '/admin/admin.Message/'
-// ----------------消息管理----------------
+const url = '/admin/admin.Notice/'
+// ----------------公告管理----------------
 /**
- * 消息列表
+ * 公告列表
  * @param {array} params 请求参数
  */
 export function list(params) {
@@ -13,7 +13,7 @@ export function list(params) {
   })
 }
 /**
- * 消息信息
+ * 公告信息
  * @param {array} params 请求参数
  */
 export function info(params) {
@@ -24,7 +24,7 @@ export function info(params) {
   })
 }
 /**
- * 消息添加
+ * 公告添加
  * @param {array} data 请求数据
  */
 export function add(data) {
@@ -35,7 +35,7 @@ export function add(data) {
   })
 }
 /**
- * 消息修改
+ * 公告修改
  * @param {array} data 请求数据
  */
 export function edit(data) {
@@ -46,7 +46,7 @@ export function edit(data) {
   })
 }
 /**
- * 消息删除
+ * 公告删除
  * @param {array} data 请求数据
  */
 export function dele(data) {
@@ -57,12 +57,23 @@ export function dele(data) {
   })
 }
 /**
- * 消息是否开启
+ * 公告是否开启
  * @param {array} data 请求数据
  */
 export function isopen(data) {
   return request({
     url: url + 'isopen',
+    method: 'post',
+    data
+  })
+}
+/**
+ * 公告开启时间
+ * @param {array} data 请求数据
+ */
+export function opentime(data) {
+  return request({
+    url: url + 'opentime',
     method: 'post',
     data
   })

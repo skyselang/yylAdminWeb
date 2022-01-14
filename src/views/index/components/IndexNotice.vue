@@ -25,11 +25,14 @@
     <el-dialog :title="infoTitle" :visible.sync="infoDialog" top="9vh" center :close-on-click-modal="false" :close-on-press-escape="false">
       <!-- 详情 -->
       <el-form ref="ref" :model="model" label-width="0" class="dialog-body" :style="{height:height+'px'}">
-        <el-form-item label="" prop="" style="text-align:center">
-          <span>{{ model.create_time }}</span>
-        </el-form-item>
         <el-form-item label="" prop="content">
           <div v-html="model.content" />
+        </el-form-item>
+        <el-form-item label="" prop="" style="text-align:right; margin-bottom:0">
+          <span>{{ model.admin_user }}</span>
+        </el-form-item>
+        <el-form-item label="" prop="" style="text-align:right; margin-bottom:0">
+          <span>{{ model.create_time }}</span>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -38,15 +41,16 @@
 <script>
 import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination'
-import { setMessage, getMessage } from '@/utils/auth'
-import { message } from '@/api/index'
-import { info } from '@/api/admin/message'
+import { setNotice, getNotice } from '@/utils/settings'
+import { notice } from '@/api/index'
+import { info } from '@/api/admin/notice'
 
 export default {
-  name: 'IndexMessage',
+  name: 'IndexNotice',
   components: { Pagination },
   data() {
     return {
+      name: '公告',
       height: 680,
       loading: false,
       query: {
@@ -56,15 +60,15 @@ export default {
       data: [],
       count: 0,
       dialog: false,
-      dialogTitle: '消息',
+      dialogTitle: '公告',
       model: {
-        admin_message_id: '',
+        admin_notice_id: '',
         title: '',
         intro: '',
         content: '',
         create_time: ''
       },
-      infoTitle: '消息',
+      infoTitle: '公告',
       infoDialog: false
     }
   },
@@ -74,10 +78,10 @@ export default {
   },
   methods: {
     list() {
-      const msg = getMessage()
+      const msg = getNotice()
       if (!msg) {
         this.loading = true
-        message(this.query).then(res => {
+        notice(this.query).then(res => {
           this.data = res.data.list
           this.count = res.data.count
           this.loading = false
@@ -90,6 +94,7 @@ export default {
                 cancelButtonText: '不再提示',
                 closeOnClickModal: false,
                 closeOnPressEscape: false,
+                showClose: false,
                 center: true
               }).then(() => {
                 this.info(row)
@@ -108,7 +113,7 @@ export default {
     info(row) {
       this.infoDialog = true
       info({
-        admin_message_id: row.admin_message_id
+        admin_notice_id: row.admin_notice_id
       }).then(res => {
         this.model = res.data
         this.infoTitle = res.data.title
@@ -122,7 +127,7 @@ export default {
     },
     nohint(count) {
       this.dialog = false
-      setMessage(count)
+      setNotice(count)
     }
   }
 }

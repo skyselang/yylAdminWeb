@@ -11,9 +11,9 @@
       <!-- 选中操作 -->
       <el-row>
         <el-col>
-          <el-checkbox v-model="isExpandAll" border @change="expandAll">收起</el-checkbox>
-          <el-button class="ya-margin-left" title="设置父级" @click="selectOpen('pid')">父级</el-button>
-          <el-button @click="selectOpen('hide')">隐藏</el-button>
+          <el-checkbox v-model="isExpandAll" border title="收起/展开" @change="expandAll">收起</el-checkbox>
+          <el-button title="修改父级" class="ya-margin-left" @click="selectOpen('pid')">父级</el-button>
+          <el-button title="是否隐藏" @click="selectOpen('hide')">隐藏</el-button>
           <el-button @click="selectOpen('dele')">删除</el-button>
           <el-button type="primary" @click="add()">添加</el-button>
         </el-col>
@@ -48,7 +48,7 @@
       </el-dialog>
     </div>
     <!-- 列表 -->
-    <el-table ref="table" v-loading="loading" :data="data" :height="height+30" :row-key="idkey" @selection-change="select">
+    <el-table ref="table" v-loading="loading" :data="data" :height="height+50" :row-key="idkey" default-expand-all @selection-change="select">
       <el-table-column type="selection" width="42" title="全选/反选" />
       <el-table-column prop="category_name" label="名称" min-width="250" show-overflow-tooltip />
       <el-table-column :prop="idkey" label="ID" min-width="100" />
@@ -68,7 +68,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <!-- 添加、修改 -->
+    <!-- 添加修改 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false">
       <el-form ref="ref" :rules="rules" :model="model" class="dialog-body" label-width="100px" :style="{height:height+'px'}">
         <el-form-item label="父级" prop="category_pid">
@@ -174,7 +174,7 @@ export default {
         category_name: [{ required: true, message: '请输入分类名称', trigger: 'blur' }]
       },
       categoryProps: { checkStrictly: true, value: 'category_id', label: 'category_name' },
-      isExpandAll: true,
+      isExpandAll: false,
       selection: [],
       selectIds: '',
       selectTitle: '选中操作',
@@ -195,7 +195,7 @@ export default {
       this.loading = true
       list(this.query).then(res => {
         this.data = res.data.list
-        this.isExpandAll = true
+        this.isExpandAll = false
         this.loading = false
       }).catch(() => {
         this.loading = false
@@ -297,7 +297,7 @@ export default {
       } else {
         this.selectTitle = '选中操作'
         if (selectType === 'pid') {
-          this.selectTitle = '设置父级'
+          this.selectTitle = '修改父级'
         } else if (selectType === 'hide') {
           this.selectTitle = '是否隐藏'
         } else if (selectType === 'dele') {
@@ -316,7 +316,7 @@ export default {
       } else {
         const type = this.selectType
         if (type === 'pid') {
-          this.setpid(this.selection)
+          this.editpid(this.selection)
         } else if (type === 'hide') {
           this.ishide(this.selection, true)
         } else if (type === 'dele') {
@@ -325,8 +325,8 @@ export default {
         this.selectDialog = false
       }
     },
-    // 设置父级
-    setpid(row) {
+    // 修改父级
+    editpid(row) {
       pid({
         ids: this.selectGetIds(row),
         category_pid: this.category_pid

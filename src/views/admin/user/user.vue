@@ -36,9 +36,9 @@
       <!-- 选中操作 -->
       <el-row>
         <el-col>
-          <el-button @click="selectOpen('super')">超管</el-button>
-          <el-button @click="selectOpen('disable')">禁用</el-button>
-          <el-button @click="selectOpen('password')">密码</el-button>
+          <el-button title="是否超管" @click="selectOpen('super')">超管</el-button>
+          <el-button title="是否禁用" @click="selectOpen('disable')">禁用</el-button>
+          <el-button title="重置密码" @click="selectOpen('password')">密码</el-button>
           <el-button @click="selectOpen('dele')">删除</el-button>
           <el-button type="primary" @click="add()">添加</el-button>
         </el-col>
@@ -173,22 +173,26 @@
           </el-checkbox-group>
         </el-form-item>
         <el-form-item label="按菜单">
+          <span>
+            <el-checkbox v-model="menuCheckAll" title="全选/反选" @change="menuCheckAllChange">全选</el-checkbox>
+            <el-checkbox v-model="menuExpandAll" title="收起/展开" @change="menuExpandAllChange">收起</el-checkbox>
+          </span>
           <el-tree
             ref="menuRef"
             :key="menuKey"
-            :data="menuTree"
+            :data="menuData"
             :props="menuProps"
             :default-checked-keys="model.admin_menu_ids"
             :expand-on-click-node="false"
+            :default-expand-all="true"
+            :check-strictly="false"
             node-key="admin_menu_id"
-            default-expand-all
-            show-checkbox
-            check-strictly
             highlight-current
-            @check="ruleMenuCheck"
+            show-checkbox
+            @check="menuCheck"
           >
             <span slot-scope="{ node, data }" class="custom-tree-node">
-              <span>{{ node.label }}<i v-if="data.is_check" class="el-icon-check" title="已分配" /></span>
+              <span>{{ node.label }}<i v-if="data.is_check" class="el-icon-check" style="color:#1890ff" title="已分配" /></span>
               <span>
                 <i v-if="data.is_role" class="el-icon-s-custom" style="margin-left:10px" title="按角色" />
                 <i v-if="data.is_menu" class="el-icon-menu" style="margin-left:10px" title="按菜单" />
@@ -278,8 +282,10 @@ export default {
       ruleDialog: false,
       roleData: [],
       menuKey: 1,
-      menuTree: [],
+      menuData: [],
       menuProps: { children: 'children', label: 'menu_name' },
+      menuCheckAll: false,
+      menuExpandAll: false,
       fileDialog: false
     }
   },
@@ -517,12 +523,14 @@ export default {
     // 分配权限
     rule(row) {
       this.ruleDialog = true
+      this.menuCheckAll = false
+      this.menuExpandAll = false
       var id = {}
       id[this.idkey] = row[this.idkey]
       rule(id).then(res => {
         this.model[this.idkey] = row[this.idkey]
         this.roleData = res.data.admin_role
-        this.menuTree = res.data.admin_menu
+        this.menuData = res.data.admin_menu
         this.model.username = res.data.username
         this.model.nickname = res.data.nickname
         this.model.admin_role_ids = res.data.admin_role_ids
@@ -534,9 +542,6 @@ export default {
     ruleCancel() {
       this.ruleDialog = false
       this.reset()
-    },
-    ruleMenuCheck(data, node) {
-      this.model.admin_menu_ids = node.checkedKeys
     },
     ruleSubmit() {
       this.$refs['roleRef'].validate(valid => {
@@ -555,6 +560,28 @@ export default {
           })
         }
       })
+    },
+    // 菜单选择
+    menuCheck() {
+      this.menuCheckSetKeys()
+    },
+    menuCheckAllChange() {
+      if (this.menuCheckAll) {
+        this.$refs.menuRef.setCheckedNodes(this.menuData)
+      } else {
+        this.$refs.menuRef.setCheckedKeys([])
+      }
+      this.menuCheckSetKeys()
+    },
+    menuCheckSetKeys() {
+      this.model.admin_menu_ids = this.$refs.menuRef.getCheckedKeys()
+    },
+    menuExpandAllChange() {
+      const expanded = !this.menuExpandAll
+      const length = this.$refs.menuRef.store._getAllNodes().length
+      for (let i = 0; i < length; i++) {
+        this.$refs.menuRef.store._getAllNodes()[i].expanded = expanded
+      }
     },
     // 上传头像
     fileUpload() {

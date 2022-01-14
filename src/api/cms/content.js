@@ -2,7 +2,7 @@ import request from '@/utils/request'
 const url = '/admin/cms.Content/'
 // ----------------内容管理----------------
 /**
- * 内容分类列表
+ * 分类列表
  * @param {array} params 请求参数
  */
 export function category(params) {
@@ -68,7 +68,7 @@ export function dele(data) {
   })
 }
 /**
- * 内容设置分类
+ * 内容修改分类
  * @param {array} data 请求数据
  */
 export function cate(data) {

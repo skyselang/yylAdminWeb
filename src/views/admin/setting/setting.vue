@@ -37,7 +37,9 @@ export default {
   directives: { },
   components: { SettingCache, SettingToken, SettingCaptcha, SettingLog, SettingApi, SettingSystem },
   data() {
-    return {}
+    return {
+      name: '系统管理'
+    }
   },
   created() { },
   methods: {

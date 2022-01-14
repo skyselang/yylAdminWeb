@@ -322,10 +322,10 @@ export const asyncRoutes = [
         component: () => import('@/views/region/region')
       },
       {
-        path: 'base',
-        name: 'SettingBase',
+        path: 'setting',
+        name: 'SettingSetting',
         meta: {
-          title: '基础设置',
+          title: '设置管理',
           icon: 'el-icon-setting',
           roles: [
             'admin/Setting/tokenInfo',
@@ -334,7 +334,7 @@ export const asyncRoutes = [
             'admin/Setting/apiInfo'
           ]
         },
-        component: () => import('@/views/setting/base')
+        component: () => import('@/views/setting/setting')
       }
     ]
   },
@@ -428,7 +428,7 @@ export const asyncRoutes = [
       title: '系统管理',
       icon: 'el-icon-s-tools',
       roles: [
-        'admin/admin.Message/list',
+        'admin/admin.Notice/list',
         'admin/admin.Setting/cacheInfo',
         'admin/admin.Setting/tokenInfo',
         'admin/admin.Setting/captchaInfo',
@@ -444,14 +444,14 @@ export const asyncRoutes = [
     alwaysShow: true,
     children: [
       {
-        path: 'message',
-        name: 'AdminSystemMessage',
+        path: 'notice',
+        name: 'AdminSystemNotice',
         meta: {
-          title: '消息管理',
+          title: '公告管理',
           icon: 'el-icon-s-tools',
-          roles: ['admin/admin.Message/list']
+          roles: ['admin/admin.Notice/list']
         },
-        component: () => import('@/views/admin/message/message')
+        component: () => import('@/views/admin/notice/notice')
       },
       {
         path: 'setting',

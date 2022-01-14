@@ -30,7 +30,9 @@ export default {
   name: 'UtilsMap',
   components: { UtilsMapAmap, UtilsMapBaidu, UtilsMapSogou, UtilsMapTencent, UtilsMapBeidou },
   data() {
-    return {}
+    return {
+      name: '地图'
+    }
   },
   created() { },
   methods: {

@@ -31,7 +31,7 @@
       <!-- 选中操作 -->
       <el-row>
         <el-col>
-          <el-button @click="selectOpen('disable')">禁用</el-button>
+          <el-button title="是否禁用" @click="selectOpen('disable')">禁用</el-button>
           <el-button @click="selectOpen('dele')">删除</el-button>
           <el-button type="primary" @click="add()">添加</el-button>
         </el-col>

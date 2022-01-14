@@ -27,7 +27,9 @@
 export default {
   name: 'AdminBase401',
   data() {
-    return {}
+    return {
+      name: '401页面'
+    }
   },
   methods: {
     back() {

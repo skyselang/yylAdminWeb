@@ -34,7 +34,7 @@
       <!-- 选中操作 -->
       <el-row>
         <el-col>
-          <el-button title="设置地区" @click="selectOpen('region')">地区</el-button>
+          <el-button title="修改地区" @click="selectOpen('region')">地区</el-button>
           <el-button title="重置密码" @click="selectOpen('repwd')">密码</el-button>
           <el-button title="是否禁用" @click="selectOpen('disable')">禁用</el-button>
           <el-button @click="selectOpen('dele')">删除</el-button>
@@ -52,7 +52,6 @@
               :options="regionData"
               :props="regionProps"
               style="width:100%"
-              placeholder="地区"
               clearable
               filterable
               @change="selectRegionChange"
@@ -78,7 +77,7 @@
     <el-table ref="table" v-loading="loading" :data="data" :height="height" @sort-change="sort" @selection-change="select">
       <el-table-column type="selection" width="42" title="全选/反选" />
       <el-table-column :prop="idkey" label="ID" min-width="100" sortable="custom" />
-      <el-table-column prop="avatar_id" label="头像" min-width="80">
+      <el-table-column prop="avatar_id" label="头像" min-width="60">
         <template slot-scope="scope">
           <el-image v-if="scope.row.avatar_url" class="ya-img-table" :src="scope.row.avatar_url" :preview-src-list="[scope.row.avatar_url]" title="点击查看大图" />
         </template>
@@ -399,7 +398,7 @@ export default {
       } else {
         this.selectTitle = '选中操作'
         if (selectType === 'region') {
-          this.selectTitle = '设置地区'
+          this.selectTitle = '修改地区'
         } else if (selectType === 'repwd') {
           this.selectTitle = '重置密码'
         } else if (selectType === 'disable') {
@@ -431,7 +430,7 @@ export default {
         this.selectDialog = false
       }
     },
-    // 设置地区
+    // 修改地区
     region(row) {
       if (!row.length) {
         this.selectAlert()

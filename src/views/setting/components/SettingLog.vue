@@ -29,7 +29,7 @@ import screenHeight from '@/utils/screen-height'
 import { logInfo, logEdit } from '@/api/setting'
 
 export default {
-  name: 'SettingBaseLog',
+  name: 'SettingLog',
   components: {},
   data() {
     return {

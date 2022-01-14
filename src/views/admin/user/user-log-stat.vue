@@ -147,6 +147,7 @@ export default {
   components: { },
   data() {
     return {
+      name: '用户日志统计',
       height: 600,
       loadNum: false,
       loadDate: false,

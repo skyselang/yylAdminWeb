@@ -2,16 +2,16 @@
   <div class="app-container">
     <el-tabs>
       <el-tab-pane v-if="checkPermission(['admin/Setting/tokenInfo'])" label="Token设置" lazy>
-        <base-token />
+        <setting-token />
       </el-tab-pane>
       <el-tab-pane v-if="checkPermission(['admin/Setting/captchaInfo'])" label="验证码设置" lazy>
-        <base-captcha />
+        <setting-captcha />
       </el-tab-pane>
       <el-tab-pane v-if="checkPermission(['admin/Setting/logInfo'])" label="日志设置" lazy>
-        <base-log />
+        <setting-log />
       </el-tab-pane>
       <el-tab-pane v-if="checkPermission(['admin/Setting/apiInfo'])" label="接口设置" lazy>
-        <base-api />
+        <setting-api />
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -19,17 +19,17 @@
 
 <script>
 import checkPermission from '@/utils/permission' // 权限判断函数
-import BaseToken from './components/BaseToken'
-import BaseCaptcha from './components/BaseCaptcha'
-import BaseLog from './components/BaseLog'
-import BaseApi from './components/BaseApi'
+import SettingToken from './components/SettingToken'
+import SettingCaptcha from './components/SettingCaptcha'
+import SettingLog from './components/SettingLog'
+import SettingApi from './components/SettingApi'
 
 export default {
-  name: 'SettingBase',
-  components: { BaseToken, BaseCaptcha, BaseLog, BaseApi },
+  name: 'SettingSetting',
+  components: { SettingToken, SettingCaptcha, SettingLog, SettingApi },
   data() {
     return {
-      name: '基础设置'
+      name: '设置管理'
     }
   },
   created() {},

@@ -43,13 +43,13 @@
       <!-- 选中操作 -->
       <el-row>
         <el-col>
-          <el-button @click="selectOpen('cate')">分类</el-button>
-          <el-button @click="selectOpen('top')">置顶</el-button>
-          <el-button @click="selectOpen('hot')">热门</el-button>
-          <el-button @click="selectOpen('rec')">推荐</el-button>
-          <el-button @click="selectOpen('hide')">隐藏</el-button>
+          <el-button title="修改分类" @click="selectOpen('cate')">分类</el-button>
+          <el-button title="是否置顶" @click="selectOpen('top')">置顶</el-button>
+          <el-button title="是否热门" @click="selectOpen('hot')">热门</el-button>
+          <el-button title="是否推荐" @click="selectOpen('rec')">推荐</el-button>
+          <el-button title="是否隐藏" @click="selectOpen('hide')">隐藏</el-button>
           <el-button @click="selectOpen('dele')">删除</el-button>
-          <el-button v-permission="['admin/cms.Content/recover']" @click="recover()">回收站</el-button>
+          <el-button @click="recover()">回收站</el-button>
           <el-button type="primary" @click="add()">添加</el-button>
         </el-col>
       </el-row>
@@ -95,7 +95,7 @@
     <el-table ref="table" v-loading="loading" :data="data" :height="height" @sort-change="sort" @selection-change="select">
       <el-table-column type="selection" width="42" title="全选/反选" />
       <el-table-column :prop="idkey" label="ID" min-width="100" sortable="custom" />
-      <el-table-column prop="img_url" label="图片" min-width="70">
+      <el-table-column prop="img_url" label="图片" min-width="60">
         <template slot-scope="scope">
           <el-image v-if="scope.row.img_url" class="ya-img-table" :src="scope.row.img_url" :preview-src-list="[scope.row.img_url]" title="点击查看大图" />
         </template>
@@ -170,7 +170,7 @@
               <el-button size="mini" @click="fileUpload('image', '上传图片')">上传图片</el-button>
             </el-col>
             <el-col :span="16">
-              <div>每张图片大小不超过 300 KB，jpg、png格式。</div>
+              <div>每张图片大小不超过 1 MB。</div>
             </el-col>
           </el-row>
           <el-row>
@@ -199,12 +199,14 @@
           </el-row>
           <el-row>
             <el-col v-for="(item, index) in model.videos" :key="index" :span="6" class="ya-file">
-              <video width="100%" height="100%" controls>
-                <source :src="item.file_url" type="video/mp4">
-                <object :data="item.file_url" width="100%" height="100%">
-                  <embed :src="item.file_url" width="100%" height="100%">
-                </object>
-              </video>
+              <div :style="{width:'100%',height:((height-height*0.1)/3)-((height-height*0.1)/3*0.5)+'px'}">
+                <video width="100%" height="100%" controls>
+                  <source :src="item.file_url" type="video/mp4">
+                  <object :data="item.file_url" width="100%" height="100%">
+                    <embed :src="item.file_url" width="100%" height="100%">
+                  </object>
+                </video>
+              </div>
               <div>
                 <span class="ya-file-name" :title="item.file_name+'.'+item.file_ext">
                   {{ item.file_name }}.{{ item.file_ext }}
@@ -223,11 +225,11 @@
               <el-button size="mini" @click="fileUpload('word', '上传附件')">上传附件</el-button>
             </el-col>
             <el-col :span="16">
-              <div>每个附件大小不超过 5 MB。</div>
+              <div>每个附件大小不超过 10 MB。</div>
             </el-col>
           </el-row>
           <el-row v-for="(item, index) in model.files" :key="index">
-            <el-col :span="20" class="ya-file-name">
+            <el-col :span="18" class="ya-file-name">
               <i v-if="item.file_type==='image'" class="el-icon-picture" />
               <i v-else-if="item.file_type==='audio'" class="el-icon-headset" />
               <i v-else-if="item.file_type==='video'" class="el-icon-video-play" />
@@ -237,7 +239,7 @@
                 {{ item.file_name }}.{{ item.file_ext }}
               </span>
             </el-col>
-            <el-col :span="4">
+            <el-col :span="6">
               <el-link :href="item.file_url" :underline="false" :download="item.file_url" target="_blank" class="ya-file-link">
                 下载
               </el-link>
@@ -312,7 +314,7 @@
         <el-row>
           <el-col>
             <el-button @click="recoverSelectOpen('reco')">恢复</el-button>
-            <el-button @click="recoverSelectOpen('dele')">删除</el-button>
+            <el-button title="彻底删除" @click="recoverSelectOpen('dele')">删除</el-button>
           </el-col>
         </el-row>
         <el-dialog :title="recoverSelectTitle" :visible.sync="recoverSelectDialog" top="20vh" append-to-body :close-on-click-modal="false" :close-on-press-escape="false">
@@ -371,7 +373,7 @@
         <el-table-column label="操作" min-width="85" align="right" fixed="right">
           <template slot-scope="{ row }">
             <el-button size="mini" type="text" @click="recoverSelectOpen('reco',row)">恢复</el-button>
-            <el-button size="mini" type="text" @click="recoverSelectOpen('dele',row)">删除</el-button>
+            <el-button size="mini" type="text" title="彻底删除" @click="recoverSelectOpen('dele',row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -580,7 +582,7 @@ export default {
       } else {
         this.selectTitle = '选中操作'
         if (selectType === 'cate') {
-          this.selectTitle = '设置分类'
+          this.selectTitle = '修改分类'
         } else if (selectType === 'top') {
           this.selectTitle = '是否置顶'
         } else if (selectType === 'hot') {
@@ -605,7 +607,7 @@ export default {
       } else {
         const selectType = this.selectType
         if (selectType === 'cate') {
-          this.setcate(this.selection)
+          this.editcate(this.selection)
         } else if (selectType === 'top') {
           this.istop(this.selection, true)
         } else if (selectType === 'hot') {
@@ -620,8 +622,8 @@ export default {
         this.selectDialog = false
       }
     },
-    // 设置分类
-    setcate(row) {
+    // 修改分类
+    editcate(row) {
       cate({
         ids: this.selectGetIds(row),
         category_id: this.category_id

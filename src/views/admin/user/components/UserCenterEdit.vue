@@ -53,6 +53,7 @@ export default {
   components: { FileManage },
   data() {
     return {
+      name: '修改信息',
       loading: false,
       model: {
         avatar_id: 0,

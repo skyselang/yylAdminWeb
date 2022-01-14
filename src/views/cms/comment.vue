@@ -33,7 +33,7 @@
       <!-- 选中操作 -->
       <el-row>
         <el-col>
-          <el-button title="设置已读" @click="selectOpen('isread')">已读</el-button>
+          <el-button title="设为已读" @click="selectOpen('isread')">已读</el-button>
           <el-button @click="selectOpen('dele')">删除</el-button>
           <el-button @click="recover()">回收站</el-button>
           <el-button type="primary" @click="add()">添加</el-button>
@@ -67,7 +67,8 @@
       <el-table-column prop="remark" label="备注" min-width="100" show-overflow-tooltip />
       <el-table-column prop="is_unread" label="未读" min-width="80" sortable="custom">
         <template slot-scope="scope">
-          <el-switch v-model="scope.row.is_unread" :active-value="1" :inactive-value="0" @change="isread([scope.row])" />
+          <el-switch v-if="scope.row.is_unread" v-model="scope.row.is_unread" :active-value="1" :inactive-value="0" @change="isread([scope.row])" />
+          <el-switch v-else v-model="scope.row.is_unread" disabled :active-value="1" :inactive-value="0" @change="isread([scope.row])" />
         </template>
       </el-table-column>
       <el-table-column prop="create_time" label="添加时间" min-width="155" sortable="custom" />
@@ -165,7 +166,7 @@
         <el-row>
           <el-col>
             <el-button @click="recoverSelectOpen('reco')">恢复</el-button>
-            <el-button @click="recoverSelectOpen('dele')">删除</el-button>
+            <el-button title="彻底删除" @click="recoverSelectOpen('dele')">删除</el-button>
           </el-col>
         </el-row>
         <el-dialog :title="recoverSelectTitle" :visible.sync="recoverSelectDialog" top="20vh" append-to-body :close-on-click-modal="false" :close-on-press-escape="false">
@@ -204,7 +205,7 @@
         <el-table-column label="操作" min-width="85" align="right" fixed="right">
           <template slot-scope="{ row }">
             <el-button size="mini" type="text" @click="recoverSelectOpen('reco',row)">恢复</el-button>
-            <el-button size="mini" type="text" @click="recoverSelectOpen('dele',row)">删除</el-button>
+            <el-button size="mini" type="text" title="彻底删除" @click="recoverSelectOpen('dele',row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>

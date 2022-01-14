@@ -27,7 +27,9 @@
 export default {
   name: 'AdminBase404',
   data() {
-    return {}
+    return {
+      name: '404页面'
+    }
   },
   methods: {
     back() {

@@ -119,7 +119,7 @@
                 </el-input>
               </el-form-item>
               <el-form-item label="">
-                <el-col class="line">SecretId 在 [ 腾讯云 > 个人中心 > 访问管理 > API密钥 ] 设置和获取</el-col>
+                <el-col class="line">SecretId 在 [ 腾讯云 > 个人中心 > 访问管理 > 访问密钥 ] 设置和获取</el-col>
               </el-form-item>
               <el-form-item label="SecretKey" prop="tencent_secret_key" class="ya-margin-bottom">
                 <el-input v-model="model.tencent_secret_key" clearable>
@@ -127,7 +127,7 @@
                 </el-input>
               </el-form-item>
               <el-form-item label="">
-                <el-col class="line">SecretKey 在 [ 腾讯云 > 个人中心 > 访问管理 > API密钥 ] 设置和获取</el-col>
+                <el-col class="line">SecretKey 在 [ 腾讯云 > 个人中心 > 访问管理 > 访问密钥 ] 设置和获取</el-col>
               </el-form-item>
               <el-form-item label="存储桶名称" prop="tencent_bucket" class="ya-margin-bottom">
                 <el-input v-model="model.tencent_bucket" clearable>
@@ -336,6 +336,7 @@ export default {
   components: { },
   data() {
     return {
+      name: '文件设置',
       height: 680,
       loading: false,
       storages: [],

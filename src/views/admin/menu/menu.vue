@@ -12,7 +12,7 @@
       <el-row>
         <el-col>
           <el-checkbox v-model="isExpandAll" border @change="expandAll">收起</el-checkbox>
-          <el-button class="ya-margin-left" @click="selectOpen('pid')">父级</el-button>
+          <el-button class="ya-margin-left" @click="selectOpen('setpid')">父级</el-button>
           <el-button @click="selectOpen('unlogin')">登录</el-button>
           <el-button @click="selectOpen('unauth')">权限</el-button>
           <el-button @click="selectOpen('disable')">禁用</el-button>
@@ -24,7 +24,7 @@
             <el-form-item :label="name+'ID'" prop="">
               <el-input v-model="selectIds" type="textarea" :rows="2" disabled />
             </el-form-item>
-            <el-form-item v-if="selectType==='pid'" label="父级" prop="">
+            <el-form-item v-if="selectType==='setpid'" label="父级" prop="">
               <el-cascader
                 v-model="menu_pid"
                 :options="data"
@@ -56,14 +56,14 @@
       </el-row>
     </div>
     <!-- 列表 -->
-    <el-table ref="table" v-loading="loading" :data="data" :height="height" :row-key="idkey" @selection-change="select" @cell-dblclick="tableCellDbclick">
+    <el-table ref="table" v-loading="loading" :data="data" :height="height" :row-key="idkey" default-expand-all @selection-change="select" @cell-dblclick="cellDbclick">
       <el-table-column type="selection" width="42" title="全选/反选" />
       <el-table-column prop="menu_name" label="菜单名称" min-width="220" />
       <el-table-column prop="menu_url" label="菜单链接(roles)" min-width="300">
         <template slot="header">
           <span>菜单链接(roles)</span>
           <el-tooltip placement="top">
-            <div slot="content">双击单元格复制</div>
+            <div slot="content">权限标识（双击单元格复制）</div>
             <i class="el-icon-warning" />
           </el-tooltip>
         </template>
@@ -118,7 +118,7 @@
     </el-table>
     <!-- 添加修改 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false">
-      <el-form ref="ref" :rules="rules" :model="model" class="dialog-body" label-width="100px" :style="{height:height+'px'}">
+      <el-form ref="ref" :rules="rules" :model="model" label-width="100px" class="dialog-body" :style="{height:height-50+'px'}">
         <el-form-item label="菜单父级" prop="menu_pid">
           <el-cascader v-model="model.menu_pid" :options="data" :props="props" style="width:100%" placeholder="一级菜单" clearable filterable @change="pidChange" />
         </el-form-item>
@@ -140,7 +140,7 @@
           <el-checkbox v-model="model.add_edit">修改</el-checkbox>
           <el-checkbox v-model="model.add_dele">删除</el-checkbox>
         </el-form-item>
-        <el-form-item v-if="model[idkey]" label="快速修改" prop="">
+        <el-form-item v-show="model[idkey]" label="快速修改" prop="">
           <el-checkbox v-model="model.edit_list">列表</el-checkbox>
           <el-checkbox v-model="model.edit_info">信息</el-checkbox>
           <el-checkbox v-model="model.edit_add">添加</el-checkbox>
@@ -251,7 +251,7 @@ export default {
       rules: {
         menu_name: [{ required: true, message: '请输入菜单名称', trigger: 'blur' }]
       },
-      isExpandAll: true,
+      isExpandAll: false,
       selection: [],
       selectIds: '',
       selectTitle: '选中操作',
@@ -285,7 +285,7 @@ export default {
       this.loading = true
       list().then(res => {
         this.data = res.data.list
-        this.isExpandAll = true
+        this.isExpandAll = false
         this.loading = false
       }).catch(() => {
         this.loading = false
@@ -311,8 +311,8 @@ export default {
       })
     },
     cancel() {
-      this.reset()
       this.dialog = false
+      this.reset()
     },
     submit() {
       this.$refs['ref'].validate(valid => {
@@ -340,17 +340,28 @@ export default {
     },
     // 重置
     reset(row) {
-      if (row) {
-        this.model = row
-      } else {
-        this.model = this.$options.data().model
-      }
       if (this.$refs['ref'] !== undefined) {
         this.$refs['ref'].resetFields()
       }
+      if (row) {
+        this.model.admin_menu_id = row.admin_menu_id
+        this.model.menu_pid = row.menu_pid
+        this.model.menu_name = row.menu_name
+        this.model.menu_url = row.menu_url
+        this.model.menu_sort = row.menu_sort
+      } else {
+        this.model.admin_menu_id = ''
+        this.model.menu_pid = 0
+        this.model.menu_name = ''
+        this.model.menu_url = ''
+        this.model.menu_sort = 250
+      }
+      this.model.add_list = this.model.add_info = this.model.add_add = this.model.add_edit = this.model.add_dele = false
+      this.model.edit_list = this.model.edit_info = this.model.edit_add = this.model.edit_edit = this.model.edit_dele = false
     },
     // 刷新
     refresh() {
+      this.reset()
       this.list()
     },
     // 收起
@@ -385,7 +396,7 @@ export default {
         this.selectAlert()
       } else {
         this.selectTitle = '选中操作'
-        if (selectType === 'pid') {
+        if (selectType === 'setpid') {
           this.selectTitle = '设置父级'
         } else if (selectType === 'unlogin') {
           this.selectTitle = '无需登录'
@@ -408,7 +419,7 @@ export default {
         this.selectAlert()
       } else {
         const selectType = this.selectType
-        if (selectType === 'pid') {
+        if (selectType === 'setpid') {
           this.setpid(this.selection)
         } else if (selectType === 'unlogin') {
           this.unlogin(this.selection, true)
@@ -421,11 +432,6 @@ export default {
         }
         this.selectDialog = false
         this.selectType = selectType
-      }
-    },
-    selectPidChange(value) {
-      if (value) {
-        this.menu_pid = value[value.length - 1]
       }
     },
     // 设置父级
@@ -527,6 +533,11 @@ export default {
     pidChange(value) {
       if (value) {
         this.model.menu_pid = value[value.length - 1]
+      }
+    },
+    selectPidChange(value) {
+      if (value) {
+        this.menu_pid = value[value.length - 1]
       }
     },
     // 角色显示
@@ -638,10 +649,14 @@ export default {
     },
     // 复制
     copy(text, event) {
-      clip(text, event)
+      if (text) {
+        clip(text, event)
+      } else {
+        this.$message.error('内容为空')
+      }
     },
-    // 表格单元格双击
-    tableCellDbclick(row, column, cell, event) {
+    // 单元格双击复制
+    cellDbclick(row, column, cell, event) {
       this.copy(row[column.property], event)
     }
   }
