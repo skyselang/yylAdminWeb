@@ -413,31 +413,26 @@ export default {
     // 刷新
     refresh() {
       this.loading = true
-      info()
-        .then((res) => {
-          this.storages = res.data.storage
-          this.model = res.data.setting
-          this.loading = false
-          this.$message.success(res.msg)
-        })
-        .catch(() => {
-          this.loading = false
-        })
+      info().then((res) => {
+        this.storages = res.data.storage
+        this.model = res.data.setting
+        this.loading = false
+        this.$message.success(res.msg)
+      }).catch(() => {
+        this.loading = false
+      })
     },
     // 提交
     submit() {
       this.$refs['ref'].validate((valid) => {
         if (valid) {
           this.loading = true
-          edit(this.model)
-            .then((res) => {
-              this.info()
-              this.loading = false
-              this.$message.success(res.msg)
-            })
-            .catch(() => {
-              this.loading = false
-            })
+          edit(this.model).then((res) => {
+            this.loading = false
+            this.$message.success(res.msg)
+          }).catch(() => {
+            this.loading = false
+          })
         }
       })
     },

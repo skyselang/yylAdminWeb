@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-card v-loading="loading" class="box-card">
-      <el-row :gutter="0">
+      <el-row>
         <el-col :xs="24" :sm="18" :md="12">
           <el-form ref="ref" :rules="rules" :model="model" label-width="120px">
             <el-form-item label="头像" prop="avatar_url">

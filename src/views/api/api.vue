@@ -156,9 +156,9 @@ export default {
       loading: false,
       idkey: 'api_id',
       data: [],
+      props: { checkStrictly: true, value: 'api_id', label: 'api_name' },
       dialog: false,
       dialogTitle: '',
-      props: { checkStrictly: true, value: 'api_id', label: 'api_name' },
       model: {
         api_id: '',
         api_pid: 0,

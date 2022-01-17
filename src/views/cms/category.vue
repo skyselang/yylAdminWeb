@@ -314,12 +314,12 @@ export default {
       if (!this.selection.length) {
         this.selectAlert()
       } else {
-        const type = this.selectType
-        if (type === 'pid') {
+        const selectType = this.selectType
+        if (selectType === 'pid') {
           this.editpid(this.selection)
-        } else if (type === 'hide') {
+        } else if (selectType === 'hide') {
           this.ishide(this.selection, true)
-        } else if (type === 'dele') {
+        } else if (selectType === 'dele') {
           this.dele(this.selection)
         }
         this.selectDialog = false

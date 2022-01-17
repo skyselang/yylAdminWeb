@@ -5,7 +5,7 @@ import { getAdminToken } from '@/utils/auth'
 
 // 创建axios实例
 const service = axios.create({
-  baseURL: process.env.VUE_APP_BASE_API, // 接口基础地址
+  baseURL: process.env.VUE_APP_BASE_API, // 接口地址
   // withCredentials: true, // 跨域请求时发送Cookie
   timeout: 60000 // 请求超时时间
 })
@@ -15,8 +15,9 @@ service.interceptors.request.use(
   config => {
     // 发送请求之前
     if (store.getters.adminToken) {
-      // 设置请求头部 AdminToken
-      config.headers['AdminToken'] = getAdminToken()
+      // 设置请求头部 Token
+      const tokenName = process.env.VUE_APP_TOKEN_NAME || 'AdminToken'
+      config.headers[tokenName] = getAdminToken()
     }
     return config
   },

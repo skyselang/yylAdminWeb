@@ -78,6 +78,15 @@
           </el-col>
         </el-row>
       </el-tab-pane>
+      <el-tab-pane v-if="checkPermission(['admin/admin.Utils/huatools'])" label="IT在线工具" lazy>
+        <el-row :gutter="8">
+          <el-col>
+            <div class="filter-container">
+              <utils-huatools />
+            </div>
+          </el-col>
+        </el-row>
+      </el-tab-pane>
     </el-tabs>
   </div>
 </template>
@@ -94,10 +103,11 @@ import UtilsIpinfo from './components/UtilsIpinfo'
 import UtilsMap from './components/UtilsMap'
 import UtilsServer from './components/UtilsServer'
 import UtilsToollu from './components/UtilsToollu'
+import UtilsHuatools from './components/UtilsHuatools'
 
 export default {
   name: 'AdminSystemUtils',
-  components: { UtilsStrtran, UtilsStrrand, UtilsTimestamp, UtilsQrcode, UtilsBytetran, UtilsIpinfo, UtilsMap, UtilsServer, UtilsToollu },
+  components: { UtilsStrtran, UtilsStrrand, UtilsTimestamp, UtilsQrcode, UtilsBytetran, UtilsIpinfo, UtilsMap, UtilsServer, UtilsToollu, UtilsHuatools },
   directives: { permission },
   data() {
     return {

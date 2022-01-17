@@ -3,6 +3,14 @@
     <el-row>
       <el-col :xs="24" :sm="18" :md="12">
         <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
+          <el-form-item label="系统简称" prop="system_name">
+            <el-input v-model="model.system_name" type="text" clearable style="width:90%" />
+            <i class="el-icon-warning-outline" title="侧边栏、登录页显示，12字以内" />
+          </el-form-item>
+          <el-form-item label="页面标题" prop="page_title">
+            <el-input v-model="model.page_title" type="text" clearable style="width:90%" />
+            <i class="el-icon-warning-outline" title="浏览器页面标题后缀，128字以内" />
+          </el-form-item>
           <el-form-item label="logo" prop="logo_id">
             <el-row>
               <el-col :span="10">
@@ -13,7 +21,7 @@
                 </el-image>
               </el-col>
               <el-col :span="14">
-                <el-button size="mini" @click="fileUpload('logo', '上传LOGO')">上传LOGO</el-button>
+                <el-button size="mini" @click="fileUpload('logo', '上传logo')">上传logo</el-button>
                 <el-button size="mini" @click="fileDelete('logo')">删除</el-button>
                 <p>jpg、png图片，200 x 200，小于 100 KB。</p>
               </el-col>
@@ -35,7 +43,7 @@
               </el-col>
             </el-row>
           </el-form-item>
-          <el-form-item label="登录背景" prop="login_bg_id">
+          <el-form-item label="登录背景图" prop="login_bg_id">
             <el-row>
               <el-col :span="10">
                 <el-image class="image-login-bg" :src="model.login_bg_url" :preview-src-list="[model.login_bg_url]" title="点击查看大图">
@@ -50,14 +58,6 @@
                 <p>jpg、png图片，1920 x 1080，小于 300 KB。</p>
               </el-col>
             </el-row>
-          </el-form-item>
-          <el-form-item label="系统简称" prop="system_name">
-            <el-input v-model="model.system_name" type="text" style="width:90%" />
-            <i class="el-icon-warning-outline" title="侧边栏、登录页显示，12字以内" />
-          </el-form-item>
-          <el-form-item label="页面标题" prop="page_title">
-            <el-input v-model="model.page_title" type="text" style="width:90%" />
-            <i class="el-icon-warning-outline" title="浏览器页面标题后缀，128字以内" />
           </el-form-item>
           <el-form-item>
             <el-button :loading="loading" @click="refresh()">刷新</el-button>
@@ -86,14 +86,14 @@ export default {
       name: '系统设置',
       loading: false,
       model: {
+        system_name: '',
+        page_title: '',
         logo_id: 0,
         logo_url: '',
         favicon_id: 0,
         favicon_url: '',
         login_bg_id: 0,
-        login_bg_url: '',
-        system_name: '',
-        page_title: ''
+        login_bg_url: ''
       },
       fileDialog: false,
       fileField: 'logo',
@@ -119,15 +119,13 @@ export default {
     // 刷新
     refresh() {
       this.loading = true
-      systemInfo()
-        .then((res) => {
-          this.model = res.data
-          this.loading = false
-          this.$message.success(res.msg)
-        })
-        .catch(() => {
-          this.loading = false
-        })
+      systemInfo().then((res) => {
+        this.model = res.data
+        this.loading = false
+        this.$message.success(res.msg)
+      }).catch(() => {
+        this.loading = false
+      })
     },
     // 提交
     submit() {
@@ -135,7 +133,6 @@ export default {
         if (valid) {
           this.loading = true
           systemEdit(this.model).then(res => {
-            this.info()
             this.loading = false
             this.$message.success(res.msg)
           }).catch(() => {

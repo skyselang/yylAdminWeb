@@ -5,9 +5,11 @@
         <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
           <el-form-item label="注册验证码" prop="captcha_register">
             <el-switch v-model="model.captcha_register" :active-value="1" :inactive-value="0" />
+            <span> 开启后，会员注册需要输入验证码。</span>
           </el-form-item>
           <el-form-item label="登录验证码" prop="captcha_login">
             <el-switch v-model="model.captcha_login" :active-value="1" :inactive-value="0" />
+            <span> 开启后，会员登录需要输入验证码。</span>
           </el-form-item>
           <el-form-item>
             <el-button :loading="loading" @click="refresh()">刷新</el-button>

@@ -41,8 +41,8 @@ export default {
       loading: false,
       redirect: undefined,
       otherQuery: {},
-      captcha_src: '',
       captcha_switch: 0,
+      captcha_src: '',
       logo_url: '',
       login_bg_url: '',
       model: {

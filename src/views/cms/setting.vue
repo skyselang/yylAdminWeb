@@ -160,15 +160,12 @@ export default {
       this.$refs['ref'].validate((valid) => {
         if (valid) {
           this.loading = true
-          edit(this.model)
-            .then((res) => {
-              this.info()
-              this.loading = false
-              this.$message.success(res.msg)
-            })
-            .catch(() => {
-              this.loading = false
-            })
+          edit(this.model).then((res) => {
+            this.loading = false
+            this.$message.success(res.msg)
+          }).catch(() => {
+            this.loading = false
+          })
         } else {
           this.$message.error('请完善必填项*')
         }

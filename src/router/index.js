@@ -278,13 +278,13 @@ export const asyncRoutes = [
       icon: 'el-icon-setting',
       roles: [
         'admin/Api/list',
+        'admin/Region/list',
+        'admin/SettingWechat/offiInfo',
+        'admin/SettingWechat/miniInfo',
         'admin/Setting/tokenInfo',
         'admin/Setting/captchaInfo',
         'admin/Setting/logInfo',
-        'admin/Setting/apiInfo',
-        'admin/SettingWechat/offiInfo',
-        'admin/SettingWechat/miniInfo',
-        'admin/Region/list'
+        'admin/Setting/apiInfo'
       ]
     },
     redirect: 'noRedirect',
@@ -302,16 +302,6 @@ export const asyncRoutes = [
         component: () => import('@/views/api/api')
       },
       {
-        path: 'wechat',
-        name: 'SettingWechat',
-        meta: {
-          title: '微信设置',
-          icon: 'el-icon-setting',
-          roles: ['admin/SettingWechat/offiInfo', 'admin/SettingWechat/miniInfo']
-        },
-        component: () => import('@/views/setting/wechat')
-      },
-      {
         path: 'region',
         name: 'SettingRegion',
         meta: {
@@ -320,6 +310,16 @@ export const asyncRoutes = [
           roles: ['admin/Region/list']
         },
         component: () => import('@/views/region/region')
+      },
+      {
+        path: 'wechat',
+        name: 'SettingWechat',
+        meta: {
+          title: '微信设置',
+          icon: 'el-icon-setting',
+          roles: ['admin/SettingWechat/offiInfo', 'admin/SettingWechat/miniInfo']
+        },
+        component: () => import('@/views/setting/wechat')
       },
       {
         path: 'setting',
@@ -429,14 +429,14 @@ export const asyncRoutes = [
       icon: 'el-icon-s-tools',
       roles: [
         'admin/admin.Notice/list',
+        'admin/admin.Apidoc/apidoc',
+        'admin/admin.Utils/utils',
         'admin/admin.Setting/cacheInfo',
         'admin/admin.Setting/tokenInfo',
         'admin/admin.Setting/captchaInfo',
         'admin/admin.Setting/logInfo',
         'admin/admin.Setting/apiInfo',
-        'admin/admin.Setting/systemInfo',
-        'admin/admin.Apidoc/apidoc',
-        'admin/admin.Utils/utils'
+        'admin/admin.Setting/systemInfo'
       ]
     },
     redirect: 'noRedirect',
@@ -452,23 +452,6 @@ export const asyncRoutes = [
           roles: ['admin/admin.Notice/list']
         },
         component: () => import('@/views/admin/notice/notice')
-      },
-      {
-        path: 'setting',
-        name: 'AdminSystemSetting',
-        meta: {
-          title: '设置管理',
-          icon: 'el-icon-s-tools',
-          roles: [
-            'admin/admin.Setting/cacheInfo',
-            'admin/admin.Setting/tokenInfo',
-            'admin/admin.Setting/captchaInfo',
-            'admin/admin.Setting/logInfo',
-            'admin/admin.Setting/apiInfo',
-            'admin/admin.Setting/systemInfo'
-          ]
-        },
-        component: () => import('@/views/admin/setting/setting')
       },
       {
         path: 'apidoc',
@@ -489,6 +472,23 @@ export const asyncRoutes = [
           roles: ['admin/admin.Utils/utils']
         },
         component: () => import('@/views/admin/utils/utils')
+      },
+      {
+        path: 'setting',
+        name: 'AdminSystemSetting',
+        meta: {
+          title: '系统管理',
+          icon: 'el-icon-s-tools',
+          roles: [
+            'admin/admin.Setting/cacheInfo',
+            'admin/admin.Setting/tokenInfo',
+            'admin/admin.Setting/captchaInfo',
+            'admin/admin.Setting/logInfo',
+            'admin/admin.Setting/apiInfo',
+            'admin/admin.Setting/systemInfo'
+          ]
+        },
+        component: () => import('@/views/admin/setting/setting')
       }
     ]
   },

@@ -25,8 +25,7 @@
               <el-col :span="14">
                 <el-button size="mini" @click="fileUpload()">上传二维码</el-button>
                 <el-button size="mini" @click="fileDelete()">删除</el-button>
-                <br>
-                <span>jpg、png图片，小于200kb，宽高1:1</span>
+                <p>jpg、png图片，小于200kb，宽高1:1</p>
               </el-col>
             </el-form-item>
             <el-form-item label="AppID" prop="appid">
@@ -75,11 +74,11 @@ export default {
         appid: '',
         appsecret: ''
       },
-      fileDialog: false,
       rules: {
         appid: [{ required: true, message: '请输入appid', trigger: 'blur' }],
         appsecret: [{ required: true, message: '请输入appsecret', trigger: 'blur' }]
-      }
+      },
+      fileDialog: false
     }
   },
   created() {
@@ -96,30 +95,25 @@ export default {
     // 刷新
     refresh() {
       this.loading = true
-      miniInfo()
-        .then((res) => {
-          this.model = res.data
-          this.loading = false
-          this.$message.success(res.msg)
-        })
-        .catch(() => {
-          this.loading = false
-        })
+      miniInfo().then((res) => {
+        this.model = res.data
+        this.loading = false
+        this.$message.success(res.msg)
+      }).catch(() => {
+        this.loading = false
+      })
     },
     // 提交
     submit() {
       this.$refs['ref'].validate((valid) => {
         if (valid) {
           this.loading = true
-          miniEdit(this.model)
-            .then((res) => {
-              this.info()
-              this.loading = false
-              this.$message.success(res.msg)
-            })
-            .catch(() => {
-              this.loading = false
-            })
+          miniEdit(this.model).then((res) => {
+            this.loading = false
+            this.$message.success(res.msg)
+          }).catch(() => {
+            this.loading = false
+          })
         }
       })
     },

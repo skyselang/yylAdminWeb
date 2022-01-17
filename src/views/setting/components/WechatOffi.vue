@@ -25,8 +25,7 @@
               <el-col :span="14">
                 <el-button size="mini" @click="fileUpload()">上传二维码</el-button>
                 <el-button size="mini" @click="fileDelete()">删除</el-button>
-                <br>
-                <span>jpg、png图片，小于200kb，宽高1:1</span>
+                <p>jpg、png图片，小于200kb，宽高1:1</p>
               </el-col>
             </el-form-item>
             <el-form-item label="AppID" prop="appid">
@@ -87,11 +86,6 @@ export default {
       name: '微信公众号',
       height: 680,
       loading: false,
-      encoding_aes_types: [
-        { value: 1, label: '明文模式' },
-        { value: 2, label: '兼容模式' },
-        { value: 3, label: '安全模式' }
-      ],
       model: {
         name: '',
         origin_id: '',
@@ -104,11 +98,16 @@ export default {
         encoding_aes_key: '',
         encoding_aes_type: 1
       },
-      fileDialog: false,
       rules: {
         appid: [{ required: true, message: '请输入appid', trigger: 'blur' }],
         appsecret: [{ required: true, message: '请输入appsecret', trigger: 'blur' }]
-      }
+      },
+      encoding_aes_types: [
+        { value: 1, label: '明文模式' },
+        { value: 2, label: '兼容模式' },
+        { value: 3, label: '安全模式' }
+      ],
+      fileDialog: false
     }
   },
   created() {
@@ -125,30 +124,25 @@ export default {
     // 刷新
     refresh() {
       this.loading = true
-      offiInfo()
-        .then((res) => {
-          this.model = res.data
-          this.loading = false
-          this.$message.success(res.msg)
-        })
-        .catch(() => {
-          this.loading = false
-        })
+      offiInfo().then((res) => {
+        this.model = res.data
+        this.loading = false
+        this.$message.success(res.msg)
+      }).catch(() => {
+        this.loading = false
+      })
     },
     // 提交
     submit() {
       this.$refs['ref'].validate((valid) => {
         if (valid) {
           this.loading = true
-          offiEdit(this.model)
-            .then((res) => {
-              this.info()
-              this.loading = false
-              this.$message.success(res.msg)
-            })
-            .catch(() => {
-              this.loading = false
-            })
+          offiEdit(this.model).then((res) => {
+            this.loading = false
+            this.$message.success(res.msg)
+          }).catch(() => {
+            this.loading = false
+          })
         }
       })
     },

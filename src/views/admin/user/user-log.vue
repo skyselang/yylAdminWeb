@@ -240,8 +240,7 @@ export default {
       id[this.idkey] = row[this.idkey]
       info(id).then(res => {
         this.reset(res.data)
-      }).catch(() => {
-      })
+      }).catch(() => {})
     },
     cancel() {
       this.reset()

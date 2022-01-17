@@ -3,12 +3,8 @@
     <el-row class="dialog-body" :style="{height:height+'px'}">
       <el-col :xs="24" :sm="18" :md="12">
         <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
-          <el-form-item label="Token名称" prop="token_name">
-            <el-input v-model="model.token_name" type="text" style="width:90%" />
-            <i class="el-icon-warning-outline" title="必须与前端设置一致，否则Token验证失败。" />
-          </el-form-item>
           <el-form-item label="Token密钥" prop="token_key">
-            <el-input v-model="model.token_key" type="text" style="width:90%" />
+            <el-input v-model="model.token_key" type="text" clearable style="width:90%" />
             <i class="el-icon-warning-outline" title="修改后所有会员登录状态失效，需重新登录。" />
           </el-form-item>
           <el-form-item label="Token有效时间" prop="token_exp">
@@ -39,7 +35,6 @@ export default {
       height: 680,
       loading: false,
       model: {
-        token_name: '',
         token_key: '',
         token_exp: 720
       },
@@ -60,15 +55,13 @@ export default {
     // 刷新
     refresh() {
       this.loading = true
-      tokenInfo()
-        .then((res) => {
-          this.model = res.data
-          this.loading = false
-          this.$message.success(res.msg)
-        })
-        .catch(() => {
-          this.loading = false
-        })
+      tokenInfo().then((res) => {
+        this.model = res.data
+        this.loading = false
+        this.$message.success(res.msg)
+      }).catch(() => {
+        this.loading = false
+      })
     },
     // 提交
     submit() {
@@ -76,7 +69,6 @@ export default {
         if (valid) {
           this.loading = true
           tokenEdit(this.model).then(res => {
-            this.info()
             this.loading = false
             this.$message.success(res.msg)
           }).catch(() => {

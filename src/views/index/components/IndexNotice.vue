@@ -29,7 +29,7 @@
           <div v-html="model.content" />
         </el-form-item>
         <el-form-item label="" prop="" style="text-align:right; margin-bottom:0">
-          <span>{{ model.admin_user }}</span>
+          <span>{{ model.username }}</span>
         </el-form-item>
         <el-form-item label="" prop="" style="text-align:right; margin-bottom:0">
           <span>{{ model.create_time }}</span>
@@ -53,6 +53,7 @@ export default {
       name: '公告',
       height: 680,
       loading: false,
+      idkey: 'admin_notice_id',
       query: {
         page: 1,
         limit: 10
@@ -63,6 +64,7 @@ export default {
       dialogTitle: '公告',
       model: {
         admin_notice_id: '',
+        username: '',
         title: '',
         intro: '',
         content: '',
@@ -78,8 +80,7 @@ export default {
   },
   methods: {
     list() {
-      const msg = getNotice()
-      if (!msg) {
+      if (!getNotice()) {
         this.loading = true
         notice(this.query).then(res => {
           this.data = res.data.list
@@ -112,9 +113,9 @@ export default {
     },
     info(row) {
       this.infoDialog = true
-      info({
-        admin_notice_id: row.admin_notice_id
-      }).then(res => {
+      var id = {}
+      id[this.idkey] = row[this.idkey]
+      info(id).then(res => {
         this.model = res.data
         this.infoTitle = res.data.title
       })
