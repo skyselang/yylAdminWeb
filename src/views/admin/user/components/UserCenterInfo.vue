@@ -1,9 +1,9 @@
 <template>
   <div>
-    <el-card v-loading="loading" class="box-card">
+    <el-card v-loading="loading" class="box-card dialog-body" :style="{height:height+'px'}">
       <el-row>
         <el-col :xs="24" :sm="18" :md="12">
-          <el-form ref="ref" :rules="rules" :model="model" class="dialog-body" label-width="120px">
+          <el-form ref="ref" :rules="rules" :model="model" label-width="120px">
             <el-form-item label="头像">
               <el-avatar v-if="model.avatar_url" :src="model.avatar_url" fit="contain" shape="circle" :size="100" />
               <el-avatar v-else icon="el-icon-user-solid" :size="100" />
@@ -32,6 +32,9 @@
             <el-form-item v-if="model.admin_user_id" label="登录时间" prop="login_time">
               <el-input v-model="model.login_time" placeholder="" />
             </el-form-item>
+            <el-form-item v-if="model.admin_user_id" label="登录地区" prop="login_region">
+              <el-input v-model="model.login_region" placeholder="" />
+            </el-form-item>
             <el-form-item v-if="model.admin_user_id" label="退出时间" prop="logout_time">
               <el-input v-model="model.logout_time" placeholder="" />
             </el-form-item>
@@ -46,6 +49,7 @@
 </template>
 
 <script>
+import screenHeight from '@/utils/screen-height'
 import { info } from '@/api/admin/user-center'
 
 export default {
@@ -54,6 +58,7 @@ export default {
   data() {
     return {
       name: '我的信息',
+      height: 680,
       loading: false,
       model: {
         avatar: '',
@@ -65,21 +70,21 @@ export default {
         create_time: '',
         update_time: '',
         login_time: '',
+        login_region: '',
         logout_time: ''
       },
       rules: {}
     }
   },
   created() {
+    this.height = screenHeight(180)
     this.info()
   },
   methods: {
     // 信息
     info(msg = false) {
       this.loading = true
-      info({
-        admin_user_id: this.model.admin_user_id
-      }).then(res => {
+      info().then(res => {
         this.model = res.data
         this.loading = false
         if (msg) {

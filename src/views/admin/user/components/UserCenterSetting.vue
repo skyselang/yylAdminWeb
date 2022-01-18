@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-card class="box-card">
+    <el-card v-loading="loading" class="box-card dialog-body" :style="{height:height+'px'}">
       <el-row>
         <el-col :xs="24" :sm="18" :md="12">
           <el-form ref="ref" label-width="120px">
@@ -28,6 +28,7 @@
 </template>
 
 <script>
+import screenHeight from '@/utils/screen-height'
 import ThemePicker from '@/components/ThemePicker'
 
 export default {
@@ -36,6 +37,7 @@ export default {
   data() {
     return {
       name: '我的设置',
+      height: 680,
       loading: false
     }
   },
@@ -76,6 +78,9 @@ export default {
         })
       }
     }
+  },
+  created() {
+    this.height = screenHeight(180)
   },
   methods: {
     // 设置主题

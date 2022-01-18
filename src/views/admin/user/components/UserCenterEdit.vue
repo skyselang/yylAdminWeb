@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-card v-loading="loading" class="box-card">
+    <el-card v-loading="loading" class="box-card dialog-body" :style="{height:height+'px'}">
       <el-row>
         <el-col :xs="24" :sm="18" :md="12">
           <el-form ref="ref" :rules="rules" :model="model" label-width="120px">
@@ -12,8 +12,7 @@
               <el-col :span="14">
                 <el-button size="mini" @click="fileUpload()">上传头像</el-button>
                 <el-button size="mini" @click="fileDelete('avatar')">删除</el-button>
-                <br>
-                <span>jpg、png图片，小于100kb，宽高1:1</span>
+                <p>jpg、png图片，小于100kb，宽高1:1</p>
               </el-col>
             </el-form-item>
             <el-form-item label="账号" prop="username">
@@ -44,6 +43,7 @@
 </template>
 
 <script>
+import screenHeight from '@/utils/screen-height'
 import store from '@/store'
 import FileManage from '@/components/FileManage'
 import { info, edit } from '@/api/admin/user-center'
@@ -54,6 +54,7 @@ export default {
   data() {
     return {
       name: '修改信息',
+      height: 680,
       loading: false,
       model: {
         avatar_id: 0,
@@ -63,27 +64,35 @@ export default {
         phone: '',
         email: ''
       },
-      fileDialog: false,
       rules: {
         username: [{ required: true, message: '请输入账号', trigger: 'blur' }],
         nickname: [{ required: true, message: '请输入昵称', trigger: 'blur' }]
-      }
+      },
+      fileDialog: false
     }
   },
   created() {
+    this.height = screenHeight(180)
     this.info()
   },
   methods: {
     // 信息
-    info() {
-      info({
-        admin_user_id: this.model.admin_user_id
-      }).then(res => {
+    info(msg = false) {
+      info().then(res => {
         this.$refs['ref'].resetFields()
         this.model = res.data
         store.commit('user/SET_AVATAR', res.data.avatar_url)
         store.commit('user/SET_NICKNAME', res.data.nickname)
-      })
+        if (msg) {
+          this.$message.success(res.msg)
+        }
+      }).catch(() => {})
+    },
+    // 刷新
+    refresh() {
+      this.loading = true
+      this.info(true)
+      this.loading = false
     },
     // 提交
     submit() {
@@ -91,7 +100,6 @@ export default {
         if (valid) {
           this.loading = true
           edit(this.model).then(res => {
-            this.refresh()
             this.loading = false
             this.$message.success(res.msg)
           }).catch(() => {
@@ -99,12 +107,6 @@ export default {
           })
         }
       })
-    },
-    // 刷新
-    refresh() {
-      this.loading = true
-      this.info()
-      this.loading = false
     },
     // 上传头像
     fileUpload() {
