@@ -35,7 +35,7 @@
       <!-- 选中操作 -->
       <el-row>
         <el-col>
-          <el-button @click="selectOpen('pid')">父级</el-button>
+          <el-button @click="selectOpen('pid')">上级</el-button>
           <el-button @click="selectOpen('dele')">删除</el-button>
           <el-button type="primary" @click="add('')">添加</el-button>
         </el-col>
@@ -45,7 +45,7 @@
           <el-form-item :label="name+'ID'" prop="">
             <el-input v-model="selectIds" type="textarea" :rows="2" disabled />
           </el-form-item>
-          <el-form-item v-if="selectType==='pid'" label="父级" prop="">
+          <el-form-item v-if="selectType==='pid'" label="上级" prop="">
             <el-cascader
               :key="selectPidKey"
               v-model="region_pid"
@@ -91,7 +91,7 @@
     <!-- 添加修改 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false">
       <el-form ref="ref" :rules="rules" :model="model" label-width="100px" class="dialog-body" :style="{height:height-50+'px'}">
-        <el-form-item label="父级" prop="region_pid">
+        <el-form-item label="上级" prop="region_pid">
           <el-cascader
             :key="pidKey"
             v-model="model.region_pid"
@@ -347,7 +347,7 @@ export default {
       } else {
         this.selectTitle = '选中操作'
         if (selectType === 'pid') {
-          this.selectTitle = '设置父级'
+          this.selectTitle = '修改上级'
         } else if (selectType === 'dele') {
           this.selectTitle = '删除' + this.name
         }
@@ -371,7 +371,7 @@ export default {
         this.selectDialog = false
       }
     },
-    // 设置父级
+    // 修改上级
     setpid(row) {
       pid({
         ids: this.selectGetIds(row),
@@ -402,7 +402,7 @@ export default {
         })
       }
     },
-    // 父级选择
+    // 上级选择
     pidChange(value) {
       if (value) {
         this.model.region_pid = value[value.length - 1]

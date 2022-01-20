@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie'
 
-const SystemNameKey = 'YylSystemName'
+const SystemNameKey = 'yylAdminSystemName'
 export function setSystemName(SystemName) {
   return Cookies.set(SystemNameKey, SystemName)
 }
@@ -11,7 +11,7 @@ export function delSystemName() {
   return Cookies.remove(SystemNameKey)
 }
 
-const PageTitleKey = 'YylPageTitle'
+const PageTitleKey = 'yylAdminPageTitle'
 export function setPageTitle(PageTitle) {
   return Cookies.set(PageTitleKey, PageTitle)
 }
@@ -22,7 +22,7 @@ export function delPageTitle() {
   return Cookies.remove(PageTitleKey)
 }
 
-const LogoUrlKey = 'YylLogoUrl'
+const LogoUrlKey = 'yylAdminLogoUrl'
 export function setLogoUrl(LogoUrl) {
   return Cookies.set(LogoUrlKey, LogoUrl)
 }
@@ -33,7 +33,7 @@ export function delLogoUrl() {
   return Cookies.remove(LogoUrlKey)
 }
 
-const FaviconUrlKey = 'YylFaviconUrl'
+const FaviconUrlKey = 'yylAdminFaviconUrl'
 export function setFaviconUrl(FaviconUrl) {
   return Cookies.set(FaviconUrlKey, FaviconUrl)
 }
@@ -44,7 +44,7 @@ export function delFaviconUrl() {
   return Cookies.remove(FaviconUrlKey)
 }
 
-const NoticeKey = 'YylNotice'
+const NoticeKey = 'yylAdminNotice'
 export function setNotice(notice) {
   return Cookies.set(NoticeKey, notice)
 }

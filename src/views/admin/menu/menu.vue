@@ -1,10 +1,18 @@
 <template>
-  <div class="app-container">
+  <div v-loading="loading" class="app-container">
     <!-- 添加操作 -->
     <div class="filter-container">
-      <!-- 刷新 -->
+      <!-- 查询 -->
       <el-row>
         <el-col>
+          <el-select v-model="query.search_field" class="filter-item ya-search-field" placeholder="搜索字段">
+            <el-option value="menu_name" label="菜单名称" />
+            <el-option value="menu_url" label="菜单链接" />
+            <el-option value="menu_pid" label="PID" />
+            <el-option :value="idkey" label="ID" />
+          </el-select>
+          <el-input v-model="query.search_value" class="filter-item ya-search-value" placeholder="搜索内容" clearable />
+          <el-button class="filter-item" type="primary" @click="search()">查询</el-button>
           <el-button class="filter-item" @click="refresh()">刷新</el-button>
         </el-col>
       </el-row>
@@ -12,10 +20,10 @@
       <el-row>
         <el-col>
           <el-checkbox v-model="isExpandAll" border @change="expandAll">收起</el-checkbox>
-          <el-button class="ya-margin-left" @click="selectOpen('setpid')">父级</el-button>
-          <el-button @click="selectOpen('unlogin')">登录</el-button>
-          <el-button @click="selectOpen('unauth')">权限</el-button>
-          <el-button @click="selectOpen('disable')">禁用</el-button>
+          <el-button title="修改上级" class="ya-margin-left" @click="selectOpen('pid')">上级</el-button>
+          <el-button title="是否无需登录" @click="selectOpen('unlogin')">登录</el-button>
+          <el-button title="是否无需权限" @click="selectOpen('unauth')">权限</el-button>
+          <el-button title="是否禁用" @click="selectOpen('disable')">禁用</el-button>
           <el-button @click="selectOpen('dele')">删除</el-button>
           <el-button type="primary" @click="add()">添加</el-button>
         </el-col>
@@ -24,7 +32,7 @@
             <el-form-item :label="name+'ID'" prop="">
               <el-input v-model="selectIds" type="textarea" :rows="2" disabled />
             </el-form-item>
-            <el-form-item v-if="selectType==='setpid'" label="父级" prop="">
+            <el-form-item v-if="selectType==='pid'" label="上级" prop="">
               <el-cascader
                 v-model="menu_pid"
                 :options="data"
@@ -56,7 +64,7 @@
       </el-row>
     </div>
     <!-- 列表 -->
-    <el-table ref="table" v-loading="loading" :data="data" :height="height" :row-key="idkey" default-expand-all @selection-change="select" @cell-dblclick="cellDbclick">
+    <el-table ref="table" :data="data" :height="height" :row-key="idkey" default-expand-all @selection-change="select" @select-all="selectAll" @cell-dblclick="cellDbclick">
       <el-table-column type="selection" width="42" title="全选/反选" />
       <el-table-column prop="menu_name" label="菜单名称" min-width="220" />
       <el-table-column prop="menu_url" label="菜单链接(roles)" min-width="300">
@@ -105,6 +113,7 @@
         </template>
       </el-table-column>
       <el-table-column :prop="idkey" label="ID" min-width="65" />
+      <el-table-column prop="menu_pid" label="PID" min-width="65" />
       <el-table-column prop="menu_sort" label="排序" min-width="60" />
       <el-table-column label="操作" min-width="195" align="right">
         <template slot-scope="{ row }">
@@ -119,8 +128,17 @@
     <!-- 添加修改 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false">
       <el-form ref="ref" :rules="rules" :model="model" label-width="100px" class="dialog-body" :style="{height:height-50+'px'}">
-        <el-form-item label="菜单父级" prop="menu_pid">
-          <el-cascader v-model="model.menu_pid" :options="data" :props="props" style="width:100%" placeholder="一级菜单" clearable filterable @change="pidChange" />
+        <el-form-item label="菜单上级" prop="menu_pid">
+          <el-cascader
+            v-model="model.menu_pid"
+            :options="data"
+            :props="props"
+            style="width:100%"
+            placeholder="一级菜单"
+            clearable
+            filterable
+            @change="pidChange"
+          />
         </el-form-item>
         <el-form-item label="菜单名称" prop="menu_name">
           <el-input v-model="model.menu_name" clearable placeholder="请输入菜单名称" />
@@ -215,7 +233,7 @@ import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination'
 import clip from '@/utils/clipboard'
 import { arrayColumn } from '@/utils/index'
-import { list, info, add, edit, dele, pid, disable, unauth, unlogin, role, roleRemove, user, userRemove } from '@/api/admin/menu'
+import { list, info, add, edit, dele, pid, unauth, unlogin, disable, role, roleRemove, user, userRemove } from '@/api/admin/menu'
 
 export default {
   name: 'AdminMenu',
@@ -227,6 +245,9 @@ export default {
       height: 680,
       loading: false,
       idkey: 'admin_menu_id',
+      query: {
+        search_field: 'menu_name'
+      },
       data: [],
       props: { checkStrictly: true, value: 'admin_menu_id', label: 'menu_name' },
       dialog: false,
@@ -258,6 +279,9 @@ export default {
       selectDialog: false,
       selectType: '',
       menu_pid: 0,
+      type: 1,
+      icon: '',
+      hidden: 1,
       is_unlogin: 0,
       is_unauth: 0,
       is_disable: 0,
@@ -283,7 +307,7 @@ export default {
     // 列表
     list() {
       this.loading = true
-      list().then(res => {
+      list(this.query).then(res => {
         this.data = res.data.list
         this.isExpandAll = false
         this.loading = false
@@ -303,10 +327,10 @@ export default {
     edit(row) {
       this.dialog = true
       this.dialogTitle = this.name + '修改：' + row[this.idkey]
-      var id = {}
+      const id = {}
       id[this.idkey] = row[this.idkey]
       info(id).then(res => {
-        this.reset(res.data)
+        this.model = res.data
       }).catch(() => {
       })
     },
@@ -359,12 +383,16 @@ export default {
       this.model.add_list = this.model.add_info = this.model.add_add = this.model.add_edit = this.model.add_dele = false
       this.model.edit_list = this.model.edit_info = this.model.edit_add = this.model.edit_edit = this.model.edit_dele = false
     },
-    // 刷新
-    refresh() {
-      this.reset()
+    // 查询
+    search() {
       this.list()
     },
-    // 收起
+    // 刷新
+    refresh() {
+      this.query = this.$options.data().query
+      this.list()
+    },
+    // 收起/展开
     expandAll(e) {
       this.expandFor(this.data, !e)
     },
@@ -381,6 +409,22 @@ export default {
       this.selection = selection
       this.selectIds = this.selectGetIds(selection).toString()
     },
+    selectAll(selection) {
+      if (selection) {
+        this.selectAllKeys(selection)
+        this.selectIds = this.selectGetIds(this.selection).toString()
+      } else {
+        this.selectIds = ''
+      }
+    },
+    selectAllKeys(tree) {
+      for (const i in tree) {
+        this.selection.push(tree[i])
+        if (tree[i].children) {
+          this.selectAllKeys(tree[i].children)
+        }
+      }
+    },
     selectGetIds(selection) {
       return arrayColumn(selection, this.idkey)
     },
@@ -396,8 +440,8 @@ export default {
         this.selectAlert()
       } else {
         this.selectTitle = '选中操作'
-        if (selectType === 'setpid') {
-          this.selectTitle = '设置父级'
+        if (selectType === 'pid') {
+          this.selectTitle = '修改上级'
         } else if (selectType === 'unlogin') {
           this.selectTitle = '无需登录'
         } else if (selectType === 'unauth') {
@@ -419,8 +463,8 @@ export default {
         this.selectAlert()
       } else {
         const selectType = this.selectType
-        if (selectType === 'setpid') {
-          this.setpid(this.selection)
+        if (selectType === 'pid') {
+          this.pid(this.selection)
         } else if (selectType === 'unlogin') {
           this.unlogin(this.selection, true)
         } else if (selectType === 'unauth') {
@@ -434,8 +478,8 @@ export default {
         this.selectType = selectType
       }
     },
-    // 设置父级
-    setpid(row) {
+    // 修改上级
+    pid(row) {
       pid({
         ids: this.selectGetIds(row),
         menu_pid: this.menu_pid
@@ -453,7 +497,7 @@ export default {
         this.selectAlert()
       } else {
         this.loading = true
-        var is_unlogin = row[0].is_unlogin
+        let is_unlogin = row[0].is_unlogin
         if (select) {
           is_unlogin = this.is_unlogin
         }
@@ -475,7 +519,7 @@ export default {
         this.selectAlert()
       } else {
         this.loading = true
-        var is_unauth = row[0].is_unauth
+        let is_unauth = row[0].is_unauth
         if (select) {
           is_unauth = this.is_unauth
         }
@@ -497,7 +541,7 @@ export default {
         this.selectAlert()
       } else {
         this.loading = true
-        var is_disable = row[0].is_disable
+        let is_disable = row[0].is_disable
         if (select) {
           is_disable = this.is_disable
         }
@@ -529,7 +573,7 @@ export default {
         })
       }
     },
-    // 父级选择
+    // 上级选择
     pidChange(value) {
       if (value) {
         this.model.menu_pid = value[value.length - 1]
@@ -538,6 +582,11 @@ export default {
     selectPidChange(value) {
       if (value) {
         this.menu_pid = value[value.length - 1]
+      }
+    },
+    activeMenuChange(value) {
+      if (value) {
+        this.active_menu_id = value[value.length - 1]
       }
     },
     // 角色显示

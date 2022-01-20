@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie'
 
-const AdminTokenKey = 'YylAdminToken'
+const AdminTokenKey = 'yylAdminAdminToken'
 export function setAdminToken(AdminToken) {
   return Cookies.set(AdminTokenKey, AdminToken)
 }
@@ -11,7 +11,7 @@ export function delAdminToken() {
   return Cookies.remove(AdminTokenKey)
 }
 
-const UsernameKey = 'YylUsername'
+const UsernameKey = 'yylAdminUsername'
 export function setUsername(username) {
   return Cookies.set(UsernameKey, username)
 }
@@ -22,7 +22,7 @@ export function delUsername() {
   return Cookies.remove(UsernameKey)
 }
 
-const NicknameKey = 'YylNickname'
+const NicknameKey = 'yylAdminNickname'
 export function setNickname(nickname) {
   return Cookies.set(NicknameKey, nickname)
 }
@@ -33,7 +33,7 @@ export function delNickname() {
   return Cookies.remove(NicknameKey)
 }
 
-const AvatarKey = 'YylAvatar'
+const AvatarKey = 'yylAdminAvatar'
 export function setAvatar(avatar) {
   return Cookies.set(AvatarKey, avatar)
 }

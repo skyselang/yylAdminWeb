@@ -5,6 +5,16 @@
       <!-- 查询 -->
       <el-row>
         <el-col>
+          <el-select v-model="query.search_field" class="filter-item ya-search-field" placeholder="搜索字段">
+            <el-option value="api_name" label="接口名称" />
+            <el-option value="api_url" label="接口链接" />
+            <el-option value="is_unlogin" label="是否无需登录" />
+            <el-option value="is_disable" label="是否禁用" />
+            <el-option value="api_pid" label="PID" />
+            <el-option :value="idkey" label="ID" />
+          </el-select>
+          <el-input v-model="query.search_value" class="filter-item ya-search-value" placeholder="搜索内容" clearable />
+          <el-button class="filter-item" type="primary" @click="search()">查询</el-button>
           <el-button class="filter-item" @click="refresh()">刷新</el-button>
         </el-col>
       </el-row>
@@ -12,7 +22,7 @@
       <el-row>
         <el-col>
           <el-checkbox v-model="isExpandAll" border title="收起/展开" @change="expandAll">收起</el-checkbox>
-          <el-button class="ya-margin-left" title="修改父级" @click="selectOpen('editpid')">父级</el-button>
+          <el-button class="ya-margin-left" title="修改上级" @click="selectOpen('pid')">上级</el-button>
           <el-button title="是否禁用" @click="selectOpen('disable')">禁用</el-button>
           <el-button title="无需登录" @click="selectOpen('unlogin')">登录</el-button>
           <el-button @click="selectOpen('dele')">删除</el-button>
@@ -24,7 +34,7 @@
           <el-form-item :label="name+'ID'" prop="">
             <el-input v-model="selectIds" type="textarea" :rows="2" disabled />
           </el-form-item>
-          <el-form-item v-if="selectType==='editpid'" label="父级" prop="">
+          <el-form-item v-if="selectType==='pid'" label="上级" prop="">
             <el-cascader
               v-model="api_pid"
               :options="data"
@@ -64,18 +74,6 @@
           </el-tooltip>
         </template>
       </el-table-column>
-      <el-table-column prop="is_disable" label="是否禁用" min-width="95" align="center">
-        <template slot="header">
-          <span>是否禁用</span>
-          <el-tooltip placement="top">
-            <div slot="content">开启后无法访问</div>
-            <i class="el-icon-info" title="" />
-          </el-tooltip>
-        </template>
-        <template slot-scope="scope">
-          <el-switch v-if="scope.row.api_url" v-model="scope.row.is_disable" :active-value="1" :inactive-value="0" @change="disable([scope.row])" />
-        </template>
-      </el-table-column>
       <el-table-column prop="is_unlogin" label="无需登录" min-width="95" align="center">
         <template slot="header">
           <span>无需登录</span>
@@ -88,7 +86,20 @@
           <el-switch v-if="scope.row.api_url" v-model="scope.row.is_unlogin" :active-value="1" :inactive-value="0" @change="unlogin([scope.row])" />
         </template>
       </el-table-column>
+      <el-table-column prop="is_disable" label="是否禁用" min-width="95" align="center">
+        <template slot="header">
+          <span>是否禁用</span>
+          <el-tooltip placement="top">
+            <div slot="content">开启后无法访问</div>
+            <i class="el-icon-info" title="" />
+          </el-tooltip>
+        </template>
+        <template slot-scope="scope">
+          <el-switch v-if="scope.row.api_url" v-model="scope.row.is_disable" :active-value="1" :inactive-value="0" @change="disable([scope.row])" />
+        </template>
+      </el-table-column>
       <el-table-column :prop="idkey" label="ID" min-width="80" />
+      <el-table-column prop="api_pid" label="PID" min-width="80" />
       <el-table-column prop="api_sort" label="排序" min-width="80" />
       <el-table-column label="操作" min-width="130" align="right" fixed="right">
         <template slot-scope="{ row }">
@@ -101,7 +112,7 @@
     <!-- 添加修改 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false">
       <el-form ref="ref" :rules="rules" :model="model" label-width="100px" class="dialog-body" :style="{height:height-50+'px'}">
-        <el-form-item label="接口父级" prop="api_pid">
+        <el-form-item label="接口上级" prop="api_pid">
           <el-cascader
             v-model="model.api_pid"
             :options="data"
@@ -124,10 +135,10 @@
         <el-form-item label="接口排序" prop="api_sort">
           <el-input v-model="model.api_sort" type="number" placeholder="250" />
         </el-form-item>
-        <el-form-item v-if="model[idkey]" label="添加时间" prop="create_time">
+        <el-form-item v-if="model.create_time" label="添加时间" prop="create_time">
           <el-input v-model="model.create_time" disabled />
         </el-form-item>
-        <el-form-item v-if="model[idkey]" label="修改时间" prop="update_time">
+        <el-form-item v-if="model.update_time" label="修改时间" prop="update_time">
           <el-input v-model="model.update_time" disabled />
         </el-form-item>
       </el-form>
@@ -155,6 +166,9 @@ export default {
       height: 680,
       loading: false,
       idkey: 'api_id',
+      query: {
+        search_field: 'api_name'
+      },
       data: [],
       props: { checkStrictly: true, value: 'api_id', label: 'api_name' },
       dialog: false,
@@ -188,7 +202,7 @@ export default {
     // 列表
     list() {
       this.loading = true
-      list().then(res => {
+      list(this.query).then(res => {
         this.data = res.data.list
         this.isExpandAll = false
         this.loading = false
@@ -242,10 +256,6 @@ export default {
         }
       })
     },
-    // 刷新
-    refresh() {
-      this.list()
-    },
     // 重置
     reset(row) {
       if (row) {
@@ -257,7 +267,16 @@ export default {
         this.$refs['ref'].resetFields()
       }
     },
-    // 收起
+    // 查询
+    search() {
+      this.list()
+    },
+    // 刷新
+    refresh() {
+      this.query = this.$options.data().query
+      this.list()
+    },
+    // 收起/展开
     expandAll(e) {
       this.expandFor(this.data, !e)
     },
@@ -289,8 +308,8 @@ export default {
         this.selectAlert()
       } else {
         this.selectTitle = '选中操作'
-        if (selectType === 'editpid') {
-          this.selectTitle = '修改父级'
+        if (selectType === 'pid') {
+          this.selectTitle = '修改上级'
         } else if (selectType === 'disable') {
           this.selectTitle = '是否禁用'
         } else if (selectType === 'unlogin') {
@@ -310,8 +329,8 @@ export default {
         this.selectAlert()
       } else {
         const selectType = this.selectType
-        if (selectType === 'editpid') {
-          this.editpid(this.selection)
+        if (selectType === 'pid') {
+          this.pid(this.selection)
         } else if (selectType === 'disable') {
           this.disable(this.selection, true)
         } else if (selectType === 'unlogin') {
@@ -323,8 +342,8 @@ export default {
         this.selectType = selectType
       }
     },
-    // 设置父级
-    editpid(row) {
+    // 设置上级
+    pid(row) {
       pid({
         ids: this.selectGetIds(row),
         api_pid: this.api_pid
@@ -396,7 +415,7 @@ export default {
         })
       }
     },
-    // 父级选择
+    // 上级选择
     pidChange(value) {
       if (value) {
         this.model.api_pid = value[value.length - 1]

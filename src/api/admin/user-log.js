@@ -1,8 +1,8 @@
 import request from '@/utils/request'
 const url = '/admin/admin.UserLog/'
-// ----------------日志----------------
+// ----------------用户日志----------------
 /**
- * 日志列表
+ * 用户日志列表
  * @param {array} params 请求参数
  */
 export function list(params) {
@@ -13,7 +13,7 @@ export function list(params) {
   })
 }
 /**
- * 日志信息
+ * 用户日志信息
  * @param {array} params 请求参数
  */
 export function info(params) {
@@ -24,7 +24,7 @@ export function info(params) {
   })
 }
 /**
- * 日志删除
+ * 用户日志删除
  * @param {array} data 请求数据
  */
 export function dele(data) {
@@ -35,7 +35,7 @@ export function dele(data) {
   })
 }
 /**
- * 日志清除
+ * 用户日志清除
  * @param {array} data 请求数据
  */
 export function clear(data) {
@@ -46,7 +46,7 @@ export function clear(data) {
   })
 }
 /**
- * 日志统计
+ * 用户日志统计
  * @param {array} data 请求数据
  */
 export function stat(data) {

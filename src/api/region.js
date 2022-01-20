@@ -57,7 +57,7 @@ export function dele(data) {
   })
 }
 /**
- * 地区修改父级
+ * 地区修改上级
  * @param {array} data 请求数据
  */
 export function pid(data) {

@@ -57,7 +57,7 @@ export function dele(data) {
   })
 }
 /**
- * 菜单修改父级
+ * 菜单修改上级
  * @param {array} data 请求数据
  */
 export function pid(data) {

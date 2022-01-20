@@ -5,10 +5,11 @@ const url = '/admin/Api/'
  * 接口列表
  * @param {array} params 请求参数
  */
-export function list() {
+export function list(params) {
   return request({
     url: url + 'list',
-    method: 'get'
+    method: 'get',
+    params: params
   })
 }
 /**
@@ -56,7 +57,7 @@ export function dele(data) {
   })
 }
 /**
- * 接口修改父级
+ * 接口修改上级
  * @param {array} data 请求数据
  */
 export function pid(data) {

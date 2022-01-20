@@ -51,38 +51,11 @@
           </el-col>
         </el-row>
       </el-tab-pane>
-      <el-tab-pane v-if="checkPermission(['admin/admin.Utils/map'])" label="地图" lazy>
-        <el-row :gutter="8">
-          <el-col>
-            <div class="filter-container">
-              <utils-map />
-            </div>
-          </el-col>
-        </el-row>
-      </el-tab-pane>
       <el-tab-pane v-if="checkPermission(['admin/admin.Utils/server'])" label="服务器" lazy>
         <el-row :gutter="8">
           <el-col>
             <div class="filter-container">
               <utils-server />
-            </div>
-          </el-col>
-        </el-row>
-      </el-tab-pane>
-      <el-tab-pane v-if="checkPermission(['admin/admin.Utils/toollu'])" label="在线工具" lazy>
-        <el-row :gutter="8">
-          <el-col>
-            <div class="filter-container">
-              <utils-toollu />
-            </div>
-          </el-col>
-        </el-row>
-      </el-tab-pane>
-      <el-tab-pane v-if="checkPermission(['admin/admin.Utils/huatools'])" label="IT在线工具" lazy>
-        <el-row :gutter="8">
-          <el-col>
-            <div class="filter-container">
-              <utils-huatools />
             </div>
           </el-col>
         </el-row>
@@ -100,14 +73,11 @@ import UtilsTimestamp from './components/UtilsTimestamp'
 import UtilsQrcode from './components/UtilsQrcode'
 import UtilsBytetran from './components/UtilsBytetran'
 import UtilsIpinfo from './components/UtilsIpinfo'
-import UtilsMap from './components/UtilsMap'
 import UtilsServer from './components/UtilsServer'
-import UtilsToollu from './components/UtilsToollu'
-import UtilsHuatools from './components/UtilsHuatools'
 
 export default {
   name: 'AdminSystemUtils',
-  components: { UtilsStrtran, UtilsStrrand, UtilsTimestamp, UtilsQrcode, UtilsBytetran, UtilsIpinfo, UtilsMap, UtilsServer, UtilsToollu, UtilsHuatools },
+  components: { UtilsStrtran, UtilsStrrand, UtilsTimestamp, UtilsQrcode, UtilsBytetran, UtilsIpinfo, UtilsServer },
   directives: { permission },
   data() {
     return {

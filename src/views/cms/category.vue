@@ -2,9 +2,17 @@
   <div class="app-container">
     <!-- 查询操作 -->
     <div class="filter-container">
-      <!-- 刷新 -->
+      <!-- 查询 -->
       <el-row>
         <el-col>
+          <el-select v-model="query.search_field" class="filter-item ya-search-field" placeholder="搜索字段">
+            <el-option value="category_name" label="名称" />
+            <el-option value="is_hide" label="是否隐藏" />
+            <el-option value="category_pid" label="PID" />
+            <el-option :value="idkey" label="ID" />
+          </el-select>
+          <el-input v-model="query.search_value" class="filter-item ya-search-value" placeholder="搜索内容" clearable />
+          <el-button class="filter-item" type="primary" @click="search()">查询</el-button>
           <el-button class="filter-item" @click="refresh()">刷新</el-button>
         </el-col>
       </el-row>
@@ -12,7 +20,7 @@
       <el-row>
         <el-col>
           <el-checkbox v-model="isExpandAll" border title="收起/展开" @change="expandAll">收起</el-checkbox>
-          <el-button title="修改父级" class="ya-margin-left" @click="selectOpen('pid')">父级</el-button>
+          <el-button title="修改上级" class="ya-margin-left" @click="selectOpen('pid')">上级</el-button>
           <el-button title="是否隐藏" @click="selectOpen('hide')">隐藏</el-button>
           <el-button @click="selectOpen('dele')">删除</el-button>
           <el-button type="primary" @click="add()">添加</el-button>
@@ -23,7 +31,7 @@
           <el-form-item :label="name+'ID'" prop="">
             <el-input v-model="selectIds" type="textarea" :rows="2" disabled />
           </el-form-item>
-          <el-form-item v-if="selectType==='pid'" label="分类父级" prop="">
+          <el-form-item v-if="selectType==='pid'" label="分类上级" prop="">
             <el-cascader
               v-model="category_pid"
               :options="data"
@@ -52,6 +60,7 @@
       <el-table-column type="selection" width="42" title="全选/反选" />
       <el-table-column prop="category_name" label="名称" min-width="250" show-overflow-tooltip />
       <el-table-column :prop="idkey" label="ID" min-width="100" />
+      <el-table-column prop="category_pid" label="PID" min-width="100" />
       <el-table-column prop="is_hide" label="隐藏" min-width="80">
         <template slot-scope="scope">
           <el-switch v-model="scope.row.is_hide" :active-value="1" :inactive-value="0" @change="ishide([scope.row])" />
@@ -71,7 +80,7 @@
     <!-- 添加修改 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false">
       <el-form ref="ref" :rules="rules" :model="model" class="dialog-body" label-width="100px" :style="{height:height+'px'}">
-        <el-form-item label="父级" prop="category_pid">
+        <el-form-item label="上级" prop="category_pid">
           <el-cascader
             v-model="model.category_pid"
             :options="data"
@@ -157,6 +166,9 @@ export default {
       height: 680,
       loading: false,
       idkey: 'category_id',
+      query: {
+        search_field: 'category_name'
+      },
       data: [],
       dialog: false,
       dialogTitle: '',
@@ -259,12 +271,16 @@ export default {
         this.$refs['ref'].clearValidate()
       }
     },
-    // 刷新
-    refresh() {
-      this.reset()
+    // 查询
+    search() {
       this.list()
     },
-    // 收起
+    // 刷新
+    refresh() {
+      this.query = this.$options.data().query
+      this.list()
+    },
+    // 收起/展开
     expandAll(e) {
       this.expandFor(this.data, !e)
     },
@@ -297,7 +313,7 @@ export default {
       } else {
         this.selectTitle = '选中操作'
         if (selectType === 'pid') {
-          this.selectTitle = '修改父级'
+          this.selectTitle = '修改上级'
         } else if (selectType === 'hide') {
           this.selectTitle = '是否隐藏'
         } else if (selectType === 'dele') {
@@ -325,7 +341,7 @@ export default {
         this.selectDialog = false
       }
     },
-    // 修改父级
+    // 修改上级
     editpid(row) {
       pid({
         ids: this.selectGetIds(row),
@@ -375,7 +391,7 @@ export default {
         })
       }
     },
-    // 父级选择
+    // 上级选择
     categoryChange(value) {
       if (value) {
         this.model.category_pid = value[value.length - 1]
