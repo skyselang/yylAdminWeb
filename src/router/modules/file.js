@@ -31,7 +31,7 @@ const file = {
       name: 'FileGroup',
       meta: {
         title: '文件分组',
-        icon: 'el-icon-folder',
+        icon: 'el-icon-folder-opened',
         roles: ['admin/file.Group/list']
       },
       component: () => import('@/views/file/group')
@@ -41,7 +41,7 @@ const file = {
       name: 'FileSetting',
       meta: {
         title: '文件设置',
-        icon: 'el-icon-folder',
+        icon: 'el-icon-folder-checked',
         roles: ['admin/file.Setting/info']
       },
       component: () => import('@/views/file/setting')

@@ -1,16 +1,23 @@
 <template>
-  <el-card class="box-card">
-    <el-row class="dialog-body" :style="{height:height+'px'}">
+  <el-card class="box-card dialog-body" :style="{height:height+'px'}">
+    <el-row>
       <el-col :xs="24" :sm="18" :md="12">
         <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
-          <el-form-item label="Token密钥" prop="token_key">
-            <el-input v-model="model.token_key" type="text" clearable style="width:90%" />
-            <i class="el-icon-warning-outline" title="修改后所有会员登录状态失效，需重新登录。" />
+          <el-form-item label="接口速率">
+            <el-col :span="11">
+              <el-input v-model="model.api_rate_num" type="number" placeholder="次数">
+                <template slot="append">次</template>
+              </el-input>
+            </el-col>
+            <el-col class="line" :span="2" style="text-align:center">/</el-col>
+            <el-col :span="11">
+              <el-input v-model="model.api_rate_time" type="number" placeholder="时间">
+                <template slot="append">秒</template>
+              </el-input>
+            </el-col>
           </el-form-item>
-          <el-form-item label="Token有效时间" prop="token_exp">
-            <el-input v-model="model.token_exp" type="number">
-              <template slot="append">小时</template>
-            </el-input>
+          <el-form-item label="" prop="">
+            <span>次数/时间；3/1：3次1秒；次数设置为 0 则不限制。</span>
           </el-form-item>
           <el-form-item>
             <el-button :loading="loading" @click="refresh()">刷新</el-button>
@@ -24,38 +31,41 @@
 
 <script>
 import screenHeight from '@/utils/screen-height'
-import { tokenInfo, tokenEdit } from '@/api/setting/setting'
+import { apiInfo, apiEdit } from '@/api/admin/setting'
 
 export default {
-  name: 'SettingSettingToken',
+  name: 'SystemSettingApi',
   components: {},
   data() {
     return {
-      name: 'Token设置',
+      name: '接口设置',
       height: 680,
       loading: false,
       model: {
-        token_key: '',
-        token_exp: 720
+        api_rate_num: 3,
+        api_rate_time: 1
       },
-      rules: {}
+      rules: {
+        api_rate_num: [{ required: true, message: '请输入次数', trigger: 'blur' }],
+        api_rate_time: [{ required: true, message: '请输入时间', trigger: 'blur' }]
+      }
     }
   },
   created() {
-    this.height = screenHeight(210)
+    this.height = screenHeight(180)
     this.info()
   },
   methods: {
     // 信息
     info() {
-      tokenInfo().then(res => {
+      apiInfo().then(res => {
         this.model = res.data
       })
     },
     // 刷新
     refresh() {
       this.loading = true
-      tokenInfo().then((res) => {
+      apiInfo().then((res) => {
         this.model = res.data
         this.loading = false
         this.$message.success(res.msg)
@@ -68,7 +78,7 @@ export default {
       this.$refs['ref'].validate(valid => {
         if (valid) {
           this.loading = true
-          tokenEdit(this.model).then(res => {
+          apiEdit(this.model).then(res => {
             this.loading = false
             this.$message.success(res.msg)
           }).catch(() => {

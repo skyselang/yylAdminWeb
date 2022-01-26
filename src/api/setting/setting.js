@@ -1,28 +1,6 @@
 import request from '@/utils/request'
-const url = '/admin/admin.Setting/'
-// ----------------系统管理----------------
-/**
- * 缓存设置信息
- * @param {array} params 请求数据
- */
-export function cacheInfo(params) {
-  return request({
-    url: url + 'cacheInfo',
-    method: 'get',
-    params: params
-  })
-}
-/**
- * 缓存设置清除
- * @param {array} data 请求数据
- */
-export function cacheClear(data) {
-  return request({
-    url: url + 'cacheClear',
-    method: 'post',
-    data
-  })
-}
+const url = '/admin/setting.Setting/'
+// ----------------设置管理----------------
 /**
  * Token设置信息
  * @param {array} params 请求数据
@@ -107,28 +85,6 @@ export function apiInfo(params) {
 export function apiEdit(data) {
   return request({
     url: url + 'apiEdit',
-    method: 'post',
-    data
-  })
-}
-/**
- * 系统设置信息
- * @param {array} params 请求数据
- */
-export function systemInfo(params) {
-  return request({
-    url: url + 'systemInfo',
-    method: 'get',
-    params: params
-  })
-}
-/**
- * 系统设置修改
- * @param {array} data 请求数据
- */
-export function systemEdit(data) {
-  return request({
-    url: url + 'systemEdit',
     method: 'post',
     data
   })

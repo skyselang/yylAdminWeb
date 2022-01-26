@@ -160,7 +160,7 @@ import { CanvasRenderer } from 'echarts/renderers'
 // 注册必须的组件
 echarts.use([LineChart, TitleComponent, LegendComponent, TooltipComponent, GridComponent, CanvasRenderer])
 
-import { stat } from '@/api/member'
+import { stat } from '@/api/member/member'
 
 export default {
   name: 'MemberStat',

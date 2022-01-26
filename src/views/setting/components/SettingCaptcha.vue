@@ -23,10 +23,10 @@
 
 <script>
 import screenHeight from '@/utils/screen-height'
-import { captchaInfo, captchaEdit } from '@/api/setting'
+import { captchaInfo, captchaEdit } from '@/api/setting/setting'
 
 export default {
-  name: 'SettingCaptcha',
+  name: 'SettingSettingCaptcha',
   components: {},
   data() {
     return {

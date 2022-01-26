@@ -233,8 +233,8 @@ import Pagination from '@/components/Pagination'
 import FileManage from '@/components/FileManage'
 import clip from '@/utils/clipboard'
 import { arrayColumn } from '@/utils/index'
-import { list as regionList } from '@/api/region'
-import { list, info, add, edit, dele, region, repwd, disable } from '@/api/member'
+import { list as regionList } from '@/api/setting/region'
+import { list, info, add, edit, dele, region, repwd, disable } from '@/api/member/member'
 
 export default {
   name: 'Member',

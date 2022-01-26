@@ -1,17 +1,17 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import Layout from '@/layout'
 
 /* 路由模块 */
 Vue.use(Router)
 
-import constant from './modules/constant'
 /* 动态路由，当路由表太长时，可以将它拆分成小模块 */
 import member from './modules/member'
 import cms from './modules/cms'
 import file from './modules/file'
 import setting from './modules/setting'
-import rule from './modules/rule'
-import system from './modules/system'
+import adminAuth from './modules/adminAuth'
+import adminSystem from './modules/adminSystem'
 
 /**
  * 配置说明
@@ -49,7 +49,59 @@ import system from './modules/system'
  * 不需要动态判断权限的路由，如登录、404、401等页面
  * 所有用户都可以访问
  */
-export const constantRoutes = constant
+export const constantRoutes = [
+  {
+    path: '/redirect',
+    component: Layout,
+    children: [
+      {
+        path: '/redirect/:path(.*)',
+        component: () => import('@/views/admin/constant/redirect')
+      }
+    ]
+  },
+  {
+    path: '/401',
+    meta: {
+      title: '401'
+    },
+    hidden: true,
+    component: () => import('@/views/admin/constant/401')
+  },
+  {
+    path: '/404',
+    meta: {
+      title: '404'
+    },
+    hidden: true,
+    component: () => import('@/views/admin/constant/404')
+  },
+  {
+    path: '/login',
+    meta: {
+      title: '登录'
+    },
+    hidden: true,
+    component: () => import('@/views/admin/constant/login')
+  },
+  {
+    path: '/',
+    redirect: '/dashboard',
+    component: Layout,
+    children: [
+      {
+        path: 'dashboard',
+        name: 'Dashboard',
+        meta: {
+          title: '控制台',
+          icon: 'el-icon-s-home',
+          affix: true
+        },
+        component: () => import('@/views/admin/constant/index')
+      }
+    ]
+  }
+]
 
 /**
  * asyncRoutes
@@ -66,9 +118,9 @@ export const asyncRoutes = [
   // 设置管理
   setting,
   // 权限管理
-  rule,
+  adminAuth,
   // 系统管理
-  system,
+  adminSystem,
 
   // 404页面，必须放在最后!!!
   {

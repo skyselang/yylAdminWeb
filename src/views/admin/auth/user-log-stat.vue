@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container dialog-body" :style="{height:height+'px'}">
+  <div class="app-container dialog-body" :style="{height:height+120+'px'}">
     <el-card v-loading="loadNum" class="box-card">
       <el-row :gutter="10">
         <el-col :sm="4">
@@ -83,40 +83,43 @@
             value-format="yyyy-MM-dd"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-            @change="echartDateChange"
+            @change="echartUserDateChange()"
           />
         </el-col>
       </el-row>
       <el-row>
         <el-col>
-          <div id="echartDate" :style="{height:height-300+'px'}" />
+          <div id="echartUserDate" :style="{height:height-100+'px'}" />
         </el-col>
       </el-row>
-      <el-divider />
+    </el-card>
+    <el-card class="box-card" :body-style="cardBodyStyle">
       <el-row>
         <el-col>
           <el-date-picker
             v-model="field.date"
             type="daterange"
+            range-separator="-"
             value-format="yyyy-MM-dd"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-            @change="echartFieldChange"
+            @change="echartFieldChange()"
           />
-          <el-select v-model="fieldValue" placeholder="请选择" @change="echartFieldChange">
+          <el-select v-model="fieldValue" placeholder="请选择" @change="echartFieldChange()">
             <el-option v-for="item in fieldType" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
-        </el-col>
-      </el-row>
-      <el-row v-loading="loadField">
-        <el-col>
-          <div id="echartFieldLine" :style="{height:height-300+'px'}" />
         </el-col>
       </el-row>
       <el-divider />
       <el-row v-loading="loadField">
         <el-col>
-          <div id="echartFieldPie" :style="{height:height-300+'px'}" />
+          <div id="echartUserLine" :style="{height:height+'px'}" />
+        </el-col>
+      </el-row>
+      <el-divider />
+      <el-row v-loading="loadField">
+        <el-col>
+          <div id="echartUserPie" :style="{height:height+'px'}" />
         </el-col>
       </el-row>
     </el-card>
@@ -124,6 +127,7 @@
 </template>
 
 <script>
+import screenHeight from '@/utils/screen-height'
 // ECharts
 // 引入 echarts 核心模块，核心模块提供了 echarts 使用必须要的接口
 import * as echarts from 'echarts/core'
@@ -136,15 +140,14 @@ import { CanvasRenderer } from 'echarts/renderers'
 // 注册必须的组件
 echarts.use([LegendComponent, TitleComponent, TooltipComponent, GridComponent, LineChart, BarChart, PieChart, CanvasRenderer])
 
-import screenHeight from '@/utils/screen-height'
-import { stat } from '@/api/member/member-log'
+import { stat } from '@/api/admin/user-log'
 
 export default {
-  name: 'MemberLogStat',
+  name: 'AuthUserLogStat',
   components: { },
   data() {
     return {
-      name: '会员日志统计',
+      name: '用户日志统计',
       height: 600,
       loadNum: false,
       loadDate: false,
@@ -159,13 +162,13 @@ export default {
         lastmonth: '--'
       },
       date: {
-        x_data: [],
-        y_data: [],
+        x: [],
+        s: [],
         date: []
       },
       field: {
-        x_data: [],
-        y_data: [],
+        x: [],
+        s: [],
         date: []
       },
       fieldType: [
@@ -186,21 +189,23 @@ export default {
           label: 'ISP'
         },
         {
-          value: 'member',
-          label: '会员'
+          value: 'user',
+          label: '用户'
         }
       ],
-      fieldValue: 'member',
-      fieldLabel: '会员',
+      fieldValue: 'user',
+      fieldLabel: '用户',
       cardBodyStyle: {
         padding: '10px 0px 0px 0px'
       }
     }
   },
+  computed: {},
   created() {
-    this.height = screenHeight(100)
+    this.height = screenHeight()
     this.stat()
   },
+  mounted() {},
   methods: {
     stat() {
       this.loadNum = true
@@ -208,45 +213,47 @@ export default {
         this.num = res.data.num
         this.date = res.data.date
         this.field = res.data.field
-        this.echartDate(res.data.date)
-        this.echartFieldLine(res.data.field)
-        this.echartFieldPie(res.data.field)
+        this.echartUserDate(res.data.date)
+        this.echartUserLine(res.data.field)
+        this.echartUserPie(res.data.field)
         this.loadNum = false
       }).catch(() => {
         this.loadNum = false
       })
     },
-    echartDateChange() {
+    echartUserDateChange() {
       this.loadDate = true
       stat({
-        type: 'date', date: this.date.date
+        type: 'date',
+        date: this.date.date
       }).then(res => {
-        this.echartDate(res.data.date)
+        this.echartUserDate(res.data.date)
         this.loadDate = false
       }).catch(() => {
         this.loadDate = false
       })
     },
-    echartFieldChange(value) {
+    echartFieldChange() {
       this.loadField = true
       stat({
         type: 'field',
         date: this.field.date,
         field: this.fieldValue
       }).then(res => {
-        this.echartFieldLine(res.data.field)
-        this.echartFieldPie(res.data.field)
+        this.echartUserLine(res.data.field)
+        this.echartUserPie(res.data.field)
         this.loadField = false
       }).catch(() => {
         this.loadField = false
       })
     },
-    echartDate(data) {
-      var echart = echarts.init(document.getElementById('echartDate'))
+    echartUserDate(data) {
+      var echart = echarts.init(document.getElementById('echartUserDate'))
       var option = {
         title: {
           text: ''
         },
+        color: ['#1890ff'],
         tooltip: {
           trigger: 'axis'
         },
@@ -259,16 +266,17 @@ export default {
         xAxis: {
           type: 'category',
           boundaryGap: false,
-          data: data.x_data
+          data: data.x
         },
         yAxis: {
           type: 'value'
         },
         series: [
           {
+            name: '',
             type: 'line',
             smooth: true,
-            data: data.y_data,
+            data: data.s,
             label: {
               show: true,
               position: 'top'
@@ -278,8 +286,8 @@ export default {
       }
       echart.setOption(option)
     },
-    echartFieldLine(data) {
-      var echart = echarts.init(document.getElementById('echartFieldLine'))
+    echartUserLine(data) {
+      var echart = echarts.init(document.getElementById('echartUserLine'))
       var option = {
         title: {
           text: ''
@@ -293,14 +301,14 @@ export default {
         },
         grid: {
           left: '3%',
-          right: '4%',
+          right: '3%',
           bottom: '3%',
           containLabel: true
         },
         xAxis: [
           {
             type: 'category',
-            data: data.x_data
+            data: data.x
           }
         ],
         yAxis: [
@@ -311,7 +319,7 @@ export default {
         series: [
           {
             type: 'bar',
-            data: data.y_data,
+            data: data.s,
             label: {
               show: true,
               position: 'top'
@@ -321,8 +329,8 @@ export default {
       }
       echart.setOption(option)
     },
-    echartFieldPie(data) {
-      var echart = echarts.init(document.getElementById('echartFieldPie'))
+    echartUserPie(data) {
+      var echart = echarts.init(document.getElementById('echartUserPie'))
       var option = {
         title: {
           text: ''
@@ -342,6 +350,7 @@ export default {
             type: 'pie',
             radius: '55%',
             center: ['50%', '60%'],
+            data: data.sp,
             itemStyle: {
               borderRadius: 8,
               normal: {
@@ -351,8 +360,7 @@ export default {
                 },
                 labelLine: { show: true }
               }
-            },
-            data: data.p_data
+            }
           }
         ]
       }

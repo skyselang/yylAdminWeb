@@ -1,20 +1,17 @@
 <template>
-  <el-card class="box-card">
-    <el-row class="dialog-body" :style="{height:height+'px'}">
+  <el-card class="box-card dialog-body" :style="{height:height+'px'}">
+    <el-row>
       <el-col :xs="24" :sm="18" :md="12">
         <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
-          <el-form-item label="Token密钥" prop="token_key">
-            <el-input v-model="model.token_key" type="text" clearable style="width:90%" />
-            <i class="el-icon-warning-outline" title="修改后所有会员登录状态失效，需重新登录。" />
+          <el-form-item label="缓存类型" prop="cache_type">
+            <el-input v-model="model.cache_type" />
           </el-form-item>
-          <el-form-item label="Token有效时间" prop="token_exp">
-            <el-input v-model="model.token_exp" type="number">
-              <template slot="append">小时</template>
-            </el-input>
+          <el-form-item label="" prop="">
+            <span>手动清除所有缓存，后台登录状态不会清除。</span>
           </el-form-item>
-          <el-form-item>
+          <el-form-item label="">
             <el-button :loading="loading" @click="refresh()">刷新</el-button>
-            <el-button :loading="loading" type="primary" @click="submit()">提交</el-button>
+            <el-button :loading="loading" type="primary" @click="clear()">清除</el-button>
           </el-form-item>
         </el-form>
       </el-col>
@@ -24,38 +21,37 @@
 
 <script>
 import screenHeight from '@/utils/screen-height'
-import { tokenInfo, tokenEdit } from '@/api/setting/setting'
+import { cacheInfo, cacheClear } from '@/api/admin/setting'
 
 export default {
-  name: 'SettingSettingToken',
+  name: 'SystemSettingCache',
   components: {},
   data() {
     return {
-      name: 'Token设置',
+      name: '缓存设置',
       height: 680,
       loading: false,
       model: {
-        token_key: '',
-        token_exp: 720
+        cache_type: ''
       },
       rules: {}
     }
   },
   created() {
-    this.height = screenHeight(210)
+    this.height = screenHeight(180)
     this.info()
   },
   methods: {
     // 信息
     info() {
-      tokenInfo().then(res => {
+      cacheInfo().then(res => {
         this.model = res.data
       })
     },
     // 刷新
     refresh() {
       this.loading = true
-      tokenInfo().then((res) => {
+      cacheInfo().then((res) => {
         this.model = res.data
         this.loading = false
         this.$message.success(res.msg)
@@ -63,12 +59,12 @@ export default {
         this.loading = false
       })
     },
-    // 提交
-    submit() {
+    // 清除
+    clear() {
       this.$refs['ref'].validate(valid => {
         if (valid) {
           this.loading = true
-          tokenEdit(this.model).then(res => {
+          cacheClear().then(res => {
             this.loading = false
             this.$message.success(res.msg)
           }).catch(() => {

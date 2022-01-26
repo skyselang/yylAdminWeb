@@ -56,10 +56,10 @@
 import screenHeight from '@/utils/screen-height'
 import clip from '@/utils/clipboard'
 import FileManage from '@/components/FileManage'
-import { miniInfo, miniEdit } from '@/api/setting-wechat'
+import { miniInfo, miniEdit } from '@/api/setting/wechat'
 
 export default {
-  name: 'WechatMini',
+  name: 'SettingWechatMini',
   components: { FileManage },
   data() {
     return {

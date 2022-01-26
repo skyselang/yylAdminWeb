@@ -76,10 +76,10 @@
 import screenHeight from '@/utils/screen-height'
 import clip from '@/utils/clipboard'
 import FileManage from '@/components/FileManage'
-import { offiInfo, offiEdit } from '@/api/setting-wechat'
+import { offiInfo, offiEdit } from '@/api/setting/wechat'
 
 export default {
-  name: 'WechatOffi',
+  name: 'SettingWechatOffi',
   components: { FileManage },
   data() {
     return {

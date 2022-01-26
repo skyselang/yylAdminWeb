@@ -67,7 +67,7 @@ export default {
   data() {
     return {
       loading: false,
-      userCenter: '/admin/rule/user-center'
+      userCenter: '/auth/user-center'
     }
   },
   computed: {

@@ -6,7 +6,7 @@ import { getAdminToken } from '@/utils/auth'
 // 创建axios实例
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API, // 接口地址
-  // withCredentials: true, // 跨域请求时发送Cookie
+  // withCredentials: true, // 跨域请求时发送 Cookie
   timeout: 60000 // 请求超时时间
 })
 

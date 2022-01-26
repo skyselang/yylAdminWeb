@@ -6,16 +6,20 @@
       <el-row>
         <el-col>
           <el-select v-model="query.search_field" class="filter-item ya-search-field" placeholder="搜索字段">
-            <el-option value="member_id" label="会员ID" />
-            <el-option value="username" label="会员账号" />
-            <el-option value="api_url" label="接口链接" />
-            <el-option value="api_name" label="接口名称" />
+            <el-option value="username" label="用户账号" />
+            <el-option value="admin_user_id" label="用户ID" />
+            <el-option value="menu_url" label="菜单链接" />
+            <el-option value="menu_name" label="菜单名称" />
+            <el-option value="admin_menu_id" label="菜单ID" />
             <el-option value="request_ip" label="请求IP" />
             <el-option value="request_region" label="请求地区" />
             <el-option value="request_isp" label="请求ISP" />
-            <el-option value="response_code" label="返回码" />
+            <el-option :value="idkey" label="ID" />
           </el-select>
           <el-input v-model="query.search_value" class="filter-item ya-search-value" placeholder="搜索内容" clearable />
+          <el-select v-model="query.date_field" class="filter-item ya-search-field" placeholder="时间字段">
+            <el-option value="create_time" label="请求时间" />
+          </el-select>
           <el-date-picker
             v-model="query.date_value"
             type="daterange"
@@ -25,9 +29,8 @@
             end-placeholder="结束日期"
           />
           <el-select v-model="query.log_type" class="filter-item ya-search-field" placeholder="日志类型" clearable>
-            <el-option :value="1" label="注册日志" />
-            <el-option :value="2" label="登录日志" />
-            <el-option :value="3" label="操作日志" />
+            <el-option :value="1" label="登录日志" />
+            <el-option :value="2" label="操作日志" />
           </el-select>
           <el-button class="filter-item" type="primary" @click="search()">查询</el-button>
           <el-button class="filter-item" @click="refresh()">刷新</el-button>
@@ -37,11 +40,11 @@
       <el-row>
         <el-col>
           <el-button @click="selectOpen('dele')">删除</el-button>
-          <el-button @click="clear()">清除</el-button>
+          <el-button v-permission="['admin/admin.UserLog/clear']" title="日志清除" @click="clear()">清除</el-button>
         </el-col>
       </el-row>
       <el-dialog :title="selectTitle" :visible.sync="selectDialog" top="20vh" :close-on-click-modal="false" :close-on-press-escape="false">
-        <el-form label-width="120px">
+        <el-form ref="selectRef" label-width="120px">
           <el-form-item :label="name+'ID'" prop="">
             <el-input v-model="selectIds" type="textarea" :rows="2" disabled />
           </el-form-item>
@@ -59,16 +62,16 @@
     <el-table ref="table" v-loading="loading" :data="data" :height="height" @sort-change="sort" @selection-change="select">
       <el-table-column type="selection" width="42" title="全选/反选" />
       <el-table-column :prop="idkey" label="ID" min-width="100" sortable="custom" />
-      <el-table-column prop="member_id" label="会员ID" min-width="100" sortable="custom" />
-      <el-table-column prop="username" label="会员账号" min-width="110" show-overflow-tooltip />
-      <el-table-column prop="api_url" label="接口链接" min-width="220" show-overflow-tooltip />
-      <el-table-column prop="api_name" label="接口名称" min-width="130" show-overflow-tooltip />
+      <el-table-column prop="username" label="用户账号" min-width="110" show-overflow-tooltip />
+      <el-table-column prop="menu_url" label="菜单链接" min-width="240" show-overflow-tooltip />
+      <el-table-column prop="menu_name" label="菜单名称" min-width="140" show-overflow-tooltip />
+      <el-table-column prop="request_method" label="请求方式" min-width="90" />
       <el-table-column prop="request_ip" label="请求IP" min-width="130" />
       <el-table-column prop="request_region" label="请求地区" min-width="150" show-overflow-tooltip />
-      <el-table-column prop="request_isp" label="请求ISP" min-width="110" />
-      <el-table-column prop="response_code" label="返回码" min-width="80" />
-      <el-table-column prop="response_msg" label="返回描述" min-width="130" show-overflow-tooltip />
+      <el-table-column prop="request_isp" label="请求ISP" min-width="110" show-overflow-tooltip />
       <el-table-column prop="create_time" label="请求时间" min-width="160" sortable="custom" />
+      <el-table-column prop="response_code" label="返回码" min-width="90" sortable="custom" />
+      <el-table-column prop="response_msg" label="返回描述" min-width="130" show-overflow-tooltip />
       <el-table-column label="操作" min-width="85" align="right" fixed="right">
         <template slot-scope="{ row }">
           <el-button size="mini" type="text" @click="info(row)">详情</el-button>
@@ -81,23 +84,23 @@
     <!-- 详情 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false">
       <el-form ref="ref" :rules="rules" :model="model" label-width="100px" class="dialog-body" :style="{height:height+'px'}">
-        <el-form-item label="会员ID" prop="member_id">
-          <el-input v-model="model.member_id" />
+        <el-form-item label="用户ID" prop="admin_user_id">
+          <el-input v-model="model.admin_user_id" />
         </el-form-item>
-        <el-form-item label="会员昵称" prop="nickname">
+        <el-form-item label="用户昵称" prop="nickname">
           <el-input v-model="model.nickname" />
         </el-form-item>
-        <el-form-item label="会员账号" prop="username">
+        <el-form-item label="用户账号" prop="username">
           <el-input v-model="model.username" />
         </el-form-item>
-        <el-form-item label="接口ID" prop="api_id">
-          <el-input v-model="model.api_id" />
+        <el-form-item label="菜单ID" prop="admin_menu_id">
+          <el-input v-model="model.admin_menu_id" />
         </el-form-item>
-        <el-form-item label="接口名称" prop="api_name">
-          <el-input v-model="model.api_name" />
+        <el-form-item label="菜单名称" prop="menu_name">
+          <el-input v-model="model.menu_name" />
         </el-form-item>
-        <el-form-item label="接口链接" prop="api_url">
-          <el-input v-model="model.api_url" />
+        <el-form-item label="菜单链接" prop="menu_url">
+          <el-input v-model="model.menu_url" />
         </el-form-item>
         <el-form-item label="请求方式" prop="request_method">
           <el-input v-model="model.request_method" />
@@ -121,7 +124,7 @@
           <el-input v-model="model.response_code" />
         </el-form-item>
         <el-form-item label="返回描述" prop="response_msg">
-          <el-input v-model="model.response_msg" />
+          <el-input v-model="model.response_msg" type="textarea" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -132,19 +135,19 @@
     <!-- 清除 -->
     <el-dialog :title="clearDialogTitle" :visible.sync="clearDialog" :before-close="clearCancel" :close-on-click-modal="false" :close-on-press-escape="false">
       <el-form ref="clearRef" :rules="clearRules" :model="clearModel" label-width="100px" class="dialog-body">
-        <el-form-item label="会员ID" prop="member_id">
-          <el-input v-model="clearModel.member_id" placeholder="多个逗号,隔开" clearable />
+        <el-form-item label="用户ID" prop="admin_user_id">
+          <el-input v-model="clearModel.admin_user_id" clearable />
         </el-form-item>
-        <el-form-item label="会员账号" prop="username">
-          <el-input v-model="clearModel.username" placeholder="多个逗号,隔开" clearable />
+        <el-form-item label="用户账号" prop="username">
+          <el-input v-model="clearModel.username" clearable />
         </el-form-item>
-        <el-form-item label="接口ID" prop="api_id">
-          <el-input v-model="clearModel.api_id" placeholder="多个逗号,隔开" clearable />
+        <el-form-item label="菜单ID" prop="admin_menu_id">
+          <el-input v-model="clearModel.admin_menu_id" clearable />
         </el-form-item>
-        <el-form-item label="接口链接" prop="api_url">
-          <el-input v-model="clearModel.api_url" placeholder="多个逗号,隔开" clearable />
+        <el-form-item label="菜单链接" prop="menu_url">
+          <el-input v-model="clearModel.menu_url" clearable />
         </el-form-item>
-        <el-form-item label="请求时间" prop="date_value">
+        <el-form-item label="日期范围" prop="date_value">
           <el-date-picker
             v-model="clearModel.date_value"
             type="daterange"
@@ -170,25 +173,26 @@
 import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination'
 import permission from '@/directive/permission/index.js' // 权限判断指令
-import { arrayColumn } from '@/utils/index'
-import { list, info, dele, clear } from '@/api/member/member-log'
+import { arrayColumn } from '@/utils'
+import { list, info, dele, clear } from '@/api/admin/user-log'
 
 export default {
-  name: 'MemberLog',
+  name: 'AuthUserLog',
   components: { Pagination },
   directives: { permission },
   data() {
     return {
-      name: '会员日志',
+      name: '用户日志',
       height: 680,
       loading: false,
-      idkey: 'member_log_id',
+      idkey: 'admin_user_log_id',
       data: [],
       count: 0,
       query: {
         page: 1,
         limit: 15,
-        search_field: 'member_id'
+        search_field: 'username',
+        date_field: 'create_time'
       },
       dialog: false,
       dialogTitle: '',
@@ -202,10 +206,10 @@ export default {
       clearDialog: false,
       clearDialogTitle: '',
       clearModel: {
-        member_id: '',
+        admin_user_id: '',
         username: '',
-        api_id: '',
-        api_url: '',
+        admin_menu_id: '',
+        menu_url: '',
         date_value: [],
         clean: 0
       },
@@ -235,20 +239,24 @@ export default {
       var id = {}
       id[this.idkey] = row[this.idkey]
       info(id).then(res => {
-        this.model = res.data
-      })
+        this.reset(res.data)
+      }).catch(() => {})
     },
     cancel() {
-      this.dialog = false
       this.reset()
+      this.dialog = false
     },
     submit() {
-      this.dialog = false
       this.reset()
+      this.dialog = false
     },
     // 重置
-    reset(row = {}) {
-      this.model = row
+    reset(row) {
+      if (row) {
+        this.model = row
+      } else {
+        this.model = this.$options.data().model
+      }
     },
     // 查询
     search() {
@@ -339,14 +347,12 @@ export default {
       this.clearDialog = false
     },
     clearSubmit() {
-      this.loading = true
       clear(this.clearModel).then(res => {
         this.list()
         this.clearDialog = false
         this.clearModel = this.$options.data().clearModel
-        this.$message.success('已清除' + this.name + ' ' + res.data.count + ' 条')
+        this.$message.success('已清除' + this.name + '记录 ' + res.data.count + ' 条')
       }).catch(() => {
-        this.loading = false
       })
     }
   }

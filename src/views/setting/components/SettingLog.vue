@@ -24,10 +24,10 @@
 
 <script>
 import screenHeight from '@/utils/screen-height'
-import { logInfo, logEdit } from '@/api/setting'
+import { logInfo, logEdit } from '@/api/setting/setting'
 
 export default {
-  name: 'SettingLog',
+  name: 'SettingSettingLog',
   components: {},
   data() {
     return {

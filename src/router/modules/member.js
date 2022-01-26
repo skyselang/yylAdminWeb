@@ -7,10 +7,10 @@ const member = {
     title: '会员管理',
     icon: 'el-icon-user',
     roles: [
-      'admin/Member/list',
-      'admin/MemberLog/list',
-      'admin/Member/stat',
-      'admin/MemberLog/stat'
+      'admin/member.Member/list',
+      'admin/member.Log/list',
+      'admin/member.Member/stat',
+      'admin/member.Log/stat'
     ]
   },
   redirect: 'noRedirect',
@@ -23,37 +23,37 @@ const member = {
       meta: {
         title: '会员管理',
         icon: 'el-icon-user',
-        roles: ['admin/Member/list']
+        roles: ['admin/member.Member/list']
       },
       component: () => import('@/views/member/member')
     },
     {
-      path: 'member-log',
+      path: 'log',
       name: 'MemberLog',
       meta: {
         title: '会员日志',
         icon: 'el-icon-user',
-        roles: ['admin/MemberLog/list']
+        roles: ['admin/member.Log/list']
       },
       component: () => import('@/views/member/member-log')
     },
     {
-      path: 'member-stat',
+      path: 'stat',
       name: 'MemberStat',
       meta: {
         title: '会员统计',
         icon: 'el-icon-user',
-        roles: ['admin/Member/stat']
+        roles: ['admin/member.Member/stat']
       },
       component: () => import('@/views/member/member-stat')
     },
     {
-      path: 'member-log-stat',
+      path: 'log-stat',
       name: 'MemberLogStat',
       meta: {
         title: '会员日志统计',
         icon: 'el-icon-user',
-        roles: ['admin/MemberLog/stat']
+        roles: ['admin/member.Log/stat']
       },
       component: () => import('@/views/member/member-log-stat')
     }

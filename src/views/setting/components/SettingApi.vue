@@ -31,10 +31,10 @@
 
 <script>
 import screenHeight from '@/utils/screen-height'
-import { apiInfo, apiEdit } from '@/api/setting'
+import { apiInfo, apiEdit } from '@/api/setting/setting'
 
 export default {
-  name: 'SettingApi',
+  name: 'SettingSettingApi',
   components: {},
   data() {
     return {
