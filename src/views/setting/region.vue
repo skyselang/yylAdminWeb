@@ -2,7 +2,7 @@
   <div class="app-container">
     <!-- 查询操作 -->
     <div class="filter-container">
-      <!-- 操作 -->
+      <!-- 查询 -->
       <el-row>
         <el-col>
           <el-select v-model="query.search_field" class="filter-item ya-search-field" placeholder="搜索字段">
@@ -105,31 +105,31 @@
           />
         </el-form-item>
         <el-form-item label="名称" prop="region_name">
-          <el-input v-model="model.region_name" placeholder="请输入名称eg：北京市" clearable />
+          <el-input v-model="model.region_name" placeholder="请输入名称，eg：北京市" clearable />
         </el-form-item>
         <el-form-item label="拼音" prop="region_pinyin">
-          <el-input v-model="model.region_pinyin" placeholder="请输入拼音eg：Beijing" clearable />
+          <el-input v-model="model.region_pinyin" placeholder="请输入拼音，eg：Beijing" clearable />
         </el-form-item>
         <el-form-item label="简拼" prop="region_jianpin">
-          <el-input v-model="model.region_jianpin" placeholder="请输入简拼eg：BJ" clearable />
+          <el-input v-model="model.region_jianpin" placeholder="请输入简拼，eg：BJ" clearable />
         </el-form-item>
         <el-form-item label="首字母" prop="region_initials">
-          <el-input v-model="model.region_initials" placeholder="请输入首字母eg：B" clearable />
+          <el-input v-model="model.region_initials" placeholder="请输入首字母，eg：B" clearable />
         </el-form-item>
         <el-form-item label="区号" prop="region_citycode">
-          <el-input v-model="model.region_citycode" placeholder="请输入区号eg：010" clearable />
+          <el-input v-model="model.region_citycode" placeholder="请输入区号，eg：010" clearable />
         </el-form-item>
         <el-form-item label="邮编" prop="region_zipcode">
-          <el-input v-model="model.region_zipcode" placeholder="请输入邮编eg：1000" clearable />
+          <el-input v-model="model.region_zipcode" placeholder="请输入邮编，eg：1000" clearable />
         </el-form-item>
         <el-form-item label="经度" prop="region_longitude">
-          <el-input v-model="model.region_longitude" placeholder="请输入经度eg：116.403263" clearable />
+          <el-input v-model="model.region_longitude" placeholder="请输入经度，eg：116.403263" clearable />
         </el-form-item>
         <el-form-item label="纬度" prop="region_latitude">
-          <el-input v-model="model.region_latitude" placeholder="请输入纬度eg：39.915156" clearable />
+          <el-input v-model="model.region_latitude" placeholder="请输入纬度，eg：39.915156" clearable />
         </el-form-item>
         <el-form-item label="排序" prop="region_sort">
-          <el-input v-model="model.region_sort" type="number" placeholder="请输入排序eg：2250" clearable />
+          <el-input v-model="model.region_sort" type="number" placeholder="请输入排序，eg：2250" clearable />
         </el-form-item>
         <el-form-item label="" prop="">
           <el-link type="info" href="https://www.ip138.com/post/" style="margin-right:10px" target="_blank">查询区号邮编</el-link>
@@ -221,9 +221,6 @@ export default {
     },
     // 加载
     load(row, treeNode, resolve) {
-      console.log(row)
-      console.log(treeNode)
-      console.log(resolve)
       list({
         region_pid: row[this.idkey]
       }).then(res => {

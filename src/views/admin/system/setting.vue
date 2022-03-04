@@ -19,6 +19,9 @@
       <el-tab-pane v-if="checkPermission(['admin/admin.Setting/systemInfo'])" label="系统设置" lazy>
         <setting-system />
       </el-tab-pane>
+      <el-tab-pane v-if="checkPermission(['admin/admin.Setting/emailInfo'])" label="邮件设置" lazy>
+        <setting-email />
+      </el-tab-pane>
     </el-tabs>
   </div>
 </template>
@@ -31,11 +34,12 @@ import SettingCaptcha from './components/SettingCaptcha'
 import SettingLog from './components/SettingLog'
 import SettingApi from './components/SettingApi'
 import SettingSystem from './components/SettingSystem'
+import SettingEmail from './components/SettingEmail'
 
 export default {
   name: 'SystemSetting',
   directives: { },
-  components: { SettingCache, SettingToken, SettingCaptcha, SettingLog, SettingApi, SettingSystem },
+  components: { SettingCache, SettingToken, SettingCaptcha, SettingLog, SettingApi, SettingSystem, SettingEmail },
   data() {
     return {
       name: '系统管理'

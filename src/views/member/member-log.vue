@@ -7,7 +7,7 @@
         <el-col>
           <el-select v-model="query.search_field" class="filter-item ya-search-field" placeholder="搜索字段">
             <el-option value="member_id" label="会员ID" />
-            <el-option value="username" label="会员账号" />
+            <el-option value="username" label="会员用户名" />
             <el-option value="api_url" label="接口链接" />
             <el-option value="api_name" label="接口名称" />
             <el-option value="request_ip" label="请求IP" />
@@ -60,7 +60,7 @@
       <el-table-column type="selection" width="42" title="全选/反选" />
       <el-table-column :prop="idkey" label="ID" min-width="100" sortable="custom" />
       <el-table-column prop="member_id" label="会员ID" min-width="100" sortable="custom" />
-      <el-table-column prop="username" label="会员账号" min-width="110" show-overflow-tooltip />
+      <el-table-column prop="username" label="会员用户名" min-width="110" show-overflow-tooltip />
       <el-table-column prop="api_url" label="接口链接" min-width="220" show-overflow-tooltip />
       <el-table-column prop="api_name" label="接口名称" min-width="130" show-overflow-tooltip />
       <el-table-column prop="request_ip" label="请求IP" min-width="130" />
@@ -87,7 +87,7 @@
         <el-form-item label="会员昵称" prop="nickname">
           <el-input v-model="model.nickname" />
         </el-form-item>
-        <el-form-item label="会员账号" prop="username">
+        <el-form-item label="会员用户名" prop="username">
           <el-input v-model="model.username" />
         </el-form-item>
         <el-form-item label="接口ID" prop="api_id">
@@ -135,7 +135,7 @@
         <el-form-item label="会员ID" prop="member_id">
           <el-input v-model="clearModel.member_id" placeholder="多个逗号,隔开" clearable />
         </el-form-item>
-        <el-form-item label="会员账号" prop="username">
+        <el-form-item label="会员用户名" prop="username">
           <el-input v-model="clearModel.username" placeholder="多个逗号,隔开" clearable />
         </el-form-item>
         <el-form-item label="接口ID" prop="api_id">

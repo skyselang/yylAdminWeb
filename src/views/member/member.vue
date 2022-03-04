@@ -6,8 +6,8 @@
       <el-row>
         <el-col>
           <el-select v-model="query.search_field" class="filter-item ya-search-field" placeholder="搜索字段">
-            <el-option value="username" label="账号" />
             <el-option value="nickname" label="昵称" />
+            <el-option value="username" label="用户名" />
             <el-option value="phone" label="手机" />
             <el-option value="email" label="邮箱" />
             <el-option value="remark" label="备注" />
@@ -82,8 +82,8 @@
           <el-image v-if="scope.row.avatar_url" class="ya-img-table" :src="scope.row.avatar_url" :preview-src-list="[scope.row.avatar_url]" title="点击查看大图" />
         </template>
       </el-table-column>
-      <el-table-column prop="username" label="账号" min-width="120" sortable="custom" show-overflow-tooltip />
       <el-table-column prop="nickname" label="昵称" min-width="200" sortable="custom" show-overflow-tooltip />
+      <el-table-column prop="username" label="用户名" min-width="120" sortable="custom" show-overflow-tooltip />
       <el-table-column prop="phone" label="手机" min-width="120" sortable="custom" show-overflow-tooltip />
       <el-table-column prop="email" label="邮箱" min-width="220" sortable="custom" show-overflow-tooltip />
       <el-table-column prop="remark" label="备注" min-width="110" show-overflow-tooltip />
@@ -121,8 +121,8 @@
             <p>jpg、png图片，小于100kb，宽高1:1</p>
           </el-col>
         </el-form-item>
-        <el-form-item label="账号" prop="username">
-          <el-input key="username" v-model="model.username" placeholder="请输入账号" clearable>
+        <el-form-item label="用户名" prop="username">
+          <el-input key="username" v-model="model.username" placeholder="请输入用户名" clearable>
             <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.username, $event)" />
           </el-input>
         </el-form-item>
@@ -270,8 +270,7 @@ export default {
         wechat: ''
       },
       rules: {
-        username: [{ required: true, message: '请输入账号', trigger: 'blur' }],
-        nickname: [{ required: true, message: '请输入昵称', trigger: 'blur' }],
+        username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
         password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
       },
       regionData: [],

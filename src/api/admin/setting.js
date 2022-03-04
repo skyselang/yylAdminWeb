@@ -1,6 +1,6 @@
 import request from '@/utils/request'
-const url = '/admin/admin.Setting/'
 // ----------------系统管理----------------
+const url = '/admin/admin.Setting/'
 /**
  * 缓存设置信息
  * @param {array} params 请求数据
@@ -129,6 +129,39 @@ export function systemInfo(params) {
 export function systemEdit(data) {
   return request({
     url: url + 'systemEdit',
+    method: 'post',
+    data
+  })
+}
+/**
+ * 邮箱设置信息
+ * @param {array} params 请求数据
+ */
+export function emailInfo(params) {
+  return request({
+    url: url + 'emailInfo',
+    method: 'get',
+    params: params
+  })
+}
+/**
+ * 邮箱设置修改
+ * @param {array} data 请求数据
+ */
+export function emailEdit(data) {
+  return request({
+    url: url + 'emailEdit',
+    method: 'post',
+    data
+  })
+}
+/**
+ * 邮箱设置测试
+ * @param {array} data 请求数据
+ */
+export function emailTest(data) {
+  return request({
+    url: url + 'emailTest',
     method: 'post',
     data
   })

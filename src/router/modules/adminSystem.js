@@ -15,7 +15,8 @@ const adminSystem = {
       'admin/admin.Setting/captchaInfo',
       'admin/admin.Setting/logInfo',
       'admin/admin.Setting/apiInfo',
-      'admin/admin.Setting/systemInfo'
+      'admin/admin.Setting/systemInfo',
+      'admin/admin.Setting/emailInfo'
     ]
   },
   redirect: 'noRedirect',
@@ -56,7 +57,7 @@ const adminSystem = {
       path: 'setting',
       name: 'SystemSetting',
       meta: {
-        title: '系统管理',
+        title: '系统设置',
         icon: 'el-icon-set-up',
         roles: [
           'admin/admin.Setting/cacheInfo',
@@ -64,7 +65,8 @@ const adminSystem = {
           'admin/admin.Setting/captchaInfo',
           'admin/admin.Setting/logInfo',
           'admin/admin.Setting/apiInfo',
-          'admin/admin.Setting/systemInfo'
+          'admin/admin.Setting/systemInfo',
+          'admin/admin.Setting/emailInfo'
         ]
       },
       component: () => import('@/views/admin/system/setting')

@@ -60,16 +60,6 @@ const adminAuth = {
       component: () => import('@/views/admin/auth/user-log')
     },
     {
-      path: 'user-log-stat',
-      name: 'AuthUserLogStat',
-      meta: {
-        title: '用户日志统计',
-        icon: 'el-icon-notebook-2',
-        roles: ['admin/admin.UserLog/stat']
-      },
-      component: () => import('@/views/admin/auth/user-log-stat')
-    },
-    {
       path: 'user-center',
       name: 'AuthUserCenter',
       meta: {
@@ -78,6 +68,16 @@ const adminAuth = {
         roles: ['admin/admin.UserCenter/info']
       },
       component: () => import('@/views/admin/auth/user-center')
+    },
+    {
+      path: 'user-log-stat',
+      name: 'AuthUserLogStat',
+      meta: {
+        title: '用户日志统计',
+        icon: 'el-icon-notebook-2',
+        roles: ['admin/admin.UserLog/stat']
+      },
+      component: () => import('@/views/admin/auth/user-log-stat')
     }
   ]
 }
