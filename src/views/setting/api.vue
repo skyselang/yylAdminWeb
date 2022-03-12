@@ -238,17 +238,17 @@ export default {
           this.loading = true
           if (this.model[this.idkey]) {
             edit(this.model).then(res => {
-              this.list()
               this.dialog = false
               this.$message.success(res.msg)
+              this.list()
             }).catch(() => {
               this.loading = false
             })
           } else {
             add(this.model).then(res => {
-              this.list()
               this.dialog = false
               this.$message.success(res.msg)
+              this.list()
             }).catch(() => {
               this.loading = false
             })
