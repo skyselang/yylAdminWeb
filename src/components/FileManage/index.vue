@@ -8,6 +8,7 @@
             <el-option value="file_name" label="文件名称" />
             <el-option value="file_md5" label="文件MD5" />
             <el-option value="file_hash" label="文件散列" />
+            <el-option value="file_ext" label="文件扩展" />
             <el-option value="file_id" label="文件ID" />
           </el-select>
           <el-input v-model="query.search_value" class="filter-item ya-search-value" placeholder="搜索内容" clearable />
@@ -206,7 +207,7 @@
                   <el-checkbox :key="item.file_id" :label="item.file_id" />
                 </div>
                 <div :style="{width:'100%', height:((height-height*0.1)/3)-((height-height*0.1)/3*0.5)+'px', minHeight:'62px'}">
-                  <el-image v-if="item.file_type==='image'" fit="contain" :src="item.file_url" :preview-src-list="[item.file_url]" title="点击查看大图" style="height:100%" />
+                  <el-image v-if="item.file_type==='image'" fit="contain" :src="item.file_url" :preview-src-list="fileImgPre" title="点击查看大图" style="height:100%" />
                   <video v-else-if="item.file_type==='video'" width="100%" height="100%" controls>
                     <source :src="item.file_url" type="video/mp4">
                     <object :data="item.file_url" width="100%" height="100%">
@@ -571,6 +572,7 @@ export default {
       group: [],
       storage: [],
       filetype: [],
+      fileImgPre: [],
       checkIds: [],
       checkAll: false,
       checkAllInd: false,
@@ -653,6 +655,7 @@ export default {
         this.filetype = res.data.filetype
         this.storage = res.data.storage
         this.loading = false
+        this.imagePreview(res.data.list)
       }).catch(() => {
         this.loading = false
       })
@@ -901,6 +904,17 @@ export default {
           this.loading = false
         })
       }
+    },
+    // 图片预览
+    imagePreview(list) {
+      var preview = []
+      const length = list.length
+      for (let index = 0; index < length; index++) {
+        if (list[index]['file_type'] === 'image') {
+          preview.push(list[index]['file_url'])
+        }
+      }
+      this.fileImgPre = preview
     },
     // 分组筛选
     groupSelect(group_id = '') {
