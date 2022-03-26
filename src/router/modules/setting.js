@@ -14,7 +14,8 @@ const setting = {
       'admin/setting.Setting/tokenInfo',
       'admin/setting.Setting/captchaInfo',
       'admin/setting.Setting/logInfo',
-      'admin/setting.Setting/apiInfo'
+      'admin/setting.Setting/apiInfo',
+      'admin/setting.Setting/diyInfo'
     ]
   },
   redirect: 'noRedirect',
@@ -64,7 +65,8 @@ const setting = {
           'admin/setting.Setting/tokenInfo',
           'admin/setting.Setting/captchaInfo',
           'admin/setting.Setting/logInfo',
-          'admin/setting.Setting/apiInfo'
+          'admin/setting.Setting/apiInfo',
+          'admin/setting.Setting/diyInfo'
         ]
       },
       component: () => import('@/views/setting/setting')

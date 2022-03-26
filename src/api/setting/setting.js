@@ -89,3 +89,25 @@ export function apiEdit(data) {
     data
   })
 }
+/**
+ * 自定义设置信息
+ * @param {array} params 请求数据
+ */
+export function diyInfo(params) {
+  return request({
+    url: url + 'diyInfo',
+    method: 'get',
+    params: params
+  })
+}
+/**
+ * 自定义设置修改
+ * @param {array} data 请求数据
+ */
+export function diyEdit(data) {
+  return request({
+    url: url + 'diyEdit',
+    method: 'post',
+    data
+  })
+}

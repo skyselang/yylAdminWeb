@@ -1,14 +1,14 @@
 <template>
   <div class="app-container">
     <el-tabs>
+      <el-tab-pane v-if="checkPermission(['admin/admin.Setting/captchaInfo'])" label="验证码设置" lazy>
+        <setting-captcha />
+      </el-tab-pane>
       <el-tab-pane v-if="checkPermission(['admin/admin.Setting/cacheInfo'])" label="缓存设置" lazy>
         <setting-cache />
       </el-tab-pane>
       <el-tab-pane v-if="checkPermission(['admin/admin.Setting/tokenInfo'])" label="Token设置" lazy>
         <setting-token />
-      </el-tab-pane>
-      <el-tab-pane v-if="checkPermission(['admin/admin.Setting/captchaInfo'])" label="验证码设置" lazy>
-        <setting-captcha />
       </el-tab-pane>
       <el-tab-pane v-if="checkPermission(['admin/admin.Setting/logInfo'])" label="日志设置" lazy>
         <setting-log />
@@ -28,18 +28,18 @@
 
 <script>
 import checkPermission from '@/utils/permission' // 权限判断函数
-import SettingCache from './components/SettingCache'
-import SettingToken from './components/SettingToken'
-import SettingCaptcha from './components/SettingCaptcha'
-import SettingLog from './components/SettingLog'
 import SettingApi from './components/SettingApi'
-import SettingSystem from './components/SettingSystem'
+import SettingCache from './components/SettingCache'
+import SettingCaptcha from './components/SettingCaptcha'
 import SettingEmail from './components/SettingEmail'
+import SettingLog from './components/SettingLog'
+import SettingSystem from './components/SettingSystem'
+import SettingToken from './components/SettingToken'
 
 export default {
   name: 'SystemSetting',
   directives: { },
-  components: { SettingCache, SettingToken, SettingCaptcha, SettingLog, SettingApi, SettingSystem, SettingEmail },
+  components: { SettingApi, SettingCache, SettingCaptcha, SettingEmail, SettingLog, SettingSystem, SettingToken },
   data() {
     return {
       name: '系统管理'
