@@ -3,7 +3,7 @@
     <!-- 内容 -->
     <el-card class="box-card">
       <el-row class="dialog-body" :style="{height:height+'px'}">
-        <el-col :xs="24" :sm="18" :md="12">
+        <el-col :xs="24" :sm="18" :md="16">
           <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
             <el-tabs>
               <el-tab-pane label="基本信息" name="">
@@ -78,6 +78,36 @@
                   <el-input v-model="model.wechat" placeholder="wechat" clearable />
                 </el-form-item>
               </el-tab-pane>
+              <el-tab-pane label="自定义信息" name="">
+                <el-form-item label="自定义配置">
+                  <el-col :span="5" class="yyl-ml">
+                    键名
+                  </el-col>
+                  <el-col :span="8" class="yyl-ml">
+                    键值
+                  </el-col>
+                  <el-col :span="9" class="yyl-ml">
+                    说明
+                  </el-col>
+                  <el-col :span="2">
+                    <el-button type="primary" @click="add()">增加</el-button>
+                  </el-col>
+                </el-form-item>
+                <el-form-item v-for="(item, index) in model.diy_config" :key="index" label="">
+                  <el-col :span="5">
+                    <el-input v-model="item.config_key" clearable placeholder="请输入键名" />
+                  </el-col>
+                  <el-col :span="8">
+                    <el-input v-model="item.config_val" clearable placeholder="请输入键值" />
+                  </el-col>
+                  <el-col :span="9">
+                    <el-input v-model="item.config_desc" clearable placeholder="请输入说明" />
+                  </el-col>
+                  <el-col :span="2">
+                    <el-button type="danger" @click="dele(index)">删除</el-button>
+                  </el-col>
+                </el-form-item>
+              </el-tab-pane>
             </el-tabs>
             <el-form-item>
               <el-button :loading="loading" @click="refresh()">刷新</el-button>
@@ -116,18 +146,17 @@ export default {
         description: '',
         icp: '',
         copyright: '',
+        off_acc_id: '',
+        off_acc_url: '',
         address: '',
         tel: '',
         mobile: '',
         email: '',
         qq: '',
         wechat: '',
-        off_acc_id: '',
-        off_acc_url: ''
+        diy_config: []
       },
-      rules: {
-        name: [{ required: true, message: '请输入名称', trigger: 'blur' }]
-      },
+      rules: {},
       fileDialog: false,
       fileTitle: '文件管理',
       fileField: 'logo'
@@ -143,6 +172,20 @@ export default {
       info().then((res) => {
         this.model = res.data
       })
+    },
+    // 增加
+    add() {
+      this.model.diy_config.push({ config_key: '', config_val: '', config_desc: '' })
+    },
+    // 删除
+    dele(index) {
+      this.$confirm('确定要删除吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.model.diy_config.splice(index, 1)
+      }).catch(() => {})
     },
     // 刷新
     refresh() {
@@ -207,5 +250,7 @@ export default {
 </script>
 
 <style scoped>
-
+  .yyl-ml {
+    padding-left: 12px;
+  }
 </style>
