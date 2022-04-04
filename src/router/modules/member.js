@@ -10,7 +10,8 @@ const member = {
       'admin/member.Member/list',
       'admin/member.Log/list',
       'admin/member.Member/stat',
-      'admin/member.Log/stat'
+      'admin/member.Log/stat',
+      'admin/member.Member/recover'
     ]
   },
   redirect: 'noRedirect',
@@ -56,6 +57,16 @@ const member = {
         roles: ['admin/member.Log/stat']
       },
       component: () => import('@/views/member/member-log-stat')
+    },
+    {
+      path: 'member-recover',
+      name: 'MemberRecover',
+      meta: {
+        title: '会员回收站',
+        icon: 'el-icon-user',
+        roles: ['admin/member.Member/recover']
+      },
+      component: () => import('@/views/member/member-recover')
     }
   ]
 }

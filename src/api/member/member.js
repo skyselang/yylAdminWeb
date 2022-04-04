@@ -100,3 +100,36 @@ export function stat(params) {
     params: params
   })
 }
+/**
+ * 会员回收站
+ * @param {array} data 请求参数
+ */
+export function recover(params) {
+  return request({
+    url: url + 'recover',
+    method: 'get',
+    params: params
+  })
+}
+/**
+ * 会员回收站恢复
+ * @param {array} data 请求数据
+ */
+export function recoverReco(data) {
+  return request({
+    url: url + 'recoverReco',
+    method: 'post',
+    data
+  })
+}
+/**
+ * 会员回收站删除
+ * @param {array} data 请求数据
+ */
+export function recoverDele(data) {
+  return request({
+    url: url + 'recoverDele',
+    method: 'post',
+    data
+  })
+}
