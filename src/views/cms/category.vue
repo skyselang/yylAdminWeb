@@ -23,13 +23,14 @@
           <el-button title="修改上级" class="ya-margin-left" @click="selectOpen('pid')">上级</el-button>
           <el-button title="是否隐藏" @click="selectOpen('hide')">隐藏</el-button>
           <el-button @click="selectOpen('dele')">删除</el-button>
-          <el-button type="primary" @click="add()">添加</el-button>
+          <el-button v-if="recycle===1" type="primary" @click="selectOpen('reco')">恢复</el-button>
+          <el-button v-else type="primary" @click="add()">添加</el-button>
         </el-col>
       </el-row>
       <el-dialog :title="selectTitle" :visible.sync="selectDialog" top="20vh" :close-on-click-modal="false" :close-on-press-escape="false">
         <el-form ref="selectRef" label-width="120px">
           <el-form-item :label="name+'ID'" prop="">
-            <el-input v-model="selectIds" type="textarea" :rows="2" disabled />
+            <el-input v-model="selectIds" type="textarea" :autosize="{minRows: 2, maxRows: 12}" disabled />
           </el-form-item>
           <el-form-item v-if="selectType==='pid'" label="分类上级" prop="">
             <el-cascader
@@ -39,14 +40,18 @@
               style="width:100%"
               clearable
               filterable
-              @change="selectCategoryChange"
+              @change="categorySelect"
             />
           </el-form-item>
-          <el-form-item v-if="selectType==='hide'" label="隐藏" prop="">
+          <el-form-item v-if="selectType==='hide'" label="是否隐藏" prop="">
             <el-switch v-model="is_hide" :active-value="1" :inactive-value="0" />
           </el-form-item>
           <el-form-item v-else-if="selectType==='dele'" label="" prop="">
-            <span style="color:red">确定要删除选中的{{ name }}吗？</span>
+            <span v-if="recycle===1" style="color:red">确定要彻底删除选中的{{ name }}吗？删除后不可恢复！所有下级即使恢复后也不会显示！</span>
+            <span v-else style="color:red">确定要删除选中的{{ name }}吗？</span>
+          </el-form-item>
+          <el-form-item v-else-if="selectType==='reco'" label="" prop="">
+            <span style="color:red">确定要恢复选中的{{ name }}吗？如果不是一级分类需要恢复所有上级分类</span>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -67,11 +72,13 @@
         </template>
       </el-table-column>
       <el-table-column prop="sort" label="排序" min-width="80" />
-      <el-table-column prop="create_time" label="添加时间" min-width="160" />
-      <el-table-column prop="update_time" label="修改时间" min-width="160" />
+      <el-table-column prop="create_time" label="添加时间" min-width="155" />
+      <el-table-column prop="update_time" label="修改时间" min-width="155" />
+      <el-table-column v-if="recycle===1" prop="delete_time" label="删除时间" min-width="155" sortable="custom" />
       <el-table-column label="操作" min-width="120" align="right" fixed="right">
         <template slot-scope="{ row }">
-          <el-button size="mini" type="text" title="添加下级" @click="add(row)">添加</el-button>
+          <el-button v-if="recycle===1" size="mini" type="text" @click="selectOpen('reco',row)">恢复</el-button>
+          <el-button v-else size="mini" type="text" title="添加下级" @click="add(row)">添加</el-button>
           <el-button size="mini" type="text" @click="edit(row)">修改</el-button>
           <el-button size="mini" type="text" @click="selectOpen('dele',row)">删除</el-button>
         </template>
@@ -89,7 +96,7 @@
             placeholder="一级分类"
             clearable
             filterable
-            @change="categoryChange"
+            @change="categoryEdit"
           />
         </el-form-item>
         <el-form-item label="名称" prop="category_name">
@@ -154,7 +161,7 @@
 import screenHeight from '@/utils/screen-height'
 import FileManage from '@/components/FileManage'
 import { arrayColumn } from '@/utils/index'
-import { list, info, add, edit, dele, pid, ishide } from '@/api/cms/category'
+import { list, info, add, edit, dele, pid, ishide, recover, recoverReco, recoverDele } from '@/api/cms/category'
 
 export default {
   name: 'CmsCategory',
@@ -163,11 +170,13 @@ export default {
   data() {
     return {
       name: '内容分类',
+      recycle: 0, // 是否回收站
       height: 680,
       loading: false,
       idkey: 'category_id',
       query: {
-        search_field: 'category_name'
+        search_field: 'category_name',
+        search_value: ''
       },
       data: [],
       dialog: false,
@@ -198,6 +207,7 @@ export default {
     }
   },
   created() {
+    this.recycle = this.$route.meta.query.recycle
     this.height = screenHeight()
     this.list()
   },
@@ -205,13 +215,23 @@ export default {
     // 列表
     list() {
       this.loading = true
-      list(this.query).then(res => {
-        this.data = res.data.list
-        this.isExpandAll = false
-        this.loading = false
-      }).catch(() => {
-        this.loading = false
-      })
+      if (this.recycle === 1) {
+        recover(this.query).then(res => {
+          this.data = res.data.list
+          this.isExpandAll = false
+          this.loading = false
+        }).catch(() => {
+          this.loading = false
+        })
+      } else {
+        list(this.query).then(res => {
+          this.data = res.data.list
+          this.isExpandAll = false
+          this.loading = false
+        }).catch(() => {
+          this.loading = false
+        })
+      }
     },
     // 添加修改
     add(row) {
@@ -318,6 +338,8 @@ export default {
           this.selectTitle = '是否隐藏'
         } else if (selectType === 'dele') {
           this.selectTitle = '删除' + this.name
+        } else if (selectType === 'reco') {
+          this.selectTitle = '恢复' + this.name
         }
         this.selectDialog = true
         this.selectType = selectType
@@ -337,6 +359,8 @@ export default {
           this.ishide(this.selection, true)
         } else if (selectType === 'dele') {
           this.dele(this.selection)
+        } else if (selectType === 'reco') {
+          this.reco(this.selection)
         }
         this.selectDialog = false
       }
@@ -381,7 +405,33 @@ export default {
       if (!row.length) {
         this.selectAlert()
       } else {
-        dele({
+        if (this.recycle === 1) {
+          recoverDele({
+            ids: this.selectGetIds(row)
+          }).then(res => {
+            this.list()
+            this.$message.success(res.msg)
+          }).catch(() => {
+            this.loading = false
+          })
+        } else {
+          dele({
+            ids: this.selectGetIds(row)
+          }).then(res => {
+            this.list()
+            this.$message.success(res.msg)
+          }).catch(() => {
+            this.loading = false
+          })
+        }
+      }
+    },
+    // 恢复
+    reco(row) {
+      if (!row.length) {
+        this.selectAlert()
+      } else {
+        recoverReco({
           ids: this.selectGetIds(row)
         }).then(res => {
           this.list()
@@ -391,13 +441,13 @@ export default {
         })
       }
     },
-    // 上级选择
-    categoryChange(value) {
+    // 上级
+    categoryEdit(value) {
       if (value) {
         this.model.category_pid = value[value.length - 1]
       }
     },
-    selectCategoryChange(value) {
+    categorySelect(value) {
       if (value) {
         this.category_pid = value[value.length - 1]
       }

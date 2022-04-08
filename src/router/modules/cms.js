@@ -10,7 +10,9 @@ const cms = {
       'admin/cms.Content/list',
       'admin/cms.Category/list',
       'admin/cms.Comment/list',
-      'admin/cms.Setting/info'
+      'admin/cms.Setting/info',
+      'admin/cms.Content/recover',
+      'admin/cms.Category/recover'
     ]
   },
   redirect: 'noRedirect',
@@ -23,7 +25,8 @@ const cms = {
       meta: {
         title: '内容管理',
         icon: 'el-icon-reading',
-        roles: ['admin/cms.Content/list']
+        roles: ['admin/cms.Content/list'],
+        query: { recycle: 0 }
       },
       component: () => import('@/views/cms/content')
     },
@@ -33,7 +36,8 @@ const cms = {
       meta: {
         title: '内容分类',
         icon: 'el-icon-reading',
-        roles: ['admin/cms.Category/list']
+        roles: ['admin/cms.Category/list'],
+        query: { recycle: 0 }
       },
       component: () => import('@/views/cms/category')
     },
@@ -56,6 +60,28 @@ const cms = {
         roles: ['admin/cms.Setting/info']
       },
       component: () => import('@/views/cms/setting')
+    },
+    {
+      path: 'content-recover',
+      name: 'CmsContent',
+      meta: {
+        title: '内容回收站',
+        icon: 'el-icon-reading',
+        roles: ['admin/cms.Content/recover'],
+        query: { recycle: 1 }
+      },
+      component: () => import('@/views/cms/content')
+    },
+    {
+      path: 'category-recover',
+      name: 'CmsCategory',
+      meta: {
+        title: '内容分类回收站',
+        icon: 'el-icon-reading',
+        roles: ['admin/cms.Category/recover'],
+        query: { recycle: 1 }
+      },
+      component: () => import('@/views/cms/category')
     }
   ]
 }
