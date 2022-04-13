@@ -132,7 +132,7 @@
       <el-table-column prop="create_time" label="添加时间" min-width="155" sortable="custom" />
       <el-table-column v-if="recycle===1" prop="delete_time" label="删除时间" min-width="155" sortable="custom" />
       <el-table-column v-else prop="update_time" label="修改时间" min-width="155" sortable="custom" />
-      <el-table-column label="操作" min-width="120" align="right" fixed="right">
+      <el-table-column label="操作" :min-width="recycle===1?120:85" align="right" fixed="right">
         <template slot-scope="{ row }">
           <el-button v-if="recycle===1" size="mini" type="text" @click="selectOpen('reco',row)">恢复</el-button>
           <el-button size="mini" type="text" @click="edit(row)">修改</el-button>
@@ -545,7 +545,6 @@ export default {
           this.$message.success(res.msg)
         }).catch(() => {
           this.list()
-          this.loading = false
         })
       }
     },
@@ -567,7 +566,6 @@ export default {
           this.$message.success(res.msg)
         }).catch(() => {
           this.list()
-          this.loading = false
         })
       }
     },
@@ -589,7 +587,6 @@ export default {
           this.$message.success(res.msg)
         }).catch(() => {
           this.list()
-          this.loading = false
         })
       }
     },
@@ -611,7 +608,6 @@ export default {
           this.$message.success(res.msg)
         }).catch(() => {
           this.list()
-          this.loading = false
         })
       }
     },
@@ -657,7 +653,7 @@ export default {
         })
       }
     },
-    // 分类
+    // 分类选择
     category() {
       category().then(res => {
         this.categoryData = res.data.list
@@ -688,7 +684,6 @@ export default {
       this.fileDialog = false
     },
     fileSubmit(fileList, fileType) {
-      this.fileDialog = false
       this.fileTitle = ''
       const fileLength = fileList.length
       if (fileLength) {
@@ -702,6 +697,7 @@ export default {
           }
         }
       }
+      this.fileDialog = false
     },
     fileImgDele(index) {
       this.model.imgs.splice(index, 1)

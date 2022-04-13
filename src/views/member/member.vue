@@ -18,6 +18,7 @@
             <el-option value="create_time" label="注册时间" />
             <el-option value="login_time" label="登录时间" />
             <el-option value="update_time" label="修改时间" />
+            <el-option v-if="recycle===1" value="delete_time" label="删除时间" />
           </el-select>
           <el-date-picker
             v-model="query.date_value"
@@ -38,13 +39,14 @@
           <el-button title="重置密码" @click="selectOpen('repwd')">密码</el-button>
           <el-button title="是否禁用" @click="selectOpen('disable')">禁用</el-button>
           <el-button @click="selectOpen('dele')">删除</el-button>
-          <el-button type="primary" @click="add()">添加</el-button>
+          <el-button v-if="recycle===1" type="primary" @click="selectOpen('reco')">恢复</el-button>
+          <el-button v-else type="primary" @click="add()">添加</el-button>
         </el-col>
       </el-row>
       <el-dialog :title="selectTitle" :visible.sync="selectDialog" top="20vh" :close-on-click-modal="false" :close-on-press-escape="false">
         <el-form label-width="120px">
           <el-form-item :label="name+'ID'" prop="">
-            <el-input v-model="selectIds" type="textarea" :rows="2" disabled />
+            <el-input v-model="selectIds" type="textarea" :autosize="{minRows: 2, maxRows: 12}" disabled />
           </el-form-item>
           <el-form-item v-if="selectType==='region'" label="地区" prop="">
             <el-cascader
@@ -54,7 +56,7 @@
               style="width:100%"
               clearable
               filterable
-              @change="selectRegionChange"
+              @change="regionSelect"
             />
           </el-form-item>
           <el-form-item v-else-if="selectType==='disable'" label="禁用" prop="">
@@ -64,7 +66,11 @@
             <el-input v-model="password" placeholder="请输入新密码" clearable show-password />
           </el-form-item>
           <el-form-item v-else-if="selectType==='dele'" label="" prop="">
-            <span style="color:red">确定要删除选中的{{ name }}吗？</span>
+            <span v-if="recycle===1" style="color:red">确定要彻底删除选中的{{ name }}吗？删除后不可恢复！</span>
+            <span v-else style="color:red">确定要删除选中的{{ name }}吗？</span>
+          </el-form-item>
+          <el-form-item v-else-if="selectType==='reco'" label="" prop="">
+            <span style="color:red">确定要恢复选中的{{ name }}吗？</span>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -93,9 +99,11 @@
         </template>
       </el-table-column>
       <el-table-column prop="sort" label="排序" width="80" sortable="custom" />
-      <el-table-column prop="create_time" label="注册时间" min-width="160" sortable="custom" />
-      <el-table-column label="操作" min-width="120" align="right" fixed="right">
+      <el-table-column v-if="recycle===1" prop="delete_time" label="删除时间" min-width="155" sortable="custom" />
+      <el-table-column v-else prop="create_time" label="注册时间" min-width="155" sortable="custom" />
+      <el-table-column label="操作" :min-width="recycle===1?155:120" align="right" fixed="right">
         <template slot-scope="{ row }">
+          <el-button v-if="recycle===1" size="mini" type="text" @click="selectOpen('reco',row)">恢复</el-button>
           <el-button size="mini" type="text" @click="selectOpen('repwd',row)">密码</el-button>
           <el-button size="mini" type="text" @click="edit(row)">修改</el-button>
           <el-button size="mini" type="text" @click="selectOpen('dele',row)">删除</el-button>
@@ -145,7 +153,7 @@
           </el-input>
         </el-form-item>
         <el-form-item label="地区" prop="region_id">
-          <el-cascader v-model="model.region_id" :options="regionData" :props="regionProps" style="width:100%" @change="regionChange" />
+          <el-cascader v-model="model.region_id" :options="regionData" :props="regionProps" style="width:100%" @change="regionEdit" />
         </el-form-item>
         <el-form-item label="备注" prop="remark">
           <el-input v-model="model.remark" clearable />
@@ -166,6 +174,9 @@
           <el-input v-model="model.login_region" disabled>
             <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.wechat.login_region, $event)" />
           </el-input>
+        </el-form-item>
+        <el-form-item v-if="model.delete_time" label="删除时间" prop="delete_time">
+          <el-input v-model="model.delete_time" disabled />
         </el-form-item>
         <el-form-item v-if="model[idkey]" label="" prop="">
           <span>微信信息</span>
@@ -202,7 +213,9 @@
           <el-input v-model="model.wechat.language" disabled />
         </el-form-item>
         <el-form-item v-if="model.wechat" label="mwid" prop="">
-          <el-input v-model="model.wechat.member_wechat_id" disabled />
+          <el-input v-model="model.wechat.member_wechat_id" disabled>
+            <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.wechat.member_wechat_id, $event)" />
+          </el-input>
         </el-form-item>
         <el-form-item v-if="model.wechat" label="openid" prop="">
           <el-input v-model="model.wechat.openid" disabled>
@@ -234,7 +247,7 @@ import FileManage from '@/components/FileManage'
 import clip from '@/utils/clipboard'
 import { arrayColumn } from '@/utils/index'
 import { list as regionList } from '@/api/setting/region'
-import { list, info, add, edit, dele, region, repwd, disable } from '@/api/member/member'
+import { list, info, add, edit, dele, region, repwd, disable, recover, recoverReco, recoverDele } from '@/api/member/member'
 
 export default {
   name: 'Member',
@@ -242,6 +255,7 @@ export default {
   data() {
     return {
       name: '会员',
+      recycle: 0, // 是否回收站
       height: 680,
       loading: false,
       idkey: 'member_id',
@@ -287,6 +301,7 @@ export default {
     }
   },
   created() {
+    this.recycle = this.$route.meta.query.recycle
     this.height = screenHeight()
     this.list()
     this.regionList()
@@ -295,13 +310,23 @@ export default {
     // 列表
     list() {
       this.loading = true
-      list(this.query).then(res => {
-        this.data = res.data.list
-        this.count = res.data.count
-        this.loading = false
-      }).catch(() => {
-        this.loading = false
-      })
+      if (this.recycle === 1) {
+        recover(this.query).then(res => {
+          this.data = res.data.list
+          this.count = res.data.count
+          this.loading = false
+        }).catch(() => {
+          this.loading = false
+        })
+      } else {
+        list(this.query).then(res => {
+          this.data = res.data.list
+          this.count = res.data.count
+          this.loading = false
+        }).catch(() => {
+          this.loading = false
+        })
+      }
     },
     // 添加修改
     add() {
@@ -404,6 +429,8 @@ export default {
           this.selectTitle = '是否禁用'
         } else if (selectType === 'dele') {
           this.selectTitle = '删除' + this.name
+        } else if (selectType === 'reco') {
+          this.selectTitle = '恢复' + this.name
         }
         this.selectDialog = true
         this.selectType = selectType
@@ -425,6 +452,8 @@ export default {
           this.disable(this.selection, true)
         } else if (selectType === 'dele') {
           this.dele(this.selection)
+        } else if (selectType === 'reco') {
+          this.reco(this.selection)
         }
         this.selectDialog = false
       }
@@ -442,7 +471,7 @@ export default {
           this.list()
           this.$message.success(res.msg)
         }).catch(() => {
-          this.list()
+          this.loading = false
         })
       }
     },
@@ -494,7 +523,34 @@ export default {
         this.selectAlert()
       } else {
         this.loading = true
-        dele({
+        if (this.recycle === 1) {
+          recoverDele({
+            ids: this.selectGetIds(row)
+          }).then(res => {
+            this.list()
+            this.$message.success(res.msg)
+          }).catch(() => {
+            this.loading = false
+          })
+        } else {
+          dele({
+            ids: this.selectGetIds(row)
+          }).then(res => {
+            this.list()
+            this.$message.success(res.msg)
+          }).catch(() => {
+            this.loading = false
+          })
+        }
+      }
+    },
+    // 恢复
+    reco(row) {
+      if (!row.length) {
+        this.selectAlert()
+      } else {
+        this.loading = true
+        recoverReco({
           ids: this.selectGetIds(row)
         }).then(res => {
           this.list()
@@ -530,12 +586,12 @@ export default {
         this.regionData = res.data
       })
     },
-    regionChange(value) {
+    regionEdit(value) {
       if (value) {
         this.model.region_id = value[value.length - 1]
       }
     },
-    selectRegionChange(value) {
+    regionSelect(value) {
       if (value) {
         this.region_id = value[value.length - 1]
       }

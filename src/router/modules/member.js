@@ -24,7 +24,8 @@ const member = {
       meta: {
         title: '会员管理',
         icon: 'el-icon-user',
-        roles: ['admin/member.Member/list']
+        roles: ['admin/member.Member/list'],
+        query: { recycle: 0 }
       },
       component: () => import('@/views/member/member')
     },
@@ -60,13 +61,14 @@ const member = {
     },
     {
       path: 'member-recover',
-      name: 'MemberRecover',
+      name: 'Member',
       meta: {
         title: '会员回收站',
         icon: 'el-icon-user',
-        roles: ['admin/member.Member/recover']
+        roles: ['admin/member.Member/recover'],
+        query: { recycle: 1 }
       },
-      component: () => import('@/views/member/member-recover')
+      component: () => import('@/views/member/member')
     }
   ]
 }
