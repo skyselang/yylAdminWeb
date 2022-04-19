@@ -1,6 +1,6 @@
 <template>
-  <div v-loading="loadup" class="app-container">
-    <!-- 查询 -->
+  <div class="app-container">
+    <!-- 查询操作 -->
     <div class="filter-container">
       <el-row>
         <el-col>
@@ -9,12 +9,13 @@
             <el-option value="file_md5" label="文件MD5" />
             <el-option value="file_hash" label="文件散列" />
             <el-option value="file_ext" label="文件扩展" />
-            <el-option value="file_id" label="文件ID" />
+            <el-option :value="idkey" label="文件ID" />
           </el-select>
           <el-input v-model="query.search_value" class="filter-item ya-search-value" placeholder="搜索内容" clearable />
           <el-select v-model="query.date_field" class="filter-item ya-date-field" placeholder="时间类型">
             <el-option value="create_time" label="添加时间" />
             <el-option value="update_time" label="修改时间" />
+            <el-option v-if="recycle===1" value="delete_time" label="删除时间" />
           </el-select>
           <el-date-picker
             v-model="query.date_value"
@@ -32,14 +33,15 @@
     <!-- 选中操作 -->
     <el-row>
       <el-col>
-        <el-checkbox v-model="checkAll" border :indeterminate="checkAllInd" @change="checkAllChange">全选</el-checkbox>
-        <el-button class="ya-margin-left" title="修改分组" @click="editgroup(checkedIds)">分组</el-button>
-        <el-button class="ya-margin-left" title="修改分类" @click="edittype(checkedIds)">类型</el-button>
-        <el-button class="ya-margin-left" title="修改域名" @click="editdomain(checkedIds)">域名</el-button>
-        <el-button title="是否禁用" @click="disable(checkedIds)">禁用</el-button>
-        <el-button @click="dele(checkedIds)">删除</el-button>
-        <el-button @click="recover()">回收站</el-button>
+        <el-checkbox v-model="selectAll" border :indeterminate="selectAllInd" @change="selectAllChange">全选</el-checkbox>
+        <el-button class="ya-margin-left" title="修改分组" @click="selectOpen('editgroup')">分组</el-button>
+        <el-button class="ya-margin-left" title="修改类型" @click="selectOpen('edittype')">类型</el-button>
+        <el-button class="ya-margin-left" title="修改域名" @click="selectOpen('editdomain')">域名</el-button>
+        <el-button title="是否禁用" @click="selectOpen('disable')">禁用</el-button>
+        <el-button title="删除" @click="selectOpen('dele')">删除</el-button>
+        <el-button v-if="recycle===1" type="primary" @click="selectOpen('reco')">恢复</el-button>
         <el-upload
+          v-else
           name="file"
           class="ya-upload"
           :limit="uploadLimit"
@@ -60,66 +62,44 @@
         </el-upload>
       </el-col>
     </el-row>
-    <!-- 修改分组 -->
-    <el-dialog title="修改分组" :visible.sync="editgroupDialog" top="20vh" :close-on-click-modal="false" :close-on-press-escape="false">
-      <el-form ref="editgroupRef" class="dialog-body" label-width="100px">
-        <el-form-item label="文件分组" prop="">
+    <el-dialog :title="selectTitle" :visible.sync="selectDialog" top="20vh" :close-on-click-modal="false" :close-on-press-escape="false">
+      <el-form label-width="120px">
+        <el-form-item :label="name+'ID'" prop="">
+          <el-input v-model="selectIds" type="textarea" :autosize="{minRows: 2, maxRows: 12}" disabled />
+        </el-form-item>
+        <el-form-item v-if="selectType==='editgroup'" label="文件分组" prop="">
           <el-select v-model="group_id" placeholder="">
             <el-option v-for="(item, index) in group" :key="index" :value="item.group_id" :label="item.group_name" />
           </el-select>
         </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="editgroupCancel">取消</el-button>
-        <el-button type="primary" @click="editgroupSubmit">提交</el-button>
-      </div>
-    </el-dialog>
-    <!-- 修改类型 -->
-    <el-dialog title="修改类型" :visible.sync="edittypeDialog" top="20vh" :close-on-click-modal="false" :close-on-press-escape="false">
-      <el-form ref="edittypeRef" class="dialog-body" label-width="100px">
-        <el-form-item label="文件类型" prop="file_type">
+        <el-form-item v-else-if="selectType==='edittype'" label="文件类型" prop="file_type">
           <el-select v-model="file_type" placeholder="">
             <el-option v-for="(item, index) in filetype" :key="index" :value="index" :label="item" />
           </el-select>
         </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="edittypeCancel">取消</el-button>
-        <el-button type="primary" @click="edittypeSubmit">提交</el-button>
-      </div>
-    </el-dialog>
-    <!-- 修改域名 -->
-    <el-dialog title="修改域名" :visible.sync="editdomainDialog" top="20vh" :close-on-click-modal="false" :close-on-press-escape="false">
-      <el-form ref="editdomainRef" class="dialog-body" label-width="100px">
-        <el-form-item label="文件域名" prop="">
+        <el-form-item v-else-if="selectType==='editdomain'" label="文件域名" prop="">
           <el-input v-model="domain" placeholder="" clearable />
-        </el-form-item>
-        <el-form-item label="" prop="">
           <span>修改文件域名会影响文件的访问，请确认无误后修改！</span>
         </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="editdomainCancel">取消</el-button>
-        <el-button type="primary" @click="editdomainSubmit">提交</el-button>
-      </div>
-    </el-dialog>
-    <!-- 是否禁用 -->
-    <el-dialog title="是否禁用" :visible.sync="disableDialog" top="20vh" :close-on-click-modal="false" :close-on-press-escape="false">
-      <el-form ref="disableRef" class="dialog-body" label-width="100px">
-        <el-form-item label="是否禁用" prop="is_disable">
+        <el-form-item v-else-if="selectType==='disable'" label="是否禁用" prop="">
           <el-switch v-model="is_disable" :active-value="1" :inactive-value="0" />
+          <span v-if="is_disable" style="color:red">禁用文件会对已使用该文件的业务造成影响！</span>
         </el-form-item>
-        <el-form-item label="" prop="">
-          <span v-if="is_disable===1" style="color:red">禁用文件会对已使用该文件的业务造成影响！确定要禁用选中的 {{ checkedIds.length }} 个文件吗？</span>
+        <el-form-item v-else-if="selectType==='dele'" label="" prop="">
+          <span v-if="recycle===1" style="color:red">确定要彻底删除选中的{{ name }}吗？删除后不可恢复！</span>
+          <span v-else style="color:red">确定要删除选中的{{ name }}吗？</span>
+        </el-form-item>
+        <el-form-item v-else-if="selectType==='reco'" label="" prop="">
+          <span style="color:red">确定要恢复选中的{{ name }}吗？</span>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="disableCancel">取消</el-button>
-        <el-button type="primary" @click="disableSubmit">提交</el-button>
+        <el-button @click="selectCancel">取消</el-button>
+        <el-button type="primary" @click="selectSubmit">提交</el-button>
       </div>
     </el-dialog>
-    <!-- 筛选列表 -->
-    <el-row :gutter="3">
+    <!-- 列表 -->
+    <el-row v-loading="loading" :gutter="3">
       <el-col :span="3" class="dialog-body" :style="{height:height+'px'}">
         <!-- 分组筛选 -->
         <el-row>
@@ -197,7 +177,7 @@
       <!-- 列表 -->
       <el-col v-if="count > 0" :span="21" class="dialog-body" :style="{height:height+'px'}">
         <el-row :gutter="3">
-          <el-checkbox-group v-model="checkedIds" @change="checkedChange">
+          <el-checkbox-group v-model="selection" @change="select">
             <el-col v-for="(item, index) in data" :key="index" :span="4" style="margin-bottom:6px;text-align:center">
               <el-card class="ya-file-card" :body-style="{minWidth:'16.5%', height:(height-height*0.1)/3+'px', minHeight:'126px', padding:'0 6px'}">
                 <div class="ya-file-ext">
@@ -232,11 +212,11 @@
                 <div :style="{paddingTop:'5px', minHeight:'50px'}">
                   <span class="ya-file-name" :title="item.file_name+'.'+item.file_ext">{{ item.file_name }}.{{ item.file_ext }}</span>
                   <div class="bottom clearfix">
-                    <el-button size="mini" type="text" :title="'散列：'+item.file_hash" @click="edit(item,'url')">详情</el-button>
-                    <el-button size="mini" type="text" :title="'MD5：'+item.file_md5" @click="edit(item,'name')">修改</el-button>
-                    <el-button v-if="item.is_disable" size="mini" type="text" title="点击启用文件" @click="disable([item.file_id],0)">启用</el-button>
-                    <el-button v-else size="mini" type="text" title="点击禁用文件" @click="disable([item.file_id],1)">禁用</el-button>
-                    <el-button size="mini" type="text" @click="dele([item.file_id])">删除</el-button>
+                    <el-button v-if="item.is_disable" size="text" type="info" icon="el-icon-warning" title="已禁用" />
+                    <el-button v-else size="medium" type="text" icon="el-icon-warning-outline" title="已启用" />
+                    <el-button size="mini" type="text" @click="edit(item)">详情</el-button>
+                    <el-button size="mini" type="text" @click="edit(item)">修改</el-button>
+                    <el-button size="mini" type="text" @click="selectOpen('dele',[item.file_id])">删除</el-button>
                   </div>
                 </div>
               </el-card>
@@ -314,6 +294,9 @@
         <el-form-item v-if="model.file_id" label="修改时间" prop="update_time">
           <el-input v-model="model.update_time" disabled />
         </el-form-item>
+        <el-form-item v-if="model.delete_time" label="删除时间" prop="delete_time">
+          <el-input v-model="model.delete_time" disabled />
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancel">取消</el-button>
@@ -338,172 +321,11 @@
         <el-button type="primary" @click="groupSubmit">提交</el-button>
       </div>
     </el-dialog>
-    <!-- 回收站 -->
-    <el-dialog :title="recoverDialogTitle" :visible.sync="recoverDialog" width="80%" top="1vh" append-to-body :close-on-click-modal="false" :close-on-press-escape="false">
-      <!-- 回收站查询 -->
-      <div class="filter-container">
-        <el-row>
-          <el-col>
-            <el-select v-model="recoverQuery.search_field" class="filter-item ya-search-field" placeholder="搜索字段">
-              <el-option value="file_name" label="文件名称" />
-              <el-option value="file_md5" label="文件MD5" />
-              <el-option value="file_hash" label="文件散列" />
-              <el-option value="file_id" label="文件ID" />
-            </el-select>
-            <el-input v-model="recoverQuery.search_value" class="filter-item ya-search-value" placeholder="搜索内容" clearable />
-            <el-select v-model="recoverQuery.date_field" class="filter-item y-date-field" placeholder="时间类型">
-              <el-option value="delete_time" label="删除时间" />
-              <el-option value="update_time" label="修改时间" />
-            </el-select>
-            <el-date-picker
-              v-model="recoverQuery.date_value"
-              type="daterange"
-              class="filter-item ya-date-value"
-              value-format="yyyy-MM-dd"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-            />
-            <el-button class="filter-item" type="primary" @click="recoverSearch()">查询</el-button>
-            <el-button class="filter-item" @click="recoverRefresh()">刷新</el-button>
-          </el-col>
-        </el-row>
-      </div>
-      <!-- 回收站选中操作 -->
-      <el-row>
-        <el-col>
-          <el-checkbox v-model="recoverCheckAll" border :indeterminate="recoverCheckAllInd" @change="recoverCheckAllChange">全选</el-checkbox>
-          <el-button class="ya-margin-left" @click="recoverReco(recoverCheckedIds)">恢复</el-button>
-          <el-button title="彻底删除" @click="recoverDele(recoverCheckedIds)">删除</el-button>
-        </el-col>
-      </el-row>
-      <!-- 回收站筛选列表 -->
-      <el-row :gutter="3">
-        <el-col :span="3" class="dialog-body" :style="{height:height+'px'}">
-          <!-- 回收站分组筛选 -->
-          <el-row>
-            <el-col><el-button type="text" class="ya-color-inherit">分组：</el-button></el-col>
-            <el-col class="ya-padding-left">
-              <el-link :type="recoverQuery.group_id===''?'primary':''" :underline="false" class="ya-height-26" @click="recoverGroupSelect('')">全部</el-link>
-            </el-col>
-            <el-col class="ya-padding-left">
-              <el-link :type="recoverQuery.group_id===0?'primary':''" :underline="false" class="ya-height-26" @click="recoverGroupSelect(0)">未分组</el-link>
-            </el-col>
-            <el-col v-for="item in group" :key="item.group_id" class="ya-padding-left ya-height-26">
-              <el-row>
-                <el-col :span="16">
-                  <el-link :type="recoverQuery.group_id===item.group_id?'primary':''" :underline="false" @click="recoverGroupSelect(item.group_id)">{{ item.group_name }}</el-link>
-                </el-col>
-              </el-row>
-            </el-col>
-          </el-row>
-          <!-- 回收站类型筛选 -->
-          <el-row>
-            <el-col><el-button type="text" class="ya-color-inherit">类型：</el-button></el-col>
-            <el-col class="ya-padding-left">
-              <el-link :type="recoverQuery.file_type===''?'primary':''" :underline="false" class="ya-height-26" @click="recoverTypeSelect('')">全部</el-link>
-            </el-col>
-            <el-col v-for="(item, index) in filetype" :key="index" class="ya-padding-left">
-              <el-link :type="recoverQuery.file_type===index?'primary':''" :underline="false" class="ya-height-26" @click="recoverTypeSelect(index)">{{ item }}</el-link>
-            </el-col>
-          </el-row>
-          <!-- 回收站禁用筛选 -->
-          <el-row>
-            <el-col><el-button type="text" class="ya-color-inherit">禁用：</el-button></el-col>
-            <el-col class="ya-padding-left">
-              <el-link :type="recoverQuery.is_disable===''?'primary':''" :underline="false" class="ya-height-26" @click="recoverDisableSelect('')">全部</el-link>
-            </el-col>
-            <el-col class="ya-padding-left">
-              <el-link :type="recoverQuery.is_disable===0?'primary':''" :underline="false" class="ya-height-26" @click="recoverDisableSelect(0)">已启用</el-link>
-            </el-col>
-            <el-col class="ya-padding-left">
-              <el-link :type="recoverQuery.is_disable===1?'primary':''" :underline="false" class="ya-height-26" @click="recoverDisableSelect(1)">已禁用</el-link>
-            </el-col>
-          </el-row>
-          <!-- 回收站上传筛选 -->
-          <el-row>
-            <el-col><el-button type="text" class="ya-color-inherit">上传：</el-button></el-col>
-            <el-col class="ya-padding-left">
-              <el-link :type="recoverQuery.is_front===''?'primary':''" :underline="false" class="ya-height-26" @click="recoverFrontSelect('')">全部</el-link>
-            </el-col>
-            <el-col class="ya-padding-left">
-              <el-link :type="recoverQuery.is_front===0?'primary':''" :underline="false" class="ya-height-26" @click="recoverFrontSelect(0)">后台</el-link>
-            </el-col>
-            <el-col class="ya-padding-left">
-              <el-link :type="recoverQuery.is_front===1?'primary':''" :underline="false" class="ya-height-26" @click="recoverFrontSelect(1)">前台</el-link>
-            </el-col>
-          </el-row>
-          <!-- 回收站存储筛选 -->
-          <el-row>
-            <el-col><el-button type="text" class="ya-color-inherit">存储：</el-button></el-col>
-            <el-col class="ya-padding-left">
-              <el-link :type="recoverQuery.storage===''?'primary':''" :underline="false" class="ya-height-26" @click="recoverStorageSelect('')">全部</el-link>
-            </el-col>
-            <el-col v-for="(item, index) in storage" :key="index" class="ya-padding-left">
-              <el-link :type="recoverQuery.storage===index?'primary':''" :underline="false" class="ya-height-26" @click="recoverStorageSelect(index)">{{ item }}</el-link>
-            </el-col>
-          </el-row>
-        </el-col>
-        <!-- 回收站列表 -->
-        <el-col :span="21" class="dialog-body" :style="{height:height+'px'}">
-          <el-row v-if="recoverCount > 0" :gutter="3">
-            <el-checkbox-group v-model="recoverCheckedIds" @change="recoverCheckedChange">
-              <el-col v-for="(item, index) in recoverData" :key="index" :span="4" style="margin-bottom:6px; text-align:center">
-                <el-card class="ya-file-card" :body-style="{minWidth:'16.5%', height:(height-height*0.1)/3+'px', minHeight:'128px', padding:'0 6px'}">
-                  <div class="ya-file-ext">
-                    <span>{{ item.file_ext }}</span>
-                  </div>
-                  <div style="text-align:left">
-                    <el-checkbox :key="item.file_id" :label="item.file_id" />
-                  </div>
-                  <div :style="{width:'100%', height:((height-height*0.1)/3)-((height-height*0.1)/3*0.45)+'px', minHeight:'62px'}">
-                    <el-image v-if="item.file_type=='image'" fit="contain" :src="item.file_url" :preview-src-list="[item.file_url]" title="点击查看大图" style="height:100%" />
-                    <video v-else-if="item.file_type=='video'" width="100%" height="100%" controls>
-                      <source :src="item.file_url" type="video/mp4">
-                      <object :data="item.file_url" width="100%" height="100%">
-                        <embed :src="item.file_url" width="100%" height="100%">
-                      </object>
-                    </video>
-                    <audio v-else-if="item.file_type=='audio'" width="100%" height="100%" controls>
-                      <source :src="item.file_url" type="audio/mp3">
-                      <embed :src="item.file_url" width="100%" height="100%">
-                    </audio>
-                    <el-image v-else-if="item.file_type=='word'" :src="item.file_url" class="ya-file-image">
-                      <div slot="error" class="image-slot">
-                        <i class="el-icon-document ya-file-icon" />
-                      </div>
-                    </el-image>
-                    <el-image v-else :src="item.file_url" class="ya-file-image">
-                      <div slot="error" class="image-slot">
-                        <i class="el-icon-folder ya-file-icon" />
-                      </div>
-                    </el-image>
-                  </div>
-                  <div :style="{paddingTop:'5px', minHeight:'50px'}">
-                    <span class="ya-file-name" :title="item.file_name+'.'+item.file_ext">{{ item.file_name }}.{{ item.file_ext }}</span>
-                    <div class="bottom clearfix">
-                      <el-button size="mini" type="text" :title="'MD5：'+item.file_md5" @click="recoverReco([item.file_id])">恢复</el-button>
-                      <el-button size="mini" type="text" :title="'散列：'+item.file_hash" @click="recoverDele([item.file_id])">删除</el-button>
-                    </div>
-                  </div>
-                </el-card>
-              </el-col>
-            </el-checkbox-group>
-          </el-row>
-          <el-row v-else :gutter="3">
-            <el-col>
-              <el-empty :description="'暂无'+name" />
-            </el-col>
-          </el-row>
-        </el-col>
-      </el-row>
-      <!-- 回收站分页 -->
-      <pagination v-show="recoverCount > 0" :total="recoverCount" :page.sync="recoverQuery.page" :limit.sync="recoverQuery.limit" @pagination="recoverList" />
-    </el-dialog>
     <!-- 文件管理操作 -->
     <el-row v-show="fileType">
       <el-col style="text-align:right;margin-top:20px">
         <el-button @click="fileCancel()">取消</el-button>
-        <el-button type="primary" @click="fileSubmit(checkedIds)">确定</el-button>
+        <el-button type="primary" @click="fileSubmit(selection)">确定</el-button>
       </el-col>
     </el-row>
   </div>
@@ -512,7 +334,6 @@
 <script>
 import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination'
-import permission from '@/directive/permission/index.js' // 权限判断指令
 import clip from '@/utils/clipboard'
 import { getAdminToken } from '@/utils/auth'
 import { arrayColumn } from '@/utils/index'
@@ -522,17 +343,18 @@ import { info as groupInfo, add as groupAdd, edit as groupEdit, dele as groupDel
 export default {
   name: 'FileManage',
   components: { Pagination },
-  directives: { permission },
+  directives: { },
   props: {
-    groupId: { type: String, default: '' },
+    isRecycle: { type: Number, default: 0 },
     fileType: { type: String, default: '' }
   },
   data() {
     return {
       name: '文件',
+      recycle: 0, // 是否回收站
       height: 680,
-      loadup: false,
       loading: false,
+      idkey: 'file_id',
       query: {
         page: 1,
         limit: 18,
@@ -571,19 +393,19 @@ export default {
       },
       group: [],
       storage: [],
+      fileIds: [],
       filetype: [],
       fileImgPre: [],
-      checkIds: [],
-      checkAll: false,
-      checkAllInd: false,
-      checkedIds: [],
-      editgroupDialog: false,
+      selectAll: false,
+      selectAllInd: false,
+      selection: [],
+      selectIds: '',
+      selectTitle: '选中操作',
+      selectDialog: false,
+      selectType: '',
       group_id: 0,
-      edittypeDialog: false,
       file_type: 'image',
-      editdomainDialog: false,
       domain: '',
-      disableDialog: false,
       is_disable: 0,
       uploadAction: add(),
       uploadHeaders: { AdminToken: getAdminToken() },
@@ -600,45 +422,26 @@ export default {
       },
       groupRules: {
         group_name: [{ required: true, message: '请输入分组名称', trigger: 'blur' }]
-      },
-      recoverCheckIds: [],
-      recoverCheckAll: false,
-      recoverCheckAllInd: false,
-      recoverCheckedIds: [],
-      recoverDialog: false,
-      recoverDialogTitle: '',
-      recoverLoad: false,
-      recoverData: [],
-      recoverCount: 0,
-      recoverQuery: {
-        page: 1,
-        limit: 18,
-        group_id: '',
-        file_type: '',
-        is_disable: '',
-        is_front: '',
-        storage: '',
-        search_field: 'file_name',
-        date_field: 'delete_time'
-      },
-      recoverSelection: []
+      }
     }
   },
   watch: {
+    'isRecycle': function(value) {
+      this.recycle = this.isRecycle
+      this.list()
+    },
     'fileType': function(value) {
-      this.query.group_id = this.groupId
+      this.recycle = this.isRecycle
       this.query.file_type = this.fileType
       this.list()
     }
   },
   created() {
     this.height = screenHeight()
-    if (this.groupId) {
-      this.query.group_id = this.groupId
-    }
+    this.recycle = this.isRecycle
     if (this.fileType) {
-      this.query.file_type = this.fileType
       this.query.is_disable = 0
+      this.query.file_type = this.fileType
       this.height = this.height - 100
     }
     this.groupList()
@@ -648,21 +451,35 @@ export default {
     // 列表
     list() {
       this.loading = true
-      list(this.query).then(res => {
-        this.data = res.data.list
-        this.count = res.data.count
-        this.checkIds = res.data.ids
-        this.filetype = res.data.filetype
-        this.storage = res.data.storage
-        this.loading = false
-        this.imagePreview(res.data.list)
-      }).catch(() => {
-        this.loading = false
-      })
+      if (this.recycle === 1) {
+        recover(this.query).then(res => {
+          this.data = res.data.list
+          this.count = res.data.count
+          this.filetype = res.data.filetype
+          this.storage = res.data.storage
+          this.fileIds = res.data.ids
+          this.loading = false
+          this.imagePreview(res.data.list)
+        }).catch(() => {
+          this.loading = false
+        })
+      } else {
+        list(this.query).then(res => {
+          this.data = res.data.list
+          this.count = res.data.count
+          this.filetype = res.data.filetype
+          this.storage = res.data.storage
+          this.fileIds = res.data.ids
+          this.loading = false
+          this.imagePreview(res.data.list)
+        }).catch(() => {
+          this.loading = false
+        })
+      }
     },
     // 上传
     uploadBefore() {
-      this.loadup = true
+      this.loading = true
     },
     uploadSuccess(res) {
       if (res.code === 200) {
@@ -670,13 +487,13 @@ export default {
         this.list()
         this.$message.success(res.msg)
       } else {
+        this.loading = false
         this.$message.error(res.msg)
       }
-      this.loadup = false
     },
     uploadError(res) {
+      this.loading = false
       this.$message.error(res.msg || '上传出错')
-      this.loadup = false
     },
     uploadChange() {
     },
@@ -694,8 +511,8 @@ export default {
       info({
         file_id: row.file_id
       }).then(res => {
-        this.reset(res.data)
         this.loading = false
+        this.reset(res.data)
       }).catch(() => {
         this.loading = false
       })
@@ -721,31 +538,6 @@ export default {
         }
       })
     },
-    // 删除
-    dele(row) {
-      if (!row.length) {
-        this.checkAlert()
-      } else {
-        var title = '删除' + this.name
-        var message = '确定要删除选中的 <span style="color:red">' + row.length + ' </span> 个' + this.name + '吗？'
-        if (row.length === 1) {
-          title = title + '：' + row[0]
-          message = '确定要删除' + this.name + ' <span style="color:red">' + row[0] + ' </span>吗？'
-        }
-        this.$confirm(message, title, { type: 'warning', dangerouslyUseHTMLString: true }).then(() => {
-          this.loading = true
-          dele({
-            ids: row
-          }).then(res => {
-            this.list()
-            this.reset()
-            this.$message.success(res.msg)
-          }).catch(() => {
-            this.loading = false
-          })
-        }).catch(() => {})
-      }
-    },
     // 查询
     search() {
       this.query.page = 1
@@ -765,134 +557,144 @@ export default {
       } else {
         this.model = this.$options.data().model
       }
-      this.group_id = 0
-      this.checkAll = false
-      this.checkedIds = []
-      this.checkAllInd = false
+      this.selection = []
+      this.selectIds = ''
+      this.selectAll = false
+      this.selectAllInd = false
       if (this.$refs['ref'] !== undefined) {
         this.$refs['ref'].resetFields()
       }
     },
-    // 修改分组
-    editgroup(row, group_id = 0) {
-      if (!row.length) {
-        this.checkAlert()
+    // 选中操作
+    select(selection) {
+      const selectCount = selection.length
+      this.selection = selection
+      this.selectIds = this.selectGetIds().toString()
+      this.selectAll = selectCount === this.fileIds.length
+      this.selectAllInd = selectCount > 0 && selectCount < this.fileIds.length
+    },
+    selectAllChange(value) {
+      this.selection = value ? this.fileIds : []
+      this.selectIds = this.selectGetIds().toString()
+      this.selectAllInd = false
+    },
+    selectGetIds() {
+      return this.selection
+    },
+    selectAlert() {
+      this.$alert('请选择需要操作的' + this.name, '提示', { type: 'warning', callback: action => {} })
+    },
+    selectOpen(selectType, selection = '') {
+      if (selection) {
+        this.select(selection)
+      }
+      if (!this.selection.length) {
+        this.selectAlert()
       } else {
-        this.editgroupDialog = true
-        this.checkedIds = row
-        this.group_id = group_id
+        this.selectTitle = '选中操作'
+        if (selectType === 'editgroup') {
+          this.selectTitle = '修改分组'
+        } else if (selectType === 'edittype') {
+          this.selectTitle = '修改类型'
+        } else if (selectType === 'editdomain') {
+          this.selectTitle = '修改域名'
+        } else if (selectType === 'disable') {
+          this.selectTitle = '是否禁用'
+        } else if (selectType === 'dele') {
+          this.selectTitle = '删除' + this.name
+        } else if (selectType === 'reco') {
+          this.selectTitle = '恢复' + this.name
+        }
+        this.selectDialog = true
+        this.selectType = selectType
       }
     },
-    editgroupCancel() {
-      this.reset()
-      this.editgroupDialog = false
+    selectCancel() {
+      this.selectDialog = false
     },
-    editgroupSubmit() {
-      if (!this.checkedIds.length) {
-        this.checkAlert()
+    selectSubmit() {
+      if (!this.selection.length) {
+        this.selectAlert()
+      } else {
+        const selectType = this.selectType
+        if (selectType === 'editgroup') {
+          this.editgroup()
+        } else if (selectType === 'edittype') {
+          this.edittype()
+        } else if (selectType === 'editdomain') {
+          this.editdomain()
+        } else if (selectType === 'disable') {
+          this.disable()
+        } else if (selectType === 'dele') {
+          this.dele()
+        } else if (selectType === 'reco') {
+          this.reco()
+        }
+        this.selectDialog = false
+      }
+    },
+    // 修改分组
+    editgroup() {
+      if (!this.selection.length) {
+        this.selectAlert()
       } else {
         this.loading = true
         editgroup({
-          ids: this.checkedIds,
+          ids: this.selectGetIds(),
           group_id: this.group_id
         }).then(res => {
           this.list()
           this.reset()
-          this.editgroupDialog = false
           this.$message.success(res.msg)
         }).catch(() => {
-          this.list()
           this.loading = false
         })
       }
     },
     // 修改类型
-    edittype(row, file_type = 'image') {
-      if (!row.length) {
-        this.checkAlert()
-      } else {
-        this.edittypeDialog = true
-        this.checkedIds = row
-        this.file_type = file_type
-      }
-    },
-    edittypeCancel() {
-      this.edittypeDialog = false
-      this.reset()
-    },
-    edittypeSubmit() {
-      if (!this.checkedIds.length) {
-        this.checkAlert()
+    edittype() {
+      if (!this.selection.length) {
+        this.selectAlert()
       } else {
         this.loading = true
         edittype({
-          ids: this.checkedIds,
+          ids: this.selectGetIds(),
           file_type: this.file_type
         }).then(res => {
           this.list()
           this.reset()
-          this.edittypeDialog = false
           this.$message.success(res.msg)
         }).catch(() => {
-          this.list()
           this.loading = false
         })
       }
     },
     // 修改域名
-    editdomain(row) {
-      if (!row.length) {
-        this.checkAlert()
-      } else {
-        this.editdomainDialog = true
-        this.checkedIds = row
-        this.domain = ''
-      }
-    },
-    editdomainCancel() {
-      this.editdomainDialog = false
-      this.reset()
-    },
-    editdomainSubmit() {
-      if (!this.checkedIds.length) {
-        this.checkAlert()
+    editdomain() {
+      if (!this.selection.length) {
+        this.selectAlert()
       } else {
         this.loading = true
         editdomain({
-          ids: this.checkedIds,
+          ids: this.selectGetIds(),
           domain: this.domain
         }).then(res => {
           this.list()
           this.reset()
-          this.editdomainDialog = false
           this.$message.success(res.msg)
         }).catch(() => {
-          this.list()
           this.loading = false
         })
       }
     },
     // 是否禁用
-    disable(row) {
-      if (!row.length) {
-        this.checkAlert()
-      } else {
-        this.disableDialog = true
-        this.checkedIds = row
-        this.is_disable = 0
-      }
-    },
-    disableCancel() {
-      this.disableDialog = false
-      this.reset()
-    },
-    disableSubmit() {
-      if (!this.checkedIds.length) {
-        this.checkAlert()
+    disable() {
+      if (!this.selection.length) {
+        this.selectAlert()
       } else {
         this.loading = true
         disable({
-          ids: this.checkedIds,
+          ids: this.selectGetIds(),
           is_disable: this.is_disable
         }).then(res => {
           this.list()
@@ -901,6 +703,49 @@ export default {
           this.$message.success(res.msg)
         }).catch(() => {
           this.list()
+          this.loading = false
+        })
+      }
+    },
+    // 删除
+    dele() {
+      if (!this.selection.length) {
+        this.selectAlert()
+      } else {
+        if (this.recycle === 1) {
+          recoverDele({
+            ids: this.selectGetIds()
+          }).then(res => {
+            this.list()
+            this.reset()
+            this.$message.success(res.msg)
+          }).catch(() => {
+            this.loading = false
+          })
+        } else {
+          dele({
+            ids: this.selectGetIds()
+          }).then(res => {
+            this.list()
+            this.reset()
+            this.$message.success(res.msg)
+          }).catch(() => {
+            this.loading = false
+          })
+        }
+      }
+    },
+    // 恢复
+    reco() {
+      if (!this.selection.length) {
+        this.selectAlert()
+      } else {
+        recoverReco({
+          ids: this.selectGetIds()
+        }).then(res => {
+          this.list()
+          this.$message.success(res.msg)
+        }).catch(() => {
           this.loading = false
         })
       }
@@ -941,19 +786,6 @@ export default {
     storageSelect(storage = '') {
       this.query.storage = storage
       this.list()
-    },
-    // 选择
-    checkedChange(vals) {
-      const checkedCount = vals.length
-      this.checkAll = checkedCount === this.checkIds.length
-      this.checkAllInd = checkedCount > 0 && checkedCount < this.checkIds.length
-    },
-    checkAllChange(val) {
-      this.checkedIds = val ? this.checkIds : []
-      this.checkAllInd = false
-    },
-    checkAlert(message = '') {
-      this.$alert(message || '请选择需要操作的' + this.name, '提示', { confirmButtonText: '确定', type: 'warning', callback: action => {} })
     },
     // 分组管理
     groupList() {
@@ -1037,150 +869,11 @@ export default {
         this.groupModel = this.$options.data().groupModel
       }
     },
-    // 回收站显示
-    recover() {
-      this.recoverDialog = true
-      this.recoverDialogTitle = this.name + '回收站'
-      this.recoverList()
-    },
-    // 回收站列表
-    recoverList() {
-      this.recoverLoad = true
-      this.recoverReset()
-      recover(this.recoverQuery).then(res => {
-        this.recoverData = res.data.list
-        this.recoverCount = res.data.count
-        this.recoverCheckIds = res.data.ids
-        this.recoverLoad = false
-      }).catch(() => {
-        this.recoverLoad = false
-      })
-    },
-    // 回收站分组筛选
-    recoverGroupSelect(group_id = '') {
-      this.recoverQuery.group_id = group_id
-      this.recoverList()
-    },
-    // 回收站类型筛选
-    recoverTypeSelect(file_type = '') {
-      this.recoverQuery.file_type = file_type
-      this.recoverList()
-    },
-    // 回收站禁用筛选
-    recoverDisableSelect(is_disable = '') {
-      this.recoverQuery.is_disable = is_disable
-      this.recoverList()
-    },
-    // 回收站上传筛选
-    recoverFrontSelect(is_front = '') {
-      this.recoverQuery.is_front = is_front
-      this.recoverList()
-    },
-    // 回收站存储筛选
-    recoverStorageSelect(storage = '') {
-      this.recoverQuery.storage = storage
-      this.recoverList()
-    },
-    // 回收站查询
-    recoverSearch() {
-      this.recoverQuery.page = 1
-      this.recoverList()
-    },
-    // 回收站刷新
-    recoverRefresh() {
-      this.recoverQuery = this.$options.data().recoverQuery
-      this.recoverList()
-    },
-    // 回收站排序
-    recoverSort(sort) {
-      this.recoverQuery.sort_field = sort.prop
-      this.recoverQuery.sort_value = ''
-      if (sort.order === 'ascending') {
-        this.recoverQuery.sort_value = 'asc'
-        this.recoverList()
-      }
-      if (sort.order === 'descending') {
-        this.recoverQuery.sort_value = 'desc'
-        this.recoverList()
-      }
-    },
-    // 回收站选择
-    recoverCheckedChange(vals) {
-      const recoverCheckedCount = vals.length
-      this.recoverCheckAll = recoverCheckedCount === this.recoverCheckIds.length
-      this.recoverCheckAllInd = recoverCheckedCount > 0 && recoverCheckedCount < this.recoverCheckIds.length
-    },
-    // 回收站全选
-    recoverCheckAllChange(val) {
-      this.recoverCheckedIds = val ? this.recoverCheckIds : []
-      this.recoverCheckAllInd = false
-    },
-    // 回收站选择提示
-    recoverCheckAlert(message = '') {
-      this.$alert(message || '请选择需要操作的' + this.name, '提示', { confirmButtonText: '确定', type: 'warning', callback: action => {} })
-    },
-    // 回收站恢复
-    recoverReco(row) {
-      if (!row.length) {
-        this.recoverCheckAlert()
-      } else {
-        var title = '恢复' + this.name
-        var message = '确定要恢复选中的 <span style="color:red">' + row.length + ' </span> 个' + this.name + '吗？'
-        if (row.length === 1) {
-          title = title + '：' + row[0]
-          message = '确定要恢复' + this.name + '吗？'
-        }
-        this.$confirm(message, title, { type: 'warning', dangerouslyUseHTMLString: true }).then(() => {
-          this.recoverLoad = true
-          recoverReco({
-            ids: row
-          }).then(res => {
-            this.list()
-            this.recoverList()
-            this.$message.success(res.msg)
-          }).catch(() => {
-            this.recoverLoad = false
-          })
-        }).catch(() => {})
-      }
-    },
-    // 回收站删除
-    recoverDele(row) {
-      if (!row.length) {
-        this.recoverCheckAlert()
-      } else {
-        var title = '彻底删除' + this.name
-        var message = '确定要彻底删除选中的 <span style="color:red">' + row.length + ' </span> 个' + this.name + '吗？'
-        if (row.length === 1) {
-          title = title + '：' + row[0]
-          message = '确定要彻底删除' + this.name + '吗？'
-        }
-        message = '彻底删除文件会对已使用该文件的业务造成影响！<br>' + message
-        this.$confirm(message, title, { type: 'warning', dangerouslyUseHTMLString: true }).then(() => {
-          this.recoverLoad = true
-          recoverDele({
-            ids: row
-          }).then(res => {
-            this.recoverList()
-            this.$message.success(res.msg)
-          }).catch(() => {
-            this.recoverLoad = false
-          })
-        }).catch(() => {})
-      }
-    },
-    // 回收站重置
-    recoverReset() {
-      this.recoverCheckedIds = []
-      this.recoverCheckAll = false
-      this.recoverCheckAllInd = false
-    },
-    // 文件管理取消
+    // 文件管理操作
     fileCancel() {
       this.reset()
       this.$emit('fileCancel')
     },
-    // 文件管理确定
     fileSubmit(row) {
       if (!row.length) {
         this.recoverCheckAlert('请选择文件')

@@ -9,7 +9,8 @@ const file = {
     roles: [
       'admin/file.File/list',
       'admin/file.Group/list',
-      'admin/file.Setting/info'
+      'admin/file.Setting/info',
+      'admin/file.File/recover'
     ]
   },
   redirect: 'noRedirect',
@@ -22,7 +23,8 @@ const file = {
       meta: {
         title: '文件管理',
         icon: 'el-icon-folder',
-        roles: ['admin/file.File/list']
+        roles: ['admin/file.File/list'],
+        query: { recycle: 0 }
       },
       component: () => import('@/views/file/file')
     },
@@ -45,6 +47,17 @@ const file = {
         roles: ['admin/file.Setting/info']
       },
       component: () => import('@/views/file/setting')
+    },
+    {
+      path: 'file-recover',
+      name: 'FileFile',
+      meta: {
+        title: '文件回收站',
+        icon: 'el-icon-folder-delete',
+        roles: ['admin/file.File/list'],
+        query: { recycle: 1 }
+      },
+      component: () => import('@/views/file/file')
     }
   ]
 }
