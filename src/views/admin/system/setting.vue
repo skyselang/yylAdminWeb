@@ -16,11 +16,11 @@
       <el-tab-pane v-if="checkPermission(['admin/admin.Setting/apiInfo'])" label="接口设置" lazy>
         <setting-api />
       </el-tab-pane>
-      <el-tab-pane v-if="checkPermission(['admin/admin.Setting/systemInfo'])" label="系统设置" lazy>
-        <setting-system />
-      </el-tab-pane>
       <el-tab-pane v-if="checkPermission(['admin/admin.Setting/emailInfo'])" label="邮件设置" lazy>
         <setting-email />
+      </el-tab-pane>
+      <el-tab-pane v-if="checkPermission(['admin/admin.Setting/systemInfo'])" label="系统设置" lazy>
+        <setting-system />
       </el-tab-pane>
     </el-tabs>
   </div>
