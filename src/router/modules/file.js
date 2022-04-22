@@ -10,7 +10,8 @@ const file = {
       'admin/file.File/list',
       'admin/file.Group/list',
       'admin/file.Setting/info',
-      'admin/file.File/recover'
+      'admin/file.File/recover',
+      'admin/file.Group/recover'
     ]
   },
   redirect: 'noRedirect',
@@ -34,7 +35,8 @@ const file = {
       meta: {
         title: '文件分组',
         icon: 'el-icon-folder-opened',
-        roles: ['admin/file.Group/list']
+        roles: ['admin/file.Group/list'],
+        query: { recycle: 0 }
       },
       component: () => import('@/views/file/group')
     },
@@ -58,6 +60,17 @@ const file = {
         query: { recycle: 1 }
       },
       component: () => import('@/views/file/file')
+    },
+    {
+      path: 'group-recover',
+      name: 'FileGroup',
+      meta: {
+        title: '文件分组回收站',
+        icon: 'el-icon-folder-delete',
+        roles: ['admin/file.Group/recover'],
+        query: { recycle: 1 }
+      },
+      component: () => import('@/views/file/group')
     }
   ]
 }

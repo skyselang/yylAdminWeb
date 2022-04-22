@@ -60,6 +60,20 @@
         >
           <el-button type="primary" title="上传文件" @click="uploadClear">上传</el-button>
         </el-upload>
+        <el-select v-model="query.sort_field" class="filter-item ya-search-field ya-margin-left" filterable clearable placeholder="排序字段" @change="sort">
+          <el-option value="file_name" label="文件名称" />
+          <el-option value="file_md5" label="文件MD5" />
+          <el-option value="file_hash" label="文件散列" />
+          <el-option value="file_ext" label="文件扩展" />
+          <el-option :value="idkey" label="文件ID" />
+          <el-option value="create_time" label="添加时间" />
+          <el-option value="update_time" label="修改时间" />
+          <el-option v-if="recycle===1" value="delete_time" label="删除时间" />
+        </el-select>
+        <el-select v-model="query.sort_value" class="filter-item ya-search-field" filterable clearable placeholder="排序类型" @change="sort">
+          <el-option value="asc" label="升序" />
+          <el-option value="desc" label="降序" />
+        </el-select>
       </el-col>
     </el-row>
     <el-dialog :title="selectTitle" :visible.sync="selectDialog" top="20vh" :close-on-click-modal="false" :close-on-press-escape="false">
@@ -184,7 +198,7 @@
                   <span>{{ item.file_ext }}</span>
                 </div>
                 <div style="text-align:left">
-                  <el-checkbox :key="item.file_id" :label="item.file_id" />
+                  <el-checkbox :key="item[idkey]" :label="item[idkey]" />
                 </div>
                 <div :style="{width:'100%', height:((height-height*0.1)/3)-((height-height*0.1)/3*0.5)+'px', minHeight:'62px'}">
                   <el-image v-if="item.file_type==='image'" fit="contain" :src="item.file_url" :preview-src-list="fileImgPre" title="点击查看大图" style="height:100%" />
@@ -252,7 +266,9 @@
           <el-input v-model="model.sort" type="number" placeholder="250" />
         </el-form-item>
         <el-form-item label="文件域名" prop="domain">
-          <el-input v-model="model.domain" placeholder="" clearable />
+          <el-input v-model="model.domain" placeholder="" clearable>
+            <el-button slot="append" icon="el-icon-copy-document" title="复制" @click="copy(model.domain, $event)" />
+          </el-input>
         </el-form-item>
         <el-form-item label="文件路径" prop="file_path">
           <el-input v-model="model.file_path" placeholder="" :title="model.file_path" disabled>
@@ -359,10 +375,10 @@ export default {
         page: 1,
         limit: 18,
         group_id: '',
-        file_type: '',
-        is_disable: '',
-        is_front: 0,
         storage: '',
+        file_type: '',
+        is_front: 0,
+        is_disable: '',
         search_field: 'file_name',
         date_field: 'create_time'
       },
@@ -404,8 +420,8 @@ export default {
       selectDialog: false,
       selectType: '',
       group_id: 0,
-      file_type: 'image',
       domain: '',
+      file_type: 'image',
       is_disable: 0,
       uploadAction: add(),
       uploadHeaders: { AdminToken: getAdminToken() },
@@ -427,12 +443,12 @@ export default {
   },
   watch: {
     'isRecycle': function(value) {
-      this.recycle = this.isRecycle
+      this.recycle = value
       this.list()
     },
     'fileType': function(value) {
       this.recycle = this.isRecycle
-      this.query.file_type = this.fileType
+      this.query.file_type = value
       this.list()
     }
   },
@@ -444,8 +460,8 @@ export default {
       this.query.file_type = this.fileType
       this.height = this.height - 100
     }
-    this.groupList()
     this.list()
+    this.groupList()
   },
   methods: {
     // 列表
@@ -549,6 +565,12 @@ export default {
       this.reset()
       this.list()
       this.groupList()
+    },
+    // 排序
+    sort() {
+      if (this.query.sort_value && this.query.sort_value) {
+        this.list()
+      }
     },
     // 重置
     reset(row) {

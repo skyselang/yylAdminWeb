@@ -15,13 +15,7 @@ export default {
     }
   },
   watch: {
-    $route(to) {
-      if (typeof to.meta.query !== 'undefined') {
-        if (typeof to.meta.query.recycle !== 'undefined') {
-          this.recycle = to.meta.query.recycle
-        }
-      }
-    }
+
   },
   created() {
     this.recycle = this.$route.meta.query.recycle
