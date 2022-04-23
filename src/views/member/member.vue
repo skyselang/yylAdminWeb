@@ -11,9 +11,24 @@
             <el-option value="phone" label="手机" />
             <el-option value="email" label="邮箱" />
             <el-option value="remark" label="备注" />
+            <el-option value="is_disable" label="是否禁用" />
+            <el-option value="region_id" label="地区" />
             <el-option :value="idkey" label="ID" />
           </el-select>
-          <el-input v-model="query.search_value" class="filter-item ya-search-value" placeholder="搜索内容" clearable />
+          <el-cascader
+            v-if="query.search_field==='region_id'"
+            class="filter-item ya-search-value"
+            :options="regionData"
+            :props="regionProps"
+            clearable
+            filterable
+            @change="regionQuerySelect"
+          />
+          <el-select v-else-if="query.search_field==='is_disable'" v-model="query.search_value" class="filter-item ya-search-value" placeholder="请选择">
+            <el-option value="是" label="是" />
+            <el-option value="否" label="否" />
+          </el-select>
+          <el-input v-else v-model="query.search_value" class="filter-item ya-search-value" placeholder="搜索内容" clearable />
           <el-select v-model="query.date_field" class="filter-item ya-date-field" placeholder="时间字段">
             <el-option value="create_time" label="注册时间" />
             <el-option value="login_time" label="登录时间" />
@@ -59,7 +74,7 @@
               @change="regionSelect"
             />
           </el-form-item>
-          <el-form-item v-else-if="selectType==='disable'" label="禁用" prop="">
+          <el-form-item v-else-if="selectType==='disable'" label="是否禁用" prop="">
             <el-switch v-model="is_disable" :active-value="1" :inactive-value="0" />
           </el-form-item>
           <el-form-item v-else-if="selectType==='repwd'" label="新密码" prop="">
@@ -594,6 +609,11 @@ export default {
     regionSelect(value) {
       if (value) {
         this.region_id = value[value.length - 1]
+      }
+    },
+    regionQuerySelect(value) {
+      if (value) {
+        this.query.search_value = value[value.length - 1]
       }
     },
     // 复制

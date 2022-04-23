@@ -43,7 +43,7 @@
       <el-dialog :title="selectTitle" :visible.sync="selectDialog" top="20vh" :close-on-click-modal="false" :close-on-press-escape="false">
         <el-form label-width="120px">
           <el-form-item :label="name+'ID'" prop="">
-            <el-input v-model="selectIds" type="textarea" :rows="2" disabled />
+            <el-input v-model="selectIds" type="textarea" :autosize="{minRows: 2, maxRows: 12}" disabled />
           </el-form-item>
           <el-form-item v-if="selectType==='dele'" label="" prop="">
             <span style="color:red">确定要删除选中的{{ name }}吗？</span>
@@ -132,31 +132,41 @@
     <!-- 清除 -->
     <el-dialog :title="clearDialogTitle" :visible.sync="clearDialog" :before-close="clearCancel" :close-on-click-modal="false" :close-on-press-escape="false">
       <el-form ref="clearRef" :rules="clearRules" :model="clearModel" label-width="100px" class="dialog-body">
-        <el-form-item label="会员ID" prop="member_id">
-          <el-input v-model="clearModel.member_id" placeholder="多个逗号,隔开" clearable />
+        <el-form-item label="清除类型" prop="clean">
+          <el-select v-model="clearModel.clean" placeholder="">
+            <el-option :value="0" label="条件清除" />
+            <el-option :value="1" label="清空所有" />
+          </el-select>
         </el-form-item>
-        <el-form-item label="会员用户名" prop="username">
-          <el-input v-model="clearModel.username" placeholder="多个逗号,隔开" clearable />
-        </el-form-item>
-        <el-form-item label="接口ID" prop="api_id">
-          <el-input v-model="clearModel.api_id" placeholder="多个逗号,隔开" clearable />
-        </el-form-item>
-        <el-form-item label="接口链接" prop="api_url">
-          <el-input v-model="clearModel.api_url" placeholder="多个逗号,隔开" clearable />
-        </el-form-item>
-        <el-form-item label="请求时间" prop="date_value">
-          <el-date-picker
-            v-model="clearModel.date_value"
-            type="daterange"
-            class="filter-item"
-            value-format="yyyy-MM-dd"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-          />
-        </el-form-item>
-        <el-form-item label="清空所有" prop="clean">
-          <el-switch v-model="clearModel.clean" :active-value="1" :inactive-value="0" />
-        </el-form-item>
+        <div v-if="clearModel.clean===0">
+          <el-form-item label="会员ID" prop="member_id">
+            <el-input v-model="clearModel.member_id" placeholder="多个逗号,隔开" clearable />
+          </el-form-item>
+          <el-form-item label="会员用户名" prop="username">
+            <el-input v-model="clearModel.username" placeholder="多个逗号,隔开" clearable />
+          </el-form-item>
+          <el-form-item label="接口ID" prop="api_id">
+            <el-input v-model="clearModel.api_id" placeholder="多个逗号,隔开" clearable />
+          </el-form-item>
+          <el-form-item label="接口链接" prop="api_url">
+            <el-input v-model="clearModel.api_url" placeholder="多个逗号,隔开" clearable />
+          </el-form-item>
+          <el-form-item label="请求时间" prop="date_value">
+            <el-date-picker
+              v-model="clearModel.date_value"
+              type="daterange"
+              class="filter-item"
+              value-format="yyyy-MM-dd"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+            />
+          </el-form-item>
+        </div>
+        <div v-else>
+          <el-form-item label="" prop="">
+            <span style="color:red">确定要清空所有{{ name }}吗？</span>
+          </el-form-item>
+        </div>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="clearCancel()">取消</el-button>
