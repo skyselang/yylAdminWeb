@@ -9,14 +9,19 @@
             <el-option value="call" label="称呼" />
             <el-option value="mobile" label="手机" />
             <el-option value="title" label="标题" />
-            <el-option value="is_unread" label="是否未读" />
+            <el-option value="is_unread" label="未读" />
             <el-option :value="idkey" label="ID" />
           </el-select>
-          <el-input v-model="query.search_value" class="filter-item ya-search-value" placeholder="搜索内容" clearable />
+          <el-select v-if="query.search_field==='is_unread'" v-model="query.search_value" class="filter-item ya-search-value" placeholder="请选择">
+            <el-option :value="1" label="是" />
+            <el-option :value="0" label="否" />
+          </el-select>
+          <el-input v-else v-model="query.search_value" class="filter-item ya-search-value" placeholder="搜索内容" clearable />
           <el-select v-model="query.date_field" class="filter-item ya-date-field" placeholder="时间类型">
             <el-option value="create_time" label="添加时间" />
             <el-option value="update_time" label="修改时间" />
             <el-option value="read_time" label="已读时间" />
+            <el-option v-if="recycle" value="delete_time" label="删除时间" />
           </el-select>
           <el-date-picker
             v-model="query.date_value"
@@ -34,21 +39,25 @@
       <el-row>
         <el-col>
           <el-button title="设为已读" @click="selectOpen('isread')">已读</el-button>
-          <el-button @click="selectOpen('dele')">删除</el-button>
-          <el-button @click="recover()">回收站</el-button>
-          <el-button type="primary" @click="add()">添加</el-button>
+          <el-button title="删除" @click="selectOpen('dele')">删除</el-button>
+          <el-button v-if="recycle" type="primary" @click="selectOpen('reco')">恢复</el-button>
+          <el-button v-else type="primary" @click="add()">添加</el-button>
         </el-col>
       </el-row>
       <el-dialog :title="selectTitle" :visible.sync="selectDialog" top="20vh" :close-on-click-modal="false" :close-on-press-escape="false">
         <el-form label-width="120px">
           <el-form-item :label="name+'ID'" prop="">
-            <el-input v-model="selectIds" type="textarea" :rows="2" disabled />
+            <el-input v-model="selectIds" type="textarea" :autosize="{minRows: 2, maxRows: 12}" disabled />
           </el-form-item>
           <el-form-item v-if="selectType==='isread'" label="" prop="">
             <span>确定要设置选中的{{ name }}为已读吗？</span>
           </el-form-item>
+          <el-form-item v-else-if="selectType==='reco'" label="" prop="">
+            <span>确定要恢复选中的{{ name }}吗？</span>
+          </el-form-item>
           <el-form-item v-else-if="selectType==='dele'" label="" prop="">
-            <span style="color:red">确定要删除选中的{{ name }}吗？</span>
+            <span v-if="recycle" style="color:red">确定要彻底删除选中的{{ name }}吗？删除后不可恢复！</span>
+            <span v-else style="color:red">确定要删除选中的{{ name }}吗？</span>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -72,9 +81,12 @@
         </template>
       </el-table-column>
       <el-table-column prop="create_time" label="添加时间" min-width="155" sortable="custom" />
-      <el-table-column prop="update_time" label="修改时间" min-width="155" sortable="custom" />
-      <el-table-column label="操作" min-width="85" align="right" fixed="right">
+      <el-table-column prop="read_time" label="已读时间" min-width="155" sortable="custom" />
+      <el-table-column v-if="recycle" prop="delete_time" label="删除时间" min-width="155" sortable="custom" />
+      <el-table-column v-else prop="update_time" label="修改时间" min-width="155" sortable="custom" />
+      <el-table-column label="操作" :min-width="recycle?120:85" align="right" fixed="right">
         <template slot-scope="{ row }">
+          <el-button v-if="recycle" size="mini" type="text" @click="selectOpen('reco',row)">恢复</el-button>
           <el-button size="mini" type="text" title="修改" @click="edit(row)">查看</el-button>
           <el-button size="mini" type="text" @click="selectOpen('dele',row)">删除</el-button>
         </template>
@@ -121,7 +133,7 @@
         <el-form-item v-if="model.delete_time" label="删除时间" prop="delete_time">
           <el-input v-model="model.delete_time" disabled />
         </el-form-item>
-        <el-form-item v-if="model[idkey]" label="已读时间" prop="read_time">
+        <el-form-item v-if="model.read_time" label="已读时间" prop="read_time">
           <el-input v-model="model.read_time" disabled />
         </el-form-item>
       </el-form>
@@ -129,88 +141,6 @@
         <el-button @click="cancel">取消</el-button>
         <el-button type="primary" @click="submit">提交</el-button>
       </div>
-    </el-dialog>
-    <!-- 回收站 -->
-    <el-dialog :title="recoverDialogTitle" :visible.sync="recoverDialog" width="80%" top="1vh" append-to-body :close-on-click-modal="false" :close-on-press-escape="false">
-      <!-- 回收站查询操作 -->
-      <div class="filter-container">
-        <!-- 查询 -->
-        <el-row>
-          <el-col>
-            <el-select v-model="recoverQuery.search_field" class="filter-item ya-search-field" placeholder="搜索字段">
-              <el-option value="call" label="称呼" />
-              <el-option value="mobile" label="手机" />
-              <el-option value="title" label="标题" />
-              <el-option value="is_unread" label="是否未读" />
-              <el-option :value="idkey" label="ID" />
-            </el-select>
-            <el-input v-model="recoverQuery.search_value" class="filter-item ya-search-value" placeholder="搜索内容" clearable />
-            <el-select v-model="recoverQuery.date_field" class="filter-item ya-date-field" placeholder="时间类型" clearable>
-              <el-option value="create_time" label="添加时间" />
-              <el-option value="delete_time" label="删除时间" />
-              <el-option value="read_time" label="已读时间" />
-            </el-select>
-            <el-date-picker
-              v-model="recoverQuery.date_value"
-              type="daterange"
-              class="filter-item ya-date-value"
-              value-format="yyyy-MM-dd"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-            />
-            <el-button class="filter-item" type="primary" @click="recoverSearch()">查询</el-button>
-            <el-button class="filter-item" @click="recoverRefresh()">刷新</el-button>
-          </el-col>
-        </el-row>
-        <!-- 选中操作 -->
-        <el-row>
-          <el-col>
-            <el-button @click="recoverSelectOpen('reco')">恢复</el-button>
-            <el-button title="彻底删除" @click="recoverSelectOpen('dele')">删除</el-button>
-          </el-col>
-        </el-row>
-        <el-dialog :title="recoverSelectTitle" :visible.sync="recoverSelectDialog" top="20vh" append-to-body :close-on-click-modal="false" :close-on-press-escape="false">
-          <el-form label-width="120px">
-            <el-form-item :label="name+'ID'" prop="">
-              <el-input v-model="recoverSelectIds" type="textarea" :rows="2" disabled />
-            </el-form-item>
-            <el-form-item v-if="recoverSelectType==='reco'" label="" prop="">
-              <span>确定要恢复选中的{{ name }}吗？</span>
-            </el-form-item>
-            <el-form-item v-else-if="recoverSelectType==='dele'" label="" prop="">
-              <span style="color:red">确定要彻底删除选中的{{ name }}吗？删除后不可恢复！</span>
-            </el-form-item>
-          </el-form>
-          <div slot="footer" class="dialog-footer">
-            <el-button @click="recoverSelectCancel">取消</el-button>
-            <el-button type="primary" @click="recoverSelectSubmit">提交</el-button>
-          </div>
-        </el-dialog>
-      </div>
-      <!-- 回收站列表 -->
-      <el-table ref="recoverRef" v-loading="recoverLoad" :data="recoverData" :height="height" @sort-change="recoverSort" @selection-change="recoverSelect">
-        <el-table-column type="selection" width="42" title="全选/反选" />
-        <el-table-column :prop="idkey" label="ID" min-width="80" sortable="custom" />
-        <el-table-column prop="call" label="称呼" min-width="100" show-overflow-tooltip />
-        <el-table-column prop="mobile" label="手机" min-width="120" sortable="custom" show-overflow-tooltip />
-        <el-table-column prop="title" label="标题" min-width="200" show-overflow-tooltip />
-        <el-table-column prop="remark" label="备注" min-width="100" show-overflow-tooltip />
-        <el-table-column prop="is_unread" label="未读" min-width="80" sortable="custom">
-          <template slot-scope="scope">
-            <el-switch v-model="scope.row.is_unread" :active-value="1" :inactive-value="0" disabled />
-          </template>
-        </el-table-column>
-        <el-table-column prop="create_time" label="添加时间" min-width="155" sortable="custom" />
-        <el-table-column prop="delete_time" label="删除时间" min-width="155" sortable="custom" />
-        <el-table-column label="操作" min-width="85" align="right" fixed="right">
-          <template slot-scope="{ row }">
-            <el-button size="mini" type="text" @click="recoverSelectOpen('reco',row)">恢复</el-button>
-            <el-button size="mini" type="text" title="彻底删除" @click="recoverSelectOpen('dele',row)">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      <!-- 回收站分页 -->
-      <pagination v-show="recoverCount > 0" :total="recoverCount" :page.sync="recoverQuery.page" :limit.sync="recoverQuery.limit" @pagination="recoverList" />
     </el-dialog>
   </div>
 </template>
@@ -228,6 +158,7 @@ export default {
   data() {
     return {
       name: '留言',
+      recycle: 0, // 是否回收站
       height: 680,
       loading: false,
       idkey: 'comment_id',
@@ -263,26 +194,11 @@ export default {
       selectIds: '',
       selectTitle: '选中操作',
       selectDialog: false,
-      selectType: '',
-      recoverDialog: false,
-      recoverDialogTitle: '',
-      recoverLoad: false,
-      recoverData: [],
-      recoverCount: 0,
-      recoverQuery: {
-        page: 1,
-        limit: 15,
-        search_field: 'call',
-        date_field: 'delete_time'
-      },
-      recoverSelection: [],
-      recoverSelectIds: '',
-      recoverSelectTitle: '选中操作',
-      recoverSelectDialog: false,
-      recoverSelectType: ''
+      selectType: ''
     }
   },
   created() {
+    this.recycle = this.$route.meta.query.recycle
     this.height = screenHeight()
     this.list()
   },
@@ -290,13 +206,23 @@ export default {
     // 列表
     list() {
       this.loading = true
-      list(this.query).then(res => {
-        this.data = res.data.list
-        this.count = res.data.count
-        this.loading = false
-      }).catch(() => {
-        this.loading = false
-      })
+      if (this.recycle) {
+        recover(this.query).then(res => {
+          this.data = res.data.list
+          this.count = res.data.count
+          this.loading = false
+        }).catch(() => {
+          this.loading = false
+        })
+      } else {
+        list(this.query).then(res => {
+          this.data = res.data.list
+          this.count = res.data.count
+          this.loading = false
+        }).catch(() => {
+          this.loading = false
+        })
+      }
     },
     // 添加修改
     add() {
@@ -398,6 +324,8 @@ export default {
         this.selectTitle = '选中操作'
         if (selectType === 'isread') {
           this.selectTitle = '设置已读'
+        } else if (selectType === 'reco') {
+          this.selectTitle = '恢复' + this.name
         } else if (selectType === 'dele') {
           this.selectTitle = '删除' + this.name
         }
@@ -415,6 +343,8 @@ export default {
         const selectType = this.selectType
         if (selectType === 'isread') {
           this.isread(this.selection)
+        } else if (selectType === 'reco') {
+          this.reco(this.selection)
         } else if (selectType === 'dele') {
           this.dele(this.selection)
         }
@@ -444,129 +374,39 @@ export default {
         this.selectAlert()
       } else {
         this.loading = true
-        dele({
+        if (this.recycle) {
+          recoverDele({
+            ids: this.selectGetIds(row)
+          }).then(res => {
+            this.list()
+            this.$message.success(res.msg)
+          }).catch(() => {
+            this.loading = false
+          })
+        } else {
+          dele({
+            ids: this.selectGetIds(row)
+          }).then(res => {
+            this.list()
+            this.$message.success(res.msg)
+          }).catch(() => {
+            this.loading = false
+          })
+        }
+      }
+    },
+    // 恢复
+    reco(row) {
+      if (!row.length) {
+        this.selectAlert()
+      } else {
+        recoverReco({
           ids: this.selectGetIds(row)
         }).then(res => {
           this.list()
           this.$message.success(res.msg)
         }).catch(() => {
           this.loading = false
-        })
-      }
-    },
-    // 回收站
-    recover() {
-      this.recoverDialog = true
-      this.recoverDialogTitle = this.name + '回收站'
-      this.recoverList()
-    },
-    // 回收站查询
-    recoverSearch() {
-      this.recoverQuery.page = 1
-      this.recoverList()
-    },
-    // 回收站刷新
-    recoverRefresh() {
-      this.recoverQuery = this.$options.data().recoverQuery
-      this.recoverList()
-    },
-    // 回收站列表
-    recoverList() {
-      this.recoverLoad = true
-      recover(this.recoverQuery).then(res => {
-        this.recoverData = res.data.list
-        this.recoverCount = res.data.count
-        this.recoverLoad = false
-      }).catch(() => {
-        this.recoverLoad = false
-      })
-    },
-    // 回收站排序
-    recoverSort(sort) {
-      this.recoverQuery.sort_field = sort.prop
-      this.recoverQuery.sort_value = ''
-      if (sort.order === 'ascending') {
-        this.recoverQuery.sort_value = 'asc'
-        this.recoverList()
-      }
-      if (sort.order === 'descending') {
-        this.recoverQuery.sort_value = 'desc'
-        this.recoverList()
-      }
-    },
-    // 选中操作
-    recoverSelect(selection) {
-      this.recoverSelection = selection
-      this.recoverSelectIds = this.recoverSelectGetIds(selection).toString()
-    },
-    recoverSelectGetIds(selection) {
-      return arrayColumn(selection, this.idkey)
-    },
-    recoverSelectAlert() {
-      this.$alert('请选择需要操作的' + this.name, '提示', { type: 'warning', callback: action => {} })
-    },
-    recoverSelectOpen(selectType, selectRow = '') {
-      if (selectRow) {
-        this.$refs['recoverRef'].clearSelection()
-        this.$refs['recoverRef'].toggleRowSelection(selectRow)
-      }
-      if (!this.recoverSelection.length) {
-        this.selectAlert()
-      } else {
-        this.recoverSelectTitle = '选中操作'
-        if (selectType === 'reco') {
-          this.recoverSelectTitle = '恢复' + this.name
-        } else if (selectType === 'dele') {
-          this.recoverSelectTitle = '删除' + this.name
-        }
-        this.recoverSelectDialog = true
-        this.recoverSelectType = selectType
-      }
-    },
-    recoverSelectCancel() {
-      this.recoverSelectDialog = false
-    },
-    recoverSelectSubmit() {
-      if (!this.recoverSelection.length) {
-        this.selectAlert()
-      } else {
-        const recoverSelectType = this.recoverSelectType
-        if (recoverSelectType === 'reco') {
-          this.recoverReco(this.recoverSelection)
-        } else if (recoverSelectType === 'dele') {
-          this.recoverDele(this.recoverSelection)
-        }
-        this.recoverSelectDialog = false
-      }
-    },
-    // 回收站恢复
-    recoverReco(row) {
-      if (!row.length) {
-        this.selectAlert()
-      } else {
-        recoverReco({
-          ids: this.recoverSelectGetIds(row)
-        }).then(res => {
-          this.list()
-          this.recoverList()
-          this.$message.success(res.msg)
-        }).catch(() => {
-          this.recoverLoad = false
-        })
-      }
-    },
-    // 回收站删除
-    recoverDele(row) {
-      if (!row.length) {
-        this.selectAlert()
-      } else {
-        recoverDele({
-          ids: this.recoverSelectGetIds(row)
-        }).then(res => {
-          this.recoverList()
-          this.$message.success(res.msg)
-        }).catch(() => {
-          this.recoverLoad = false
         })
       }
     }

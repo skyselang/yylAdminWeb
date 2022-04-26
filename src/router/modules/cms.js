@@ -12,7 +12,8 @@ const cms = {
       'admin/cms.Comment/list',
       'admin/cms.Setting/info',
       'admin/cms.Content/recover',
-      'admin/cms.Category/recover'
+      'admin/cms.Category/recover',
+      'admin/cms.Comment/recover'
     ]
   },
   redirect: 'noRedirect',
@@ -47,7 +48,8 @@ const cms = {
       meta: {
         title: '留言管理',
         icon: 'el-icon-reading',
-        roles: ['admin/cms.Comment/list']
+        roles: ['admin/cms.Comment/list'],
+        query: { recycle: 0 }
       },
       component: () => import('@/views/cms/comment')
     },
@@ -82,6 +84,17 @@ const cms = {
         query: { recycle: 1 }
       },
       component: () => import('@/views/cms/category')
+    },
+    {
+      path: 'comment-recover',
+      name: 'CmsComment',
+      meta: {
+        title: '留言回收站',
+        icon: 'el-icon-reading',
+        roles: ['admin/cms.Comment/recover'],
+        query: { recycle: 1 }
+      },
+      component: () => import('@/views/cms/comment')
     }
   ]
 }

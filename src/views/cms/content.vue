@@ -11,9 +11,31 @@
             <el-option value="is_hot" label="是否热门" />
             <el-option value="is_rec" label="是否推荐" />
             <el-option value="is_hide" label="是否隐藏" />
+            <el-option value="category_id" label="分类" />
+            <el-option value="sort" label="排序" />
             <el-option :value="idkey" label="ID" />
           </el-select>
-          <el-input v-model="query.search_value" class="filter-item ya-search-value" placeholder="搜索内容" clearable />
+          <el-select
+            v-if="query.search_field==='is_top'||query.search_field==='is_hot'||query.search_field==='is_rec'||query.search_field==='is_hide'"
+            v-model="query.search_value"
+            class="filter-item ya-search-value"
+            placeholder="请选择"
+          >
+            <el-option :value="1" label="是" />
+            <el-option :value="0" label="否" />
+          </el-select>
+          <el-cascader
+            v-else-if="query.search_field==='category_id'"
+            v-model="query.category_id"
+            class="filter-item ya-search-value"
+            :options="categoryData"
+            :props="categoryProps"
+            placeholder="请选择分类"
+            clearable
+            filterable
+            @change="categoryQuery"
+          />
+          <el-input v-else v-model="query.search_value" class="filter-item ya-search-value" placeholder="搜索内容" clearable />
           <el-select v-model="query.date_field" class="filter-item ya-date-field" placeholder="时间类型">
             <el-option value="create_time" label="添加时间" />
             <el-option value="update_time" label="修改时间" />
@@ -26,16 +48,6 @@
             value-format="yyyy-MM-dd"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-          />
-          <el-cascader
-            v-model="query.category_id"
-            class="filter-item ya-width-150"
-            :options="categoryData"
-            :props="categoryProps"
-            placeholder="分类"
-            clearable
-            filterable
-            @change="categoryQuery"
           />
           <el-button class="filter-item" type="primary" @click="search()">查询</el-button>
           <el-button class="filter-item" @click="refresh()">刷新</el-button>
@@ -355,7 +367,7 @@ export default {
     // 列表
     list() {
       this.loading = true
-      if (this.recycle === 1) {
+      if (this.recycle) {
         recover(this.query).then(res => {
           this.data = res.data.list
           this.count = res.data.count
@@ -611,13 +623,28 @@ export default {
         })
       }
     },
+    // 恢复
+    reco(row) {
+      if (!row.length) {
+        this.selectAlert()
+      } else {
+        recoverReco({
+          ids: this.selectGetIds(row)
+        }).then(res => {
+          this.list()
+          this.$message.success(res.msg)
+        }).catch(() => {
+          this.loading = false
+        })
+      }
+    },
     // 删除
     dele(row) {
       if (!row.length) {
         this.selectAlert()
       } else {
         this.loading = true
-        if (this.recycle === 1) {
+        if (this.recycle) {
           recoverDele({
             ids: this.selectGetIds(row)
           }).then(res => {
@@ -638,21 +665,6 @@ export default {
         }
       }
     },
-    // 恢复
-    reco(row) {
-      if (!row.length) {
-        this.selectAlert()
-      } else {
-        recoverReco({
-          ids: this.selectGetIds(row)
-        }).then(res => {
-          this.list()
-          this.$message.success(res.msg)
-        }).catch(() => {
-          this.loading = false
-        })
-      }
-    },
     // 分类选择
     category() {
       category().then(res => {
@@ -661,17 +673,17 @@ export default {
     },
     categoryQuery(value) {
       if (value) {
-        this.query.category_id = value[value.length - 1]
+        this.query.search_value = value[0]
       }
     },
     categoryEdit(value) {
       if (value) {
-        this.model.category_id = value[value.length - 1]
+        this.model.category_id = value[0]
       }
     },
     categorySelect(value) {
       if (value) {
-        this.category_id = value[value.length - 1]
+        this.category_id = value[0]
       }
     },
     // 上传图片、视频、附件

@@ -7,11 +7,29 @@
         <el-col>
           <el-select v-model="query.search_field" class="filter-item ya-search-field" placeholder="搜索字段">
             <el-option value="category_name" label="名称" />
-            <el-option value="is_hide" label="是否隐藏" />
+            <el-option value="is_hide" label="隐藏" />
+            <el-option value="sort" label="排序" />
             <el-option value="category_pid" label="PID" />
             <el-option :value="idkey" label="ID" />
           </el-select>
-          <el-input v-model="query.search_value" class="filter-item ya-search-value" placeholder="搜索内容" clearable />
+          <el-select v-if="query.search_field==='is_hide'" v-model="query.search_value" class="filter-item ya-search-value" placeholder="请选择">
+            <el-option :value="1" label="是" />
+            <el-option :value="0" label="否" />
+          </el-select>
+          <el-input v-else v-model="query.search_value" class="filter-item ya-search-value" placeholder="搜索内容" clearable />
+          <el-select v-model="query.date_field" class="filter-item ya-date-field" placeholder="时间类型">
+            <el-option value="create_time" label="添加时间" />
+            <el-option value="update_time" label="修改时间" />
+            <el-option v-if="recycle===1" value="delete_time" label="删除时间" />
+          </el-select>
+          <el-date-picker
+            v-model="query.date_value"
+            type="daterange"
+            class="filter-item ya-date-value"
+            value-format="yyyy-MM-dd"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          />
           <el-button class="filter-item" type="primary" @click="search()">查询</el-button>
           <el-button class="filter-item" @click="refresh()">刷新</el-button>
         </el-col>
@@ -40,6 +58,7 @@
               style="width:100%"
               clearable
               filterable
+              placeholder="一级分类"
               @change="categorySelect"
             />
           </el-form-item>
@@ -176,7 +195,7 @@ export default {
       idkey: 'category_id',
       query: {
         search_field: 'category_name',
-        search_value: ''
+        date_field: 'create_time'
       },
       data: [],
       dialog: false,
@@ -215,7 +234,7 @@ export default {
     // 列表
     list() {
       this.loading = true
-      if (this.recycle === 1) {
+      if (this.recycle) {
         recover(this.query).then(res => {
           this.data = res.data.list
           this.isExpandAll = false
@@ -400,12 +419,27 @@ export default {
         })
       }
     },
+    // 恢复
+    reco(row) {
+      if (!row.length) {
+        this.selectAlert()
+      } else {
+        recoverReco({
+          ids: this.selectGetIds(row)
+        }).then(res => {
+          this.list()
+          this.$message.success(res.msg)
+        }).catch(() => {
+          this.loading = false
+        })
+      }
+    },
     // 删除
     dele(row) {
       if (!row.length) {
         this.selectAlert()
       } else {
-        if (this.recycle === 1) {
+        if (this.recycle) {
           recoverDele({
             ids: this.selectGetIds(row)
           }).then(res => {
@@ -424,21 +458,6 @@ export default {
             this.loading = false
           })
         }
-      }
-    },
-    // 恢复
-    reco(row) {
-      if (!row.length) {
-        this.selectAlert()
-      } else {
-        recoverReco({
-          ids: this.selectGetIds(row)
-        }).then(res => {
-          this.list()
-          this.$message.success(res.msg)
-        }).catch(() => {
-          this.loading = false
-        })
       }
     },
     // 上级
