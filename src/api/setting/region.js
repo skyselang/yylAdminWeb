@@ -67,3 +67,25 @@ export function pid(data) {
     data
   })
 }
+/**
+ * 地区修改区号
+ * @param {array} data 请求数据
+ */
+export function citycode(data) {
+  return request({
+    url: url + 'citycode',
+    method: 'post',
+    data
+  })
+}
+/**
+ * 地区修改邮编
+ * @param {array} data 请求数据
+ */
+export function zipcode(data) {
+  return request({
+    url: url + 'zipcode',
+    method: 'post',
+    data
+  })
+}

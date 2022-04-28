@@ -673,17 +673,17 @@ export default {
     },
     categoryQuery(value) {
       if (value) {
-        this.query.search_value = value[0]
+        this.query.search_value = value[value.length - 1]
       }
     },
     categoryEdit(value) {
       if (value) {
-        this.model.category_id = value[0]
+        this.model.category_id = value[value.length - 1]
       }
     },
     categorySelect(value) {
       if (value) {
-        this.category_id = value[0]
+        this.category_id = value[value.length - 1]
       }
     },
     // 上传图片、视频、附件
