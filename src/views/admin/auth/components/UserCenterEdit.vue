@@ -28,8 +28,8 @@
               <el-input v-model="model.email" placeholder="请输入邮箱" clearable />
             </el-form-item>
             <el-form-item>
-              <el-button @click="refresh">刷新</el-button>
-              <el-button type="primary" @click="submit">提交</el-button>
+              <el-button :loading="loading" @click="refresh">刷新</el-button>
+              <el-button :loading="loading" type="primary" @click="submit">提交</el-button>
             </el-form-item>
           </el-form>
         </el-col>

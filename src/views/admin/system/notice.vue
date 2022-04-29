@@ -12,7 +12,16 @@
             <el-option value="is_open" label="是否开启" />
             <el-option :value="idkey" label="ID" />
           </el-select>
-          <el-input v-model="query.search_value" class="ya-search-value" placeholder="搜索内容" clearable />
+          <el-select
+            v-if="query.search_field==='is_open'"
+            v-model="query.search_value"
+            class="filter-item ya-search-value"
+            placeholder="请选择"
+          >
+            <el-option :value="1" label="是" />
+            <el-option :value="0" label="否" />
+          </el-select>
+          <el-input v-else v-model="query.search_value" class="ya-search-value" placeholder="搜索内容" clearable />
           <el-select v-model="query.date_field" class="ya-search-field" placeholder="时间字段">
             <el-option value="create_time" label="添加时间" />
             <el-option value="update_time" label="修改时间" />
@@ -34,16 +43,16 @@
       <!-- 选中操作 -->
       <el-row>
         <el-col>
-          <el-button @click="selectOpen('isopen')">开启</el-button>
-          <el-button @click="selectOpen('opentime')">时间</el-button>
-          <el-button @click="selectOpen('dele')">删除</el-button>
+          <el-button title="是否开启" @click="selectOpen('isopen')">开启</el-button>
+          <el-button title="开启时间" @click="selectOpen('opentime')">时间</el-button>
+          <el-button title="删除" @click="selectOpen('dele')">删除</el-button>
           <el-button type="primary" @click="add()">添加</el-button>
         </el-col>
       </el-row>
       <el-dialog :title="selectTitle" :visible.sync="selectDialog" top="20vh" :close-on-click-modal="false" :close-on-press-escape="false">
         <el-form ref="selectRef" label-width="120px">
           <el-form-item :label="name+'ID'" prop="">
-            <el-input v-model="selectIds" type="textarea" :rows="2" disabled />
+            <el-input v-model="selectIds" type="textarea" :autosize="{minRows: 2, maxRows: 12}" disabled />
           </el-form-item>
           <el-form-item v-if="selectType==='isopen'" label="开启" prop="">
             <el-switch v-model="is_open" :active-value="1" :inactive-value="0" />
@@ -58,8 +67,8 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="selectCancel">取消</el-button>
-          <el-button type="primary" @click="selectSubmit">提交</el-button>
+          <el-button :loading="loading" @click="selectCancel">取消</el-button>
+          <el-button :loading="loading" type="primary" @click="selectSubmit">提交</el-button>
         </div>
       </el-dialog>
     </div>
@@ -84,8 +93,8 @@
       <el-table-column prop="create_time" label="添加时间" min-width="155" sortable="custom" />
       <el-table-column label="操作" min-width="90" align="right" fixed="right">
         <template slot-scope="{ row }">
-          <el-button size="mini" type="text" @click="edit(row)">修改</el-button>
-          <el-button size="mini" type="text" @click="selectOpen('dele',row)">删除</el-button>
+          <el-button :loading="loading" size="mini" type="text" @click="edit(row)">修改</el-button>
+          <el-button :loading="loading" size="mini" type="text" @click="selectOpen('dele',row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -226,8 +235,8 @@ export default {
       })
     },
     cancel() {
-      this.reset()
       this.dialog = false
+      this.reset()
     },
     submit() {
       this.$refs['ref'].validate(valid => {
@@ -371,7 +380,7 @@ export default {
           this.list()
           this.$message.success(res.msg)
         }).catch(() => {
-          this.list()
+          this.loading = false
         })
       }
     },

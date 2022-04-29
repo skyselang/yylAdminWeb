@@ -46,15 +46,15 @@
       <el-dialog :title="selectTitle" :visible.sync="selectDialog" top="20vh" :close-on-click-modal="false" :close-on-press-escape="false">
         <el-form ref="selectRef" label-width="120px">
           <el-form-item :label="name+'ID'" prop="">
-            <el-input v-model="selectIds" type="textarea" :rows="2" disabled />
+            <el-input v-model="selectIds" type="textarea" :autosize="{minRows: 2, maxRows: 12}" disabled />
           </el-form-item>
           <el-form-item v-if="selectType==='dele'" label="" prop="">
             <span style="color:red">确定要删除选中的{{ name }}吗？</span>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="selectCancel">取消</el-button>
-          <el-button type="primary" @click="selectSubmit">提交</el-button>
+          <el-button :loading="loading" @click="selectCancel">取消</el-button>
+          <el-button :loading="loading" type="primary" @click="selectSubmit">提交</el-button>
         </div>
       </el-dialog>
     </div>
@@ -128,8 +128,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="cancel">取消</el-button>
-        <el-button type="primary" @click="submit">确定</el-button>
+        <el-button :loading="loading" @click="cancel">取消</el-button>
+        <el-button :loading="loading" type="primary" @click="submit">确定</el-button>
       </div>
     </el-dialog>
     <!-- 清除 -->
@@ -162,8 +162,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="clearCancel()">取消</el-button>
-        <el-button type="primary" @click="clearSubmit()">确定</el-button>
+        <el-button :loading="loading" @click="clearCancel()">取消</el-button>
+        <el-button :loading="loading" type="primary" @click="clearSubmit()">确定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -243,12 +243,12 @@ export default {
       }).catch(() => {})
     },
     cancel() {
-      this.reset()
       this.dialog = false
+      this.reset()
     },
     submit() {
-      this.reset()
       this.dialog = false
+      this.reset()
     },
     // 重置
     reset(row) {

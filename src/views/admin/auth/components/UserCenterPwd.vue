@@ -14,8 +14,8 @@
               <el-input v-model="model.password_confirm" type="password" placeholder="请再次输入新密码" autocomplete="off" clearable show-password />
             </el-form-item>
             <el-form-item>
-              <el-button @click="reset">重置</el-button>
-              <el-button type="primary" @click="submit">提交</el-button>
+              <el-button :loading="loading" @click="reset">重置</el-button>
+              <el-button :loading="loading" type="primary" @click="submit">提交</el-button>
             </el-form-item>
           </el-form>
         </el-col>

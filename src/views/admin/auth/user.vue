@@ -10,11 +10,20 @@
             <el-option value="nickname" label="昵称" />
             <el-option value="phone" label="手机" />
             <el-option value="email" label="邮箱" />
+            <el-option value="is_super" label="超管" />
+            <el-option value="is_disable" label="禁用" />
             <el-option :value="idkey" label="ID" />
-            <el-option value="is_super" label="是否超管" />
-            <el-option value="is_disable" label="是否禁用" />
           </el-select>
-          <el-input v-model="query.search_value" class="filter-item ya-search-value" placeholder="搜索内容" clearable />
+          <el-select
+            v-if="query.search_field==='is_super'||query.search_field==='is_disable'"
+            v-model="query.search_value"
+            class="filter-item ya-search-value"
+            placeholder="请选择"
+          >
+            <el-option :value="1" label="是" />
+            <el-option :value="0" label="否" />
+          </el-select>
+          <el-input v-else v-model="query.search_value" class="filter-item ya-search-value" placeholder="搜索内容" clearable />
           <el-select v-model="query.date_field" class="filter-item ya-date-field" placeholder="时间类型">
             <el-option value="create_time" label="添加时间" />
             <el-option value="update_time" label="修改时间" />
@@ -46,7 +55,7 @@
       <el-dialog :title="selectTitle" :visible.sync="selectDialog" top="20vh" :close-on-click-modal="false" :close-on-press-escape="false">
         <el-form ref="selectRef" label-width="120px">
           <el-form-item :label="name+'ID'" prop="">
-            <el-input v-model="selectIds" type="textarea" :rows="2" disabled />
+            <el-input v-model="selectIds" type="textarea" :autosize="{minRows: 2, maxRows: 12}" disabled />
           </el-form-item>
           <el-form-item v-if="selectType==='super'" label="是否超管" prop="">
             <el-switch v-model="is_super" :active-value="1" :inactive-value="0" />
@@ -62,8 +71,8 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="selectCancel">取消</el-button>
-          <el-button type="primary" @click="selectSubmit">提交</el-button>
+          <el-button :loading="loading" @click="selectCancel">取消</el-button>
+          <el-button :loading="loading" type="primary" @click="selectSubmit">提交</el-button>
         </div>
       </el-dialog>
     </div>
@@ -140,22 +149,22 @@
         <el-form-item v-if="model[idkey]" label="登录地区" prop="login_region">
           <el-input v-model="model.login_region" disabled />
         </el-form-item>
-        <el-form-item v-if="model.login_time" label="登录时间" prop="login_time">
+        <el-form-item v-if="model[idkey]" label="登录时间" prop="login_time">
           <el-input v-model="model.login_time" disabled />
         </el-form-item>
-        <el-form-item v-if="model.logout_time" label="退出时间" prop="logout_time">
+        <el-form-item v-if="model[idkey]" label="退出时间" prop="logout_time">
           <el-input v-model="model.logout_time" disabled />
         </el-form-item>
-        <el-form-item v-if="model.create_time" label="添加时间" prop="create_time">
+        <el-form-item v-if="model[idkey]" label="添加时间" prop="create_time">
           <el-input v-model="model.create_time" disabled />
         </el-form-item>
-        <el-form-item v-if="model.update_time" label="修改时间" prop="update_time">
+        <el-form-item v-if="model[idkey]" label="修改时间" prop="update_time">
           <el-input v-model="model.update_time" disabled />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="cancel">取消</el-button>
-        <el-button type="primary" @click="submit">提交</el-button>
+        <el-button :loading="loading" @click="cancel">取消</el-button>
+        <el-button :loading="loading" type="primary" @click="submit">提交</el-button>
       </div>
     </el-dialog>
     <!-- 分配权限 -->
@@ -208,8 +217,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="ruleCancel">取消</el-button>
-        <el-button type="primary" @click="ruleSubmit">提交</el-button>
+        <el-button :loading="loading" @click="ruleCancel">取消</el-button>
+        <el-button :loading="loading" type="primary" @click="ruleSubmit">提交</el-button>
       </div>
     </el-dialog>
     <!-- 上传头像 -->

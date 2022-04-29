@@ -38,7 +38,6 @@
       <el-table-column :prop="idkey" label="ID" min-width="100" sortable="custom" />
       <el-table-column prop="menu_url" label="菜单链接" min-width="250" show-overflow-tooltip />
       <el-table-column prop="menu_name" label="菜单名称" min-width="150" show-overflow-tooltip />
-      <el-table-column prop="request_method" label="请求方式 " min-width="110" />
       <el-table-column prop="request_ip" label="请求IP" min-width="130" />
       <el-table-column prop="request_region" label="请求地区" min-width="160" show-overflow-tooltip />
       <el-table-column prop="request_isp" label="请求ISP" min-width="110" />

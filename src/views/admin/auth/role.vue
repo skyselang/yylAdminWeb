@@ -11,7 +11,16 @@
             <el-option value="is_disable" label="是否禁用" />
             <el-option :value="idkey" label="ID" />
           </el-select>
-          <el-input v-model="query.search_value" class="filter-item ya-search-value" placeholder="搜索内容" clearable />
+          <el-select
+            v-if="query.search_field==='is_disable'"
+            v-model="query.search_value"
+            class="filter-item ya-search-value"
+            placeholder="请选择"
+          >
+            <el-option :value="1" label="是" />
+            <el-option :value="0" label="否" />
+          </el-select>
+          <el-input v-else v-model="query.search_value" class="filter-item ya-search-value" placeholder="搜索内容" clearable />
           <el-select v-model="query.date_field" class="filter-item ya-date-field" placeholder="时间类型">
             <el-option value="create_time" label="添加时间" />
             <el-option value="update_time" label="修改时间" />
@@ -39,7 +48,7 @@
       <el-dialog :title="selectTitle" :visible.sync="selectDialog" top="20vh" :close-on-click-modal="false" :close-on-press-escape="false">
         <el-form ref="selectRef" label-width="120px">
           <el-form-item :label="name+'ID'" prop="">
-            <el-input v-model="selectIds" type="textarea" :rows="2" disabled />
+            <el-input v-model="selectIds" type="textarea" :autosize="{minRows: 2, maxRows: 12}" disabled />
           </el-form-item>
           <el-form-item v-if="selectType==='disable'" label="是否禁用" prop="">
             <el-switch v-model="is_disable" :active-value="1" :inactive-value="0" />
@@ -61,13 +70,13 @@
       <el-table-column prop="role_name" label="名称" min-width="160" />
       <el-table-column prop="role_desc" label="描述" min-width="130" />
       <el-table-column prop="role_sort" label="排序" min-width="100" sortable="custom" />
-      <el-table-column prop="create_time" label="添加时间" min-width="160" sortable="custom" />
-      <el-table-column prop="update_time" label="修改时间" min-width="160" sortable="custom" />
       <el-table-column prop="is_disable" label="是否禁用" min-width="110" sortable="custom">
         <template slot-scope="scope">
           <el-switch v-model="scope.row.is_disable" :active-value="1" :inactive-value="0" @change="disable([scope.row])" />
         </template>
       </el-table-column>
+      <el-table-column prop="create_time" label="添加时间" min-width="160" sortable="custom" />
+      <el-table-column prop="update_time" label="修改时间" min-width="160" sortable="custom" />
       <el-table-column label="操作" min-width="130" align="right" fixed="right">
         <template slot-scope="{ row }">
           <el-button size="mini" type="text" @click="userShow(row)">用户</el-button>
@@ -122,10 +131,16 @@
             </span>
           </el-tree>
         </el-form-item>
+        <el-form-item v-if="model[idkey]" label="添加时间" prop="create_time">
+          <el-input v-model="model.create_time" disabled />
+        </el-form-item>
+        <el-form-item v-if="model[idkey]" label="修改时间" prop="update_time">
+          <el-input v-model="model.update_time" disabled />
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="cancel">取消</el-button>
-        <el-button type="primary" @click="submit">提交</el-button>
+        <el-button :loading="loading" @click="cancel">取消</el-button>
+        <el-button :loading="loading" type="primary" @click="submit">提交</el-button>
       </div>
     </el-dialog>
     <!-- 用户列表 -->
@@ -237,15 +252,15 @@ export default {
     },
     // 添加修改
     add() {
-      this.dialogLoad = true
       this.dialog = true
+      this.dialogLoad = true
       this.dialogTitle = this.name + '添加'
       this.reset()
       this.dialogLoad = false
     },
     edit(row) {
-      this.dialogLoad = true
       this.dialog = true
+      this.dialogLoad = true
       this.dialogTitle = this.name + '修改：' + row[this.idkey]
       var id = {}
       id[this.idkey] = row[this.idkey]
@@ -266,18 +281,18 @@ export default {
           this.loading = true
           if (this.model[this.idkey]) {
             edit(this.model).then(res => {
-              this.dialog = false
               this.list()
               this.reset()
+              this.dialog = false
               this.$message.success(res.msg)
             }).catch(() => {
               this.loading = false
             })
           } else {
             add(this.model).then(res => {
-              this.dialog = false
               this.list()
               this.reset()
+              this.dialog = false
               this.$message.success(res.msg)
             }).catch(() => {
               this.loading = false
@@ -386,7 +401,6 @@ export default {
           this.$message.success(res.msg)
         }).catch(() => {
           this.list()
-          this.loading = false
         })
       }
     },

@@ -9,12 +9,16 @@
           <el-input v-model="model.str" placeholder="请输入文本内容" clearable />
         </el-form-item>
         <el-form-item id="qrcode" label="二维码" prop="value" style="margin-bottom: 0;">
-          <qrcode-vue v-if="model.value" v-model="model.value" :size="model.size" />
-          <div v-else style="width:210px;height:210px" />
+          <el-col :span="20">
+            <qrcode-vue v-if="model.value" v-model="model.value" :size="model.size" />
+            <div v-else style="width:213px;height:213px" />
+          </el-col>
+          <el-col :span="2">
+            <el-button id="download" @click="download()">下载</el-button>
+          </el-col>
         </el-form-item>
         <el-form-item>
           <el-button @click="clear()">清空</el-button>
-          <el-button id="download" @click="download()">下载</el-button>
           <el-button type="primary" @click="submit()">生成</el-button>
         </el-form-item>
       </el-form>

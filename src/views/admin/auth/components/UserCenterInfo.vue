@@ -39,7 +39,7 @@
               <el-input v-model="model.logout_time" placeholder="" />
             </el-form-item>
             <el-form-item>
-              <el-button @click="refresh">刷新</el-button>
+              <el-button :loading="loading" @click="refresh">刷新</el-button>
             </el-form-item>
           </el-form>
         </el-col>
