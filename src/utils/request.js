@@ -5,7 +5,7 @@ import { getAdminToken } from '@/utils/auth'
 
 // 创建axios实例
 const service = axios.create({
-  baseURL: process.env.VUE_APP_BASE_API, // 接口地址
+  baseURL: process.env.VUE_APP_BASE_URL, // 接口baseURL
   // withCredentials: true, // 跨域请求时发送 Cookie
   timeout: 60000 // 请求超时时间
 })
@@ -15,9 +15,21 @@ service.interceptors.request.use(
   config => {
     // 发送请求之前
     if (store.getters.adminToken) {
-      // 设置请求头部 Token
+      // 设置Token，请求头部header或请求参数param
+      const tokenType = process.env.VUE_APP_TOKEN_TYPE || 'header'
       const tokenName = process.env.VUE_APP_TOKEN_NAME || 'AdminToken'
-      config.headers[tokenName] = getAdminToken()
+      const tokenValue = getAdminToken()
+      if (tokenType === 'header') {
+        // 请求头部token
+        config.headers[tokenName] = tokenValue
+      } else {
+        // 请求参数token
+        if (config.method === 'post') {
+          config.data = { ...config.data, [tokenName]: tokenValue }
+        } else if (config.method === 'get') {
+          config.params = { ...config.params, [tokenName]: tokenValue }
+        }
+      }
     }
     return config
   },
@@ -51,7 +63,7 @@ service.interceptors.response.use(
           store.dispatch('user/resetAdminToken').then(() => {
             location.reload()
           })
-        }).catch(() => {})
+        }).catch(() => { })
       } else {
         Message({
           showClose: true,
@@ -76,7 +88,7 @@ service.interceptors.response.use(
         store.dispatch('user/resetAdminToken').then(() => {
           location.reload()
         })
-      }).catch(() => {})
+      }).catch(() => { })
     } else {
       Message({
         showClose: true,

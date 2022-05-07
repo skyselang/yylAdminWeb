@@ -6,7 +6,7 @@
       </div>
       <div class="login-logo">
         <el-image v-if="logo_url" class="login-logo-img" :src="logo_url" fit="contain" />
-        <div v-else style="height:60px" />
+        <div v-else style="height:134px" />
       </div>
       <el-form-item prop="username">
         <el-input v-model="model.username" type="text" placeholder="账号/手机/邮箱" prefix-icon="el-icon-user" autocomplete="on" clearable />
@@ -161,6 +161,7 @@ export default {
     position: relative;
 
     .login-title-name {
+      height: 29px;
       margin: 0px auto 22px auto;
       text-align: center;
       font-weight: bold;

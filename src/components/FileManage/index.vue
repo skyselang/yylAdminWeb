@@ -76,7 +76,7 @@
         </el-select>
       </el-col>
     </el-row>
-    <el-dialog :title="selectTitle" :visible.sync="selectDialog" top="20vh" :close-on-click-modal="false" :close-on-press-escape="false">
+    <el-dialog :title="selectTitle" :visible.sync="selectDialog" top="20vh" append-to-body :close-on-click-modal="false" :close-on-press-escape="false">
       <el-form label-width="120px">
         <el-form-item :label="name+'ID'" prop="">
           <el-input v-model="selectIds" type="textarea" :autosize="{minRows: 2, maxRows: 12}" disabled />
@@ -898,7 +898,7 @@ export default {
     },
     fileSubmit(row) {
       if (!row.length) {
-        this.recoverCheckAlert('请选择文件')
+        this.$alert('请选择文件')
       } else {
         const files = []
         const data = this.data

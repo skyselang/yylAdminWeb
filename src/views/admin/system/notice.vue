@@ -12,12 +12,7 @@
             <el-option value="is_open" label="是否开启" />
             <el-option :value="idkey" label="ID" />
           </el-select>
-          <el-select
-            v-if="query.search_field==='is_open'"
-            v-model="query.search_value"
-            class="filter-item ya-search-value"
-            placeholder="请选择"
-          >
+          <el-select v-if="query.search_field==='is_open'" v-model="query.search_value" class="filter-item ya-search-value" placeholder="请选择">
             <el-option :value="1" label="是" />
             <el-option :value="0" label="否" />
           </el-select>

@@ -57,7 +57,7 @@ export function randomString(length = 12) {
 /**
  * 获取数组中某列的值
  * @param {array} array 数组
- * @param {array} column_key 需要返回值的列
+ * @param {string} column_key 需要返回值的列
  * @returns {array}
  */
 export function arrayColumn(array, column_key) {
@@ -67,4 +67,20 @@ export function arrayColumn(array, column_key) {
     column_value.push(array[index][column_key])
   }
   return column_value
+}
+
+/**
+ * 获取数组中某列的值
+ * @param {array} array 数组
+ * @param {string} column_key 需要返回值的列
+ * @param {string} separator 分隔符
+ * @returns {string}
+ */
+export function arrayString(array, column_key, separator = ',') {
+  var column_value = []
+  const length = array.length
+  for (let index = 0; index < length; index++) {
+    column_value.push(array[index][column_key])
+  }
+  return column_value.join(separator)
 }

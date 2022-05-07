@@ -38,7 +38,7 @@ export function info(params) {
  * 文件添加
  */
 export function add() {
-  return process.env.VUE_APP_BASE_API + url + 'add'
+  return process.env.VUE_APP_BASE_URL + url + 'add'
 }
 /**
  * 文件修改

@@ -6,10 +6,11 @@
       <el-row>
         <el-col>
           <el-select v-model="query.search_field" class="filter-item ya-search-field" placeholder="搜索字段">
-            <el-option value="member_id" label="会员ID" />
             <el-option value="username" label="会员用户名" />
+            <el-option value="member_id" label="会员ID" />
             <el-option value="api_url" label="接口链接" />
             <el-option value="api_name" label="接口名称" />
+            <el-option value="api_id" label="接口ID" />
             <el-option value="request_ip" label="请求IP" />
             <el-option value="request_region" label="请求地区" />
             <el-option value="request_isp" label="请求ISP" />
@@ -198,7 +199,7 @@ export default {
       query: {
         page: 1,
         limit: 15,
-        search_field: 'member_id'
+        search_field: 'username'
       },
       dialog: false,
       dialogTitle: '',

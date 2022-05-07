@@ -3,25 +3,29 @@
     <el-row class="dialog-body" :style="{height:height+'px'}">
       <el-col :xs="24" :sm="24" :md="24">
         <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
-          <el-form-item label="" prop="">
-            <span>自定义配置提交后前台{{ name }}接口会返回。</span>
-            <el-button size="mini" type="primary" @click="add()">增加</el-button>
+          <el-form-item label="自定义配置" prop="">
+            <el-col :span="5" class="yyl-ml">
+              键名
+            </el-col>
+            <el-col :span="8" class="yyl-ml">
+              键值
+            </el-col>
+            <el-col :span="10" class="yyl-ml">
+              说明
+            </el-col>
+            <el-col :span="1">
+              <el-button type="primary" @click="add()">增加</el-button>
+            </el-col>
           </el-form-item>
           <el-form-item v-for="(item, index) in model.diy_config" :key="index" label="">
             <el-col :span="5">
-              <el-input v-model="item.config_key" clearable placeholder="请输入键名">
-                <template slot="prepend">键名</template>
-              </el-input>
+              <el-input v-model="item.config_key" clearable placeholder="请输入键名" />
             </el-col>
             <el-col :span="8">
-              <el-input v-model="item.config_val" clearable placeholder="请输入键值">
-                <template slot="prepend">键值</template>
-              </el-input>
+              <el-input v-model="item.config_val" clearable placeholder="请输入键值" />
             </el-col>
             <el-col :span="10">
-              <el-input v-model="item.config_desc" clearable placeholder="请输入说明">
-                <template slot="prepend">说明</template>
-              </el-input>
+              <el-input v-model="item.config_desc" clearable placeholder="请输入说明" />
             </el-col>
             <el-col :span="1">
               <el-button type="danger" @click="dele(index)">删除</el-button>

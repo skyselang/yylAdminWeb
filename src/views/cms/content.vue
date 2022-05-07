@@ -39,7 +39,7 @@
           <el-select v-model="query.date_field" class="filter-item ya-date-field" placeholder="时间类型">
             <el-option value="create_time" label="添加时间" />
             <el-option value="update_time" label="修改时间" />
-            <el-option v-if="recycle===1" value="delete_time" label="删除时间" />
+            <el-option v-if="recycle" value="delete_time" label="删除时间" />
           </el-select>
           <el-date-picker
             v-model="query.date_value"
@@ -61,8 +61,8 @@
           <el-button title="是否热门" @click="selectOpen('hot')">热门</el-button>
           <el-button title="是否推荐" @click="selectOpen('rec')">推荐</el-button>
           <el-button title="是否隐藏" @click="selectOpen('hide')">隐藏</el-button>
-          <el-button @click="selectOpen('dele')">删除</el-button>
-          <el-button v-if="recycle===1" type="primary" @click="selectOpen('reco')">恢复</el-button>
+          <el-button title="删除" @click="selectOpen('dele')">删除</el-button>
+          <el-button v-if="recycle" type="primary" @click="selectOpen('reco')">恢复</el-button>
           <el-button v-else type="primary" @click="add()">添加</el-button>
         </el-col>
       </el-row>
@@ -95,7 +95,7 @@
             <el-switch v-model="is_hide" :active-value="1" :inactive-value="0" />
           </el-form-item>
           <el-form-item v-else-if="selectType==='dele'" label="" prop="">
-            <span v-if="recycle===1" style="color:red">确定要彻底删除选中的{{ name }}吗？删除后不可恢复！</span>
+            <span v-if="recycle" style="color:red">确定要彻底删除选中的{{ name }}吗？删除后不可恢复！</span>
             <span v-else style="color:red">确定要删除选中的{{ name }}吗？</span>
           </el-form-item>
           <el-form-item v-else-if="selectType==='reco'" label="" prop="">
@@ -103,8 +103,8 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="selectCancel">取消</el-button>
-          <el-button type="primary" @click="selectSubmit">提交</el-button>
+          <el-button :loading="loading" @click="selectCancel">取消</el-button>
+          <el-button :loading="loading" type="primary" @click="selectSubmit">提交</el-button>
         </div>
       </el-dialog>
     </div>
@@ -142,11 +142,11 @@
         </template>
       </el-table-column>
       <el-table-column prop="create_time" label="添加时间" min-width="155" sortable="custom" />
-      <el-table-column v-if="recycle===1" prop="delete_time" label="删除时间" min-width="155" sortable="custom" />
+      <el-table-column v-if="recycle" prop="delete_time" label="删除时间" min-width="155" sortable="custom" />
       <el-table-column v-else prop="update_time" label="修改时间" min-width="155" sortable="custom" />
-      <el-table-column label="操作" :min-width="recycle===1?120:85" align="right" fixed="right">
+      <el-table-column label="操作" :min-width="recycle?120:85" align="right" fixed="right">
         <template slot-scope="{ row }">
-          <el-button v-if="recycle===1" size="mini" type="text" @click="selectOpen('reco',row)">恢复</el-button>
+          <el-button v-if="recycle" size="mini" type="text" @click="selectOpen('reco',row)">恢复</el-button>
           <el-button size="mini" type="text" @click="edit(row)">修改</el-button>
           <el-button size="mini" type="text" @click="selectOpen('dele',row)">删除</el-button>
         </template>
@@ -283,8 +283,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="cancel">取消</el-button>
-        <el-button type="primary" @click="submit">提交</el-button>
+        <el-button :loading="loading" @click="cancel">取消</el-button>
+        <el-button :loading="loading" type="primary" @click="submit">提交</el-button>
       </div>
     </el-dialog>
     <!-- 文件管理 -->
@@ -536,7 +536,7 @@ export default {
         this.list()
         this.$message.success(res.msg)
       }).catch(() => {
-        this.list()
+        this.loading = false
       })
     },
     // 是否置顶
@@ -665,7 +665,7 @@ export default {
         }
       }
     },
-    // 分类选择
+    // 分类
     category() {
       category().then(res => {
         this.categoryData = res.data.list

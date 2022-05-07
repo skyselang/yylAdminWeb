@@ -11,29 +11,29 @@
             <el-option value="phone" label="手机" />
             <el-option value="email" label="邮箱" />
             <el-option value="remark" label="备注" />
-            <el-option value="is_disable" label="是否禁用" />
+            <el-option value="is_disable" label="禁用" />
             <el-option value="region_id" label="地区" />
             <el-option :value="idkey" label="ID" />
           </el-select>
+          <el-select v-if="query.search_field==='is_disable'" v-model="query.search_value" class="filter-item ya-search-value" placeholder="请选择">
+            <el-option :value="1" label="是" />
+            <el-option :value="0" label="否" />
+          </el-select>
           <el-cascader
-            v-if="query.search_field==='region_id'"
+            v-else-if="query.search_field==='region_id'"
             class="filter-item ya-search-value"
             :options="regionData"
             :props="regionProps"
             clearable
             filterable
-            @change="regionQuerySelect"
+            @change="regionQuery"
           />
-          <el-select v-else-if="query.search_field==='is_disable'" v-model="query.search_value" class="filter-item ya-search-value" placeholder="请选择">
-            <el-option value="是" label="是" />
-            <el-option value="否" label="否" />
-          </el-select>
           <el-input v-else v-model="query.search_value" class="filter-item ya-search-value" placeholder="搜索内容" clearable />
           <el-select v-model="query.date_field" class="filter-item ya-date-field" placeholder="时间字段">
             <el-option value="create_time" label="注册时间" />
             <el-option value="login_time" label="登录时间" />
             <el-option value="update_time" label="修改时间" />
-            <el-option v-if="recycle===1" value="delete_time" label="删除时间" />
+            <el-option v-if="recycle" value="delete_time" label="删除时间" />
           </el-select>
           <el-date-picker
             v-model="query.date_value"
@@ -53,8 +53,8 @@
           <el-button title="修改地区" @click="selectOpen('region')">地区</el-button>
           <el-button title="重置密码" @click="selectOpen('repwd')">密码</el-button>
           <el-button title="是否禁用" @click="selectOpen('disable')">禁用</el-button>
-          <el-button @click="selectOpen('dele')">删除</el-button>
-          <el-button v-if="recycle===1" type="primary" @click="selectOpen('reco')">恢复</el-button>
+          <el-button title="删除" @click="selectOpen('dele')">删除</el-button>
+          <el-button v-if="recycle" type="primary" @click="selectOpen('reco')">恢复</el-button>
           <el-button v-else type="primary" @click="add()">添加</el-button>
         </el-col>
       </el-row>
@@ -81,7 +81,7 @@
             <el-input v-model="password" placeholder="请输入新密码" clearable show-password />
           </el-form-item>
           <el-form-item v-else-if="selectType==='dele'" label="" prop="">
-            <span v-if="recycle===1" style="color:red">确定要彻底删除选中的{{ name }}吗？删除后不可恢复！</span>
+            <span v-if="recycle" style="color:red">确定要彻底删除选中的{{ name }}吗？删除后不可恢复！</span>
             <span v-else style="color:red">确定要删除选中的{{ name }}吗？</span>
           </el-form-item>
           <el-form-item v-else-if="selectType==='reco'" label="" prop="">
@@ -89,8 +89,8 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="selectCancel">取消</el-button>
-          <el-button type="primary" @click="selectSubmit">提交</el-button>
+          <el-button :loading="loading" @click="selectCancel">取消</el-button>
+          <el-button :loading="loading" type="primary" @click="selectSubmit">提交</el-button>
         </div>
       </el-dialog>
     </div>
@@ -114,11 +114,11 @@
         </template>
       </el-table-column>
       <el-table-column prop="sort" label="排序" width="80" sortable="custom" />
-      <el-table-column v-if="recycle===1" prop="delete_time" label="删除时间" min-width="155" sortable="custom" />
+      <el-table-column v-if="recycle" prop="delete_time" label="删除时间" min-width="155" sortable="custom" />
       <el-table-column v-else prop="create_time" label="注册时间" min-width="155" sortable="custom" />
-      <el-table-column label="操作" :min-width="recycle===1?155:120" align="right" fixed="right">
+      <el-table-column label="操作" :min-width="recycle?155:120" align="right" fixed="right">
         <template slot-scope="{ row }">
-          <el-button v-if="recycle===1" size="mini" type="text" @click="selectOpen('reco',row)">恢复</el-button>
+          <el-button v-if="recycle" size="mini" type="text" @click="selectOpen('reco',row)">恢复</el-button>
           <el-button size="mini" type="text" @click="selectOpen('repwd',row)">密码</el-button>
           <el-button size="mini" type="text" @click="edit(row)">修改</el-button>
           <el-button size="mini" type="text" @click="selectOpen('dele',row)">删除</el-button>
@@ -182,6 +182,9 @@
         <el-form-item v-if="model[idkey]" label="修改时间" prop="update_time">
           <el-input v-model="model.update_time" disabled />
         </el-form-item>
+        <el-form-item v-if="model.delete_time" label="删除时间" prop="delete_time">
+          <el-input v-model="model.delete_time" disabled />
+        </el-form-item>
         <el-form-item v-if="model[idkey]" label="登录时间" prop="login_time">
           <el-input v-model="model.login_time" disabled />
         </el-form-item>
@@ -190,16 +193,13 @@
             <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.wechat.login_region, $event)" />
           </el-input>
         </el-form-item>
-        <el-form-item v-if="model.delete_time" label="删除时间" prop="delete_time">
-          <el-input v-model="model.delete_time" disabled />
-        </el-form-item>
         <el-form-item v-if="model[idkey]" label="" prop="">
           <span>微信信息</span>
         </el-form-item>
         <el-form-item v-if="model.wechat" label="头像" prop="">
           <el-image
             v-if="model.wechat.headimgurl"
-            class="ya-img-form"
+            style="width: 100px; height: 100px"
             :src="model.wechat.headimgurl"
             :preview-src-list="[model.wechat.headimgurl]"
             title="点击查看大图"
@@ -244,8 +244,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="cancel">取消</el-button>
-        <el-button type="primary" @click="submit">提交</el-button>
+        <el-button :loading="loading" @click="cancel">取消</el-button>
+        <el-button :loading="loading" type="primary" @click="submit">提交</el-button>
       </div>
     </el-dialog>
     <!-- 文件管理 -->
@@ -359,8 +359,8 @@ export default {
       })
     },
     cancel() {
-      this.reset()
       this.dialog = false
+      this.reset()
     },
     submit() {
       this.$refs['ref'].validate(valid => {
@@ -595,10 +595,10 @@ export default {
         this.model.avatar_url = ''
       }
     },
-    // 地区选择
+    // 地区
     regionList() {
       regionList({ type: 'tree' }).then(res => {
-        this.regionData = res.data
+        this.regionData = res.data.list
       })
     },
     regionEdit(value) {
@@ -611,7 +611,7 @@ export default {
         this.region_id = value[value.length - 1]
       }
     },
-    regionQuerySelect(value) {
+    regionQuery(value) {
       if (value) {
         this.query.search_value = value[value.length - 1]
       }

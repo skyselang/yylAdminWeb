@@ -9,18 +9,30 @@
             <el-option value="category_name" label="名称" />
             <el-option value="is_hide" label="隐藏" />
             <el-option value="sort" label="排序" />
-            <el-option value="category_pid" label="PID" />
+            <el-option value="category_pid" label="分类" />
             <el-option :value="idkey" label="ID" />
           </el-select>
           <el-select v-if="query.search_field==='is_hide'" v-model="query.search_value" class="filter-item ya-search-value" placeholder="请选择">
             <el-option :value="1" label="是" />
             <el-option :value="0" label="否" />
           </el-select>
+          <el-cascader
+            v-else-if="query.search_field==='category_pid'"
+            v-model="query.search_value"
+            :options="trees"
+            :props="props"
+            class="filter-item ya-search-field"
+            style="width:20%;min-width:150px"
+            placeholder="请选择"
+            clearable
+            filterable
+            @change="pidQuery"
+          />
           <el-input v-else v-model="query.search_value" class="filter-item ya-search-value" placeholder="搜索内容" clearable />
           <el-select v-model="query.date_field" class="filter-item ya-date-field" placeholder="时间类型">
             <el-option value="create_time" label="添加时间" />
             <el-option value="update_time" label="修改时间" />
-            <el-option v-if="recycle===1" value="delete_time" label="删除时间" />
+            <el-option v-if="recycle" value="delete_time" label="删除时间" />
           </el-select>
           <el-date-picker
             v-model="query.date_value"
@@ -41,7 +53,7 @@
           <el-button title="修改上级" class="ya-margin-left" @click="selectOpen('pid')">上级</el-button>
           <el-button title="是否隐藏" @click="selectOpen('hide')">隐藏</el-button>
           <el-button @click="selectOpen('dele')">删除</el-button>
-          <el-button v-if="recycle===1" type="primary" @click="selectOpen('reco')">恢复</el-button>
+          <el-button v-if="recycle" type="primary" @click="selectOpen('reco')">恢复</el-button>
           <el-button v-else type="primary" @click="add()">添加</el-button>
         </el-col>
       </el-row>
@@ -54,19 +66,19 @@
             <el-cascader
               v-model="category_pid"
               :options="data"
-              :props="categoryProps"
+              :props="props"
               style="width:100%"
+              placeholder="一级分类"
               clearable
               filterable
-              placeholder="一级分类"
-              @change="categorySelect"
+              @change="pidSelect"
             />
           </el-form-item>
           <el-form-item v-if="selectType==='hide'" label="是否隐藏" prop="">
             <el-switch v-model="is_hide" :active-value="1" :inactive-value="0" />
           </el-form-item>
           <el-form-item v-else-if="selectType==='dele'" label="" prop="">
-            <span v-if="recycle===1" style="color:red">确定要彻底删除选中的{{ name }}吗？删除后不可恢复！所有下级即使恢复后也不会显示！</span>
+            <span v-if="recycle" style="color:red">确定要彻底删除选中的{{ name }}吗？删除后不可恢复！所有下级即使恢复后也不会显示！</span>
             <span v-else style="color:red">确定要删除选中的{{ name }}吗？</span>
           </el-form-item>
           <el-form-item v-else-if="selectType==='reco'" label="" prop="">
@@ -74,8 +86,8 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="selectCancel">取消</el-button>
-          <el-button type="primary" @click="selectSubmit">提交</el-button>
+          <el-button :loading="loading" @click="selectCancel">取消</el-button>
+          <el-button :loading="loading" type="primary" @click="selectSubmit">提交</el-button>
         </div>
       </el-dialog>
     </div>
@@ -93,10 +105,10 @@
       <el-table-column prop="sort" label="排序" min-width="80" />
       <el-table-column prop="create_time" label="添加时间" min-width="155" />
       <el-table-column prop="update_time" label="修改时间" min-width="155" />
-      <el-table-column v-if="recycle===1" prop="delete_time" label="删除时间" min-width="155" sortable="custom" />
+      <el-table-column v-if="recycle" prop="delete_time" label="删除时间" min-width="155" sortable="custom" />
       <el-table-column label="操作" min-width="120" align="right" fixed="right">
         <template slot-scope="{ row }">
-          <el-button v-if="recycle===1" size="mini" type="text" @click="selectOpen('reco',row)">恢复</el-button>
+          <el-button v-if="recycle" size="mini" type="text" @click="selectOpen('reco',row)">恢复</el-button>
           <el-button v-else size="mini" type="text" title="添加下级" @click="add(row)">添加</el-button>
           <el-button size="mini" type="text" @click="edit(row)">修改</el-button>
           <el-button size="mini" type="text" @click="selectOpen('dele',row)">删除</el-button>
@@ -110,12 +122,12 @@
           <el-cascader
             v-model="model.category_pid"
             :options="data"
-            :props="categoryProps"
+            :props="props"
             style="width:100%"
             placeholder="一级分类"
             clearable
             filterable
-            @change="categoryEdit"
+            @change="pidEdit"
           />
         </el-form-item>
         <el-form-item label="名称" prop="category_name">
@@ -141,7 +153,7 @@
           </el-row>
           <el-row>
             <el-col v-for="(item, index) in model.imgs" :key="index" :span="6" class="ya-file">
-              <el-image class="ya-img-form" :src="item.file_url" :preview-src-list="[item.file_url]" fit="contain" title="点击查看大图" />
+              <el-image class="ya-img-form" :src="item.file_url" :preview-src-list="[item.file_url]" fit="fill" title="点击查看大图" />
               <div>
                 <span class="ya-file-name" :title="item.file_name+'.'+item.file_ext">
                   {{ item.file_name }}.{{ item.file_ext }}
@@ -165,8 +177,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="cancel">取消</el-button>
-        <el-button type="primary" @click="submit">提交</el-button>
+        <el-button :loading="loading" @click="cancel">取消</el-button>
+        <el-button :loading="loading" type="primary" @click="submit">提交</el-button>
       </div>
     </el-dialog>
     <!-- 文件管理 -->
@@ -193,11 +205,11 @@ export default {
       height: 680,
       loading: false,
       idkey: 'category_id',
+      data: [],
       query: {
         search_field: 'category_name',
         date_field: 'create_time'
       },
-      data: [],
       dialog: false,
       dialogTitle: '',
       model: {
@@ -213,7 +225,8 @@ export default {
       rules: {
         category_name: [{ required: true, message: '请输入分类名称', trigger: 'blur' }]
       },
-      categoryProps: { checkStrictly: true, value: 'category_id', label: 'category_name' },
+      trees: [],
+      props: { checkStrictly: true, value: 'category_id', label: 'category_name' },
       isExpandAll: false,
       selection: [],
       selectIds: '',
@@ -239,6 +252,9 @@ export default {
           this.data = res.data.list
           this.isExpandAll = false
           this.loading = false
+          if (!this.trees.length) {
+            this.trees = res.data.list
+          }
         }).catch(() => {
           this.loading = false
         })
@@ -247,6 +263,9 @@ export default {
           this.data = res.data.list
           this.isExpandAll = false
           this.loading = false
+          if (!this.trees.length) {
+            this.trees = res.data.list
+          }
         }).catch(() => {
           this.loading = false
         })
@@ -317,6 +336,7 @@ export default {
     // 刷新
     refresh() {
       this.query = this.$options.data().query
+      this.trees = []
       this.list()
     },
     // 收起/展开
@@ -394,7 +414,7 @@ export default {
         this.selectDialog = false
         this.$message.success(res.msg)
       }).catch(() => {
-        this.list()
+        this.loading = false
       })
     },
     // 是否隐藏
@@ -415,7 +435,6 @@ export default {
           this.$message.success(res.msg)
         }).catch(() => {
           this.list()
-          this.loading = false
         })
       }
     },
@@ -461,14 +480,19 @@ export default {
       }
     },
     // 上级
-    categoryEdit(value) {
+    pidEdit(value) {
       if (value) {
         this.model.category_pid = value[value.length - 1]
       }
     },
-    categorySelect(value) {
+    pidSelect(value) {
       if (value) {
         this.category_pid = value[value.length - 1]
+      }
+    },
+    pidQuery(value) {
+      if (value) {
+        this.query.search_value = value[value.length - 1]
       }
     },
     // 上传图片

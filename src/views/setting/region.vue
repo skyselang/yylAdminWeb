@@ -58,7 +58,7 @@
       <el-dialog :title="selectTitle" :visible.sync="selectDialog" top="20vh" :close-on-click-modal="false" :close-on-press-escape="false">
         <el-form ref="selectRef" label-width="120px">
           <el-form-item :label="name+'ID'" prop="">
-            <el-input v-model="selectIds" type="textarea" :rows="2" disabled />
+            <el-input v-model="selectIds" type="textarea" :autosize="{minRows: 2, maxRows: 12}" disabled />
           </el-form-item>
           <el-form-item v-if="selectType==='pid'" label="上级" prop="">
             <el-cascader
@@ -84,8 +84,8 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="selectCancel">取消</el-button>
-          <el-button type="primary" @click="selectSubmit">提交</el-button>
+          <el-button :loading="loading" @click="selectCancel">取消</el-button>
+          <el-button :loading="loading" type="primary" @click="selectSubmit">提交</el-button>
         </div>
       </el-dialog>
     </div>
@@ -243,6 +243,7 @@ export default {
         region_name: [{ required: true, message: '请输入名称', trigger: 'blur' }]
       },
       regionTree: [],
+      regionCount: 0,
       regionProps: { expandTrigger: 'click', checkStrictly: true, value: 'region_id', label: 'region_name' },
       selection: [],
       selectIds: '',
@@ -285,7 +286,8 @@ export default {
     tree() {
       this.regionTree = []
       list({ type: 'tree' }).then(res => {
-        this.regionTree = res.data
+        this.regionTree = res.data.list
+        this.regionCount = res.data.count
       }).catch(() => {})
     },
     // 添加修改
@@ -487,7 +489,7 @@ export default {
         })
       }
     },
-    // 上级选择
+    // 上级
     pidEdit(value) {
       if (value) {
         this.model.region_pid = value[value.length - 1]

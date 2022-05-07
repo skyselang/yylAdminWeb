@@ -11,12 +11,7 @@
             <el-option value="is_disable" label="是否禁用" />
             <el-option :value="idkey" label="ID" />
           </el-select>
-          <el-select
-            v-if="query.search_field==='is_disable'"
-            v-model="query.search_value"
-            class="filter-item ya-search-value"
-            placeholder="请选择"
-          >
+          <el-select v-if="query.search_field==='is_disable'" v-model="query.search_value" class="filter-item ya-search-value" placeholder="请选择">
             <el-option :value="1" label="是" />
             <el-option :value="0" label="否" />
           </el-select>
@@ -41,7 +36,7 @@
       <el-row>
         <el-col>
           <el-button title="是否禁用" @click="selectOpen('disable')">禁用</el-button>
-          <el-button @click="selectOpen('dele')">删除</el-button>
+          <el-button title="删除" @click="selectOpen('dele')">删除</el-button>
           <el-button type="primary" @click="add()">添加</el-button>
         </el-col>
       </el-row>

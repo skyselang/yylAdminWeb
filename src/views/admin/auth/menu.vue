@@ -30,9 +30,9 @@
             :props="props"
             class="filter-item ya-search-field"
             style="width:20%;min-width:150px"
+            placeholder="请选择"
             clearable
             filterable
-            placeholder="请选择"
             @change="pidQuery"
           />
           <el-input v-else v-model="query.search_value" class="filter-item ya-search-value" placeholder="搜索内容" clearable />
@@ -63,9 +63,9 @@
                 :options="trees"
                 :props="props"
                 style="width:100%"
+                placeholder="一级菜单"
                 clearable
                 filterable
-                placeholder="一级菜单"
                 @change="pidSelect"
               />
             </el-form-item>
@@ -211,7 +211,7 @@
         <el-form-item v-if="model[idkey]" label="添加时间" prop="create_time">
           <el-input v-model="model.create_time" disabled />
         </el-form-item>
-        <el-form-item v-if="model[idkey]" label="修改时间" prop="update_time">
+        <el-form-item v-if="model.update_time" label="修改时间" prop="update_time">
           <el-input v-model="model.update_time" disabled />
         </el-form-item>
       </el-form>

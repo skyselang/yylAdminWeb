@@ -48,7 +48,7 @@
           <el-button title="是否超管" @click="selectOpen('super')">超管</el-button>
           <el-button title="是否禁用" @click="selectOpen('disable')">禁用</el-button>
           <el-button title="重置密码" @click="selectOpen('password')">密码</el-button>
-          <el-button @click="selectOpen('dele')">删除</el-button>
+          <el-button title="删除" @click="selectOpen('dele')">删除</el-button>
           <el-button type="primary" @click="add()">添加</el-button>
         </el-col>
       </el-row>
