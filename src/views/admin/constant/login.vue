@@ -183,6 +183,7 @@ export default {
     float: right;
     width: 200px;
     height: 36px;
+    border-radius: 4px;
   }
 }
 </style>
