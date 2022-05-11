@@ -5,7 +5,9 @@
         <h3 class="login-title-name">{{ system_name }}</h3>
       </div>
       <div class="login-logo">
-        <el-image v-if="logo_url" class="login-logo-img" :src="logo_url" fit="contain" />
+        <el-image v-if="logo_url" class="login-logo-img" :src="logo_url" fit="contain">
+          <div slot="error" class="image-slot" />
+        </el-image>
         <div v-else style="height:134px" />
       </div>
       <el-form-item prop="username">

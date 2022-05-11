@@ -17,7 +17,7 @@
             <el-option :value="0" label="否" />
           </el-select>
           <el-input v-else v-model="query.search_value" class="ya-search-value" placeholder="搜索内容" clearable />
-          <el-select v-model="query.date_field" class="ya-search-field" placeholder="时间字段">
+          <el-select v-model="query.date_field" class="ya-date-field" placeholder="时间字段">
             <el-option value="create_time" label="添加时间" />
             <el-option value="update_time" label="修改时间" />
             <el-option value="open_time_start" label="开始时间" />

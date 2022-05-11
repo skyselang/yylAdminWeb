@@ -1,6 +1,6 @@
 <template>
   <div class="app-container dialog-body" :style="{height:height+'px'}">
-    <el-card v-loading="loadNum" class="box-card">
+    <el-card v-loading="loading" class="box-card">
       <el-row :gutter="10">
         <el-col :sm="4">
           <el-card class="box-card" :body-style="cardBodyStyle">
@@ -74,7 +74,7 @@
         </el-col>
       </el-row>
     </el-card>
-    <el-card v-loading="loadDate" class="box-card">
+    <el-card v-loading="loading" class="box-card ya-margin-top">
       <el-row>
         <el-col>
           <el-date-picker
@@ -92,7 +92,8 @@
           <div id="echartDate" :style="{height:height-300+'px'}" />
         </el-col>
       </el-row>
-      <el-divider />
+    </el-card>
+    <el-card class="box-card ya-margin-top">
       <el-row>
         <el-col>
           <el-date-picker
@@ -108,13 +109,13 @@
           </el-select>
         </el-col>
       </el-row>
-      <el-row v-loading="loadField">
+      <el-row v-loading="loading">
         <el-col>
           <div id="echartFieldLine" :style="{height:height-300+'px'}" />
         </el-col>
       </el-row>
       <el-divider />
-      <el-row v-loading="loadField">
+      <el-row v-loading="loading">
         <el-col>
           <div id="echartFieldPie" :style="{height:height-300+'px'}" />
         </el-col>
@@ -146,9 +147,7 @@ export default {
     return {
       name: '会员日志统计',
       height: 600,
-      loadNum: false,
-      loadDate: false,
-      loadField: false,
+      loading: false,
       num: {
         total: '--',
         today: '--',
@@ -203,7 +202,7 @@ export default {
   },
   methods: {
     stat() {
-      this.loadNum = true
+      this.loading = true
       stat().then(res => {
         this.num = res.data.num
         this.date = res.data.date
@@ -211,24 +210,24 @@ export default {
         this.echartDate(res.data.date)
         this.echartFieldLine(res.data.field)
         this.echartFieldPie(res.data.field)
-        this.loadNum = false
+        this.loading = false
       }).catch(() => {
-        this.loadNum = false
+        this.loading = false
       })
     },
     echartDateChange() {
-      this.loadDate = true
+      this.loading = true
       stat({
         type: 'date', date: this.date.date
       }).then(res => {
         this.echartDate(res.data.date)
-        this.loadDate = false
+        this.loading = false
       }).catch(() => {
-        this.loadDate = false
+        this.loading = false
       })
     },
     echartFieldChange(value) {
-      this.loadField = true
+      this.loading = true
       stat({
         type: 'field',
         date: this.field.date,
@@ -236,9 +235,9 @@ export default {
       }).then(res => {
         this.echartFieldLine(res.data.field)
         this.echartFieldPie(res.data.field)
-        this.loadField = false
+        this.loading = false
       }).catch(() => {
-        this.loadField = false
+        this.loading = false
       })
     },
     echartDate(data) {

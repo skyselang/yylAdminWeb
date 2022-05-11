@@ -1,45 +1,69 @@
 <template>
   <el-card class="box-card dialog-body" :style="{height:height+'px'}">
-    <el-row>
-      <el-col :xs="24" :sm="18" :md="12">
-        <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
-          <el-form-item label="SMTP服务器" prop="email_host">
-            <el-input v-model="model.email_host" type="text" clearable style="width:90%" />
-            <i class="el-icon-warning-outline" title="发送邮件服务器，如：smtp.qq.com" />
-          </el-form-item>
-          <el-form-item label="SMTP协议" prop="email_secure">
-            <el-select v-model="model.email_secure" placeholder="">
-              <el-option v-for="item in secure" :key="item.value" :label="item.label" :value="item.value" />
-            </el-select>
-            <i class="el-icon-warning-outline" title="发送邮件服务器加密方式，如：SSL" />
-          </el-form-item>
-          <el-form-item label="SMTP端口" prop="email_port">
-            <el-input v-model="model.email_port" type="number" clearable style="width:90%" />
-            <i class="el-icon-warning-outline" title="发送邮件服务器端口号，如：465" />
-          </el-form-item>
-          <el-form-item label="邮箱名称" prop="email_setfrom">
-            <el-input v-model="model.email_setfrom" type="text" clearable style="width:90%" />
-            <i class="el-icon-warning-outline" title="发件邮箱名称即发件人，如：yylAdmin" />
-          </el-form-item>
-          <el-form-item label="邮箱账号" prop="email_username">
-            <el-input v-model="model.email_username" type="text" clearable style="width:90%" />
-            <i class="el-icon-warning-outline" title="发件邮箱账号，如：123456789@qq.com" />
-          </el-form-item>
-          <el-form-item label="授权码/密码" prop="email_password">
-            <el-input v-model="model.email_password" type="password" clearable show-password style="width:90%" />
-            <i class="el-icon-warning-outline" title="发件邮箱的授权码或密码，如：y1y2l3a4d5m6i7n" />
-          </el-form-item>
-          <el-form-item label="测试邮箱" prop="email_test">
-            <el-input v-model="model.email_test" type="text" clearable style="width:65%" />
-            <el-button :loading="loading" type="primary" title="先提交再发送" @click="test()">发送测试邮件</el-button>
-          </el-form-item>
-          <el-form-item>
-            <el-button :loading="loading" @click="refresh()">刷新</el-button>
-            <el-button :loading="loading" type="primary" @click="submit()">提交</el-button>
-          </el-form-item>
-        </el-form>
-      </el-col>
-    </el-row>
+    <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
+      <el-form-item label="SMTP服务器" prop="email_host">
+        <el-col :span="10">
+          <el-input v-model="model.email_host" type="text" clearable />
+        </el-col>
+        <el-col :span="13">
+          发送邮件服务器，如：smtp.qq.com
+        </el-col>
+      </el-form-item>
+      <el-form-item label="SMTP协议" prop="email_secure">
+        <el-col :span="10">
+          <el-select v-model="model.email_secure" placeholder="">
+            <el-option v-for="item in secure" :key="item.value" :label="item.label" :value="item.value" />
+          </el-select>
+        </el-col>
+        <el-col :span="13">
+          发送邮件服务器加密方式，如：SSL
+        </el-col>
+      </el-form-item>
+      <el-form-item label="SMTP端口" prop="email_port">
+        <el-col :span="10">
+          <el-input v-model="model.email_port" type="number" clearable />
+        </el-col>
+        <el-col :span="13">
+          发送邮件服务器端口号，如：465
+        </el-col>
+      </el-form-item>
+      <el-form-item label="邮箱名称" prop="email_setfrom">
+        <el-col :span="10">
+          <el-input v-model="model.email_setfrom" type="text" clearable />
+        </el-col>
+        <el-col :span="13">
+          发件邮箱名称即发件人，如：yylAdmin
+        </el-col>
+      </el-form-item>
+      <el-form-item label="邮箱账号" prop="email_username">
+        <el-col :span="10">
+          <el-input v-model="model.email_username" type="text" clearable />
+        </el-col>
+        <el-col :span="13">
+          发件邮箱账号，如：123456789@qq.com
+        </el-col>
+      </el-form-item>
+      <el-form-item label="授权码/密码" prop="email_password">
+        <el-col :span="10">
+          <el-input v-model="model.email_password" type="password" clearable show-password />
+        </el-col>
+        <el-col :span="13">
+          发件邮箱的授权码或密码，如：y1y2l3a4d5m6i7n
+        </el-col>
+      </el-form-item>
+      <el-form-item label="测试邮箱" prop="email_test">
+        <el-col :span="10">
+          <el-input v-model="model.email_test" type="text" clearable />
+        </el-col>
+        <el-col :span="13">
+          <el-button :loading="loading" type="primary" title="先提交再发送" @click="test()">发送测试邮件</el-button>
+        </el-col>
+      </el-form-item>
+      <el-form-item>
+        <el-button :loading="loading" @click="refresh()">刷新</el-button>
+        <el-button :loading="loading" type="primary" @click="submit()">提交</el-button>
+      </el-form-item>
+    </el-form>
   </el-card>
 </template>
 

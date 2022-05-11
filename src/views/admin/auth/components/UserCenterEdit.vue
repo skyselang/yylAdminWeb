@@ -2,7 +2,7 @@
   <div>
     <el-card v-loading="loading" class="box-card dialog-body" :style="{height:height+'px'}">
       <el-row>
-        <el-col :xs="24" :sm="18" :md="12">
+        <el-col :xs="24" :sm="22" :md="20" :lg="16" :xl="12">
           <el-form ref="ref" :rules="rules" :model="model" label-width="120px">
             <el-form-item label="头像" prop="avatar_url">
               <el-col :span="10">

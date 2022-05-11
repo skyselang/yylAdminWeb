@@ -7,32 +7,22 @@ const adminSystem = {
     title: '系统管理',
     icon: 'el-icon-set-up',
     roles: [
-      'admin/admin.Notice/list',
       'admin/admin.Apidoc/apidoc',
       'admin/admin.Utils/utils',
+      'admin/admin.Notice/list',
       'admin/admin.Setting/cacheInfo',
       'admin/admin.Setting/tokenInfo',
       'admin/admin.Setting/captchaInfo',
       'admin/admin.Setting/logInfo',
       'admin/admin.Setting/apiInfo',
-      'admin/admin.Setting/systemInfo',
-      'admin/admin.Setting/emailInfo'
+      'admin/admin.Setting/emailInfo',
+      'admin/admin.Setting/systemInfo'
     ]
   },
   redirect: 'noRedirect',
   component: Layout,
   alwaysShow: true,
   children: [
-    {
-      path: 'notice',
-      name: 'SystemNotice',
-      meta: {
-        title: '公告管理',
-        icon: 'el-icon-chat-line-round',
-        roles: ['admin/admin.Notice/list']
-      },
-      component: () => import('@/views/admin/system/notice')
-    },
     {
       path: 'apidoc',
       name: 'SystemApidoc',
@@ -54,6 +44,16 @@ const adminSystem = {
       component: () => import('@/views/admin/system/utils')
     },
     {
+      path: 'notice',
+      name: 'SystemNotice',
+      meta: {
+        title: '公告管理',
+        icon: 'el-icon-chat-line-round',
+        roles: ['admin/admin.Notice/list']
+      },
+      component: () => import('@/views/admin/system/notice')
+    },
+    {
       path: 'setting',
       name: 'SystemSetting',
       meta: {
@@ -65,8 +65,8 @@ const adminSystem = {
           'admin/admin.Setting/captchaInfo',
           'admin/admin.Setting/logInfo',
           'admin/admin.Setting/apiInfo',
-          'admin/admin.Setting/systemInfo',
-          'admin/admin.Setting/emailInfo'
+          'admin/admin.Setting/emailInfo',
+          'admin/admin.Setting/systemInfo'
         ]
       },
       component: () => import('@/views/admin/system/setting')

@@ -1,6 +1,6 @@
 <template>
-  <div class="app-container dialog-body" :style="{height:height+120+'px'}">
-    <el-card v-loading="loadNum" class="box-card">
+  <div class="app-container dialog-body" :style="{height:height+'px'}">
+    <el-card v-loading="loading" class="box-card">
       <el-row :gutter="10">
         <el-col :sm="4">
           <el-card class="box-card" :body-style="cardBodyStyle">
@@ -74,7 +74,7 @@
         </el-col>
       </el-row>
     </el-card>
-    <el-card v-loading="loadDate" class="box-card">
+    <el-card v-loading="loading" class="box-card ya-margin-top">
       <el-row>
         <el-col>
           <el-date-picker
@@ -89,11 +89,11 @@
       </el-row>
       <el-row>
         <el-col>
-          <div id="echartUserDate" :style="{height:height-100+'px'}" />
+          <div id="echartUserDate" :style="{height:height-300+'px'}" />
         </el-col>
       </el-row>
     </el-card>
-    <el-card class="box-card" :body-style="cardBodyStyle">
+    <el-card class="box-card ya-margin-top" :body-style="cardBodyStyle">
       <el-row>
         <el-col>
           <el-date-picker
@@ -111,15 +111,15 @@
         </el-col>
       </el-row>
       <el-divider />
-      <el-row v-loading="loadField">
+      <el-row v-loading="loading">
         <el-col>
-          <div id="echartUserLine" :style="{height:height+'px'}" />
+          <div id="echartUserLine" :style="{height:height-300+'px'}" />
         </el-col>
       </el-row>
       <el-divider />
-      <el-row v-loading="loadField">
+      <el-row v-loading="loading">
         <el-col>
-          <div id="echartUserPie" :style="{height:height+'px'}" />
+          <div id="echartUserPie" :style="{height:height-300+'px'}" />
         </el-col>
       </el-row>
     </el-card>
@@ -149,9 +149,7 @@ export default {
     return {
       name: '用户日志统计',
       height: 600,
-      loadNum: false,
-      loadDate: false,
-      loadField: false,
+      loading: false,
       num: {
         total: '--',
         today: '--',
@@ -202,13 +200,13 @@ export default {
   },
   computed: {},
   created() {
-    this.height = screenHeight()
+    this.height = screenHeight(100)
     this.stat()
   },
   mounted() {},
   methods: {
     stat() {
-      this.loadNum = true
+      this.loading = true
       stat().then(res => {
         this.num = res.data.num
         this.date = res.data.date
@@ -216,25 +214,25 @@ export default {
         this.echartUserDate(res.data.date)
         this.echartUserLine(res.data.field)
         this.echartUserPie(res.data.field)
-        this.loadNum = false
+        this.loading = false
       }).catch(() => {
-        this.loadNum = false
+        this.loading = false
       })
     },
     echartUserDateChange() {
-      this.loadDate = true
+      this.loading = true
       stat({
         type: 'date',
         date: this.date.date
       }).then(res => {
         this.echartUserDate(res.data.date)
-        this.loadDate = false
+        this.loading = false
       }).catch(() => {
-        this.loadDate = false
+        this.loading = false
       })
     },
     echartFieldChange() {
-      this.loadField = true
+      this.loading = true
       stat({
         type: 'field',
         date: this.field.date,
@@ -242,9 +240,9 @@ export default {
       }).then(res => {
         this.echartUserLine(res.data.field)
         this.echartUserPie(res.data.field)
-        this.loadField = false
+        this.loading = false
       }).catch(() => {
-        this.loadField = false
+        this.loading = false
       })
     },
     echartUserDate(data) {

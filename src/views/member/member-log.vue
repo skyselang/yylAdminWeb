@@ -25,7 +25,7 @@
             start-placeholder="开始日期"
             end-placeholder="结束日期"
           />
-          <el-select v-model="query.log_type" class="filter-item ya-search-field" placeholder="日志类型" clearable>
+          <el-select v-model="query.log_type" class="filter-item ya-date-field" placeholder="日志类型" clearable>
             <el-option :value="1" label="注册日志" />
             <el-option :value="2" label="登录日志" />
             <el-option :value="3" label="操作日志" />

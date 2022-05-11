@@ -1,11 +1,11 @@
 <template>
   <el-card class="box-card">
     <el-row class="dialog-body" :style="{height:height+'px'}">
-      <el-col :xs="24" :sm="18" :md="12">
+      <el-col :xs="24" :sm="22" :md="20" :lg="16" :xl="12">
         <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
           <el-form-item label="Token密钥" prop="token_key">
             <el-input v-model="model.token_key" type="text" clearable style="width:90%" />
-            <i class="el-icon-warning-outline" title="修改后所有会员登录状态失效，需重新登录。" />
+            <i class="el-icon-warning-outline" title="修改后会员登录状态失效，需重新登录。" />
           </el-form-item>
           <el-form-item label="Token有效时间" prop="token_exp">
             <el-input v-model="model.token_exp" type="number">

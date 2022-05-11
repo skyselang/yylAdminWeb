@@ -1,24 +1,29 @@
 <template>
   <el-card class="box-card dialog-body" :style="{height:height+'px'}">
-    <el-row>
-      <el-col :xs="24" :sm="18" :md="12">
-        <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
-          <el-form-item label="Token密钥" prop="token_key">
-            <el-input v-model="model.token_key" type="text" clearable style="width:90%" />
-            <i class="el-icon-warning-outline" title="修改后所有用户登录状态失效，需重新登录。" />
-          </el-form-item>
-          <el-form-item label="Token有效时间" prop="token_exp">
-            <el-input v-model="model.token_exp" type="number">
-              <template slot="append">小时</template>
-            </el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-button :loading="loading" @click="refresh()">刷新</el-button>
-            <el-button :loading="loading" type="primary" @click="submit()">提交</el-button>
-          </el-form-item>
-        </el-form>
-      </el-col>
-    </el-row>
+    <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
+      <el-form-item label="Token密钥" prop="token_key">
+        <el-col :span="6">
+          <el-input v-model="model.token_key" type="text" clearable />
+        </el-col>
+        <el-col :span="13">
+          修改后用户登录状态失效，需重新登录。
+        </el-col>
+      </el-form-item>
+      <el-form-item label="Token有效时间" prop="token_exp">
+        <el-col :span="6">
+          <el-input v-model="model.token_exp" type="number">
+            <template slot="append">小时</template>
+          </el-input>
+        </el-col>
+        <el-col :span="13">
+          登录成功后超过此时间，需重新登录。
+        </el-col>
+      </el-form-item>
+      <el-form-item>
+        <el-button :loading="loading" @click="refresh()">刷新</el-button>
+        <el-button :loading="loading" type="primary" @click="submit()">提交</el-button>
+      </el-form-item>
+    </el-form>
   </el-card>
 </template>
 

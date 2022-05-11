@@ -1,21 +1,23 @@
 <template>
   <el-card class="box-card dialog-body" :style="{height:height+'px'}">
-    <el-row>
-      <el-col :xs="24" :sm="18" :md="12">
-        <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
-          <el-form-item label="缓存类型" prop="cache_type">
-            <el-input v-model="model.cache_type" />
-          </el-form-item>
-          <el-form-item label="" prop="">
-            <span>手动清除所有缓存，后台登录状态不会清除。</span>
-          </el-form-item>
-          <el-form-item label="">
-            <el-button :loading="loading" @click="refresh()">刷新</el-button>
-            <el-button :loading="loading" type="primary" @click="clear()">清除</el-button>
-          </el-form-item>
-        </el-form>
-      </el-col>
-    </el-row>
+    <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
+      <el-form-item label="缓存类型" prop="cache_type">
+        <el-col :span="10">
+          <el-input v-model="model.cache_type" />
+        </el-col>
+        <el-col :span="13" />
+      </el-form-item>
+      <el-form-item label="" prop="">
+        <el-col :span="10">
+          手动清除所有缓存，后台登录状态不会清除。
+        </el-col>
+        <el-col :span="13" />
+      </el-form-item>
+      <el-form-item label="">
+        <el-button :loading="loading" @click="refresh()">刷新</el-button>
+        <el-button :loading="loading" type="primary" @click="clear()">清除</el-button>
+      </el-form-item>
+    </el-form>
   </el-card>
 </template>
 

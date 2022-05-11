@@ -1,75 +1,97 @@
 <template>
-  <div>
-    <el-card class="box-card">
-      <el-row class="dialog-body" :style="{height:height+'px'}">
-        <el-col :xs="24" :sm="18" :md="12">
-          <el-form ref="ref" :model="model" :rules="rules" label-width="130px">
-            <el-form-item label="名称" prop="name">
-              <el-input v-model="model.name">
-                <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.name, $event)" />
-              </el-input>
-            </el-form-item>
-            <el-form-item label="原始ID" prop="origin_id">
-              <el-input v-model="model.origin_id">
-                <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.origin_id, $event)" />
-              </el-input>
-            </el-form-item>
-            <el-form-item label="二维码" prop="qrcode_url">
-              <el-col :span="10">
-                <el-image class="ya-img-form" :src="model.qrcode_url" :preview-src-list="[model.qrcode_url]" title="点击查看大图">
-                  <div slot="error" class="image-slot">
-                    <i class="el-icon-picture-outline" />
-                  </div>
-                </el-image>
-              </el-col>
-              <el-col :span="14">
-                <el-button size="mini" @click="fileUpload()">上传二维码</el-button>
-                <el-button size="mini" @click="fileDelete()">删除</el-button>
-                <p>jpg、png图片，小于200kb，宽高1:1</p>
-              </el-col>
-            </el-form-item>
-            <el-form-item label="AppID" prop="appid">
-              <el-input v-model="model.appid">
-                <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.appid, $event)" />
-              </el-input>
-            </el-form-item>
-            <el-form-item label="AppSecret" prop="appsecret">
-              <el-input v-model="model.appsecret">
-                <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.appsecret, $event)" />
-              </el-input>
-            </el-form-item>
-            <el-form-item label="服务器地址(URL)" prop="server_url">
-              <el-input v-model="model.server_url">
-                <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.server_url, $event)" />
-              </el-input>
-            </el-form-item>
-            <el-form-item label="令牌(Token)" prop="token">
-              <el-input v-model="model.token">
-                <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.token, $event)" />
-              </el-input>
-            </el-form-item>
-            <el-form-item label="消息加解密密钥" prop="encoding_aes_key">
-              <el-input v-model="model.encoding_aes_key">
-                <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.encoding_aes_key, $event)" />
-              </el-input>
-            </el-form-item>
-            <el-form-item label="消息加解密方式" prop="encoding_aes_type">
-              <el-radio-group v-model="model.encoding_aes_type">
-                <el-radio v-for="item in encoding_aes_types" :key="item.value" :label="item.value">{{ item.label }}</el-radio>
-              </el-radio-group>
-            </el-form-item>
-            <el-form-item>
-              <el-button :loading="loading" @click="refresh()">刷新</el-button>
-              <el-button :loading="loading" type="primary" @click="submit()">提交</el-button>
-            </el-form-item>
-          </el-form>
+  <el-card class="box-card">
+    <el-form ref="ref" :model="model" :rules="rules" label-width="130px" class="dialog-body" :style="{height:height+'px'}">
+      <el-form-item label="名称" prop="name">
+        <el-col :span="10">
+          <el-input v-model="model.name">
+            <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.name, $event)" />
+          </el-input>
         </el-col>
-      </el-row>
-    </el-card>
+        <el-col :span="13" />
+      </el-form-item>
+      <el-form-item label="原始ID" prop="origin_id">
+        <el-col :span="10">
+          <el-input v-model="model.origin_id">
+            <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.origin_id, $event)" />
+          </el-input>
+        </el-col>
+        <el-col :span="13" />
+      </el-form-item>
+      <el-form-item label="二维码" prop="qrcode_url">
+        <el-col :span="10">
+          <el-col :span="10">
+            <el-image class="ya-img-form" :src="model.qrcode_url" :preview-src-list="[model.qrcode_url]" title="点击查看大图">
+              <div slot="error" class="image-slot">
+                <i class="el-icon-picture-outline" />
+              </div>
+            </el-image>
+          </el-col>
+          <el-col :span="13">
+            <el-button size="mini" @click="fileUpload()">上传二维码</el-button>
+            <el-button size="mini" @click="fileDelete()">删除</el-button>
+            <p>jpg、png图片，小于200kb。</p>
+          </el-col>
+        </el-col>
+      </el-form-item>
+      <el-form-item label="AppID" prop="appid">
+        <el-col :span="10">
+          <el-input v-model="model.appid">
+            <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.appid, $event)" />
+          </el-input>
+        </el-col>
+        <el-col :span="13" />
+      </el-form-item>
+      <el-form-item label="AppSecret" prop="appsecret">
+        <el-col :span="10">
+          <el-input v-model="model.appsecret">
+            <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.appsecret, $event)" />
+          </el-input>
+        </el-col>
+        <el-col :span="13" />
+      </el-form-item>
+      <el-form-item label="服务器地址(URL)" prop="server_url">
+        <el-col :span="10">
+          <el-input v-model="model.server_url">
+            <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.server_url, $event)" />
+          </el-input>
+        </el-col>
+        <el-col :span="13" />
+      </el-form-item>
+      <el-form-item label="令牌(Token)" prop="token">
+        <el-col :span="10">
+          <el-input v-model="model.token">
+            <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.token, $event)" />
+          </el-input>
+        </el-col>
+        <el-col :span="13" />
+      </el-form-item>
+      <el-form-item label="消息加解密密钥" prop="encoding_aes_key">
+        <el-col :span="10">
+          <el-input v-model="model.encoding_aes_key">
+            <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.encoding_aes_key, $event)" />
+          </el-input>
+        </el-col>
+        <el-col :span="13" />
+      </el-form-item>
+      <el-form-item label="消息加解密方式" prop="encoding_aes_type">
+        <el-col :span="10">
+          <el-radio-group v-model="model.encoding_aes_type">
+            <el-radio v-for="item in encoding_aes_types" :key="item.value" :label="item.value">{{ item.label }}</el-radio>
+          </el-radio-group>
+        </el-col>
+        <el-col :span="13" />
+      </el-form-item>
+    </el-form>
+    <el-form ref="form" label-width="120px">
+      <el-form-item>
+        <el-button :loading="loading" @click="refresh()">刷新</el-button>
+        <el-button :loading="loading" type="primary" @click="submit()">提交</el-button>
+      </el-form-item>
+    </el-form>
     <el-dialog title="上传二维码" :visible.sync="fileDialog" width="80%" top="1vh" :close-on-click-modal="false" :close-on-press-escape="false">
       <file-manage file-type="image" @fileCancel="fileCancel" @fileSubmit="fileSubmit" />
     </el-dialog>
-  </div>
+  </el-card>
 </template>
 
 <script>
@@ -111,7 +133,7 @@ export default {
     }
   },
   created() {
-    this.height = screenHeight(210)
+    this.height = screenHeight(270)
     this.info()
   },
   methods: {
@@ -146,7 +168,7 @@ export default {
         }
       })
     },
-    // 上传二维码
+    // 二维码
     fileUpload() {
       this.fileDialog = true
     },

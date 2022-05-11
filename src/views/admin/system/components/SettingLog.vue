@@ -1,24 +1,29 @@
 <template>
   <el-card class="box-card dialog-body" :style="{height:height+'px'}">
-    <el-row>
-      <el-col :xs="24" :sm="18" :md="12">
-        <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
-          <el-form-item label="日志记录开关" prop="log_switch">
-            <el-switch v-model="model.log_switch" :active-value="1" :inactive-value="0" />
-            <span> 开启后，会记录后台用户日志。</span>
-          </el-form-item>
-          <el-form-item label="日志保留时间" prop="log_save_time">
-            <el-input v-model="model.log_save_time" type="number">
-              <template slot="append">天（0永久保留）</template>
-            </el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-button :loading="loading" @click="refresh()">刷新</el-button>
-            <el-button :loading="loading" type="primary" @click="submit()">提交</el-button>
-          </el-form-item>
-        </el-form>
-      </el-col>
-    </el-row>
+    <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
+      <el-form-item label="日志记录开关" prop="log_switch">
+        <el-col :span="5">
+          <el-switch v-model="model.log_switch" :active-value="1" :inactive-value="0" />
+        </el-col>
+        <el-col :span="13">
+          开启后，会记录后台用户日志。
+        </el-col>
+      </el-form-item>
+      <el-form-item label="日志保留时间" prop="log_save_time">
+        <el-col :span="5">
+          <el-input v-model="model.log_save_time" type="number">
+            <template slot="append">天</template>
+          </el-input>
+        </el-col>
+        <el-col :span="13">
+          超过此时间会被删除，0永久保留。
+        </el-col>
+      </el-form-item>
+      <el-form-item>
+        <el-button :loading="loading" @click="refresh()">刷新</el-button>
+        <el-button :loading="loading" type="primary" @click="submit()">提交</el-button>
+      </el-form-item>
+    </el-form>
   </el-card>
 </template>
 

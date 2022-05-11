@@ -2,7 +2,7 @@
   <div>
     <el-card v-loading="loading" class="box-card dialog-body" :style="{height:height+'px'}">
       <el-row>
-        <el-col :xs="24" :sm="18" :md="12">
+        <el-col :xs="24" :sm="22" :md="20" :lg="16" :xl="12">
           <el-form ref="ref" :rules="rules" :model="model" label-width="120px">
             <el-form-item label="旧密码" prop="password_old">
               <el-input v-model="model.password_old" type="password" placeholder="请输入旧密码" autocomplete="off" clearable show-password />

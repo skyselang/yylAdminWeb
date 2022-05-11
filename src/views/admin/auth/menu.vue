@@ -110,7 +110,7 @@
         <template slot="header">
           <span>菜单链接(roles)</span>
           <el-tooltip placement="top">
-            <div slot="content">权限标识（双击单元格复制）</div>
+            <div slot="content">权限标识，鉴权依据</div>
             <i class="el-icon-warning" />
           </el-tooltip>
         </template>

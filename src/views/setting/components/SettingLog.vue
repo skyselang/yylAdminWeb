@@ -1,7 +1,7 @@
 <template>
   <el-card class="box-card">
     <el-row class="dialog-body" :style="{height:height+'px'}">
-      <el-col :xs="24" :sm="18" :md="12">
+      <el-col :xs="24" :sm="22" :md="20" :lg="16" :xl="12">
         <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
           <el-form-item label="日志记录开关" prop="log_switch">
             <el-switch v-model="model.log_switch" :active-value="1" :inactive-value="0" />

@@ -119,6 +119,8 @@
           </el-card>
         </el-col>
       </el-row>
+    </el-card>
+    <el-card v-loading="loading" class="box-card ya-margin-top">
       <el-row>
         <el-col>
           <el-date-picker
@@ -136,7 +138,8 @@
           <div id="echartMemberDate" :style="{height:height-300+'px'}" />
         </el-col>
       </el-row>
-      <el-divider />
+    </el-card>
+    <el-card v-loading="loading" class="box-card ya-margin-top">
       <el-row>
         <el-col>
           <div id="echartMemberCount" :style="{height:height-300+'px'}" />

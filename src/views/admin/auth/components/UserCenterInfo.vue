@@ -2,7 +2,7 @@
   <div>
     <el-card v-loading="loading" class="box-card dialog-body" :style="{height:height+'px'}">
       <el-row>
-        <el-col :xs="24" :sm="18" :md="12">
+        <el-col :xs="24" :sm="22" :md="20" :lg="16" :xl="12">
           <el-form ref="ref" :rules="rules" :model="model" label-width="120px">
             <el-form-item label="头像">
               <el-avatar v-if="model.avatar_url" :src="model.avatar_url" fit="contain" shape="circle" :size="100" />
@@ -13,9 +13,6 @@
             </el-form-item>
             <el-form-item label="昵称" prop="nickname">
               <el-input v-model="model.nickname" placeholder="请输入昵称" clearable />
-            </el-form-item>
-            <el-form-item v-if="model.admin_user_id == ''" label="密码" prop="password">
-              <el-input v-model="model.password" placeholder="请输入密码" clearable show-password />
             </el-form-item>
             <el-form-item label="手机" prop="phone">
               <el-input v-model="model.phone" clearable />
@@ -61,7 +58,7 @@ export default {
       height: 680,
       loading: false,
       model: {
-        avatar: '',
+        avatar_id: 0,
         avatar_url: '',
         username: '',
         nickname: '',

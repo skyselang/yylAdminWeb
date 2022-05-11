@@ -13,7 +13,7 @@
             <el-option :value="idkey" label="ID" />
           </el-select>
           <el-input v-model="query.search_value" class="ya-search-value" placeholder="搜索内容" clearable />
-          <el-select v-model="query.date_field" class="ya-search-field" placeholder="时间字段">
+          <el-select v-model="query.date_field" class="ya-date-field" placeholder="时间字段">
             <el-option value="create_time" label="请求时间" />
           </el-select>
           <el-date-picker
@@ -24,7 +24,7 @@
             start-placeholder="开始日期"
             end-placeholder="结束日期"
           />
-          <el-select v-model="query.log_type" class="ya-search-field" placeholder="日志类型" clearable>
+          <el-select v-model="query.log_type" class="ya-date-field" placeholder="日志类型" clearable>
             <el-option :value="1" label="登录日志" />
             <el-option :value="2" label="操作日志" />
           </el-select>

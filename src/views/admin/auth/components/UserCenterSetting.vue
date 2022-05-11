@@ -2,23 +2,27 @@
   <div>
     <el-card v-loading="loading" class="box-card dialog-body" :style="{height:height+'px'}">
       <el-row>
-        <el-col :xs="24" :sm="18" :md="12">
+        <el-col :xs="24" :sm="22" :md="20" :lg="16" :xl="12">
           <el-form ref="ref" label-width="120px">
             <el-form-item label="设置主题">
               <theme-picker @change="themeChange" />
+              <span> 设置主题（部分样式）</span>
             </el-form-item>
             <el-form-item label="便签导航">
               <el-switch v-model="tagsView" class="drawer-switch" />
+              <span> 是否显示便签导航</span>
             </el-form-item>
             <el-form-item label="固定头部">
               <el-switch v-model="fixedHeader" class="drawer-switch" />
+              <span> 便签导航和头部是否固定</span>
             </el-form-item>
             <el-form-item label="logo名称">
               <el-switch v-model="sidebarLogo" class="drawer-switch" />
+              <span> 左上角是否显示logo名称</span>
             </el-form-item>
             <el-form-item label="本地缓存">
               <el-button :loading="loading" type="primary" size="mini" @click="localCacheClear">清除</el-button>
-              <i class="el-icon-warning-outline" title="清除后需要重新登录" />
+              <span> 清除后需要重新登录</span>
             </el-form-item>
           </el-form>
         </el-col>

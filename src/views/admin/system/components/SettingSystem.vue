@@ -1,71 +1,77 @@
 <template>
   <el-card class="box-card dialog-body" :style="{height:height+'px'}">
-    <el-row>
-      <el-col :xs="24" :sm="18" :md="12">
-        <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
-          <el-form-item label="系统简称" prop="system_name">
-            <el-input v-model="model.system_name" type="text" clearable style="width:90%" />
-            <i class="el-icon-warning-outline" title="侧边栏、登录页显示，12字以内" />
-          </el-form-item>
-          <el-form-item label="页面标题" prop="page_title">
-            <el-input v-model="model.page_title" type="text" clearable style="width:90%" />
-            <i class="el-icon-warning-outline" title="浏览器页面标题后缀，128字以内" />
-          </el-form-item>
-          <el-form-item label="logo" prop="logo_id">
-            <el-row>
-              <el-col :span="10">
-                <el-image class="image-logo" :src="model.logo_url" :preview-src-list="[model.logo_url]" title="点击查看大图">
-                  <div slot="error" class="image-slot">
-                    <i class="el-icon-picture-outline" />
-                  </div>
-                </el-image>
-              </el-col>
-              <el-col :span="14">
-                <el-button size="mini" @click="fileUpload('logo', '上传logo')">上传logo</el-button>
-                <el-button size="mini" @click="fileDelete('logo')">删除</el-button>
-                <p>jpg、png图片，200 x 200，小于 100 KB。</p>
-              </el-col>
-            </el-row>
-          </el-form-item>
-          <el-form-item label="favicon" prop="favicon_id">
-            <el-row>
-              <el-col :span="10">
-                <el-image class="image-favicon" :src="model.favicon_url" :preview-src-list="[model.favicon_url]" title="点击查看大图">
-                  <div slot="error" class="image-slot">
-                    <i class="el-icon-picture-outline" />
-                  </div>
-                </el-image>
-              </el-col>
-              <el-col :span="14">
-                <el-button size="mini" @click="fileUpload('favicon', '上传favicon')">上传favicon</el-button>
-                <el-button size="mini" @click="fileDelete('favicon')">删除</el-button>
-                <p>jpg、png、ico图片，128 x 128，小于 50 KB。</p>
-              </el-col>
-            </el-row>
-          </el-form-item>
-          <el-form-item label="登录背景图" prop="login_bg_id">
-            <el-row>
-              <el-col :span="10">
-                <el-image class="image-login-bg" :src="model.login_bg_url" :preview-src-list="[model.login_bg_url]" title="点击查看大图">
-                  <div slot="error" class="image-slot">
-                    <i class="el-icon-picture-outline" />
-                  </div>
-                </el-image>
-              </el-col>
-              <el-col :span="14">
-                <el-button size="mini" @click="fileUpload('login_bg', '上传登录背景')">上传背景图</el-button>
-                <el-button size="mini" @click="fileDelete('login_bg')">删除</el-button>
-                <p>jpg、png图片，1920 x 1080，小于 300 KB。</p>
-              </el-col>
-            </el-row>
-          </el-form-item>
-          <el-form-item>
-            <el-button :loading="loading" @click="refresh()">刷新</el-button>
-            <el-button :loading="loading" type="primary" @click="submit()">提交</el-button>
-          </el-form-item>
-        </el-form>
-      </el-col>
-    </el-row>
+    <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
+      <el-form-item label="系统简称" prop="system_name">
+        <el-col :span="10">
+          <el-input v-model="model.system_name" type="text" clearable />
+        </el-col>
+        <el-col :span="13">
+          侧边栏、登录页显示，12字以内。
+        </el-col>
+      </el-form-item>
+      <el-form-item label="页面标题" prop="page_title">
+        <el-col :span="10">
+          <el-input v-model="model.page_title" type="text" clearable />
+        </el-col>
+        <el-col :span="13">
+          浏览器页面标题后缀，128字以内。
+        </el-col>
+      </el-form-item>
+      <el-form-item label="logo" prop="logo_id">
+        <el-col :span="16">
+          <el-col :span="10">
+            <el-image class="image-logo" :src="model.logo_url" :preview-src-list="[model.logo_url]" title="点击查看大图">
+              <div slot="error" class="image-slot">
+                <i class="el-icon-picture-outline" />
+              </div>
+            </el-image>
+          </el-col>
+          <el-col :span="13">
+            <el-button size="mini" @click="fileUpload('logo', '上传logo')">上传logo</el-button>
+            <el-button size="mini" @click="fileDelete('logo')">删除</el-button>
+            <p>jpg、png图片，200 x 200，小于 100 KB。</p>
+          </el-col>
+        </el-col>
+      </el-form-item>
+      <el-form-item label="favicon" prop="favicon_id">
+        <el-row>
+          <el-col :span="16">
+            <el-col :span="10">
+              <el-image class="image-favicon" :src="model.favicon_url" :preview-src-list="[model.favicon_url]" title="点击查看大图">
+                <div slot="error" class="image-slot">
+                  <i class="el-icon-picture-outline" />
+                </div>
+              </el-image>
+            </el-col>
+            <el-col :span="13">
+              <el-button size="mini" @click="fileUpload('favicon', '上传favicon')">上传favicon</el-button>
+              <el-button size="mini" @click="fileDelete('favicon')">删除</el-button>
+              <p>jpg、png、ico图片，128 x 128，小于 50 KB。</p>
+            </el-col>
+          </el-col>
+        </el-row>
+      </el-form-item>
+      <el-form-item label="登录背景图" prop="login_bg_id">
+        <el-col :span="16">
+          <el-col :span="10">
+            <el-image class="image-login-bg" :src="model.login_bg_url" :preview-src-list="[model.login_bg_url]" title="点击查看大图">
+              <div slot="error" class="image-slot">
+                <i class="el-icon-picture-outline" />
+              </div>
+            </el-image>
+          </el-col>
+          <el-col :span="13">
+            <el-button size="mini" @click="fileUpload('login_bg', '上传登录背景')">上传背景图</el-button>
+            <el-button size="mini" @click="fileDelete('login_bg')">删除</el-button>
+            <p>jpg、png图片，1920 x 1080，小于 300 KB。</p>
+          </el-col>
+        </el-col>
+      </el-form-item>
+      <el-form-item>
+        <el-button :loading="loading" @click="refresh()">刷新</el-button>
+        <el-button :loading="loading" type="primary" @click="submit()">提交</el-button>
+      </el-form-item>
+    </el-form>
     <!-- 文件管理 -->
     <el-dialog :title="fileTitle" :visible.sync="fileDialog" width="80%" top="1vh" :close-on-click-modal="false" :close-on-press-escape="false">
       <file-manage file-type="image" @fileCancel="fileCancel" @fileSubmit="fileSubmit" />
@@ -190,7 +196,7 @@ export default {
   height: 100%;
 }
 .image-login-bg{
-  width: 100px;
+  width: 150px;
   height: 100%;
 }
 </style>
