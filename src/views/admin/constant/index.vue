@@ -6,7 +6,7 @@
       </el-col>
     </el-row>
     <div class="app-container">
-      <el-row>
+      <el-row style="margin-bottom:15px">
         <el-col>
           <index-member v-if="checkPermission(['admin/Index/member'])" />
         </el-col>

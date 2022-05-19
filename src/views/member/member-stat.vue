@@ -1,169 +1,67 @@
 <template>
-  <div class="app-container dialog-body" :style="{height:height+'px'}">
-    <el-card v-loading="loading" class="box-card">
-      <el-row :gutter="10">
-        <el-col :sm="4">
-          <el-card class="box-card" :body-style="cardBodyStyle">
-            <div slot="header" class="clearfix">
-              <span>会员</span>
-            </div>
-            <div class="text">
-              <el-row>
-                <el-col class="color-tot" title="总数">
-                  {{ number.total }}
-                </el-col>
-              </el-row>
-            </div>
-          </el-card>
-        </el-col>
-        <el-col :sm="3">
-          <el-card class="box-card" :body-style="cardBodyStyle">
-            <div slot="header" class="clearfix">
-              <span>今天</span>
-            </div>
-            <div class="text">
-              <el-row>
-                <el-col :span="12" class="color-new" title="新增会员">
-                  {{ number.today }}
-                </el-col>
-                <el-col :span="12" class="color-act" title="活跃会员">
-                  {{ active.today }}
-                </el-col>
-              </el-row>
-            </div>
-          </el-card>
-        </el-col>
-        <el-col :sm="3">
-          <el-card class="box-card" :body-style="cardBodyStyle">
-            <div slot="header" class="clearfix">
-              <span>昨天</span>
-            </div>
-            <div class="text">
-              <el-row>
-                <el-col :span="12" class="color-new" title="新增会员">
-                  {{ number.yesterday }}
-                </el-col>
-                <el-col :span="12" class="color-act" title="活跃会员">
-                  {{ active.yesterday }}
-                </el-col>
-              </el-row>
-            </div>
-          </el-card>
-        </el-col>
-        <el-col :sm="3">
-          <el-card class="box-card" :body-style="cardBodyStyle">
-            <div slot="header" class="clearfix">
-              <span>本周</span>
-            </div>
-            <div class="text">
-              <el-row>
-                <el-col :span="12" class="color-new" title="新增会员">
-                  {{ number.yesterday }}
-                </el-col>
-                <el-col :span="12" class="color-act" title="活跃会员">
-                  {{ active.thisweek }}
-                </el-col>
-              </el-row>
-            </div>
-          </el-card>
-        </el-col>
-        <el-col :sm="3">
-          <el-card class="box-card" :body-style="cardBodyStyle">
-            <div slot="header" class="clearfix">
-              <span>上周</span>
-            </div>
-            <div class="text">
-              <el-row>
-                <el-col :span="12" class="color-new" title="新增会员">
-                  {{ number.yesterday }}
-                </el-col>
-                <el-col :span="12" class="color-act" title="活跃会员">
-                  {{ active.lastweek }}
-                </el-col>
-              </el-row>
-            </div>
-          </el-card>
-        </el-col>
-        <el-col :sm="4">
-          <el-card class="box-card" :body-style="cardBodyStyle">
-            <div slot="header" class="clearfix">
-              <span>本月</span>
-            </div>
-            <div class="text">
-              <el-row>
-                <el-col :span="12" class="color-new" title="新增会员">
-                  {{ number.yesterday }}
-                </el-col>
-                <el-col :span="12" class="color-act" title="活跃会员">
-                  {{ active.thismonth }}
-                </el-col>
-              </el-row>
-            </div>
-          </el-card>
-        </el-col>
-        <el-col :sm="4">
-          <el-card class="box-card" :body-style="cardBodyStyle">
-            <div slot="header" class="clearfix">
-              <span>上月</span>
-            </div>
-            <div class="text">
-              <el-row>
-                <el-col :span="12" class="color-new" title="新增会员">
-                  {{ number.yesterday }}
-                </el-col>
-                <el-col :span="12" class="color-act" title="活跃会员">
-                  {{ active.lastmonth }}
-                </el-col>
-              </el-row>
-            </div>
-          </el-card>
-        </el-col>
-      </el-row>
-    </el-card>
-    <el-card v-loading="loading" class="box-card ya-margin-top">
-      <el-row>
-        <el-col>
-          <el-date-picker
-            v-model="date"
-            type="daterange"
-            value-format="yyyy-MM-dd"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            @change="echartMemberDateChange"
-          />
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col>
-          <div id="echartMemberDate" :style="{height:height-300+'px'}" />
-        </el-col>
-      </el-row>
-    </el-card>
-    <el-card v-loading="loading" class="box-card ya-margin-top">
-      <el-row>
-        <el-col>
-          <div id="echartMemberCount" :style="{height:height-300+'px'}" />
-        </el-col>
-      </el-row>
-    </el-card>
+  <div class="app-container">
+    <div class="dialog-body" :style="{height:height+'px'}">
+      <el-card v-loading="loading" class="box-card">
+        <el-row :gutter="6">
+          <el-col v-for="(item, index) in count" :key="index" :span="3">
+            <el-card class="box-card" :body-style="{padding: '10px 0px 0px 0px'}">
+              <div slot="header" class="clearfix">
+                <span>{{ item.name }}</span>
+              </div>
+              <div class="text">
+                <el-row style="padding-bottom:10px">
+                  <el-col :title="item.title">
+                    {{ item.count }}
+                  </el-col>
+                </el-row>
+              </div>
+            </el-card>
+          </el-col>
+        </el-row>
+      </el-card>
+      <el-card v-for="(item, index) in echart_num" :key="index" v-loading="loading" class="box-card ya-margin-top">
+        <el-row style="text-align:center;">
+          <el-col>
+            <el-select v-model="date_type" class="filter-item" @change="typeChange">
+              <el-option label="日" value="day" />
+              <el-option label="月" value="month" />
+            </el-select>
+            <el-date-picker
+              v-model="date_range"
+              class="filter-item"
+              style="width:350px"
+              :type="date_ptype"
+              :value-format="date_format"
+              :picker-options="date_options"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              @change="dateChange"
+            />
+          </el-col>
+          <el-col>
+            <div :id="echart_id+index" :style="{height:height-300+'px'}" />
+          </el-col>
+        </el-row>
+      </el-card>
+    </div>
   </div>
 </template>
 
 <script>
 import screenHeight from '@/utils/screen-height'
+import { stat } from '@/api/member/member'
+
 // ECharts
 // 引入 echarts 核心模块，核心模块提供了 echarts 使用必须要的接口
 import * as echarts from 'echarts/core'
 // 引入图表，图表后缀都为 Chart
-import { LineChart } from 'echarts/charts'
+import { LineChart, BarChart } from 'echarts/charts'
 // 引入组件，组件后缀都为 Component
-import { TitleComponent, LegendComponent, TooltipComponent, GridComponent } from 'echarts/components'
+import { TitleComponent, LegendComponent, GridComponent, TooltipComponent, ToolboxComponent } from 'echarts/components'
 // 引入 Canvas 渲染器，注意引入 CanvasRenderer 或者 SVGRenderer 是必须的一步
 import { CanvasRenderer } from 'echarts/renderers'
 // 注册必须的组件
-echarts.use([LineChart, TitleComponent, LegendComponent, TooltipComponent, GridComponent, CanvasRenderer])
-
-import { stat } from '@/api/member/member'
+echarts.use([LineChart, BarChart, TitleComponent, LegendComponent, GridComponent, TooltipComponent, ToolboxComponent, CanvasRenderer])
 
 export default {
   name: 'MemberStat',
@@ -174,158 +72,187 @@ export default {
       name: '会员统计',
       height: 680,
       loading: false,
-      number: {
-        total: '-',
-        today: '-',
-        yesterday: '-',
-        thisweek: '-',
-        lastweek: '-',
-        thismonth: '-',
-        lastmonth: '-'
+      count: [],
+      echart_id: 'echartid',
+      echart_num: 0,
+      echart_data: [],
+      date_type: 'day',
+      date_range: [],
+      date_options: {},
+      date_ptype: 'monthrange',
+      date_format: 'yyyy-MM',
+      picker_options_day: {
+        shortcuts: [{
+          text: '最近7天',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 6)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近30天',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 29)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近90天',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 89)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近120天',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 119)
+            picker.$emit('pick', [start, end])
+          }
+        }]
       },
-      active: {
-        total: '-',
-        today: '-',
-        yesterday: '-',
-        thisweek: '-',
-        lastweek: '-',
-        thismonth: '-',
-        lastmonth: '-'
-      },
-      date: [],
-      cardBodyStyle: {
-        padding: '10px 0px 0px 0px'
+      picker_options_month: {
+        shortcuts: [{
+          text: '最近3个月',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setMonth(start.getMonth() - 2)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近6个月',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setMonth(start.getMonth() - 5)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近9个月',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setMonth(start.getMonth() - 8)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近12个月',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setMonth(start.getMonth() - 11)
+            picker.$emit('pick', [start, end])
+          }
+        }]
       }
     }
   },
   computed: {},
+  watch: {
+    echart_data() {
+      this.$nextTick(() => {
+        this.setEchart()
+      })
+    }
+  },
   created() {
-    this.height = screenHeight(100)
+    this.height = screenHeight(120)
     this.stat()
   },
   mounted() {},
   methods: {
     stat() {
       this.loading = true
-      stat().then(res => {
-        this.number = res.data.number
-        this.active = res.data.active
-        this.region = res.data.region
-        this.date = res.data.date.date
-        this.echartMemberDate(res.data.date)
-        this.echartMemberCount(res.data.count)
-        this.loading = false
-      }).catch(() => {
-        this.loading = false
-      })
-    },
-    echartMemberDateChange() {
-      this.loading = true
       stat({
-        date: this.date
+        type: this.date_type,
+        date: this.date_range
       }).then(res => {
-        this.echartMemberDate(res.data.date)
+        this.count = res.data.count
+        this.echart_data = res.data.echart
+        this.echart_num = res.data.echart.length
+        this.dateOptions()
         this.loading = false
       }).catch(() => {
         this.loading = false
       })
     },
-    echartMemberDate(data) {
-      var echart = echarts.init(document.getElementById('echartMemberDate'))
-      var option = {
-        tooltip: {
-          trigger: 'axis'
-        },
-        legend: {
-          data: ['新增会员', '活跃会员', '会员总数'],
-          selected: { '会员总数': false }
-        },
-        grid: {
-          left: '3%',
-          right: '3%',
-          bottom: '3%',
-          containLabel: true
-        },
-        xAxis: {
-          type: 'category',
-          boundaryGap: false,
-          data: data.new.x
-        },
-        yAxis: {
-          type: 'value'
-        },
-        series: [
-          {
-            name: '新增会员',
-            type: 'line',
-            smooth: true,
-            data: data.new.s,
-            label: {
-              show: true,
-              position: 'top'
-            }
-          },
-          {
-            name: '活跃会员',
-            type: 'line',
-            smooth: true,
-            data: data.act.s,
-            label: {
-              show: true,
-              position: 'top'
-            }
-          },
-          {
-            name: '会员总数',
-            type: 'line',
-            smooth: true,
-            data: data.count.s,
-            label: {
-              show: true,
-              position: 'top'
-            }
-          }
-        ]
-      }
-      echart.setOption(option)
+    typeChange() {
+      this.dateOptions()
+      this.date_range = []
     },
-    echartMemberCount(data) {
-      var echart = echarts.init(document.getElementById('echartMemberCount'))
+    dateOptions() {
+      const type = this.date_type
+      if (type === 'day') {
+        this.date_ptype = 'daterange'
+        this.date_format = 'yyyy-MM-dd'
+        this.date_options = this.picker_options_day
+      } else if (type === 'month') {
+        this.date_ptype = 'monthrange'
+        this.date_format = 'yyyy-MM'
+        this.date_options = this.picker_options_month
+      }
+    },
+    dateChange() {
+      this.stat()
+    },
+    setEchart() {
+      const data = this.echart_data
+      const num = this.echart_num
+      const id = this.echart_id
+      for (let i = 0; i < num; i++) {
+        this.initEchart(data[i], id + i)
+        this.date_type = data[i].type
+        this.date_range = data[i].date
+      }
+    },
+    initEchart(data, id) {
+      var myChart = echarts.init(document.getElementById(id))
       var option = {
+        title: {
+          text: data.title,
+          textStyle: { fontSize: 12 }
+        },
         legend: {
-          data: ['会员总数']
+          top: '20px',
+          data: data.legend
         },
         grid: {
-          left: '3%',
+          top: '80px',
+          left: '1%',
           right: '3%',
           bottom: '3%',
           containLabel: true
         },
-        tooltip: {
-          trigger: 'axis'
-        },
         xAxis: {
           type: 'category',
           boundaryGap: false,
-          data: data.x
+          data: data.xAxis
         },
         yAxis: {
           type: 'value'
         },
-        series: [
-          {
-            name: '会员总数',
-            data: data.s,
-            type: 'line',
-            areaStyle: {},
-            label: {
-              show: true,
-              position: 'top'
-            }
+        tooltip: {
+          trigger: 'axis',
+          textStyle: {
+            align: 'left'
           }
-        ]
+        },
+        toolbox: {
+          feature: {
+            magicType: { show: true, type: ['line', 'bar'] },
+            dataView: { show: true, readOnly: true },
+            saveAsImage: { show: true, name: this.name + data.date[0] + '-' + data.date[1] }
+          }
+        },
+        series: data.series
       }
-      echart.setOption(option)
+      myChart.setOption(option)
     }
   }
 }
@@ -336,23 +263,9 @@ export default {
   text-align: center;
 }
 .box-card .text {
-  color: #666;
   font-size: 20px;
   line-height: 32px;
   font-weight: 700;
   text-align: center;
-}
-.el-row {
-  margin-bottom: 10px;
-}
-.color-tot {
-  color: #1890ff;
-}
-.color-new {
-  color: #5470c6;
-  border-right: 1px solid #e6ebf5;
-}
-.color-act {
-  color: #91cc75;
 }
 </style>

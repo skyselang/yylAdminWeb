@@ -47,12 +47,12 @@ export function clear(data) {
 }
 /**
  * 会员日志统计
- * @param {array} data 请求数据
+ * @param {array} params 请求参数
  */
-export function stat(data) {
+export function stat(params) {
   return request({
     url: url + 'stat',
-    method: 'post',
-    data
+    method: 'get',
+    params: params
   })
 }
