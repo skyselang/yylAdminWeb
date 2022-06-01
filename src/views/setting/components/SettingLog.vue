@@ -5,10 +5,10 @@
         <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
           <el-form-item label="日志记录开关" prop="log_switch">
             <el-switch v-model="model.log_switch" :active-value="1" :inactive-value="0" />
-            <span> 开启后，会记录会员日志。</span>
+            <span style="margin-left:150px"> 开启后，会记录会员日志。</span>
           </el-form-item>
           <el-form-item label="日志保留时间" prop="log_save_time">
-            <el-input v-model="model.log_save_time" type="number">
+            <el-input v-model="model.log_save_time" type="number" style="width:350px">
               <template slot="append">天（0永久保留）</template>
             </el-input>
           </el-form-item>

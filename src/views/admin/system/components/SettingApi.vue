@@ -3,25 +3,25 @@
     <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
       <el-form-item label="接口速率">
         <el-col :span="8">
-          <el-col :span="11">
+          <el-col :span="12">
             <el-input v-model="model.api_rate_num" type="number" placeholder="次数">
               <template slot="append">次</template>
             </el-input>
           </el-col>
-          <el-col class="line" :span="2" style="text-align:center">/</el-col>
+          <el-col class="line" :span="1" style="text-align:center">/</el-col>
           <el-col :span="11">
             <el-input v-model="model.api_rate_time" type="number" placeholder="时间">
               <template slot="append">秒</template>
             </el-input>
           </el-col>
         </el-col>
-        <el-col :span="13" />
+        <el-col :span="16" />
       </el-form-item>
       <el-form-item label="" prop="">
         <el-col :span="10">
           次数/时间；3/1：3次1秒；次数设置为 0 则不限制。
         </el-col>
-        <el-col :span="13" />
+        <el-col :span="16" />
       </el-form-item>
       <el-form-item>
         <el-button :loading="loading" @click="refresh()">刷新</el-button>

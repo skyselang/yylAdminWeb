@@ -12,7 +12,7 @@
             <el-option value="is_open" label="是否开启" />
             <el-option :value="idkey" label="ID" />
           </el-select>
-          <el-select v-if="query.search_field==='is_open'" v-model="query.search_value" class="filter-item ya-search-value" placeholder="请选择">
+          <el-select v-if="query.search_field==='is_open'" v-model="query.search_value" class="ya-search-value" placeholder="请选择">
             <el-option :value="1" label="是" />
             <el-option :value="0" label="否" />
           </el-select>
@@ -88,8 +88,8 @@
       <el-table-column prop="create_time" label="添加时间" min-width="155" sortable="custom" />
       <el-table-column label="操作" min-width="90" align="right" fixed="right">
         <template slot-scope="{ row }">
-          <el-button :loading="loading" size="mini" type="text" @click="edit(row)">修改</el-button>
-          <el-button :loading="loading" size="mini" type="text" @click="selectOpen('dele',row)">删除</el-button>
+          <el-button size="mini" type="text" @click="edit(row)">修改</el-button>
+          <el-button size="mini" type="text" @click="selectOpen('dele',row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -136,8 +136,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="cancel">取消</el-button>
-        <el-button type="primary" @click="submit">提交</el-button>
+        <el-button :loading="loading" @click="cancel">取消</el-button>
+        <el-button :loading="loading" type="primary" @click="submit">提交</el-button>
       </div>
     </el-dialog>
   </div>

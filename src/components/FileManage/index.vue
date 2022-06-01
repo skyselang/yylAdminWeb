@@ -74,6 +74,14 @@
           <el-option value="asc" label="升序" />
           <el-option value="desc" label="降序" />
         </el-select>
+        <el-select v-model="query.group_id" class="filter-item ya-search-field ya-margin-left" filterable clearable placeholder="分组" @change="groupSelect">
+          <el-option v-for="item in group" :key="item.group_id" :value="item.group_id" :label="item.group_name" />
+        </el-select>
+        <el-button-group>
+          <el-button type="text" icon="el-icon-plus" title="添加分组" @click="groupAdd()" />
+          <el-button type="text" icon="el-icon-edit" title="修改分组" @click="groupEdit()" />
+          <el-button type="text" icon="el-icon-delete" title="删除分组" @click="groupDele()" />
+        </el-button-group>
       </el-col>
     </el-row>
     <el-dialog :title="selectTitle" :visible.sync="selectDialog" top="20vh" append-to-body :close-on-click-modal="false" :close-on-press-escape="false">
@@ -115,32 +123,6 @@
     <!-- 列表 -->
     <el-row v-loading="loading" :gutter="3">
       <el-col :span="3" class="dialog-body" :style="{height:height+'px'}">
-        <!-- 分组筛选 -->
-        <el-row>
-          <el-col :span="20"><el-button type="text" class="ya-color-inherit">分组：</el-button></el-col>
-          <el-col :span="4"><el-button type="text" icon="el-icon-plus" title="添加分组" @click="groupAdd()" /></el-col>
-        </el-row>
-        <el-row>
-          <el-col class="ya-padding-left">
-            <el-link :type="query.group_id===''?'primary':''" :underline="false" class="ya-height-26" @click="groupSelect('')">全部</el-link>
-          </el-col>
-          <el-col class="ya-padding-left">
-            <el-link :type="query.group_id===0?'primary':''" :underline="false" class="ya-height-26" @click="groupSelect(0)">未分组</el-link>
-          </el-col>
-          <el-col v-for="item in group" :key="item.group_id" class="ya-padding-left ya-height-26">
-            <el-row>
-              <el-col :span="16">
-                <el-link :type="query.group_id===item.group_id?'primary':''" :underline="false" @click="groupSelect(item.group_id)">{{ item.group_name }}</el-link>
-              </el-col>
-              <el-col :span="4">
-                <el-link v-if="query.group_id===item.group_id" type="primary" icon="el-icon-edit" :underline="false" title="修改分组" @click="groupEdit(item)" />
-              </el-col>
-              <el-col :span="4">
-                <el-link v-if="query.group_id===item.group_id" type="primary" icon="el-icon-delete" :underline="false" title="删除分组" @click="groupDele([item])" />
-              </el-col>
-            </el-row>
-          </el-col>
-        </el-row>
         <!-- 类型筛选 -->
         <el-row>
           <el-col><el-button type="text" class="ya-color-inherit">类型：</el-button></el-col>
@@ -352,7 +334,6 @@ import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination'
 import clip from '@/utils/clipboard'
 import { getAdminToken } from '@/utils/auth'
-import { arrayColumn } from '@/utils/index'
 import { group, list, info, add, edit, dele, editgroup, edittype, editdomain, disable, recover, recoverReco, recoverDele } from '@/api/file/file'
 import { info as groupInfo, add as groupAdd, edit as groupEdit, dele as groupDele } from '@/api/file/group'
 
@@ -383,7 +364,7 @@ export default {
         date_field: 'create_time'
       },
       data: [],
-      count: 1,
+      count: 0,
       dialog: false,
       dialogTitle: '',
       model: {
@@ -399,10 +380,10 @@ export default {
         file_size: '',
         file_ext: '',
         file_url: '',
+        sort: 250,
         is_front: 0,
         is_disable: 0,
-        is_delete: 0,
-        sort: 250
+        is_delete: 0
       },
       rules: {
         file_name: [{ required: true, message: '请输入文件名称', trigger: 'blur' }]
@@ -420,8 +401,8 @@ export default {
       selectDialog: false,
       selectType: '',
       group_id: 0,
-      domain: '',
       file_type: 'image',
+      domain: '',
       is_disable: 0,
       uploadAction: add(),
       uploadHeaders: { AdminToken: getAdminToken() },
@@ -784,9 +765,8 @@ export default {
       this.fileImgPre = preview
     },
     // 分组筛选
-    groupSelect(group_id = '') {
-      this.query.group_id = group_id
-      this.uploadData.group_id = group_id
+    groupSelect() {
+      this.uploadData.group_id = this.query.group_id
       this.list()
     },
     // 类型筛选
@@ -813,6 +793,7 @@ export default {
     groupList() {
       group().then(res => {
         this.group = res.data.list
+        this.group.unshift({ group_id: 0, group_name: '(未分组)' })
         this.loading = false
       }).catch(res => {
         this.loading = false
@@ -823,16 +804,21 @@ export default {
       this.groupTitle = '分组添加'
       this.groupReset()
     },
-    groupEdit(row) {
-      this.groupDialog = true
-      this.groupTitle = '分组修改：' + row.group_id
-      groupInfo({
-        group_id: row.group_id
-      }).then(res => {
-        this.groupReset(res.data)
-      }).catch(res => {
-        this.groupDialog = false
-      })
+    groupEdit() {
+      const group_id = this.query.group_id
+      if (!group_id) {
+        this.$alert('请选择需要修改的分组', '提示', { type: 'warning', callback: action => {} })
+      } else {
+        this.groupDialog = true
+        this.groupTitle = '分组修改：' + this.query.group_id
+        groupInfo({
+          group_id: this.query.group_id
+        }).then(res => {
+          this.groupReset(res.data)
+        }).catch(res => {
+          this.groupDialog = false
+        })
+      }
     },
     groupCancel() {
       this.groupDialog = false
@@ -864,20 +850,26 @@ export default {
         }
       })
     },
-    groupDele(row) {
-      if (!row.length) {
-        this.selectAlert()
+    groupDele() {
+      const group_id = this.query.group_id
+      if (!group_id) {
+        this.$alert('请选择需要删除的分组', '提示', { type: 'warning', callback: action => {} })
       } else {
-        var title = '删除分组'
-        var message = '确定要删除选中的 <span style="color:red">' + row.length + ' </span> 条记录吗？'
-        if (row.length === 1) {
-          title = title + '：' + row[0].group_id
-          message = '确定要删除分组 <span style="color:red">' + row[0].group_name + ' </span>吗？'
+        const group = this.group
+        const grouplen = group.length
+        const title = '删除分组：' + group_id
+        let group_name = ''
+        for (let i = 0; i < grouplen; i++) {
+          if (group[i].group_id === group_id) {
+            group_name = group[i].group_name
+            break
+          }
         }
+        const message = '确定要删除分组 <span style="color:red">' + group_name + ' </span>吗？'
         this.$confirm(message, title, { type: 'warning', dangerouslyUseHTMLString: true }).then(() => {
           this.loading = true
           groupDele({
-            ids: arrayColumn(row, 'group_id')
+            ids: [group_id]
           }).then(res => {
             this.groupList()
             this.$message.success(res.msg)
@@ -911,6 +903,7 @@ export default {
           for (let j = 0; j < row_len; j++) {
             if (data[i].file_id === row[j]) {
               files.push(data[i])
+              break
             }
           }
         }

@@ -154,7 +154,7 @@ export default {
     }
   },
   created() {
-    this.height = screenHeight(160)
+    this.height = screenHeight(180)
     this.server()
   },
   methods: {

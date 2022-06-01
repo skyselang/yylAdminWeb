@@ -8,7 +8,7 @@
           <el-select v-model="query.search_field" class="filter-item ya-search-field" placeholder="搜索字段">
             <el-option value="menu_name" label="菜单名称" />
             <el-option value="menu_url" label="菜单链接" />
-            <el-option value="menu_pid" label="菜单" />
+            <el-option value="menu_pid" label="上级" />
             <el-option value="is_unlogin" label="无需登录" />
             <el-option value="is_unauth" label="无需权限" />
             <el-option value="is_disable" label="禁用" />
@@ -28,8 +28,7 @@
             v-model="query.search_value"
             :options="trees"
             :props="props"
-            class="filter-item ya-search-field"
-            style="width:20%;min-width:150px"
+            class="filter-item ya-search-value"
             placeholder="请选择"
             clearable
             filterable
@@ -44,7 +43,7 @@
       <el-row>
         <el-col>
           <el-checkbox v-model="isExpandAll" border @change="expandAll">收起</el-checkbox>
-          <el-button title="修改上级" class="ya-margin-left" @click="selectOpen('pid')">上级</el-button>
+          <el-button title="修改上级" class="ya-margin-left" @click="selectOpen('editpid')">上级</el-button>
           <el-button title="是否无需登录" @click="selectOpen('unlogin')">登录</el-button>
           <el-button title="是否无需权限" @click="selectOpen('unauth')">权限</el-button>
           <el-button title="是否禁用" @click="selectOpen('disable')">禁用</el-button>
@@ -56,7 +55,7 @@
             <el-form-item :label="name+'ID'" prop="">
               <el-input v-model="selectIds" type="textarea" :autosize="{minRows: 2, maxRows: 12}" disabled />
             </el-form-item>
-            <el-form-item v-if="selectType==='pid'" label="上级" prop="">
+            <el-form-item v-if="selectType==='editpid'" label="上级" prop="">
               <el-cascader
                 :key="selectPidKey"
                 v-model="menu_pid"
@@ -368,7 +367,6 @@ export default {
     },
     // 树形
     tree() {
-      this.regionTree = []
       list({ type: 'tree' }).then(res => {
         this.trees = res.data.list
       }).catch(() => {})
@@ -402,7 +400,7 @@ export default {
           this.loading = true
           if (this.model[this.idkey]) {
             edit(this.model).then(res => {
-              this.list()
+              this.refresh()
               this.dialog = false
               this.$message.success(res.msg)
             }).catch(() => {
@@ -410,7 +408,7 @@ export default {
             })
           } else {
             add(this.model).then(res => {
-              this.list()
+              this.refresh()
               this.dialog = false
               this.$message.success(res.msg)
             }).catch(() => {
@@ -422,9 +420,9 @@ export default {
     },
     // 重置
     reset(row) {
-      ++this.tbKey
-      ++this.pidKey
-      ++this.selectPidKey
+      // ++this.tbKey
+      // ++this.pidKey
+      // ++this.selectPidKey
       if (row) {
         this.model.admin_menu_id = row.admin_menu_id
         this.model.menu_pid = row.menu_pid
@@ -503,7 +501,7 @@ export default {
         this.selectAlert()
       } else {
         this.selectTitle = '选中操作'
-        if (selectType === 'pid') {
+        if (selectType === 'editpid') {
           this.selectTitle = '修改上级'
         } else if (selectType === 'unlogin') {
           this.selectTitle = '无需登录'
@@ -526,8 +524,8 @@ export default {
         this.selectAlert()
       } else {
         const selectType = this.selectType
-        if (selectType === 'pid') {
-          this.pid(this.selection)
+        if (selectType === 'editpid') {
+          this.editpid(this.selection)
         } else if (selectType === 'unlogin') {
           this.unlogin(this.selection, true)
         } else if (selectType === 'unauth') {
@@ -541,17 +539,15 @@ export default {
       }
     },
     // 修改上级
-    pid(row) {
+    editpid(row) {
       pid({
         ids: this.selectGetIds(row),
         menu_pid: this.menu_pid
       }).then(res => {
-        this.list()
+        this.refresh()
         this.selectDialog = false
         this.$message.success(res.msg)
-      }).catch(() => {
-        this.list()
-      })
+      }).catch(() => {})
     },
     // 无需登录
     unlogin(row, select = false) {
@@ -625,11 +621,9 @@ export default {
         dele({
           ids: this.selectGetIds(row)
         }).then(res => {
-          this.list()
+          this.refresh()
           this.$message.success(res.msg)
-        }).catch(() => {
-          this.loading = false
-        })
+        }).catch(() => {})
       }
     },
     // 上级选择

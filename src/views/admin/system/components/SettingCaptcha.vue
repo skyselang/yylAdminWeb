@@ -2,20 +2,13 @@
   <el-card class="box-card dialog-body" :style="{height:height+'px'}">
     <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
       <el-form-item label="验证码开关" prop="captcha_switch">
-        <el-col :span="5">
-          <el-switch v-model="model.captcha_switch" :active-value="1" :inactive-value="0" />
-        </el-col>
-        <el-col :span="13">
-          开启后，后台登录需要输入验证码。
-        </el-col>
+        <el-switch v-model="model.captcha_switch" :active-value="1" :inactive-value="0" />
+        <span style="margin-left:180px">开启后，后台登录需要输入验证码。</span>
       </el-form-item>
       <el-form-item label="验证码类型" prop="captcha_type">
-        <el-col :span="10">
-          <el-select v-model="model.captcha_type" placeholder="">
-            <el-option v-for="item in type" :key="item.value" :label="item.label" :value="item.value" />
-          </el-select>
-        </el-col>
-        <el-col :span="13" />
+        <el-select v-model="model.captcha_type" placeholder="">
+          <el-option v-for="item in type" :key="item.value" :label="item.label" :value="item.value" />
+        </el-select>
       </el-form-item>
       <el-form-item>
         <el-button :loading="loading" @click="refresh()">刷新</el-button>

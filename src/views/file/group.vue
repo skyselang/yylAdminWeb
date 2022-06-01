@@ -19,7 +19,7 @@
           <el-select v-model="query.date_field" class="filter-item ya-date-field" placeholder="时间类型">
             <el-option value="create_time" label="添加时间" />
             <el-option value="update_time" label="修改时间" />
-            <el-option v-if="recycle===1" value="delete_time" label="删除时间" />
+            <el-option v-if="recycle" value="delete_time" label="删除时间" />
           </el-select>
           <el-date-picker
             v-model="query.date_value"
@@ -38,7 +38,7 @@
         <el-col>
           <el-button title="是否禁用" @click="selectOpen('disable')">禁用</el-button>
           <el-button title="删除" @click="selectOpen('dele')">删除</el-button>
-          <el-button v-if="recycle===1" type="primary" @click="selectOpen('reco')">恢复</el-button>
+          <el-button v-if="recycle" type="primary" @click="selectOpen('reco')">恢复</el-button>
           <el-button v-else type="primary" @click="add()">添加</el-button>
         </el-col>
       </el-row>
@@ -51,7 +51,7 @@
             <el-switch v-model="is_disable" :active-value="1" :inactive-value="0" />
           </el-form-item>
           <el-form-item v-else-if="selectType==='dele'" label="" prop="">
-            <span v-if="recycle===1" style="color:red">确定要彻底删除选中的{{ name }}吗？删除后不可恢复！</span>
+            <span v-if="recycle" style="color:red">确定要彻底删除选中的{{ name }}吗？删除后不可恢复！</span>
             <span v-else style="color:red">确定要删除选中的{{ name }}吗？</span>
           </el-form-item>
           <el-form-item v-else-if="selectType==='reco'" label="" prop="">
@@ -77,11 +77,11 @@
         </template>
       </el-table-column>
       <el-table-column prop="create_time" label="添加时间" min-width="160" sortable="custom" />
-      <el-table-column v-if="recycle===1" prop="delete_time" label="删除时间" min-width="155" sortable="custom" />
-      <el-table-column v-else prop="create_time" label="注册时间" min-width="155" sortable="custom" />
-      <el-table-column label="操作" :min-width="recycle===1?120:85" align="right">
+      <el-table-column v-if="recycle" prop="delete_time" label="删除时间" min-width="155" sortable="custom" />
+      <el-table-column v-else prop="update_time" label="修改时间" min-width="155" sortable="custom" />
+      <el-table-column label="操作" :min-width="recycle?120:85" align="right">
         <template slot-scope="{ row }">
-          <el-button v-if="recycle===1" size="mini" type="text" @click="selectOpen('reco',row)">恢复</el-button>
+          <el-button v-if="recycle" size="mini" type="text" @click="selectOpen('reco',row)">恢复</el-button>
           <el-button size="mini" type="text" @click="edit(row)">修改</el-button>
           <el-button size="mini" type="text" @click="selectOpen('dele',row)">删除</el-button>
         </template>

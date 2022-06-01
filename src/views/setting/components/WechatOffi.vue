@@ -18,7 +18,7 @@
         <el-col :span="13" />
       </el-form-item>
       <el-form-item label="二维码" prop="qrcode_url">
-        <el-col :span="10">
+        <el-col :span="12">
           <el-col :span="10">
             <el-image class="ya-img-form" :src="model.qrcode_url" :preview-src-list="[model.qrcode_url]" title="点击查看大图">
               <div slot="error" class="image-slot">

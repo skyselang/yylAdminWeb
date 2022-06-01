@@ -8,9 +8,9 @@
           <el-select v-model="query.search_field" class="filter-item ya-search-field" placeholder="搜索字段">
             <el-option value="api_name" label="接口名称" />
             <el-option value="api_url" label="接口链接" />
+            <el-option value="api_pid" label="上级" />
             <el-option value="is_unlogin" label="无需登录" />
-            <el-option value="is_disable" label="禁用" />
-            <el-option value="api_pid" label="PID" />
+            <el-option value="is_disable" label="是否禁用" />
             <el-option :value="idkey" label="ID" />
           </el-select>
           <el-select
@@ -22,6 +22,17 @@
             <el-option :value="1" label="是" />
             <el-option :value="0" label="否" />
           </el-select>
+          <el-cascader
+            v-else-if="query.search_field==='api_pid'"
+            v-model="query.search_value"
+            :options="trees"
+            :props="props"
+            class="filter-item ya-search-value"
+            placeholder="请选择"
+            clearable
+            filterable
+            @change="pidQuery"
+          />
           <el-input v-else v-model="query.search_value" class="filter-item ya-search-value" placeholder="搜索内容" clearable />
           <el-button class="filter-item" type="primary" @click="search()">查询</el-button>
           <el-button class="filter-item" @click="refresh()">刷新</el-button>
@@ -31,7 +42,7 @@
       <el-row>
         <el-col>
           <el-checkbox v-model="isExpandAll" border title="收起/展开" @change="expandAll">收起</el-checkbox>
-          <el-button class="ya-margin-left" title="修改上级" @click="selectOpen('pid')">上级</el-button>
+          <el-button class="ya-margin-left" title="修改上级" @click="selectOpen('editpid')">上级</el-button>
           <el-button title="是否禁用" @click="selectOpen('disable')">禁用</el-button>
           <el-button title="无需登录" @click="selectOpen('unlogin')">登录</el-button>
           <el-button title="删除" @click="selectOpen('dele')">删除</el-button>
@@ -43,8 +54,18 @@
           <el-form-item :label="name+'ID'" prop="">
             <el-input v-model="selectIds" type="textarea" :autosize="{minRows: 2, maxRows: 12}" disabled />
           </el-form-item>
-          <el-form-item v-if="selectType==='pid'" label="上级" prop="">
-            <el-cascader v-model="api_pid" :options="data" :props="props" style="width:100%" clearable filterable placeholder="一级接口" @change="pidSelect" />
+          <el-form-item v-if="selectType==='editpid'" label="上级" prop="">
+            <el-cascader
+              :key="selectPidKey"
+              v-model="api_pid"
+              :options="data"
+              :props="props"
+              style="width:100%"
+              clearable
+              filterable
+              placeholder="一级接口"
+              @change="pidSelect"
+            />
           </el-form-item>
           <el-form-item v-else-if="selectType==='disable'" label="是否禁用" prop="">
             <el-switch v-model="is_disable" :active-value="1" :inactive-value="0" />
@@ -63,7 +84,20 @@
       </el-dialog>
     </div>
     <!-- 列表 -->
-    <el-table ref="table" v-loading="loading" :data="data" :height="height" :row-key="idkey" default-expand-all @selection-change="select" @cell-dblclick="cellDbclick">
+    <el-table
+      ref="table"
+      :key="tbKey"
+      v-loading="loading"
+      :data="data"
+      :height="height"
+      :row-key="idkey"
+      lazy
+      :load="load"
+      default-expand-all
+      @selection-change="select"
+      @select-all="selectAll"
+      @cell-dblclick="cellDbclick"
+    >
       <el-table-column type="selection" width="42" title="全选/反选" />
       <el-table-column prop="api_name" label="接口名称" min-width="210" />
       <el-table-column prop="api_url" label="接口链接" min-width="300">
@@ -115,8 +149,9 @@
       <el-form ref="ref" :rules="rules" :model="model" label-width="100px" class="dialog-body" :style="{height:height-50+'px'}">
         <el-form-item label="接口上级" prop="api_pid">
           <el-cascader
+            :key="pidKey"
             v-model="model.api_pid"
-            :options="data"
+            :options="trees"
             :props="props"
             style="width:100%"
             placeholder="一级接口"
@@ -167,13 +202,16 @@ export default {
       height: 680,
       loading: false,
       idkey: 'api_id',
+      tbKey: 1,
       query: {
         search_field: 'api_name'
       },
       data: [],
+      trees: [],
       props: { checkStrictly: true, value: 'api_id', label: 'api_name' },
       dialog: false,
       dialogTitle: '',
+      pidKey: 500,
       model: {
         api_id: '',
         api_pid: 0,
@@ -185,6 +223,7 @@ export default {
         api_name: [{ required: true, message: '请输入接口名称', trigger: 'blur' }]
       },
       isExpandAll: false,
+      selectPidKey: 1000,
       selection: [],
       selectIds: '',
       selectTitle: '选中操作',
@@ -198,6 +237,7 @@ export default {
   created() {
     this.height = screenHeight(210)
     this.list()
+    this.tree()
   },
   methods: {
     // 列表
@@ -210,6 +250,21 @@ export default {
       }).catch(() => {
         this.loading = false
       })
+    },
+    // 加载
+    load(row, treeNode, resolve) {
+      list({
+        search_field: 'api_pid',
+        search_value: row[this.idkey]
+      }).then(res => {
+        resolve(res.data.list)
+      })
+    },
+    // 树形
+    tree() {
+      list({ type: 'tree' }).then(res => {
+        this.trees = res.data.list
+      }).catch(() => {})
     },
     // 添加修改
     add(row) {
@@ -239,7 +294,7 @@ export default {
           this.loading = true
           if (this.model[this.idkey]) {
             edit(this.model).then(res => {
-              this.list()
+              this.refresh()
               this.dialog = false
               this.$message.success(res.msg)
             }).catch(() => {
@@ -247,7 +302,7 @@ export default {
             })
           } else {
             add(this.model).then(res => {
-              this.list()
+              this.refresh()
               this.dialog = false
               this.$message.success(res.msg)
             }).catch(() => {
@@ -276,6 +331,7 @@ export default {
     refresh() {
       this.query = this.$options.data().query
       this.list()
+      this.tree()
     },
     // 收起/展开
     expandAll(e) {
@@ -294,6 +350,22 @@ export default {
       this.selection = selection
       this.selectIds = this.selectGetIds(selection).toString()
     },
+    selectAll(selection) {
+      if (selection) {
+        this.selectAllKeys(selection)
+        this.selectIds = this.selectGetIds(this.selection).toString()
+      } else {
+        this.selectIds = ''
+      }
+    },
+    selectAllKeys(tree) {
+      for (const i in tree) {
+        this.selection.push(tree[i])
+        if (tree[i].children) {
+          this.selectAllKeys(tree[i].children)
+        }
+      }
+    },
     selectGetIds(selection) {
       return arrayColumn(selection, this.idkey)
     },
@@ -309,7 +381,7 @@ export default {
         this.selectAlert()
       } else {
         this.selectTitle = '选中操作'
-        if (selectType === 'pid') {
+        if (selectType === 'editpid') {
           this.selectTitle = '修改上级'
         } else if (selectType === 'disable') {
           this.selectTitle = '是否禁用'
@@ -330,8 +402,8 @@ export default {
         this.selectAlert()
       } else {
         const selectType = this.selectType
-        if (selectType === 'pid') {
-          this.pid(this.selection)
+        if (selectType === 'editpid') {
+          this.editpid(this.selection)
         } else if (selectType === 'disable') {
           this.disable(this.selection, true)
         } else if (selectType === 'unlogin') {
@@ -344,16 +416,14 @@ export default {
       }
     },
     // 修改上级
-    pid(row) {
+    editpid(row) {
       pid({
         ids: this.selectGetIds(row),
         api_pid: this.api_pid
       }).then(res => {
-        this.list()
+        this.refresh()
         this.$message.success(res.msg)
-      }).catch(() => {
-        this.list()
-      })
+      }).catch(() => {})
     },
     // 是否禁用
     disable(row, select = false) {
@@ -406,17 +476,20 @@ export default {
         dele({
           ids: this.selectGetIds(row)
         }).then(res => {
-          this.list()
+          this.refresh()
           this.$message.success(res.msg)
-        }).catch(() => {
-          this.list()
-        })
+        }).catch(() => {})
       }
     },
-    // 上级
+    // 上级选择
     pidEdit(value) {
       if (value) {
         this.model.api_pid = value[value.length - 1]
+      }
+    },
+    pidQuery(value) {
+      if (value) {
+        this.query.search_value = value[value.length - 1]
       }
     },
     pidSelect(value) {

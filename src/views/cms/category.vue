@@ -9,7 +9,7 @@
             <el-option value="category_name" label="名称" />
             <el-option value="is_hide" label="隐藏" />
             <el-option value="sort" label="排序" />
-            <el-option value="category_pid" label="分类" />
+            <el-option value="category_pid" label="上级" />
             <el-option :value="idkey" label="ID" />
           </el-select>
           <el-select v-if="query.search_field==='is_hide'" v-model="query.search_value" class="filter-item ya-search-value" placeholder="请选择">
@@ -21,8 +21,7 @@
             v-model="query.search_value"
             :options="trees"
             :props="props"
-            class="filter-item ya-search-field"
-            style="width:20%;min-width:150px"
+            class="filter-item ya-search-value"
             placeholder="请选择"
             clearable
             filterable

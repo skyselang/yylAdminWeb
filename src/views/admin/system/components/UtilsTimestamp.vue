@@ -5,9 +5,9 @@
     </div>
     <div class="text item">
       <el-form ref="ref" :model="model" :rules="rules" label-width="100px">
-        <el-form-item label="时间戳">
+        <el-form-item label="时间戳" style="width:380px">
           <el-input v-model="model.timestamp" type="number" prefix-icon="el-icon-stopwatch" placeholder="请输入时间戳" clearable @input="value('timestamp')">
-            <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.timestamp, $event)" />
+            <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.timestamp.toString(), $event)" />
           </el-input>
         </el-form-item>
         <el-form-item label="日期时间">
@@ -56,6 +56,15 @@ export default {
       this.model = this.$options.data().model
     },
     submit() {
+      if (!this.model.value) {
+        if (this.model.datetime) {
+          this.model.type = 'datetime'
+          this.model.value = this.model.datetime
+        } else {
+          this.model.type = 'timestamp'
+          this.model.value = this.model.timestamp
+        }
+      }
       timestamp(this.model).then((res) => {
         this.model = res.data
       })

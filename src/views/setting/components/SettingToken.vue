@@ -4,12 +4,13 @@
       <el-col :xs="24" :sm="22" :md="20" :lg="16" :xl="12">
         <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
           <el-form-item label="Token密钥" prop="token_key">
-            <el-input v-model="model.token_key" type="text" clearable style="width:90%" />
-            <i class="el-icon-warning-outline" title="修改后会员登录状态失效，需重新登录。" />
+            <el-input v-model="model.token_key" type="password" clearable show-password>
+              <template slot="append">修改后会员登录状态失效，需重新登录。</template>
+            </el-input>
           </el-form-item>
           <el-form-item label="Token有效时间" prop="token_exp">
             <el-input v-model="model.token_exp" type="number">
-              <template slot="append">小时</template>
+              <template slot="append">小时，登录后超过此时间，需重新登录。</template>
             </el-input>
           </el-form-item>
           <el-form-item>

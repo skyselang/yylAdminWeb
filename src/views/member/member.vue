@@ -12,12 +12,19 @@
             <el-option value="email" label="邮箱" />
             <el-option value="remark" label="备注" />
             <el-option value="is_disable" label="禁用" />
-            <el-option value="region_id" label="地区" />
+            <el-option value="name" label="姓名" />
+            <el-option value="gender" label="性别" />
+            <el-option value="region_id" label="所在地" />
             <el-option :value="idkey" label="ID" />
           </el-select>
           <el-select v-if="query.search_field==='is_disable'" v-model="query.search_value" class="filter-item ya-search-value" placeholder="请选择">
             <el-option :value="1" label="是" />
             <el-option :value="0" label="否" />
+          </el-select>
+          <el-select v-else-if="query.search_field==='gender'" v-model="query.search_value" class="filter-item ya-search-value" placeholder="请选择">
+            <el-option label="未知" :value="0" />
+            <el-option label="男" :value="1" />
+            <el-option label="女" :value="2" />
           </el-select>
           <el-cascader
             v-else-if="query.search_field==='region_id'"
@@ -50,7 +57,7 @@
       <!-- 选中操作 -->
       <el-row>
         <el-col>
-          <el-button title="修改地区" @click="selectOpen('region')">地区</el-button>
+          <el-button title="修改所在地" @click="selectOpen('region')">所在地</el-button>
           <el-button title="重置密码" @click="selectOpen('repwd')">密码</el-button>
           <el-button title="是否禁用" @click="selectOpen('disable')">禁用</el-button>
           <el-button title="删除" @click="selectOpen('dele')">删除</el-button>
@@ -63,7 +70,7 @@
           <el-form-item :label="name+'ID'" prop="">
             <el-input v-model="selectIds" type="textarea" :autosize="{minRows: 2, maxRows: 12}" disabled />
           </el-form-item>
-          <el-form-item v-if="selectType==='region'" label="地区" prop="">
+          <el-form-item v-if="selectType==='region'" label="所在地" prop="">
             <el-cascader
               v-model="region_id"
               :options="regionData"
@@ -76,6 +83,7 @@
           </el-form-item>
           <el-form-item v-else-if="selectType==='disable'" label="是否禁用" prop="">
             <el-switch v-model="is_disable" :active-value="1" :inactive-value="0" />
+            <span v-if="is_disable" style="color:red">禁用后无法登录！</span>
           </el-form-item>
           <el-form-item v-else-if="selectType==='repwd'" label="新密码" prop="">
             <el-input v-model="password" placeholder="请输入新密码" clearable show-password />
@@ -167,7 +175,19 @@
             <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.email, $event)" />
           </el-input>
         </el-form-item>
-        <el-form-item label="地区" prop="region_id">
+        <el-form-item label="姓名" prop="name">
+          <el-input v-model="model.name" clearable>
+            <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.name, $event)" />
+          </el-input>
+        </el-form-item>
+        <el-form-item label="性别" prop="gender">
+          <el-select v-model="model.gender" placeholder="">
+            <el-option label="未知" :value="0" />
+            <el-option label="男" :value="1" />
+            <el-option label="女" :value="2" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="所在地" prop="region_id">
           <el-cascader v-model="model.region_id" :options="regionData" :props="regionProps" style="width:100%" @change="regionEdit" />
         </el-form-item>
         <el-form-item label="备注" prop="remark">
@@ -192,6 +212,12 @@
           <el-input v-model="model.login_region" disabled>
             <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.wechat.login_region, $event)" />
           </el-input>
+        </el-form-item>
+        <el-form-item v-if="model[idkey]" label="注册渠道" prop="reg_channel_name">
+          <el-input v-model="model.reg_channel_name" disabled />
+        </el-form-item>
+        <el-form-item v-if="model[idkey]" label="注册方式" prop="reg_type_name">
+          <el-input v-model="model.reg_type_name" disabled />
         </el-form-item>
         <el-form-item v-if="model[idkey]" label="" prop="">
           <span>微信信息</span>
@@ -293,6 +319,8 @@ export default {
         password: '',
         phone: '',
         email: '',
+        name: '',
+        gender: 0,
         region_id: '',
         remark: '',
         sort: 250,
@@ -437,7 +465,7 @@ export default {
       } else {
         this.selectTitle = '选中操作'
         if (selectType === 'region') {
-          this.selectTitle = '修改地区'
+          this.selectTitle = '修改所在地'
         } else if (selectType === 'repwd') {
           this.selectTitle = '重置密码'
         } else if (selectType === 'disable') {
@@ -473,7 +501,7 @@ export default {
         this.selectDialog = false
       }
     },
-    // 修改地区
+    // 修改所在地
     region(row) {
       if (!row.length) {
         this.selectAlert()

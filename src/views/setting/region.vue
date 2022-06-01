@@ -12,7 +12,7 @@
             <el-option value="region_initials" label="首字母" />
             <el-option value="region_citycode" label="区号" />
             <el-option value="region_zipcode" label="邮编" />
-            <el-option value="region_pid" label="地区" />
+            <el-option value="region_pid" label="上级" />
             <el-option :value="idkey" label="ID" />
           </el-select>
           <el-cascader
@@ -21,8 +21,7 @@
             v-model="query.region_pid"
             :options="regionTree"
             :props="regionProps"
-            class="filter-item ya-search-field"
-            style="width:20%;min-width:150px"
+            class="filter-item ya-search-value"
             placeholder="请选择"
             clearable
             filterable

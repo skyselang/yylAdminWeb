@@ -2,20 +2,20 @@
   <el-card class="box-card dialog-body" :style="{height:height+'px'}">
     <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
       <el-form-item label="日志记录开关" prop="log_switch">
-        <el-col :span="5">
+        <el-col :span="8">
           <el-switch v-model="model.log_switch" :active-value="1" :inactive-value="0" />
         </el-col>
-        <el-col :span="13">
+        <el-col :span="16">
           开启后，会记录后台用户日志。
         </el-col>
       </el-form-item>
       <el-form-item label="日志保留时间" prop="log_save_time">
-        <el-col :span="5">
+        <el-col :span="8">
           <el-input v-model="model.log_save_time" type="number">
             <template slot="append">天</template>
           </el-input>
         </el-col>
-        <el-col :span="13">
+        <el-col :span="16">
           超过此时间会被删除，0永久保留。
         </el-col>
       </el-form-item>

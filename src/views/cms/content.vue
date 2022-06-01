@@ -26,7 +26,7 @@
           </el-select>
           <el-cascader
             v-else-if="query.search_field==='category_id'"
-            v-model="query.category_id"
+            v-model="query.search_value"
             class="filter-item ya-search-value"
             :options="categoryData"
             :props="categoryProps"
@@ -171,6 +171,20 @@
         <el-form-item label="名称" prop="name">
           <el-input v-model="model.name" placeholder="请输入名称" clearable />
         </el-form-item>
+        <el-form-item label="封面" prop="img_id">
+          <el-col :span="11">
+            <el-image class="ya-height-100" fit="scale-down" :src="model.img_url" :preview-src-list="[model.img_url]" title="点击查看大图">
+              <div slot="error" class="image-slot">
+                <i class="el-icon-picture-outline" />
+              </div>
+            </el-image>
+          </el-col>
+          <el-col :span="13">
+            <el-button size="mini" @click="fileUpload('image', 'img_id', '上传封面')">上传封面</el-button>
+            <el-button size="mini" @click="fileDelete(0, 'img_id')">删除</el-button>
+            <p>jpg、png图片，小于200KB。</p>
+          </el-col>
+        </el-form-item>
         <el-form-item label="标题" prop="title">
           <el-input v-model="model.title" placeholder="title" clearable />
         </el-form-item>
@@ -180,13 +194,16 @@
         <el-form-item label="描述" prop="description">
           <el-input v-model="model.description" type="textarea" placeholder="description" clearable />
         </el-form-item>
+        <el-form-item label="作者" prop="author">
+          <el-input v-model="model.author" placeholder="author" clearable />
+        </el-form-item>
         <el-form-item label="链接" prop="url">
           <el-input v-model="model.url" placeholder="url" clearable />
         </el-form-item>
         <el-form-item label="图片" prop="imgs">
           <el-row>
             <el-col :span="8">
-              <el-button size="mini" @click="fileUpload('image', '上传图片')">上传图片</el-button>
+              <el-button size="mini" @click="fileUpload('image', 'imgs', '上传图片')">上传图片</el-button>
             </el-col>
             <el-col :span="16">
               <div>每张图片大小不超过 1 MB。</div>
@@ -202,7 +219,7 @@
                 <el-link :href="item.file_url" :underline="false" :download="item.file_url" target="_blank" class="ya-file-link">
                   下载
                 </el-link>
-                <el-button size="mini" @click="fileImgDele(index)">删除</el-button>
+                <el-button size="mini" @click="fileDelete(index, 'imgs')">删除</el-button>
               </div>
             </el-col>
           </el-row>
@@ -210,7 +227,7 @@
         <el-form-item label="视频" prop="videos">
           <el-row>
             <el-col :span="8">
-              <el-button size="mini" @click="fileUpload('video', '上传视频')">上传视频</el-button>
+              <el-button size="mini" @click="fileUpload('video', 'videos', '上传视频')">上传视频</el-button>
             </el-col>
             <el-col :span="16">
               <div>每个视频大小不超过 50 MB。</div>
@@ -233,7 +250,7 @@
                 <el-link :href="item.file_url" :underline="false" :download="item.file_url" target="_blank" class="ya-file-link">
                   下载
                 </el-link>
-                <el-button size="mini" @click="fileVideoDele(index)">删除</el-button>
+                <el-button size="mini" @click="fileDelete(index, 'videos')">删除</el-button>
               </div>
             </el-col>
           </el-row>
@@ -241,7 +258,7 @@
         <el-form-item label="附件" prop="files">
           <el-row>
             <el-col :span="8">
-              <el-button size="mini" @click="fileUpload('word', '上传附件')">上传附件</el-button>
+              <el-button size="mini" @click="fileUpload('word', 'files', '上传附件')">上传附件</el-button>
             </el-col>
             <el-col :span="16">
               <div>每个附件大小不超过 10 MB。</div>
@@ -262,7 +279,7 @@
               <el-link :href="item.file_url" :underline="false" :download="item.file_url" target="_blank" class="ya-file-link">
                 下载
               </el-link>
-              <el-button size="mini" @click="fileFileDele(index)">删除</el-button>
+              <el-button size="mini" @click="fileDelete(index, 'files')">删除</el-button>
             </el-col>
           </el-row>
         </el-form-item>
@@ -275,10 +292,10 @@
         <el-form-item v-if="model[idkey]" label="添加时间" prop="create_time">
           <el-input v-model="model.create_time" disabled />
         </el-form-item>
-        <el-form-item v-if="model.update_time" label="修改时间" prop="update_time">
+        <el-form-item v-if="model[idkey]" label="修改时间" prop="update_time">
           <el-input v-model="model.update_time" disabled />
         </el-form-item>
-        <el-form-item v-if="model.delete_time" label="删除时间" prop="delete_time">
+        <el-form-item v-if="model[idkey]" label="删除时间" prop="delete_time">
           <el-input v-model="model.delete_time" disabled />
         </el-form-item>
       </el-form>
@@ -327,15 +344,18 @@ export default {
         content_id: '',
         category_id: '',
         name: '',
+        img_id: 0,
+        img_url: '',
         title: '',
         keywords: '',
         description: '',
+        author: '',
         url: '',
         imgs: [],
         files: [],
         videos: [],
-        content: '',
-        sort: 250
+        sort: 250,
+        content: ''
       },
       rules: {
         name: [{ required: true, message: '请输入名称', trigger: 'blur' }]
@@ -354,7 +374,8 @@ export default {
       is_hide: 0,
       fileDialog: false,
       fileTitle: '文件管理',
-      fileType: 'image'
+      fileType: 'image',
+      fileField: ''
     }
   },
   created() {
@@ -669,6 +690,7 @@ export default {
     category() {
       category().then(res => {
         this.categoryData = res.data.list
+        this.categoryData.unshift({ category_id: 0, category_name: '(未分类)', category_pid: 0 })
       }).catch(() => {})
     },
     categoryQuery(value) {
@@ -687,38 +709,48 @@ export default {
       }
     },
     // 上传图片、视频、附件
-    fileUpload(fileType, fileTitle = '文件管理') {
+    fileUpload(fileType, fileField = '', fileTitle = '文件管理') {
       this.fileType = fileType
+      this.fileField = fileField
       this.fileTitle = fileTitle
       this.fileDialog = true
     },
     fileCancel() {
+      this.fileType = 'image'
+      this.fileField = ''
+      this.fileTitle = '文件管理'
       this.fileDialog = false
     },
     fileSubmit(fileList, fileType) {
-      this.fileTitle = ''
+      const fileField = this.fileField
       const fileLength = fileList.length
       if (fileLength) {
         for (let i = 0; i < fileLength; i++) {
-          if (fileType === 'image') {
+          if (fileField === 'img_id') {
+            this.model.img_id = fileList[i]['file_id']
+            this.model.img_url = fileList[i]['file_url']
+          } else if (fileField === 'imgs') {
             this.model.imgs.push(fileList[i])
-          } else if (fileType === 'video') {
+          } else if (fileField === 'videos') {
             this.model.videos.push(fileList[i])
-          } else {
+          } else if (fileField === 'files') {
             this.model.files.push(fileList[i])
           }
         }
       }
       this.fileDialog = false
     },
-    fileImgDele(index) {
-      this.model.imgs.splice(index, 1)
-    },
-    fileVideoDele(index) {
-      this.model.videos.splice(index, 1)
-    },
-    fileFileDele(index) {
-      this.model.files.splice(index, 1)
+    fileDelete(index, field = '') {
+      if (field === 'img_id') {
+        this.model.img_id = 0
+        this.model.img_url = ''
+      } else if (field === 'imgs') {
+        this.model.imgs.splice(index, 1)
+      } else if (field === 'videos') {
+        this.model.videos.splice(index, 1)
+      } else if (field === 'files') {
+        this.model.files.splice(index, 1)
+      }
     }
   }
 }
