@@ -69,9 +69,9 @@
       <el-table-column type="selection" width="42" title="全选/反选" />
       <el-table-column :prop="idkey" label="ID" min-width="100" sortable="custom" />
       <el-table-column prop="group_name" label="名称" min-width="120" />
-      <el-table-column prop="group_desc" label="描述" min-width="130" />
-      <el-table-column prop="group_sort" label="排序" min-width="100" sortable="custom" />
-      <el-table-column prop="is_disable" label="禁用" min-width="110" sortable="custom" align="center">
+      <el-table-column prop="group_desc" label="描述" min-width="150" show-overflow-tooltip />
+      <el-table-column prop="group_sort" label="排序" min-width="85" sortable="custom" />
+      <el-table-column prop="is_disable" label="禁用" min-width="85" sortable="custom" align="center">
         <template slot-scope="scope">
           <el-switch v-model="scope.row.is_disable" :active-value="1" :inactive-value="0" @change="disable([scope.row])" />
         </template>
