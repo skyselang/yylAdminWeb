@@ -199,20 +199,19 @@
                       <i class="el-icon-document ya-file-icon" />
                     </div>
                   </el-image>
-                  <el-image v-else :src="item.file_url" class="ya-file-img">
-                    <div slot="error" class="image-slot">
-                      <i class="el-icon-folder ya-file-icon" />
-                    </div>
-                  </el-image>
+                  <div v-else class="image-slot">
+                    <i class="el-icon-folder ya-file-icon" />
+                  </div>
                 </div>
                 <div :style="{paddingTop:'5px', minHeight:'50px'}">
                   <span class="ya-file-name" :title="item.file_name+'.'+item.file_ext">{{ item.file_name }}.{{ item.file_ext }}</span>
                   <div class="bottom clearfix">
                     <el-button v-if="item.is_disable" size="text" type="info" icon="el-icon-warning" title="已禁用" />
                     <el-button v-else size="medium" type="text" icon="el-icon-warning-outline" title="已启用" />
-                    <el-button size="mini" type="text" @click="edit(item)">详情</el-button>
-                    <el-button size="mini" type="text" @click="edit(item)">修改</el-button>
-                    <el-button size="mini" type="text" @click="selectOpen('dele',[item.file_id])">删除</el-button>
+                    <el-button type="text" icon="el-icon-copy-document" title="复制文件名" @click="copy(item.file_name, $event)" />
+                    <el-link type="primary" icon="el-icon-download" title="下载文件" style="margin:-8px 10px 0 10px" :href="item.file_url" :underline="false" :download="item.file_url" target="_blank" />
+                    <el-button size="mini" type="text" title="详情/修改" @click="edit(item)">修改</el-button>
+                    <el-button size="mini" type="text" title="删除文件" @click="selectOpen('dele',[item.file_id])">删除</el-button>
                   </div>
                 </div>
               </el-card>
@@ -231,7 +230,8 @@
       <el-form ref="ref" :rules="rules" :model="model" label-width="100px" class="dialog-body" :style="{height:height+'px'}">
         <el-form-item label="文件名称" prop="file_name">
           <el-input v-model="model.file_name" placeholder="" :title="model.file_name" clearable>
-            <el-link slot="append" icon="el-icon-download" title="下载" :href="model.file_url" :underline="false" :download="model.file_url" target="_blank" />
+            <el-button slot="append" icon="el-icon-copy-document" title="复制文件名" style="margin-right:3px" @click="copy(model.file_name, $event)" />
+            <el-link slot="append" icon="el-icon-download" title="下载文件" :href="model.file_url" :underline="false" :download="model.file_url" target="_blank" />
           </el-input>
         </el-form-item>
         <el-form-item label="文件分组" prop="group_id">
