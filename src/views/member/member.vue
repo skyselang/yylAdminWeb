@@ -6,6 +6,7 @@
       <el-row>
         <el-col>
           <el-select v-model="query.search_field" class="filter-item ya-search-field" placeholder="搜索字段">
+            <el-option :value="idkey" label="ID" />
             <el-option value="nickname" label="昵称" />
             <el-option value="username" label="用户名" />
             <el-option value="phone" label="手机" />
@@ -15,13 +16,14 @@
             <el-option value="name" label="姓名" />
             <el-option value="gender" label="性别" />
             <el-option value="region_id" label="所在地" />
-            <el-option :value="idkey" label="ID" />
+            <el-option value="reg_channel" label="注册渠道" />
+            <el-option value="reg_type" label="注册方式" />
           </el-select>
-          <el-select v-if="query.search_field==='is_disable'" v-model="query.search_value" class="filter-item ya-search-value" placeholder="请选择">
+          <el-select v-if="query.search_field==='is_disable'" v-model="query.search_value" class="filter-item ya-search-value" clearable>
             <el-option :value="1" label="是" />
             <el-option :value="0" label="否" />
           </el-select>
-          <el-select v-else-if="query.search_field==='gender'" v-model="query.search_value" class="filter-item ya-search-value" placeholder="请选择">
+          <el-select v-else-if="query.search_field==='gender'" v-model="query.search_value" class="filter-item ya-search-value" clearable>
             <el-option label="未知" :value="0" />
             <el-option label="男" :value="1" />
             <el-option label="女" :value="2" />
@@ -35,6 +37,12 @@
             filterable
             @change="regionQuery"
           />
+          <el-select v-else-if="query.search_field==='reg_channel'" v-model="query.search_value" class="filter-item ya-search-value" clearable>
+            <el-option v-for="(item, index ) in reg_channels" :key="index" :label="item" :value="index" />
+          </el-select>
+          <el-select v-else-if="query.search_field==='reg_type'" v-model="query.search_value" class="filter-item ya-search-value" clearable>
+            <el-option v-for="(item, index ) in reg_types" :key="index" :label="item" :value="index" />
+          </el-select>
           <el-input v-else v-model="query.search_value" class="filter-item ya-search-value" placeholder="搜索内容" clearable />
           <el-select v-model="query.date_field" class="filter-item ya-date-field" placeholder="时间字段">
             <el-option value="create_time" label="注册时间" />
@@ -103,7 +111,7 @@
       </el-dialog>
     </div>
     <!-- 列表 -->
-    <el-table ref="table" v-loading="loading" :data="data" :height="height" @sort-change="sort" @selection-change="select">
+    <el-table ref="table" v-loading="loading" :data="data" :height="height" @sort-change="sort" @selection-change="select" @cell-dblclick="cellDbclick">
       <el-table-column type="selection" width="42" title="全选/反选" />
       <el-table-column :prop="idkey" label="ID" min-width="100" sortable="custom" />
       <el-table-column prop="avatar_id" label="头像" min-width="60">
@@ -111,11 +119,11 @@
           <el-image v-if="scope.row.avatar_url" class="ya-img-table" :src="scope.row.avatar_url" :preview-src-list="[scope.row.avatar_url]" title="点击查看大图" />
         </template>
       </el-table-column>
-      <el-table-column prop="nickname" label="昵称" min-width="200" sortable="custom" show-overflow-tooltip />
-      <el-table-column prop="username" label="用户名" min-width="120" sortable="custom" show-overflow-tooltip />
+      <el-table-column prop="nickname" label="昵称" min-width="150" sortable="custom" show-overflow-tooltip />
+      <el-table-column prop="username" label="用户名" min-width="200" sortable="custom" show-overflow-tooltip />
       <el-table-column prop="phone" label="手机" min-width="120" sortable="custom" show-overflow-tooltip />
       <el-table-column prop="email" label="邮箱" min-width="220" sortable="custom" show-overflow-tooltip />
-      <el-table-column prop="remark" label="备注" min-width="110" show-overflow-tooltip />
+      <el-table-column prop="remark" label="备注" min-width="100" show-overflow-tooltip />
       <el-table-column prop="is_disable" label="禁用" min-width="80" sortable="custom">
         <template slot-scope="scope">
           <el-switch v-model="scope.row.is_disable" :active-value="1" :inactive-value="0" @change="disable([scope.row])" />
@@ -330,6 +338,8 @@ export default {
         username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
         password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
       },
+      reg_channels: [],
+      reg_types: [],
       regionData: [],
       regionProps: { expandTrigger: 'click', checkStrictly: true, value: 'region_id', label: 'region_name' },
       selection: [],
@@ -353,7 +363,7 @@ export default {
     // 列表
     list() {
       this.loading = true
-      if (this.recycle === 1) {
+      if (this.recycle) {
         recover(this.query).then(res => {
           this.data = res.data.list
           this.count = res.data.count
@@ -365,6 +375,8 @@ export default {
         list(this.query).then(res => {
           this.data = res.data.list
           this.count = res.data.count
+          this.reg_channels = res.data.reg_channels
+          this.reg_types = res.data.reg_types
           this.loading = false
         }).catch(() => {
           this.loading = false
@@ -566,7 +578,7 @@ export default {
         this.selectAlert()
       } else {
         this.loading = true
-        if (this.recycle === 1) {
+        if (this.recycle) {
           recoverDele({
             ids: this.selectGetIds(row)
           }).then(res => {
@@ -651,6 +663,10 @@ export default {
       } else {
         this.$message.error('内容为空')
       }
+    },
+    // 单元格双击复制
+    cellDbclick(row, column, cell, event) {
+      this.copy(row[column.property], event)
     }
   }
 }
