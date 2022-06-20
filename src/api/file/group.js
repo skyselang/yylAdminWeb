@@ -1,6 +1,6 @@
 import request from '@/utils/request'
+// 文件分组
 const url = '/admin/file.Group/'
-// ----------------文件分组管理----------------
 /**
  * 文件分组列表
  * @param {array} params 请求参数

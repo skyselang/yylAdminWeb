@@ -20,7 +20,8 @@ const state = {
   username: '',
   nickname: '',
   avatar: '',
-  roles: []
+  roles: [],
+  menus: []
 }
 
 const mutations = {
@@ -38,6 +39,9 @@ const mutations = {
   },
   SET_ROLES: (state, roles) => {
     state.roles = roles
+  },
+  SET_MENUS: (state, menus) => {
+    state.menus = menus
   }
 }
 
@@ -81,7 +85,8 @@ const actions = {
           username,
           nickname,
           avatar_url,
-          roles
+          roles,
+          menus
         } = data
 
         // 权限必须是一个非空数组
@@ -93,6 +98,7 @@ const actions = {
         commit('SET_NICKNAME', nickname)
         commit('SET_AVATAR', avatar_url)
         commit('SET_ROLES', roles)
+        commit('SET_MENUS', menus)
         setUsername(username)
         setNickname(nickname)
         setAvatar(avatar_url)
@@ -112,6 +118,7 @@ const actions = {
         commit('SET_NICKNAME', '')
         commit('SET_AVATAR', '')
         commit('SET_ROLES', [])
+        commit('SET_MENUS', [])
         delAdminToken()
         delUsername()
         delNickname()

@@ -8,16 +8,20 @@
   padding-left: 10px;
 }
 
-.ya-margin-left {
-  margin-left: 10px;
-}
-
 .ya-margin-top {
   margin-top: 10px;
 }
 
+.ya-margin-right {
+  margin-right: 10px;
+}
+
 .ya-margin-bottom {
   margin-bottom: 10px;
+}
+
+.ya-margin-left {
+  margin-left: 10px;
 }
 
 .ya-width-150 {
@@ -62,7 +66,7 @@
 }
 
 .ya-search-value {
-  width: 20%;
+  width: 20% !important;
   min-width: 150px;
 }
 

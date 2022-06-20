@@ -1,6 +1,6 @@
 import request from '@/utils/request'
+// 个人中心
 const url = '/admin/admin.UserCenter/'
-// ----------------个人中心----------------
 /**
  * 我的信息
  * @param {array} params 请求参数

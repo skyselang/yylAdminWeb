@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <!-- 查询操作 -->
+    <!-- 查询 -->
     <div class="filter-container">
       <el-row>
         <el-col>
@@ -33,10 +33,10 @@
     <!-- 选中操作 -->
     <el-row>
       <el-col>
-        <el-checkbox v-model="selectAll" border :indeterminate="selectAllInd" @change="selectAllChange">全选</el-checkbox>
-        <el-button class="ya-margin-left" title="修改分组" @click="selectOpen('editgroup')">分组</el-button>
-        <el-button class="ya-margin-left" title="修改类型" @click="selectOpen('edittype')">类型</el-button>
-        <el-button class="ya-margin-left" title="修改域名" @click="selectOpen('editdomain')">域名</el-button>
+        <el-checkbox v-model="selectAll" style="margin-right:10px;top:-2px" border :indeterminate="selectAllInd" @change="selectAllChange">全选</el-checkbox>
+        <el-button title="修改分组" @click="selectOpen('editgroup')">分组</el-button>
+        <el-button title="修改类型" @click="selectOpen('edittype')">类型</el-button>
+        <el-button title="修改域名" @click="selectOpen('editdomain')">域名</el-button>
         <el-button title="是否禁用" @click="selectOpen('disable')">禁用</el-button>
         <el-button title="删除" @click="selectOpen('dele')">删除</el-button>
         <el-button v-if="recycle" type="primary" @click="selectOpen('reco')">恢复</el-button>
@@ -75,7 +75,7 @@
           <el-option value="desc" label="降序" />
         </el-select>
         <el-select v-model="query.group_id" class="filter-item ya-search-field ya-margin-left" filterable clearable placeholder="分组" @change="groupSelect">
-          <el-option v-for="item in group" :key="item.group_id" :value="item.group_id" :label="item.group_name" />
+          <el-option v-for="(item, index) in group" :key="index" :value="item.group_id" :label="item.group_name" />
         </el-select>
         <el-button-group>
           <el-button type="text" icon="el-icon-plus" title="添加分组" @click="groupAdd()" />
@@ -101,23 +101,41 @@
         </el-form-item>
         <el-form-item v-else-if="selectType==='editdomain'" label="文件域名" prop="">
           <el-input v-model="domain" placeholder="" clearable />
-          <span>修改文件域名会影响文件的访问，请确认无误后修改！</span>
+          <span class="ya-margin-left">修改文件域名会影响文件的访问，请确认无误后修改！</span>
         </el-form-item>
         <el-form-item v-else-if="selectType==='disable'" label="是否禁用" prop="">
           <el-switch v-model="is_disable" :active-value="1" :inactive-value="0" />
-          <span v-if="is_disable" style="color:red">禁用文件会对已使用该文件的业务造成影响！</span>
+          <span v-if="is_disable" class="ya-margin-left" style="color:red">禁用会对已使用该文件的业务造成影响！</span>
         </el-form-item>
         <el-form-item v-else-if="selectType==='dele'" label="" prop="">
-          <span v-if="recycle" style="color:red">确定要彻底删除选中的{{ name }}吗？删除后不可恢复！</span>
-          <span v-else style="color:red">确定要删除选中的{{ name }}吗？</span>
+          <span v-if="recycle" class="ya-margin-left" style="color:red">确定要彻底删除选中的{{ name }}吗？删除后不可恢复！</span>
+          <span v-else class="ya-margin-left" style="color:red">确定要删除选中的{{ name }}吗？删除会对已使用该文件的业务造成影响！</span>
         </el-form-item>
         <el-form-item v-else-if="selectType==='reco'" label="" prop="">
-          <span style="color:red">确定要恢复选中的{{ name }}吗？</span>
+          <span class="ya-margin-left" style="color:red">确定要恢复选中的{{ name }}吗？</span>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="selectCancel">取消</el-button>
         <el-button type="primary" @click="selectSubmit">提交</el-button>
+      </div>
+    </el-dialog>
+    <!-- 分组管理 -->
+    <el-dialog :title="groupTitle" :visible.sync="groupDialog" :before-close="groupCancel" append-to-body :close-on-click-modal="false" :close-on-press-escape="false">
+      <el-form ref="groupRef" :rules="groupRules" :model="groupModel" label-width="100px" class="dialog-body">
+        <el-form-item label="名称" prop="group_name">
+          <el-input v-model="groupModel.group_name" placeholder="请输入分组名称" clearable />
+        </el-form-item>
+        <el-form-item label="描述" prop="group_desc">
+          <el-input v-model="groupModel.group_desc" clearable />
+        </el-form-item>
+        <el-form-item label="排序" prop="group_sort">
+          <el-input v-model="groupModel.group_sort" type="number" />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="groupCancel">取消</el-button>
+        <el-button type="primary" @click="groupSubmit">提交</el-button>
       </div>
     </el-dialog>
     <!-- 列表 -->
@@ -143,7 +161,7 @@
             <el-link :type="query.is_disable===0?'primary':''" :underline="false" class="ya-height-26" @click="disableSelect(0)">已启用</el-link>
           </el-col>
           <el-col class="ya-padding-left">
-            <el-link :type="query.is_disable?'primary':''" :underline="false" class="ya-height-26" @click="disableSelect(1)">已禁用</el-link>
+            <el-link :type="query.is_disable===1?'primary':''" :underline="false" class="ya-height-26" @click="disableSelect(1)">已禁用</el-link>
           </el-col>
         </el-row>
         <!-- 上传筛选 -->
@@ -156,7 +174,7 @@
             <el-link :type="query.is_front===0?'primary':''" :underline="false" class="ya-height-26" @click="frontSelect(0)">后台</el-link>
           </el-col>
           <el-col class="ya-padding-left">
-            <el-link :type="query.is_front?'primary':''" :underline="false" class="ya-height-26" @click="frontSelect(1)">前台</el-link>
+            <el-link :type="query.is_front===1?'primary':''" :underline="false" class="ya-height-26" @click="frontSelect(1)">前台</el-link>
           </el-col>
         </el-row>
         <!-- 存储筛选 -->
@@ -206,8 +224,8 @@
                 <div :style="{paddingTop:'5px', minHeight:'50px'}">
                   <span class="ya-file-name" :title="item.file_name+'.'+item.file_ext">{{ item.file_name }}.{{ item.file_ext }}</span>
                   <div class="bottom clearfix">
-                    <el-button v-if="item.is_disable" size="text" type="info" icon="el-icon-warning" title="已禁用" />
-                    <el-button v-else size="medium" type="text" icon="el-icon-warning-outline" title="已启用" />
+                    <el-button v-if="item.is_disable" size="medium" type="text" icon="el-icon-warning" title="已禁用,点击修改" @click="selectOpen('disable',[item.file_id])" />
+                    <el-button v-else size="medium" type="text" icon="el-icon-warning-outline" title="已启用,点击修改" @click="selectOpen('disable',[item.file_id])" />
                     <el-button type="text" icon="el-icon-copy-document" title="复制文件名" @click="copy(item.file_name, $event)" />
                     <el-link type="primary" icon="el-icon-download" title="下载文件" style="margin:-8px 10px 0 10px" :href="item.file_url" :underline="false" :download="item.file_url" target="_blank" />
                     <el-button size="mini" type="text" title="详情/修改" @click="edit(item)">修改</el-button>
@@ -301,24 +319,6 @@
         <el-button type="primary" @click="submit">提交</el-button>
       </div>
     </el-dialog>
-    <!-- 分组管理 -->
-    <el-dialog :title="groupTitle" :visible.sync="groupDialog" :before-close="groupCancel" append-to-body :close-on-click-modal="false" :close-on-press-escape="false">
-      <el-form ref="groupRef" :rules="groupRules" :model="groupModel" label-width="100px" class="dialog-body">
-        <el-form-item label="名称" prop="group_name">
-          <el-input v-model="groupModel.group_name" placeholder="请输入分组名称" clearable />
-        </el-form-item>
-        <el-form-item label="描述" prop="group_desc">
-          <el-input v-model="groupModel.group_desc" clearable />
-        </el-form-item>
-        <el-form-item label="排序" prop="group_sort">
-          <el-input v-model="groupModel.group_sort" type="number" />
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="groupCancel">取消</el-button>
-        <el-button type="primary" @click="groupSubmit">提交</el-button>
-      </div>
-    </el-dialog>
     <!-- 文件管理操作 -->
     <el-row v-show="fileType">
       <el-col style="text-align:right;margin-top:20px">
@@ -334,7 +334,7 @@ import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination'
 import clip from '@/utils/clipboard'
 import { getAdminToken } from '@/utils/auth'
-import { group, list, info, add, edit, dele, editgroup, edittype, editdomain, disable, recover, recoverReco, recoverDele } from '@/api/file/file'
+import { list, info, add, edit, dele, editgroup, edittype, editdomain, disable, recover, recoverReco, recoverDele } from '@/api/file/file'
 import { info as groupInfo, add as groupAdd, edit as groupEdit, dele as groupDele } from '@/api/file/group'
 
 export default {
@@ -405,8 +405,8 @@ export default {
       domain: '',
       is_disable: 0,
       uploadAction: add(),
-      uploadHeaders: { AdminToken: getAdminToken() },
-      uploadData: { group_id: 0 },
+      uploadHeaders: {},
+      uploadData: {},
       uploadLimit: 9,
       uploadFilelist: [],
       groupDialog: false,
@@ -442,13 +442,24 @@ export default {
       this.height = this.height - 100
     }
     this.list()
-    this.groupList()
+    const tokenType = process.env.VUE_APP_TOKEN_TYPE || 'header'
+    const tokenName = process.env.VUE_APP_TOKEN_NAME || 'AdminToken'
+    const tokenValue = getAdminToken()
+    if (tokenType === 'header') {
+      const uploadHeaders = {}
+      uploadHeaders[tokenName] = tokenValue
+      this.uploadHeaders = uploadHeaders
+    } else {
+      const uploadData = { group_id: 0 }
+      uploadData[tokenName] = tokenValue
+      this.uploadData = uploadData
+    }
   },
   methods: {
     // 列表
     list() {
       this.loading = true
-      if (this.recycle === 1) {
+      if (this.recycle) {
         recover(this.query).then(res => {
           this.data = res.data.list
           this.count = res.data.count
@@ -456,6 +467,7 @@ export default {
           this.storage = res.data.storage
           this.fileIds = res.data.ids
           this.loading = false
+          this.groupList(res.data.group)
           this.imagePreview(res.data.list)
         }).catch(() => {
           this.loading = false
@@ -468,6 +480,7 @@ export default {
           this.storage = res.data.storage
           this.fileIds = res.data.ids
           this.loading = false
+          this.groupList(res.data.group)
           this.imagePreview(res.data.list)
         }).catch(() => {
           this.loading = false
@@ -508,8 +521,8 @@ export default {
       info({
         file_id: row.file_id
       }).then(res => {
-        this.loading = false
         this.reset(res.data)
+        this.loading = false
       }).catch(() => {
         this.loading = false
       })
@@ -545,7 +558,6 @@ export default {
       this.query = this.$options.data().query
       this.reset()
       this.list()
-      this.groupList()
     },
     // 排序
     sort() {
@@ -715,7 +727,7 @@ export default {
       if (!this.selection.length) {
         this.selectAlert()
       } else {
-        if (this.recycle === 1) {
+        if (this.recycle) {
           recoverDele({
             ids: this.selectGetIds()
           }).then(res => {
@@ -790,14 +802,13 @@ export default {
       this.list()
     },
     // 分组管理
-    groupList() {
-      group().then(res => {
-        this.group = res.data.list
-        this.group.unshift({ group_id: 0, group_name: '(未分组)' })
-        this.loading = false
-      }).catch(res => {
-        this.loading = false
-      })
+    groupList(group) {
+      if (group) {
+        this.group = group
+      } else {
+        this.list()
+      }
+      this.group.unshift({ group_id: 0, group_name: '(未分组)' })
     },
     groupAdd() {
       this.groupDialog = true

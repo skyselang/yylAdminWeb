@@ -1,9 +1,9 @@
 import request from '@/utils/request'
+// 设置管理
 const url = '/admin/setting.Setting/'
-// ----------------设置管理----------------
 /**
  * Token设置信息
- * @param {array} params 请求数据
+ * @param {array} params 请求参数
  */
 export function tokenInfo(params) {
   return request({
@@ -25,7 +25,7 @@ export function tokenEdit(data) {
 }
 /**
  * 验证码设置信息
- * @param {array} params 请求数据
+ * @param {array} params 请求参数
  */
 export function captchaInfo(params) {
   return request({
@@ -47,7 +47,7 @@ export function captchaEdit(data) {
 }
 /**
  * 日志设置信息
- * @param {array} params 请求数据
+ * @param {array} params 请求参数
  */
 export function logInfo(params) {
   return request({
@@ -69,7 +69,7 @@ export function logEdit(data) {
 }
 /**
  * 接口设置信息
- * @param {array} params 请求数据
+ * @param {array} params 请求参数
  */
 export function apiInfo(params) {
   return request({
@@ -90,8 +90,30 @@ export function apiEdit(data) {
   })
 }
 /**
+ * 登录注册设置信息
+ * @param {array} params 请求参数
+ */
+export function logregInfo(params) {
+  return request({
+    url: url + 'logregInfo',
+    method: 'get',
+    params: params
+  })
+}
+/**
+ * 登录注册设置修改
+ * @param {array} data 请求数据
+ */
+export function logregEdit(data) {
+  return request({
+    url: url + 'logregEdit',
+    method: 'post',
+    data
+  })
+}
+/**
  * 自定义设置信息
- * @param {array} params 请求数据
+ * @param {array} params 请求参数
  */
 export function diyInfo(params) {
   return request({

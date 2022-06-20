@@ -5,10 +5,11 @@ import NProgress from 'nprogress' // 进度条
 import 'nprogress/nprogress.css' // 进度条样式
 import { getAdminToken } from '@/utils/auth' // 从cookie中获取token
 import getPageTitle from '@/utils/page-title'
+import Layout from '@/layout'
 
 NProgress.configure({ showSpinner: false }) // 进度条配置
 
-const whiteList = ['/login', '/redirect'] // 免登录白名单
+const whiteList = ['/login', '/redirect'] // 免登录名单
 
 router.beforeEach(async(to, from, next) => {
   // 进度条开始
@@ -46,8 +47,11 @@ router.beforeEach(async(to, from, next) => {
           // 注意：权限必须是对象数组！例如：['admin/Index/index']
           const { roles } = await store.dispatch('user/userInfo')
 
+          // 获取后台菜单
+          const menus = filterAsyncRoutes(store.getters.menus ? store.getters.menus : [])
+
           // 根据权限生成可访问路由表
-          const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
+          const accessRoutes = await store.dispatch('permission/generateRoutes', { roles: roles, menus: menus })
 
           // 动态添加可访问路由
           router.addRoutes(accessRoutes)
@@ -67,7 +71,7 @@ router.beforeEach(async(to, from, next) => {
   } else {
     // 未登录
     if (whiteList.indexOf(to.path) !== -1) {
-      // 在免登录白名单中，直接进入
+      // 在免登录名单中，直接进入
       next()
     } else {
       // 其他没有访问权限的页面将被重定向到登录页面
@@ -76,6 +80,37 @@ router.beforeEach(async(to, from, next) => {
     }
   }
 })
+
+// 遍历后台传来的路由字符串，转换为组件对象
+function filterAsyncRoutes(obj) {
+  if (obj.length > 0) {
+    const newObj = obj.map(item => {
+      if (item.component === 'Layout') {
+        item.component = Layout
+      } else {
+        if (typeof item.component === 'string') { // 这个判断非常重要
+          item.component = loadView(item.component)
+        }
+      }
+      if (item.children && item.children.length > 0) {
+        item.children = filterAsyncRoutes(item.children)
+      }
+      return item
+    })
+    return newObj
+  } else {
+    return []
+  }
+}
+
+// 路由懒加载
+export const loadView = (view) => {
+  return resolve => require([`@/views/${view}`], resolve).catch(err => {
+    Message.error('Router ' + err)
+    // 进度条结束
+    NProgress.done()
+  })
+}
 
 router.afterEach(() => {
   // 进度条结束

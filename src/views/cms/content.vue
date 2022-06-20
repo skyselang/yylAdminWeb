@@ -7,25 +7,16 @@
         <el-col>
           <el-select v-model="query.search_field" class="filter-item ya-search-field" placeholder="搜索字段">
             <el-option value="name" label="名称" />
+            <el-option value="category_id" label="分类" />
+            <el-option value="sort" label="排序" />
             <el-option value="is_top" label="是否置顶" />
             <el-option value="is_hot" label="是否热门" />
             <el-option value="is_rec" label="是否推荐" />
             <el-option value="is_hide" label="是否隐藏" />
-            <el-option value="category_id" label="分类" />
-            <el-option value="sort" label="排序" />
             <el-option :value="idkey" label="ID" />
           </el-select>
-          <el-select
-            v-if="query.search_field==='is_top'||query.search_field==='is_hot'||query.search_field==='is_rec'||query.search_field==='is_hide'"
-            v-model="query.search_value"
-            class="filter-item ya-search-value"
-            placeholder="请选择"
-          >
-            <el-option :value="1" label="是" />
-            <el-option :value="0" label="否" />
-          </el-select>
           <el-cascader
-            v-else-if="query.search_field==='category_id'"
+            v-if="query.search_field==='category_id'"
             v-model="query.search_value"
             class="filter-item ya-search-value"
             :options="categoryData"
@@ -35,6 +26,15 @@
             filterable
             @change="categoryQuery"
           />
+          <el-select
+            v-else-if="query.search_field==='is_top'||query.search_field==='is_hot'||query.search_field==='is_rec'||query.search_field==='is_hide'"
+            v-model="query.search_value"
+            class="filter-item ya-search-value"
+            placeholder="请选择"
+          >
+            <el-option :value="1" label="是" />
+            <el-option :value="0" label="否" />
+          </el-select>
           <el-input v-else v-model="query.search_value" class="filter-item ya-search-value" placeholder="搜索内容" clearable />
           <el-select v-model="query.date_field" class="filter-item ya-date-field" placeholder="时间类型">
             <el-option value="create_time" label="添加时间" />
@@ -317,7 +317,7 @@ import Pagination from '@/components/Pagination'
 import FileManage from '@/components/FileManage'
 import RichEditor from '@/components/RichEditor'
 import { arrayColumn } from '@/utils/index'
-import { category, list, info, add, edit, dele, cate, istop, ishot, isrec, ishide, recover, recoverReco, recoverDele } from '@/api/cms/content'
+import { list, info, add, edit, dele, cate, istop, ishot, isrec, ishide, recover, recoverReco, recoverDele } from '@/api/cms/content'
 
 export default {
   name: 'CmsContent',
@@ -382,7 +382,6 @@ export default {
     this.recycle = this.$route.meta.query.recycle
     this.height = screenHeight()
     this.list()
-    this.category()
   },
   methods: {
     // 列表
@@ -392,6 +391,7 @@ export default {
         recover(this.query).then(res => {
           this.data = res.data.list
           this.count = res.data.count
+          this.category(res.data.category)
           this.loading = false
         }).catch(() => {
           this.loading = false
@@ -400,6 +400,7 @@ export default {
         list(this.query).then(res => {
           this.data = res.data.list
           this.count = res.data.count
+          this.category(res.data.category)
           this.loading = false
         }).catch(() => {
           this.loading = false
@@ -468,7 +469,6 @@ export default {
     refresh() {
       this.query = this.$options.data().query
       this.list()
-      this.category()
     },
     // 排序
     sort(sort) {
@@ -687,11 +687,13 @@ export default {
       }
     },
     // 分类
-    category() {
-      category().then(res => {
-        this.categoryData = res.data.list
-        this.categoryData.unshift({ category_id: 0, category_name: '(未分类)', category_pid: 0 })
-      }).catch(() => {})
+    category(category) {
+      if (category) {
+        this.categoryData = category
+      } else {
+        this.list()
+      }
+      this.categoryData.unshift({ category_id: 0, category_name: '(未分类)' })
     },
     categoryQuery(value) {
       if (value) {

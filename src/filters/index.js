@@ -28,7 +28,7 @@ export function timeAgo(time) {
 }
 
 /**
- * 数字格式
+ * 数字格式化
  * 10000 => 10k
  * @param {number} num
  * @param {number} digits
@@ -51,12 +51,12 @@ export function numberFormatter(num, digits) {
 }
 
 /**
- * 数字格式
+ * 金额格式化
  * 10000 => 10,000
- * @param {number} num
+ * @param {number} money
  */
-export function toThousandFilter(num) {
-  return (+num || 0).toString().replace(/^-?\d+/g, m => m.replace(/(?=(?!\b)(\d{3})+$)/g, ','))
+export function toThousandFilter(money) {
+  return (+money || 0).toString().replace(/^-?\d+/g, m => m.replace(/(?=(?!\b)(\d{3})+$)/g, ','))
 }
 
 /**

@@ -1,6 +1,6 @@
 import request from '@/utils/request'
+// 内容分类
 const url = '/admin/cms.Category/'
-// ---------------内容分类-----------------
 /**
  * 内容分类列表
  * @param {array} params 请求参数

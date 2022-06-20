@@ -1,6 +1,6 @@
 import request from '@/utils/request'
+// 文件设置
 const url = '/admin/file.Setting/'
-// ---------------文件设置-------------------
 /**
  * 文件设置信息
  * @param {array} params 请求参数

@@ -1,6 +1,6 @@
 import request from '@/utils/request'
+// 会员管理
 const url = '/admin/member.Member/'
-// ----------------会员管理----------------
 /**
  * 会员列表
  * @param {array} params 请求参数

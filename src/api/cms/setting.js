@@ -1,9 +1,9 @@
 import request from '@/utils/request'
+// 内容设置
 const url = '/admin/cms.Setting/'
-// ----------------内容设置----------------
 /**
  * 内容设置信息
- * @param {array} params 请求数据
+ * @param {array} params 请求参数
  */
 export function info(params) {
   return request({

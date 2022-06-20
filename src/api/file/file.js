@@ -1,17 +1,6 @@
 import request from '@/utils/request'
+// 文件管理
 const url = '/admin/file.File/'
-// ----------------文件管理----------------
-/**
- * 分组列表
- * @param {array} params 请求参数
- */
-export function group(params) {
-  return request({
-    url: url + 'group',
-    method: 'get',
-    params: params
-  })
-}
 /**
  * 文件列表
  * @param {array} params 请求参数
@@ -35,7 +24,7 @@ export function info(params) {
   })
 }
 /**
- * 文件添加
+ * 文件上传
  */
 export function add() {
   return process.env.VUE_APP_BASE_URL + url + 'add'

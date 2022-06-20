@@ -1,17 +1,6 @@
 import request from '@/utils/request'
+// 内容管理
 const url = '/admin/cms.Content/'
-// ----------------内容管理----------------
-/**
- * 分类列表
- * @param {array} params 请求参数
- */
-export function category(params) {
-  return request({
-    url: url + 'category',
-    method: 'get',
-    params: params
-  })
-}
 /**
  * 内容列表
  * @param {array} params 请求参数

@@ -9,21 +9,12 @@
             <el-option value="api_name" label="接口名称" />
             <el-option value="api_url" label="接口链接" />
             <el-option value="api_pid" label="上级" />
-            <el-option value="is_unlogin" label="无需登录" />
-            <el-option value="is_disable" label="是否禁用" />
+            <el-option value="is_unlogin" label="免登" />
+            <el-option value="is_disable" label="禁用" />
             <el-option :value="idkey" label="ID" />
           </el-select>
-          <el-select
-            v-if="query.search_field==='is_unlogin'||query.search_field==='is_disable'"
-            v-model="query.search_value"
-            class="filter-item ya-search-value"
-            placeholder="请选择"
-          >
-            <el-option :value="1" label="是" />
-            <el-option :value="0" label="否" />
-          </el-select>
           <el-cascader
-            v-else-if="query.search_field==='api_pid'"
+            v-if="query.search_field==='api_pid'"
             v-model="query.search_value"
             :options="trees"
             :props="props"
@@ -33,7 +24,28 @@
             filterable
             @change="pidQuery"
           />
+          <el-select
+            v-else-if="query.search_field==='is_unlogin'||query.search_field==='is_disable'"
+            v-model="query.search_value"
+            class="filter-item ya-search-value"
+            placeholder="请选择"
+          >
+            <el-option :value="1" label="是" />
+            <el-option :value="0" label="否" />
+          </el-select>
           <el-input v-else v-model="query.search_value" class="filter-item ya-search-value" placeholder="搜索内容" clearable />
+          <el-select v-model="query.date_field" class="filter-item ya-date-field" placeholder="时间类型">
+            <el-option value="create_time" label="添加时间" />
+            <el-option value="update_time" label="修改时间" />
+          </el-select>
+          <el-date-picker
+            v-model="query.date_value"
+            type="daterange"
+            class="filter-item ya-date-value"
+            value-format="yyyy-MM-dd"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          />
           <el-button class="filter-item" type="primary" @click="search()">查询</el-button>
           <el-button class="filter-item" @click="refresh()">刷新</el-button>
         </el-col>
@@ -41,10 +53,10 @@
       <!-- 选中操作 -->
       <el-row>
         <el-col>
-          <el-checkbox v-model="isExpandAll" border title="收起/展开" @change="expandAll">收起</el-checkbox>
-          <el-button class="ya-margin-left" title="修改上级" @click="selectOpen('editpid')">上级</el-button>
+          <el-checkbox v-model="isExpandAll" style="margin-right:10px;top:-2px" border title="收起/展开" @change="expandAll">收起</el-checkbox>
+          <el-button title="修改上级" @click="selectOpen('editpid')">上级</el-button>
+          <el-button title="是否免登" @click="selectOpen('unlogin')">免登</el-button>
           <el-button title="是否禁用" @click="selectOpen('disable')">禁用</el-button>
-          <el-button title="无需登录" @click="selectOpen('unlogin')">登录</el-button>
           <el-button title="删除" @click="selectOpen('dele')">删除</el-button>
           <el-button type="primary" @click="add()">添加</el-button>
         </el-col>
@@ -56,22 +68,21 @@
           </el-form-item>
           <el-form-item v-if="selectType==='editpid'" label="上级" prop="">
             <el-cascader
-              :key="selectPidKey"
               v-model="api_pid"
               :options="data"
               :props="props"
               style="width:100%"
+              placeholder="一级接口"
               clearable
               filterable
-              placeholder="一级接口"
               @change="pidSelect"
             />
           </el-form-item>
+          <el-form-item v-else-if="selectType==='unlogin'" label="是否免登" prop="">
+            <el-switch v-model="is_unlogin" :active-value="1" :inactive-value="0" />
+          </el-form-item>
           <el-form-item v-else-if="selectType==='disable'" label="是否禁用" prop="">
             <el-switch v-model="is_disable" :active-value="1" :inactive-value="0" />
-          </el-form-item>
-          <el-form-item v-else-if="selectType==='unlogin'" label="无需登录" prop="">
-            <el-switch v-model="is_unlogin" :active-value="1" :inactive-value="0" />
           </el-form-item>
           <el-form-item v-else-if="selectType==='dele'" label="" prop="">
             <span style="color:red">确定要删除选中的{{ name }}吗？</span>
@@ -86,7 +97,6 @@
     <!-- 列表 -->
     <el-table
       ref="table"
-      :key="tbKey"
       v-loading="loading"
       :data="data"
       :height="height"
@@ -104,14 +114,14 @@
         <template slot="header">
           <span>接口链接</span>
           <el-tooltip placement="top">
-            <div slot="content">权限标识（双击单元格复制）</div>
+            <div slot="content">权限标识</div>
             <i class="el-icon-warning" />
           </el-tooltip>
         </template>
       </el-table-column>
-      <el-table-column prop="is_unlogin" label="无需登录" min-width="95" align="center">
+      <el-table-column prop="is_unlogin" label="是否免登" min-width="95" align="center">
         <template slot="header">
-          <span>无需登录</span>
+          <span>是否免登</span>
           <el-tooltip placement="top">
             <div slot="content">开启后不用登录也可以访问，如登录注册等</div>
             <i class="el-icon-info" title="" />
@@ -145,11 +155,10 @@
       </el-table-column>
     </el-table>
     <!-- 添加修改 -->
-    <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false">
+    <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false" destroy-on-close>
       <el-form ref="ref" :rules="rules" :model="model" label-width="100px" class="dialog-body" :style="{height:height-50+'px'}">
         <el-form-item label="接口上级" prop="api_pid">
           <el-cascader
-            :key="pidKey"
             v-model="model.api_pid"
             :options="trees"
             :props="props"
@@ -161,10 +170,12 @@
           />
         </el-form-item>
         <el-form-item label="接口名称" prop="api_name">
-          <el-input v-model="model.api_name" placeholder="请输入接口名称" clearable />
+          <el-input v-model="model.api_name" placeholder="请输入接口名称" clearable>
+            <el-button slot="append" icon="el-icon-document-copy" title="复制" @click="copy(model.api_name, $event)" />
+          </el-input>
         </el-form-item>
         <el-form-item label="接口链接" prop="api_url">
-          <el-input v-model="model.api_url" placeholder="应用/控制器/操作，区分大小写">
+          <el-input v-model="model.api_url" placeholder="应用/控制器/操作，区分大小写" clearable>
             <el-button slot="append" icon="el-icon-document-copy" title="复制" @click="copy(model.api_url, $event)" />
           </el-input>
         </el-form-item>
@@ -202,42 +213,41 @@ export default {
       height: 680,
       loading: false,
       idkey: 'api_id',
-      tbKey: 1,
       query: {
-        search_field: 'api_name'
+        search_field: 'api_name',
+        date_field: 'create_time'
       },
       data: [],
       trees: [],
       props: { checkStrictly: true, value: 'api_id', label: 'api_name' },
       dialog: false,
       dialogTitle: '',
-      pidKey: 500,
       model: {
         api_id: '',
         api_pid: 0,
         api_name: '',
         api_url: '',
+        is_unlogin: 0,
+        is_disable: 0,
         api_sort: 250
       },
       rules: {
         api_name: [{ required: true, message: '请输入接口名称', trigger: 'blur' }]
       },
       isExpandAll: false,
-      selectPidKey: 1000,
       selection: [],
       selectIds: '',
       selectTitle: '选中操作',
       selectDialog: false,
       selectType: '',
       api_pid: 0,
-      is_disable: 0,
-      is_unlogin: 0
+      is_unlogin: 0,
+      is_disable: 0
     }
   },
   created() {
     this.height = screenHeight(210)
     this.list()
-    this.tree()
   },
   methods: {
     // 列表
@@ -245,13 +255,14 @@ export default {
       this.loading = true
       list(this.query).then(res => {
         this.data = res.data.list
+        this.trees = res.data.tree
         this.isExpandAll = false
         this.loading = false
       }).catch(() => {
         this.loading = false
       })
     },
-    // 加载
+    // 懒加载
     load(row, treeNode, resolve) {
       list({
         search_field: 'api_pid',
@@ -259,12 +270,6 @@ export default {
       }).then(res => {
         resolve(res.data.list)
       })
-    },
-    // 树形
-    tree() {
-      list({ type: 'tree' }).then(res => {
-        this.trees = res.data.list
-      }).catch(() => {})
     },
     // 添加修改
     add(row) {
@@ -294,7 +299,7 @@ export default {
           this.loading = true
           if (this.model[this.idkey]) {
             edit(this.model).then(res => {
-              this.refresh()
+              this.list()
               this.dialog = false
               this.$message.success(res.msg)
             }).catch(() => {
@@ -302,7 +307,7 @@ export default {
             })
           } else {
             add(this.model).then(res => {
-              this.refresh()
+              this.list()
               this.dialog = false
               this.$message.success(res.msg)
             }).catch(() => {
@@ -331,7 +336,6 @@ export default {
     refresh() {
       this.query = this.$options.data().query
       this.list()
-      this.tree()
     },
     // 收起/展开
     expandAll(e) {
@@ -383,10 +387,10 @@ export default {
         this.selectTitle = '选中操作'
         if (selectType === 'editpid') {
           this.selectTitle = '修改上级'
+        } else if (selectType === 'unlogin') {
+          this.selectTitle = '是否免登'
         } else if (selectType === 'disable') {
           this.selectTitle = '是否禁用'
-        } else if (selectType === 'unlogin') {
-          this.selectTitle = '无需登录'
         } else if (selectType === 'dele') {
           this.selectTitle = '删除' + this.name
         }
@@ -404,10 +408,10 @@ export default {
         const selectType = this.selectType
         if (selectType === 'editpid') {
           this.editpid(this.selection)
-        } else if (selectType === 'disable') {
-          this.disable(this.selection, true)
         } else if (selectType === 'unlogin') {
           this.unlogin(this.selection, true)
+        } else if (selectType === 'disable') {
+          this.disable(this.selection, true)
         } else if (selectType === 'dele') {
           this.dele(this.selection)
         }
@@ -421,9 +425,32 @@ export default {
         ids: this.selectGetIds(row),
         api_pid: this.api_pid
       }).then(res => {
-        this.refresh()
+        this.list()
         this.$message.success(res.msg)
-      }).catch(() => {})
+      }).catch(() => {
+        this.loading = false
+      })
+    },
+    // 是否免登
+    unlogin(row, select = false) {
+      if (!row.length) {
+        this.selectAlert()
+      } else {
+        this.loading = true
+        var is_unlogin = row[0].is_unlogin
+        if (select) {
+          is_unlogin = this.is_unlogin
+        }
+        unlogin({
+          ids: this.selectGetIds(row),
+          is_unlogin: is_unlogin
+        }).then(res => {
+          this.list()
+          this.$message.success(res.msg)
+        }).catch(() => {
+          this.list()
+        })
+      }
     },
     // 是否禁用
     disable(row, select = false) {
@@ -446,27 +473,6 @@ export default {
         })
       }
     },
-    // 无需登录
-    unlogin(row, select = false) {
-      if (!row.length) {
-        this.selectAlert()
-      } else {
-        this.loading = true
-        var is_unlogin = row[0].is_unlogin
-        if (select) {
-          is_unlogin = this.is_unlogin
-        }
-        unlogin({
-          ids: this.selectGetIds(row),
-          is_unlogin: is_unlogin
-        }).then(res => {
-          this.list()
-          this.$message.success(res.msg)
-        }).catch(() => {
-          this.list()
-        })
-      }
-    },
     // 删除
     dele(row) {
       if (!row.length) {
@@ -476,9 +482,11 @@ export default {
         dele({
           ids: this.selectGetIds(row)
         }).then(res => {
-          this.refresh()
+          this.list()
           this.$message.success(res.msg)
-        }).catch(() => {})
+        }).catch(() => {
+          this.loading = false
+        })
       }
     },
     // 上级选择

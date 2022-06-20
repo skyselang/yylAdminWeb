@@ -1,6 +1,6 @@
 import request from '@/utils/request'
+// 留言管理
 const url = '/admin/cms.Comment/'
-// ----------------留言管理----------------
 /**
  * 留言列表
  * @param {array} params 请求参数

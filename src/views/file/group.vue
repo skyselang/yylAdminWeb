@@ -11,7 +11,12 @@
             <el-option value="is_disable" label="禁用" />
             <el-option :value="idkey" label="ID" />
           </el-select>
-          <el-select v-if="query.search_field==='is_disable'" v-model="query.search_value" class="filter-item ya-search-value" placeholder="请选择">
+          <el-select
+            v-if="query.search_field==='is_disable'"
+            v-model="query.search_value"
+            class="filter-item ya-search-value"
+            placeholder="请选择"
+          >
             <el-option :value="1" label="是" />
             <el-option :value="0" label="否" />
           </el-select>
@@ -96,13 +101,10 @@
           <el-input v-model="model.group_name" placeholder="请输入名称" clearable />
         </el-form-item>
         <el-form-item label="描述" prop="group_desc">
-          <el-input v-model="model.group_desc" clearable />
+          <el-input v-model="model.group_desc" placeholder="请输入描述" clearable />
         </el-form-item>
         <el-form-item label="排序" prop="group_sort">
           <el-input v-model="model.group_sort" type="number" />
-        </el-form-item>
-        <el-form-item label="是否禁用" prop="is_disable">
-          <el-switch v-model="model.is_disable" :active-value="1" :inactive-value="0" />
         </el-form-item>
         <el-form-item v-if="model[idkey]" label="添加时间" prop="create_time">
           <el-input v-model="model.create_time" disabled />
@@ -110,13 +112,13 @@
         <el-form-item v-if="model[idkey]" label="修改时间" prop="update_time">
           <el-input v-model="model.update_time" disabled />
         </el-form-item>
-        <el-form-item v-if="model.delete_time" label="删除时间" prop="delete_time">
+        <el-form-item v-if="model[idkey]" label="删除时间" prop="delete_time">
           <el-input v-model="model.delete_time" disabled />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="cancel">取消</el-button>
-        <el-button type="primary" @click="submit">提交</el-button>
+        <el-button :loading="loading" @click="cancel">取消</el-button>
+        <el-button :loading="loading" type="primary" @click="submit">提交</el-button>
       </div>
     </el-dialog>
   </div>
@@ -152,8 +154,7 @@ export default {
         group_id: '',
         group_name: '',
         group_desc: '',
-        group_sort: 250,
-        is_disable: 0
+        group_sort: 250
       },
       rules: {
         group_name: [{ required: true, message: '请输入名称', trigger: 'blur' }]

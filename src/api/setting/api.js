@@ -1,6 +1,6 @@
 import request from '@/utils/request'
+// 接口管理
 const url = '/admin/setting.Api/'
-// ----------------接口管理----------------
 /**
  * 接口列表
  * @param {array} params 请求参数

@@ -1,6 +1,6 @@
 import request from '@/utils/request'
+// 用户管理
 const url = '/admin/admin.User/'
-// ----------------用户管理----------------
 /**
  * 用户列表
  * @param {array} params 请求参数

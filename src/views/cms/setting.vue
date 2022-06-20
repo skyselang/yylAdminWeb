@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <!-- 内容设置 -->
-    <el-card class="box-card">
+    <el-card>
       <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
         <el-tabs>
           <el-tab-pane label="基本信息" name="" class="dialog-body" :style="{height:height+'px'}">
@@ -112,15 +112,21 @@
               <el-col :span="13" />
             </el-form-item>
           </el-tab-pane>
+          <el-tab-pane label="内容设置" name="" class="dialog-body" :style="{height:height+'px'}">
+            <el-form-item label="留言" prop="is_comment">
+              <el-switch v-model="model.is_comment" :active-value="1" :inactive-value="0" />
+              <span> 关闭后无法提交留言。</span>
+            </el-form-item>
+          </el-tab-pane>
           <el-tab-pane label="自定义信息" name="" class="dialog-body" :style="{height:height+'px'}">
-            <el-form-item label="自定义配置">
-              <el-col :span="3" class="yyl-ml">
+            <el-form-item label="自定义设置">
+              <el-col :span="3">
                 键名
               </el-col>
-              <el-col :span="5" class="yyl-ml">
+              <el-col :span="5">
                 键值
               </el-col>
-              <el-col :span="6" class="yyl-ml">
+              <el-col :span="6">
                 说明
               </el-col>
               <el-col :span="2">
@@ -186,7 +192,8 @@ export default {
         email: '',
         qq: '',
         wechat: '',
-        diy_config: []
+        diy_config: [],
+        is_comment: 1
       },
       rules: {},
       fileDialog: false,
@@ -282,7 +289,5 @@ export default {
 </script>
 
 <style scoped>
-  .yyl-ml {
-    padding-left: 12px;
-  }
+
 </style>

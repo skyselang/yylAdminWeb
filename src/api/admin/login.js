@@ -1,6 +1,6 @@
 import request from '@/utils/request'
+// 登录退出
 const url = '/admin/admin.Login/'
-// ----------------登录退出-----------------
 /**
  * 验证码
  *  @param {array} params 请求参数

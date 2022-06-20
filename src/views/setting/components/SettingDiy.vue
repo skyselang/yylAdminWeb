@@ -1,16 +1,16 @@
 <template>
-  <el-card class="box-card">
+  <el-card>
     <el-row class="dialog-body" :style="{height:height+'px'}">
       <el-col :xs="24" :sm="22" :md="20" :lg="16" :xl="12">
         <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
-          <el-form-item label="自定义配置" prop="">
-            <el-col :span="5" class="yyl-ml">
+          <el-form-item label="自定义设置" prop="">
+            <el-col :span="5">
               键名
             </el-col>
-            <el-col :span="8" class="yyl-ml">
+            <el-col :span="8">
               键值
             </el-col>
-            <el-col :span="10" class="yyl-ml">
+            <el-col :span="10">
               说明
             </el-col>
             <el-col :span="1">
@@ -28,7 +28,7 @@
               <el-input v-model="item.config_desc" clearable placeholder="请输入说明" />
             </el-col>
             <el-col :span="1">
-              <el-button type="danger" @click="dele(index)">删除</el-button>
+              <el-button type="text" @click="dele(index)">删除</el-button>
             </el-col>
           </el-form-item>
           <el-form-item>

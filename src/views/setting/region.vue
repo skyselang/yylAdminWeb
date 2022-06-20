@@ -8,19 +8,18 @@
           <el-select v-model="query.search_field" class="filter-item ya-search-field" placeholder="搜索字段">
             <el-option value="region_name" label="名称" />
             <el-option value="region_pinyin" label="拼音" />
+            <el-option value="region_pid" label="上级" />
             <el-option value="region_jianpin" label="简拼" />
             <el-option value="region_initials" label="首字母" />
             <el-option value="region_citycode" label="区号" />
             <el-option value="region_zipcode" label="邮编" />
-            <el-option value="region_pid" label="上级" />
             <el-option :value="idkey" label="ID" />
           </el-select>
           <el-cascader
             v-if="query.search_field==='region_pid'"
-            :key="selectPidKey"
             v-model="query.region_pid"
-            :options="regionTree"
-            :props="regionProps"
+            :options="trees"
+            :props="props"
             class="filter-item ya-search-value"
             placeholder="请选择"
             clearable
@@ -47,24 +46,23 @@
       <!-- 选中操作 -->
       <el-row>
         <el-col>
-          <el-button title="修改上级" @click="selectOpen('pid')">上级</el-button>
+          <el-button title="修改上级" @click="selectOpen('editpid')">上级</el-button>
           <el-button title="修改区号" @click="selectOpen('citycode')">区号</el-button>
           <el-button title="修改邮编" @click="selectOpen('zipcode')">邮编</el-button>
           <el-button title="删除" @click="selectOpen('dele')">删除</el-button>
           <el-button type="primary" @click="add('')">添加</el-button>
         </el-col>
       </el-row>
-      <el-dialog :title="selectTitle" :visible.sync="selectDialog" top="20vh" :close-on-click-modal="false" :close-on-press-escape="false">
+      <el-dialog :title="selectTitle" :visible.sync="selectDialog" top="20vh" :close-on-click-modal="false" :close-on-press-escape="false" destroy-on-close>
         <el-form ref="selectRef" label-width="120px">
           <el-form-item :label="name+'ID'" prop="">
             <el-input v-model="selectIds" type="textarea" :autosize="{minRows: 2, maxRows: 12}" disabled />
           </el-form-item>
-          <el-form-item v-if="selectType==='pid'" label="上级" prop="">
+          <el-form-item v-if="selectType==='editpid'" label="上级" prop="">
             <el-cascader
-              :key="selectPidKey"
               v-model="region_pid"
-              :options="regionTree"
-              :props="regionProps"
+              :options="trees"
+              :props="props"
               style="width:100%"
               placeholder="一级地区"
               clearable
@@ -125,10 +123,9 @@
       <el-form ref="ref" :rules="rules" :model="model" label-width="100px" class="dialog-body" :style="{height:height-50+'px'}">
         <el-form-item label="上级" prop="region_pid">
           <el-cascader
-            :key="pidKey"
             v-model="model.region_pid"
-            :options="regionTree"
-            :props="regionProps"
+            :options="trees"
+            :props="props"
             style="width:100%"
             placeholder="一级地区"
             clearable
@@ -216,15 +213,15 @@ export default {
       loading: false,
       idkey: 'region_id',
       tbKey: 1,
-      data: [],
-      count: 0,
       query: {
         search_field: 'region_name',
         date_field: 'create_time'
       },
+      data: [],
+      trees: [],
+      props: { expandTrigger: 'click', checkStrictly: true, value: 'region_id', label: 'region_name' },
       dialog: false,
       dialogTitle: '',
-      pidKey: 500,
       model: {
         region_id: '',
         region_pid: 0,
@@ -241,9 +238,6 @@ export default {
       rules: {
         region_name: [{ required: true, message: '请输入名称', trigger: 'blur' }]
       },
-      regionTree: [],
-      regionCount: 0,
-      regionProps: { expandTrigger: 'click', checkStrictly: true, value: 'region_id', label: 'region_name' },
       selection: [],
       selectIds: '',
       selectTitle: '选中操作',
@@ -251,14 +245,12 @@ export default {
       selectType: '',
       region_pid: 0,
       region_citycode: '',
-      region_zipcode: '',
-      selectPidKey: 1000
+      region_zipcode: ''
     }
   },
   created() {
-    this.height = screenHeight() + 50
+    this.height = screenHeight(210)
     this.list()
-    this.tree()
   },
   methods: {
     // 列表
@@ -267,27 +259,20 @@ export default {
       this.data = []
       list(this.query).then(res => {
         this.data = res.data.list
+        this.trees = res.data.tree
         this.count = res.data.count
         this.loading = false
       }).catch(() => {
         this.loading = false
       })
     },
-    // 加载
+    // 懒加载
     load(row, treeNode, resolve) {
       list({
         region_pid: row[this.idkey]
       }).then(res => {
         resolve(res.data.list)
       })
-    },
-    // 树形
-    tree() {
-      this.regionTree = []
-      list({ type: 'tree' }).then(res => {
-        this.regionTree = res.data.list
-        this.regionCount = res.data.count
-      }).catch(() => {})
     },
     // 添加修改
     add(row) {
@@ -337,9 +322,6 @@ export default {
     },
     // 重置
     reset(row) {
-      ++this.tbKey
-      ++this.pidKey
-      ++this.selectPidKey
       if (row) {
         this.model = row
       } else {
@@ -354,14 +336,12 @@ export default {
     },
     // 查询
     search() {
-      this.query.page = 1
       this.list()
     },
     // 刷新
     refresh() {
       this.query = this.$options.data().query
       this.list()
-      this.tree()
     },
     // 排序
     sort(sort) {
@@ -396,7 +376,7 @@ export default {
         this.selectAlert()
       } else {
         this.selectTitle = '选中操作'
-        if (selectType === 'pid') {
+        if (selectType === 'editpid') {
           this.selectTitle = '修改上级'
         } else if (selectType === 'citycode') {
           this.selectTitle = '修改区号'
@@ -417,8 +397,8 @@ export default {
         this.selectAlert()
       } else {
         const selectType = this.selectType
-        if (selectType === 'pid') {
-          this.setpid(this.selection)
+        if (selectType === 'editpid') {
+          this.editpid(this.selection)
         } else if (selectType === 'citycode') {
           this.citycode(this.selection)
         } else if (selectType === 'zipcode') {
@@ -430,13 +410,13 @@ export default {
       }
     },
     // 修改上级
-    setpid(row) {
+    editpid(row) {
       pid({
         ids: this.selectGetIds(row),
         region_pid: this.region_pid
       }).then(res => {
         this.list()
-        this.reset()
+        ++this.tbKey
         this.selectDialog = false
         this.$message.success(res.msg)
       }).catch(() => {
@@ -450,7 +430,6 @@ export default {
         region_citycode: this.region_citycode
       }).then(res => {
         this.list()
-        this.reset()
         this.selectDialog = false
         this.$message.success(res.msg)
       }).catch(() => {
@@ -464,7 +443,6 @@ export default {
         region_zipcode: this.region_zipcode
       }).then(res => {
         this.list()
-        this.reset()
         this.selectDialog = false
         this.$message.success(res.msg)
       }).catch(() => {
@@ -481,14 +459,14 @@ export default {
           ids: this.selectGetIds(row)
         }).then(res => {
           this.list()
-          this.reset()
+          ++this.tbKey
           this.$message.success(res.msg)
         }).catch(() => {
           this.loading = false
         })
       }
     },
-    // 上级
+    // 上级选择
     pidEdit(value) {
       if (value) {
         this.model.region_pid = value[value.length - 1]

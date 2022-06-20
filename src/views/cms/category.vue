@@ -7,17 +7,13 @@
         <el-col>
           <el-select v-model="query.search_field" class="filter-item ya-search-field" placeholder="搜索字段">
             <el-option value="category_name" label="名称" />
+            <el-option value="category_pid" label="上级" />
             <el-option value="is_hide" label="隐藏" />
             <el-option value="sort" label="排序" />
-            <el-option value="category_pid" label="上级" />
             <el-option :value="idkey" label="ID" />
           </el-select>
-          <el-select v-if="query.search_field==='is_hide'" v-model="query.search_value" class="filter-item ya-search-value" placeholder="请选择">
-            <el-option :value="1" label="是" />
-            <el-option :value="0" label="否" />
-          </el-select>
           <el-cascader
-            v-else-if="query.search_field==='category_pid'"
+            v-if="query.search_field==='category_pid'"
             v-model="query.search_value"
             :options="trees"
             :props="props"
@@ -27,6 +23,15 @@
             filterable
             @change="pidQuery"
           />
+          <el-select
+            v-else-if="query.search_field==='is_hide'"
+            v-model="query.search_value"
+            class="filter-item ya-search-value"
+            placeholder="请选择"
+          >
+            <el-option :value="1" label="是" />
+            <el-option :value="0" label="否" />
+          </el-select>
           <el-input v-else v-model="query.search_value" class="filter-item ya-search-value" placeholder="搜索内容" clearable />
           <el-select v-model="query.date_field" class="filter-item ya-date-field" placeholder="时间类型">
             <el-option value="create_time" label="添加时间" />
@@ -48,10 +53,10 @@
       <!-- 选中操作 -->
       <el-row>
         <el-col>
-          <el-checkbox v-model="isExpandAll" border title="收起/展开" @change="expandAll">收起</el-checkbox>
-          <el-button title="修改上级" class="ya-margin-left" @click="selectOpen('pid')">上级</el-button>
-          <el-button title="是否隐藏" @click="selectOpen('hide')">隐藏</el-button>
-          <el-button @click="selectOpen('dele')">删除</el-button>
+          <el-checkbox v-model="isExpandAll" style="margin-right:10px;top:-2px" border title="收起/展开" @change="expandAll">收起</el-checkbox>
+          <el-button title="修改上级" @click="selectOpen('editpid')">上级</el-button>
+          <el-button title="是否隐藏" @click="selectOpen('ishide')">隐藏</el-button>
+          <el-button title="删除" @click="selectOpen('dele')">删除</el-button>
           <el-button v-if="recycle" type="primary" @click="selectOpen('reco')">恢复</el-button>
           <el-button v-else type="primary" @click="add()">添加</el-button>
         </el-col>
@@ -61,10 +66,10 @@
           <el-form-item :label="name+'ID'" prop="">
             <el-input v-model="selectIds" type="textarea" :autosize="{minRows: 2, maxRows: 12}" disabled />
           </el-form-item>
-          <el-form-item v-if="selectType==='pid'" label="分类上级" prop="">
+          <el-form-item v-if="selectType==='editpid'" label="上级" prop="">
             <el-cascader
               v-model="category_pid"
-              :options="data"
+              :options="trees"
               :props="props"
               style="width:100%"
               placeholder="一级分类"
@@ -73,7 +78,7 @@
               @change="pidSelect"
             />
           </el-form-item>
-          <el-form-item v-if="selectType==='hide'" label="是否隐藏" prop="">
+          <el-form-item v-if="selectType==='ishide'" label="是否隐藏" prop="">
             <el-switch v-model="is_hide" :active-value="1" :inactive-value="0" />
           </el-form-item>
           <el-form-item v-else-if="selectType==='dele'" label="" prop="">
@@ -115,12 +120,12 @@
       </el-table-column>
     </el-table>
     <!-- 添加修改 -->
-    <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false">
+    <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false" destroy-on-close>
       <el-form ref="ref" :rules="rules" :model="model" class="dialog-body" label-width="100px" :style="{height:height+'px'}">
         <el-form-item label="上级" prop="category_pid">
           <el-cascader
             v-model="model.category_pid"
-            :options="data"
+            :options="trees"
             :props="props"
             style="width:100%"
             placeholder="一级分类"
@@ -131,6 +136,20 @@
         </el-form-item>
         <el-form-item label="名称" prop="category_name">
           <el-input v-model="model.category_name" placeholder="请输入分类名称" clearable />
+        </el-form-item>
+        <el-form-item label="封面" prop="img_id">
+          <el-col :span="11">
+            <el-image class="ya-height-100" fit="scale-down" :src="model.img_url" :preview-src-list="[model.img_url]" title="点击查看大图">
+              <div slot="error" class="image-slot">
+                <i class="el-icon-picture-outline" />
+              </div>
+            </el-image>
+          </el-col>
+          <el-col :span="13">
+            <el-button size="mini" @click="fileUpload('image', 'img_id', '上传封面')">上传封面</el-button>
+            <el-button size="mini" @click="fileDelete(0, 'img_id')">删除</el-button>
+            <p>jpg、png图片，小于200KB。</p>
+          </el-col>
         </el-form-item>
         <el-form-item label="标题" prop="title">
           <el-input v-model="model.title" placeholder="title" clearable />
@@ -144,7 +163,7 @@
         <el-form-item label="图片" prop="imgs">
           <el-row>
             <el-col :span="8">
-              <el-button size="mini" @click="fileUpload()">上传图片</el-button>
+              <el-button size="mini" @click="fileUpload('image', 'imgs', '上传图片')">上传图片</el-button>
             </el-col>
             <el-col :span="16">
               <div>每张图片大小不超过 300 KB，jpg、png格式。</div>
@@ -160,7 +179,7 @@
                 <el-link :href="item.file_url" :underline="false" :download="item.file_url" target="_blank" class="ya-file-link">
                   下载
                 </el-link>
-                <el-button size="mini" @click="fileDelete(index)">删除</el-button>
+                <el-button size="mini" @click="fileDelete(index, 'imgs')">删除</el-button>
               </div>
             </el-col>
           </el-row>
@@ -181,8 +200,8 @@
       </div>
     </el-dialog>
     <!-- 文件管理 -->
-    <el-dialog title="上传图片" :visible.sync="fileDialog" width="80%" top="1vh" :close-on-click-modal="false" :close-on-press-escape="false">
-      <file-manage file-type="image" @fileCancel="fileCancel" @fileSubmit="fileSubmit" />
+    <el-dialog :title="fileTitle" :visible.sync="fileDialog" width="80%" top="1vh" :close-on-click-modal="false" :close-on-press-escape="false">
+      <file-manage :file-type="fileType" @fileCancel="fileCancel" @fileSubmit="fileSubmit" />
     </el-dialog>
   </div>
 </template>
@@ -215,6 +234,7 @@ export default {
         category_id: '',
         category_pid: 0,
         category_name: '',
+        img_id: 0,
         title: '',
         keywords: '',
         description: '',
@@ -234,7 +254,10 @@ export default {
       selectType: '',
       category_pid: '',
       is_hide: 0,
-      fileDialog: false
+      fileDialog: false,
+      fileTitle: '文件管理',
+      fileType: 'image',
+      fileField: ''
     }
   },
   created() {
@@ -249,22 +272,18 @@ export default {
       if (this.recycle) {
         recover(this.query).then(res => {
           this.data = res.data.list
+          this.trees = res.data.tree
           this.isExpandAll = false
           this.loading = false
-          if (!this.trees.length) {
-            this.trees = res.data.list
-          }
         }).catch(() => {
           this.loading = false
         })
       } else {
         list(this.query).then(res => {
           this.data = res.data.list
+          this.trees = res.data.tree
           this.isExpandAll = false
           this.loading = false
-          if (!this.trees.length) {
-            this.trees = res.data.list
-          }
         }).catch(() => {
           this.loading = false
         })
@@ -335,7 +354,6 @@ export default {
     // 刷新
     refresh() {
       this.query = this.$options.data().query
-      this.trees = []
       this.list()
     },
     // 收起/展开
@@ -370,9 +388,9 @@ export default {
         this.selectAlert()
       } else {
         this.selectTitle = '选中操作'
-        if (selectType === 'pid') {
+        if (selectType === 'editpid') {
           this.selectTitle = '修改上级'
-        } else if (selectType === 'hide') {
+        } else if (selectType === 'ishide') {
           this.selectTitle = '是否隐藏'
         } else if (selectType === 'dele') {
           this.selectTitle = '删除' + this.name
@@ -391,9 +409,9 @@ export default {
         this.selectAlert()
       } else {
         const selectType = this.selectType
-        if (selectType === 'pid') {
+        if (selectType === 'editpid') {
           this.editpid(this.selection)
-        } else if (selectType === 'hide') {
+        } else if (selectType === 'ishide') {
           this.ishide(this.selection, true)
         } else if (selectType === 'dele') {
           this.dele(this.selection)
@@ -478,7 +496,12 @@ export default {
         }
       }
     },
-    // 上级
+    // 上级选择
+    pidQuery(value) {
+      if (value) {
+        this.query.search_value = value[value.length - 1]
+      }
+    },
     pidEdit(value) {
       if (value) {
         this.model.category_pid = value[value.length - 1]
@@ -489,29 +512,41 @@ export default {
         this.category_pid = value[value.length - 1]
       }
     },
-    pidQuery(value) {
-      if (value) {
-        this.query.search_value = value[value.length - 1]
-      }
-    },
     // 上传图片
-    fileUpload() {
+    fileUpload(fileType, fileField = '', fileTitle = '文件管理') {
+      this.fileType = fileType
+      this.fileField = fileField
+      this.fileTitle = fileTitle
       this.fileDialog = true
     },
     fileCancel() {
+      this.fileType = 'image'
+      this.fileField = ''
+      this.fileTitle = '文件管理'
       this.fileDialog = false
     },
-    fileSubmit(filelist) {
-      this.fileDialog = false
-      const fileLength = filelist.length
+    fileSubmit(fileList, fileType) {
+      const fileField = this.fileField
+      const fileLength = fileList.length
       if (fileLength) {
         for (let i = 0; i < fileLength; i++) {
-          this.model.imgs.push(filelist[i])
+          if (fileField === 'img_id') {
+            this.model.img_id = fileList[i]['file_id']
+            this.model.img_url = fileList[i]['file_url']
+          } else if (fileField === 'imgs') {
+            this.model.imgs.push(fileList[i])
+          }
         }
       }
+      this.fileDialog = false
     },
-    fileDelete(index) {
-      this.model.imgs.splice(index, 1)
+    fileDelete(index, field = '') {
+      if (field === 'img_id') {
+        this.model.img_id = 0
+        this.model.img_url = ''
+      } else if (field === 'imgs') {
+        this.model.imgs.splice(index, 1)
+      }
     }
   }
 }

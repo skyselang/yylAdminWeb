@@ -1,9 +1,9 @@
 <template>
-  <el-card class="box-card">
+  <el-card>
     <el-form ref="ref" :model="model" :rules="rules" label-width="130px" class="dialog-body" :style="{height:height+'px'}">
       <el-form-item label="名称" prop="name">
         <el-col :span="10">
-          <el-input v-model="model.name">
+          <el-input v-model="model.name" clearable>
             <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.name, $event)" />
           </el-input>
         </el-col>
@@ -11,7 +11,7 @@
       </el-form-item>
       <el-form-item label="原始ID" prop="origin_id">
         <el-col :span="10">
-          <el-input v-model="model.origin_id">
+          <el-input v-model="model.origin_id" clearable>
             <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.origin_id, $event)" />
           </el-input>
         </el-col>
@@ -35,7 +35,7 @@
       </el-form-item>
       <el-form-item label="AppID" prop="appid">
         <el-col :span="10">
-          <el-input v-model="model.appid">
+          <el-input v-model="model.appid" clearable>
             <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.appid, $event)" />
           </el-input>
         </el-col>
@@ -43,7 +43,7 @@
       </el-form-item>
       <el-form-item label="AppSecret" prop="appsecret">
         <el-col :span="10">
-          <el-input v-model="model.appsecret">
+          <el-input v-model="model.appsecret" clearable>
             <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.appsecret, $event)" />
           </el-input>
         </el-col>
@@ -51,7 +51,7 @@
       </el-form-item>
       <el-form-item label="服务器地址(URL)" prop="server_url">
         <el-col :span="10">
-          <el-input v-model="model.server_url">
+          <el-input v-model="model.server_url" clearable>
             <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.server_url, $event)" />
           </el-input>
         </el-col>
@@ -59,7 +59,7 @@
       </el-form-item>
       <el-form-item label="令牌(Token)" prop="token">
         <el-col :span="10">
-          <el-input v-model="model.token">
+          <el-input v-model="model.token" clearable>
             <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.token, $event)" />
           </el-input>
         </el-col>
@@ -67,7 +67,7 @@
       </el-form-item>
       <el-form-item label="消息加解密密钥" prop="encoding_aes_key">
         <el-col :span="10">
-          <el-input v-model="model.encoding_aes_key">
+          <el-input v-model="model.encoding_aes_key" clearable>
             <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.encoding_aes_key, $event)" />
           </el-input>
         </el-col>

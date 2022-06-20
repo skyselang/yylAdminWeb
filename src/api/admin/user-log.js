@@ -1,6 +1,6 @@
 import request from '@/utils/request'
+// 用户日志
 const url = '/admin/admin.UserLog/'
-// ----------------用户日志----------------
 /**
  * 用户日志列表
  * @param {array} params 请求参数

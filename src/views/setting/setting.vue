@@ -13,6 +13,9 @@
       <el-tab-pane v-if="checkPermission(['admin/setting.Setting/apiInfo'])" label="接口设置" lazy>
         <setting-api />
       </el-tab-pane>
+      <el-tab-pane v-if="checkPermission(['admin/setting.Setting/logregInfo'])" label="登录注册设置" lazy>
+        <setting-logreg />
+      </el-tab-pane>
       <el-tab-pane v-if="checkPermission(['admin/setting.Setting/diyInfo'])" label="自定义设置" lazy>
         <setting-diy />
       </el-tab-pane>
@@ -26,11 +29,12 @@ import SettingToken from './components/SettingToken'
 import SettingCaptcha from './components/SettingCaptcha'
 import SettingLog from './components/SettingLog'
 import SettingApi from './components/SettingApi'
+import SettingLogreg from './components/SettingLogreg'
 import SettingDiy from './components/SettingDiy'
 
 export default {
   name: 'SettingSetting',
-  components: { SettingToken, SettingCaptcha, SettingLog, SettingApi, SettingDiy },
+  components: { SettingToken, SettingCaptcha, SettingLog, SettingApi, SettingDiy, SettingLogreg },
   data() {
     return {
       name: '设置管理'

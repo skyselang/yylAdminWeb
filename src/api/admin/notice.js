@@ -1,6 +1,6 @@
 import request from '@/utils/request'
+// 公告管理
 const url = '/admin/admin.Notice/'
-// ----------------公告管理----------------
 /**
  * 公告列表
  * @param {array} params 请求参数

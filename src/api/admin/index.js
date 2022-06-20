@@ -1,6 +1,6 @@
 import request from '@/utils/request'
+// 控制台
 const url = '/admin/Index/'
-// ----------------控制台-----------------
 /**
  * 首页
  * @param {array} params 请求参数
@@ -8,6 +8,17 @@ const url = '/admin/Index/'
 export function index(params) {
   return request({
     url: url + 'index',
+    method: 'get',
+    params: params
+  })
+}
+/**
+ * 公告
+ * @param {array} params 请求参数
+ */
+export function notice(params) {
+  return request({
+    url: url + 'notice',
     method: 'get',
     params: params
   })
@@ -56,15 +67,3 @@ export function file(params) {
     params: params
   })
 }
-/**
- * 公告
- * @param {array} params 请求参数
- */
-export function notice(params) {
-  return request({
-    url: url + 'notice',
-    method: 'get',
-    params: params
-  })
-}
-

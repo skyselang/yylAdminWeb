@@ -1,9 +1,13 @@
 <template>
   <div class="app-container">
-    <el-card class="box-card">
+    <el-card>
       <el-form ref="ref" :model="model" :rules="rules" label-width="150px">
         <el-tabs>
           <el-tab-pane label="上传设置" class="dialog-body" :style="{height:height+'px'}" lazy>
+            <el-form-item label="文件上传" prop="is_open">
+              <el-switch v-model="model.is_open" :active-value="1" :inactive-value="0" />
+              <span> 关闭后无法上传文件</span>
+            </el-form-item>
             <el-form-item label="存储方式" prop="storage">
               <el-select v-model="model.storage" placeholder="请选择">
                 <el-option
@@ -17,8 +21,8 @@
             </el-form-item>
             <div v-if="model.storage=='local'">
               <el-form-item label="">
-                <el-card class="box-card">
-                  <div class="text item">
+                <el-card>
+                  <div>
                     文件将存储在本地服务器，默认保存在 public/storage 目录，文件以散列 hash 命名。
                     <br>
                     文件存储的目录需要有读写权限（777），有足够的存储空间。
@@ -28,8 +32,8 @@
             </div>
             <div v-else-if="model.storage=='qiniu'">
               <el-form-item label="">
-                <el-card class="box-card">
-                  <div class="text item">
+                <el-card>
+                  <div>
                     文件将上传到七牛云 Kodo 存储，对象存储 > 空间管理 > 空间设置 > 访问控制, 设置为 公开空间。
                     <br>
                     需要配置跨域访问 CORS 规则，设置：来源 Origin 为 *，允许 Methods 为 GET,POST，允许 Headers 为 *。
@@ -79,8 +83,8 @@
             </div>
             <div v-else-if="model.storage=='aliyun'">
               <el-form-item label="">
-                <el-card class="box-card">
-                  <div class="text item">
+                <el-card>
+                  <div>
                     文件将上传到阿里云 OSS 存储，需要配置 OSS 公开访问及跨域策略。
                     <br>
                     需要配置跨域访问 CORS 规则，设置：来源 Origin 为 *，允许 Methods 为 GET,POST，允许 Headers 为 *。
@@ -140,8 +144,8 @@
             </div>
             <div v-else-if="model.storage=='tencent'">
               <el-form-item label="">
-                <el-card class="box-card">
-                  <div class="text item">
+                <el-card>
+                  <div>
                     文件将上传到腾讯云 COS 存储，需要配置 COS 公有读私有写访问权限及跨域策略。
                     <br>
                     需要配置跨域访问 CORS 规则，设置：来源 Origin 为 *，允许 Methods 为 GET,POST，允许 Headers 为 *。
@@ -201,8 +205,8 @@
             </div>
             <div v-else-if="model.storage=='baidu'">
               <el-form-item label="">
-                <el-card class="box-card">
-                  <div class="text item">
+                <el-card>
+                  <div>
                     文件将上传到百度云 BOS 存储，对象存储 > Bucket列表 > 配置设置 > Bucket权限配置, 设置为 公共 *。
                     <br>
                     需要配置跨域访问 CORS 规则，设置：来源 Origin 为 *，允许 Methods 为 GET,POST，允许 Headers 为 *。
@@ -257,6 +261,118 @@
                 </el-col>
                 <el-col class="line" :span="13">
                   所属地域：官方域名去掉 Bucket 名称，如：gz.bcebos.com
+                </el-col>
+              </el-form-item>
+            </div>
+            <div v-else-if="model.storage=='upyun'">
+              <el-form-item label="">
+                <el-card>
+                  <div>
+                    文件将上传到又拍云 USS 存储，云存储 > 服务管理 > 配置 > CORS 跨域共享, 设置为 已开启。
+                    <br>
+                    请根据业务域名和需求，配置 CORS 跨域共享 规则，CORS 配置。
+                  </div>
+                </el-card>
+              </el-form-item>
+              <el-form-item label="服务名称" prop="upyun_service_name">
+                <el-col :span="11">
+                  <el-input v-model="model.upyun_service_name" clearable>
+                    <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.upyun_service_name, $event)" />
+                  </el-input>
+                </el-col>
+                <el-col class="line" :span="13">
+                  服务名称 在 [ 又拍云 > 云存储 > 服务管理 ] 设置和获取
+                </el-col>
+              </el-form-item>
+              <el-form-item label="操作员" prop="upyun_operator_name">
+                <el-col :span="11">
+                  <el-input v-model="model.upyun_operator_name" clearable>
+                    <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.upyun_operator_name, $event)" />
+                  </el-input>
+                </el-col>
+                <el-col class="line" :span="13">
+                  操作员 在 [ 又拍云 > 云存储 > 服务管理 > 配置 > 存储管理-操作员授权 ] 设置和获取
+                </el-col>
+              </el-form-item>
+              <el-form-item label="操作员密码" prop="upyun_operator_pwd">
+                <el-col :span="11">
+                  <el-input v-model="model.upyun_operator_pwd" clearable>
+                    <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.upyun_operator_pwd, $event)" />
+                  </el-input>
+                </el-col>
+                <el-col class="line" :span="13">
+                  操作员密码 在 [ 又拍云 > 云存储 > 服务管理 > 配置 > 存储管理-操作员授权 ] 设置和获取
+                </el-col>
+              </el-form-item>
+              <el-form-item label="加速域名" prop="upyun_domain">
+                <el-col :span="11">
+                  <el-input v-model="model.upyun_domain" clearable>
+                    <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.upyun_domain, $event)" />
+                  </el-input>
+                </el-col>
+                <el-col class="line" :span="13">
+                  加速域名 在 [ 又拍云 > 云存储 > 服务管理 > 配置 > 域名管理-加速域名 ] 设置和获取
+                </el-col>
+              </el-form-item>
+            </div>
+            <div v-else-if="model.storage=='s3'">
+              <el-form-item label="">
+                <el-card>
+                  <div>
+                    文件将上传到 AWS S3。
+                    <br>
+                    请根据业务域名和需求，配置 AWS S3 访问控制。
+                  </div>
+                </el-card>
+              </el-form-item>
+              <el-form-item label="Access Key ID" prop="s3_access_key_id">
+                <el-col :span="11">
+                  <el-input v-model="model.s3_access_key_id" clearable>
+                    <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.s3_access_key_id, $event)" />
+                  </el-input>
+                </el-col>
+                <el-col class="line" :span="13">
+                  Access Key ID 在 [ AWS > 我的账号 > 安全凭证 ] 设置和获取
+                </el-col>
+              </el-form-item>
+              <el-form-item label="Secret Access KEY" prop="s3_secret_access_key">
+                <el-col :span="11">
+                  <el-input v-model="model.s3_secret_access_key" clearable>
+                    <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.s3_secret_access_key, $event)" />
+                  </el-input>
+                </el-col>
+                <el-col class="line" :span="13">
+                  Secret Access KEY 在 [ AWS > 我的账号 > 安全凭证 ] 设置和获取
+                </el-col>
+              </el-form-item>
+              <el-form-item label="区域终端节点" prop="s3_region">
+                <el-col :span="11">
+                  <el-input v-model="model.s3_region" clearable>
+                    <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.s3_region, $event)" />
+                  </el-input>
+                </el-col>
+                <el-col class="line" :span="13">
+                  区域终端节点 在 [ AWS > S3 ] 设置和获取
+                </el-col>
+              </el-form-item>
+              <el-form-item label="存储桶名称" prop="s3_bucket">
+                <el-col :span="11">
+                  <el-input v-model="model.s3_bucket" clearable>
+                    <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.s3_bucket, $event)" />
+                  </el-input>
+                </el-col>
+                <el-col class="line" :span="13">
+                  存储桶名称 在 [ AWS > S3 ] 设置和获取
+                </el-col>
+              </el-form-item>
+              <el-form-item label="访问域名" prop="s3_domain">
+                <el-col :span="11">
+                  <el-input v-model="model.s3_domain" clearable>
+                    <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.s3_domain, $event)" />
+                  </el-input>
+                </el-col>
+                <el-col class="line" :span="13">
+                  访问域名 在 [ AWS > S3 ] 设置和获取
                 </el-col>
               </el-form-item>
             </div>
@@ -386,6 +502,7 @@ export default {
       storages: [],
       model: {
         setting_id: '',
+        is_open: 1,
         storage: 'local',
         qiniu_access_key: '',
         qiniu_secret_key: '',
@@ -406,6 +523,15 @@ export default {
         baidu_bucket: '',
         baidu_endpoint: '',
         baidu_domain: '',
+        upyun_service_name: '',
+        upyun_operator_name: '',
+        upyun_operator_pwd: '',
+        upyun_domain: '',
+        s3_access_key_id: '',
+        s3_secret_access_key: '',
+        s3_bucket: '',
+        s3_region: '',
+        s3_domain: '',
         image_ext: '',
         image_size: 0,
         video_ext: '',
@@ -437,7 +563,16 @@ export default {
         baidu_secret_key: [{ required: true, message: '请输入 Secret Key', trigger: 'blur' }],
         baidu_bucket: [{ required: true, message: '请输入 Bucket 名称', trigger: 'blur' }],
         baidu_endpoint: [{ required: true, message: '请输入官方域名', trigger: 'blur' }],
-        baidu_domain: [{ required: true, message: '请输入所属地域', trigger: 'blur' }]
+        baidu_domain: [{ required: true, message: '请输入所属地域', trigger: 'blur' }],
+        upyun_service_name: [{ required: true, message: '请输入服务名称', trigger: 'blur' }],
+        upyun_operator_name: [{ required: true, message: '请输入操作员', trigger: 'blur' }],
+        upyun_operator_pwd: [{ required: true, message: '请输入操作员密码', trigger: 'blur' }],
+        upyun_domain: [{ required: true, message: '请输入加速域名', trigger: 'blur' }],
+        s3_access_key_id: [{ required: true, message: '请输入 Access Key ID', trigger: 'blur' }],
+        s3_secret_access_key: [{ required: true, message: '请输入 Secret Access Key', trigger: 'blur' }],
+        s3_bucket: [{ required: true, message: '请输入存储桶名称', trigger: 'blur' }],
+        s3_region: [{ required: true, message: '请输入区域终端节点', trigger: 'blur' }],
+        s3_domain: [{ required: true, message: '请输入访问域名', trigger: 'blur' }]
       }
     }
   },
@@ -488,11 +623,7 @@ export default {
     },
     // 复制
     copy(text, event) {
-      if (text) {
-        clip(text, event)
-      } else {
-        this.$message.error('内容为空')
-      }
+      clip(text, event)
     }
   }
 }

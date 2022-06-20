@@ -1,6 +1,6 @@
 import request from '@/utils/request'
+// 实用工具
 const url = '/admin/admin.Utils/'
-// ----------------实用工具----------------
 /**
  * 随机字符串
  * @param {array} data 请求数据

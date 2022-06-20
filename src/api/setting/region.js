@@ -1,6 +1,6 @@
 import request from '@/utils/request'
+// 地区管理
 const url = '/admin/setting.Region/'
-// ----------------地区管理----------------
 /**
  * 地区列表
  * @param {array} params 请求参数

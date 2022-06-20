@@ -1,6 +1,6 @@
 import request from '@/utils/request'
+// 菜单管理
 const url = '/admin/admin.Menu/'
-// ----------------菜单管理----------------
 /**
  * 菜单列表
  * @param {array} params 请求参数
@@ -68,7 +68,18 @@ export function pid(data) {
   })
 }
 /**
- * 菜单是否无需权限
+ * 菜单是否免登
+ * @param {array} data 请求数据
+ */
+export function unlogin(data) {
+  return request({
+    url: url + 'unlogin',
+    method: 'post',
+    data
+  })
+}
+/**
+ * 菜单是否免权
  * @param {array} data 请求数据
  */
 export function unauth(data) {
@@ -79,12 +90,12 @@ export function unauth(data) {
   })
 }
 /**
- * 菜单是否无需登录
+ * 菜单是否隐藏
  * @param {array} data 请求数据
  */
-export function unlogin(data) {
+export function ishidden(data) {
   return request({
-    url: url + 'unlogin',
+    url: url + 'hidden',
     method: 'post',
     data
   })

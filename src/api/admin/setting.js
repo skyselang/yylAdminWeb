@@ -1,9 +1,9 @@
 import request from '@/utils/request'
-// ----------------系统管理----------------
+// 系统管理
 const url = '/admin/admin.Setting/'
 /**
  * 缓存设置信息
- * @param {array} params 请求数据
+ * @param {array} params 请求参数
  */
 export function cacheInfo(params) {
   return request({
@@ -25,7 +25,7 @@ export function cacheClear(data) {
 }
 /**
  * Token设置信息
- * @param {array} params 请求数据
+ * @param {array} params 请求参数
  */
 export function tokenInfo(params) {
   return request({
@@ -47,7 +47,7 @@ export function tokenEdit(data) {
 }
 /**
  * 验证码设置信息
- * @param {array} params 请求数据
+ * @param {array} params 请求参数
  */
 export function captchaInfo(params) {
   return request({
@@ -69,7 +69,7 @@ export function captchaEdit(data) {
 }
 /**
  * 日志设置信息
- * @param {array} params 请求数据
+ * @param {array} params 请求参数
  */
 export function logInfo(params) {
   return request({
@@ -91,7 +91,7 @@ export function logEdit(data) {
 }
 /**
  * 接口设置信息
- * @param {array} params 请求数据
+ * @param {array} params 请求参数
  */
 export function apiInfo(params) {
   return request({
@@ -112,30 +112,8 @@ export function apiEdit(data) {
   })
 }
 /**
- * 系统设置信息
- * @param {array} params 请求数据
- */
-export function systemInfo(params) {
-  return request({
-    url: url + 'systemInfo',
-    method: 'get',
-    params: params
-  })
-}
-/**
- * 系统设置修改
- * @param {array} data 请求数据
- */
-export function systemEdit(data) {
-  return request({
-    url: url + 'systemEdit',
-    method: 'post',
-    data
-  })
-}
-/**
  * 邮箱设置信息
- * @param {array} params 请求数据
+ * @param {array} params 请求参数
  */
 export function emailInfo(params) {
   return request({
@@ -162,6 +140,28 @@ export function emailEdit(data) {
 export function emailTest(data) {
   return request({
     url: url + 'emailTest',
+    method: 'post',
+    data
+  })
+}
+/**
+ * 系统设置信息
+ * @param {array} params 请求参数
+ */
+export function systemInfo(params) {
+  return request({
+    url: url + 'systemInfo',
+    method: 'get',
+    params: params
+  })
+}
+/**
+ * 系统设置修改
+ * @param {array} data 请求数据
+ */
+export function systemEdit(data) {
+  return request({
+    url: url + 'systemEdit',
     method: 'post',
     data
   })

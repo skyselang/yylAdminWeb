@@ -130,10 +130,10 @@
         <el-form-item v-if="model[idkey]" label="修改时间" prop="update_time">
           <el-input v-model="model.update_time" disabled />
         </el-form-item>
-        <el-form-item v-if="model.delete_time" label="删除时间" prop="delete_time">
+        <el-form-item v-if="model[idkey]" label="删除时间" prop="delete_time">
           <el-input v-model="model.delete_time" disabled />
         </el-form-item>
-        <el-form-item v-if="model.read_time" label="已读时间" prop="read_time">
+        <el-form-item v-if="model[idkey]" label="已读时间" prop="read_time">
           <el-input v-model="model.read_time" disabled />
         </el-form-item>
       </el-form>
@@ -364,7 +364,6 @@ export default {
           this.$message.success(res.msg)
         }).catch(() => {
           this.list()
-          this.loading = false
         })
       }
     },

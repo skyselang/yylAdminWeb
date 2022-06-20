@@ -12,18 +12,14 @@
             <el-option value="phone" label="手机" />
             <el-option value="email" label="邮箱" />
             <el-option value="remark" label="备注" />
-            <el-option value="is_disable" label="禁用" />
             <el-option value="name" label="姓名" />
             <el-option value="gender" label="性别" />
             <el-option value="region_id" label="所在地" />
             <el-option value="reg_channel" label="注册渠道" />
             <el-option value="reg_type" label="注册方式" />
+            <el-option value="is_disable" label="禁用" />
           </el-select>
-          <el-select v-if="query.search_field==='is_disable'" v-model="query.search_value" class="filter-item ya-search-value" clearable>
-            <el-option :value="1" label="是" />
-            <el-option :value="0" label="否" />
-          </el-select>
-          <el-select v-else-if="query.search_field==='gender'" v-model="query.search_value" class="filter-item ya-search-value" clearable>
+          <el-select v-if="query.search_field==='gender'" v-model="query.search_value" class="filter-item ya-search-value" clearable>
             <el-option label="未知" :value="0" />
             <el-option label="男" :value="1" />
             <el-option label="女" :value="2" />
@@ -42,6 +38,10 @@
           </el-select>
           <el-select v-else-if="query.search_field==='reg_type'" v-model="query.search_value" class="filter-item ya-search-value" clearable>
             <el-option v-for="(item, index ) in reg_types" :key="index" :label="item" :value="index" />
+          </el-select>
+          <el-select v-else-if="query.search_field==='is_disable'" v-model="query.search_value" class="filter-item ya-search-value" clearable>
+            <el-option :value="1" label="是" />
+            <el-option :value="0" label="否" />
           </el-select>
           <el-input v-else v-model="query.search_value" class="filter-item ya-search-value" placeholder="搜索内容" clearable />
           <el-select v-model="query.date_field" class="filter-item ya-date-field" placeholder="时间字段">
@@ -295,7 +295,6 @@ import Pagination from '@/components/Pagination'
 import FileManage from '@/components/FileManage'
 import clip from '@/utils/clipboard'
 import { arrayColumn } from '@/utils/index'
-import { list as regionList } from '@/api/setting/region'
 import { list, info, add, edit, dele, region, repwd, disable, recover, recoverReco, recoverDele } from '@/api/member/member'
 
 export default {
@@ -356,17 +355,22 @@ export default {
   created() {
     this.recycle = this.$route.meta.query.recycle
     this.height = screenHeight()
-    this.list()
-    this.regionList()
+    this.list(1)
   },
   methods: {
     // 列表
-    list() {
+    list(is_extra = 0) {
       this.loading = true
+      this.query.is_extra = is_extra
       if (this.recycle) {
         recover(this.query).then(res => {
           this.data = res.data.list
           this.count = res.data.count
+          if (is_extra) {
+            this.reg_channels = res.data.reg_channels
+            this.reg_types = res.data.reg_types
+            this.regionData = res.data.region
+          }
           this.loading = false
         }).catch(() => {
           this.loading = false
@@ -375,8 +379,11 @@ export default {
         list(this.query).then(res => {
           this.data = res.data.list
           this.count = res.data.count
-          this.reg_channels = res.data.reg_channels
-          this.reg_types = res.data.reg_types
+          if (is_extra) {
+            this.reg_channels = res.data.reg_channels
+            this.reg_types = res.data.reg_types
+            this.regionData = res.data.region
+          }
           this.loading = false
         }).catch(() => {
           this.loading = false
@@ -635,11 +642,11 @@ export default {
         this.model.avatar_url = ''
       }
     },
-    // 地区
-    regionList() {
-      regionList({ type: 'tree' }).then(res => {
-        this.regionData = res.data.list
-      })
+    // 地区选择
+    regionQuery(value) {
+      if (value) {
+        this.query.search_value = value[value.length - 1]
+      }
     },
     regionEdit(value) {
       if (value) {
@@ -651,18 +658,9 @@ export default {
         this.region_id = value[value.length - 1]
       }
     },
-    regionQuery(value) {
-      if (value) {
-        this.query.search_value = value[value.length - 1]
-      }
-    },
     // 复制
     copy(text, event) {
-      if (text) {
-        clip(text, event)
-      } else {
-        this.$message.error('内容为空')
-      }
+      clip(text, event)
     },
     // 单元格双击复制
     cellDbclick(row, column, cell, event) {

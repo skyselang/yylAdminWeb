@@ -1,6 +1,6 @@
 import request from '@/utils/request'
+// 微信设置
 const url = '/admin/setting.Wechat/'
-// ----------------微信设置-------------------
 /**
  * 公众号信息
  * @param {array} params 请求参数
