@@ -96,7 +96,7 @@
       <el-table-column prop="sort" label="排序" width="75" sortable="custom" />
       <el-table-column prop="login_num" label="登录次数" min-width="105" sortable="custom" />
       <el-table-column prop="login_time" label="登录时间" min-width="160" sortable="custom" />
-      <el-table-column prop="create_tie" label="添加时间" min-width="160" sortable="custom" />
+      <el-table-column prop="create_time" label="添加时间" min-width="160" sortable="custom" />
       <el-table-column label="操作" min-width="160" align="right" fixed="right">
         <template slot-scope="{ row }">
           <el-button size="mini" type="text" @click="rule(row)">权限</el-button>
