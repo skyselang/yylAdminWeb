@@ -46,6 +46,17 @@ export function clear(data) {
   })
 }
 /**
+ * 用户日志清空
+ * @param {array} data 请求数据
+ */
+export function clean(data) {
+  return request({
+    url: url + 'clean',
+    method: 'post',
+    data
+  })
+}
+/**
  * 用户日志统计
  * @param {array} data 请求数据
  */
