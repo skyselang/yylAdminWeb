@@ -82,7 +82,7 @@
       <el-table-column :prop="idkey" label="ID" min-width="100" sortable="custom" />
       <el-table-column prop="username" label="账号" min-width="120" sortable="custom" show-overflow-tooltip />
       <el-table-column prop="nickname" label="昵称" min-width="120" sortable="custom" show-overflow-tooltip />
-      <el-table-column prop="email" label="邮箱" min-width="250" sortable="custom" show-overflow-tooltip />
+      <el-table-column prop="admin_role_names" label="角色" min-width="200" show-overflow-tooltip />
       <el-table-column prop="is_super" label="超管" min-width="75" sortable="custom">
         <template slot-scope="scope">
           <el-switch v-model="scope.row.is_super" :active-value="1" :inactive-value="0" @change="isSuper([scope.row])" />
@@ -95,14 +95,15 @@
       </el-table-column>
       <el-table-column prop="sort" label="排序" width="75" sortable="custom" />
       <el-table-column prop="login_num" label="登录次数" min-width="105" sortable="custom" />
-      <el-table-column prop="login_time" label="登录时间" min-width="160" sortable="custom" />
-      <el-table-column prop="create_time" label="添加时间" min-width="160" sortable="custom" />
+      <el-table-column prop="login_time" label="登录时间" min-width="155" sortable="custom" />
+      <el-table-column prop="create_time" label="添加时间" min-width="155" sortable="custom" />
+      <el-table-column prop="update_time" label="修改时间" min-width="155" sortable="custom" />
       <el-table-column label="操作" min-width="160" align="right" fixed="right">
         <template slot-scope="{ row }">
-          <el-button size="mini" type="text" @click="rule(row)">权限</el-button>
-          <el-button size="mini" type="text" @click="selectOpen('password', row)">密码</el-button>
-          <el-button size="mini" type="text" @click="edit(row)">修改</el-button>
-          <el-button size="mini" type="text" @click="selectOpen('dele', row)">删除</el-button>
+          <el-button size="mini" type="text" title="分配权限" @click="rule(row)">权限</el-button>
+          <el-button size="mini" type="text" title="重置密码" @click="selectOpen('password', row)">密码</el-button>
+          <el-button size="mini" type="text" title="信息/修改" @click="edit(row)">修改</el-button>
+          <el-button size="mini" type="text" title="删除" @click="selectOpen('dele', row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -193,7 +194,7 @@
             :default-checked-keys="model.admin_menu_ids"
             :expand-on-click-node="false"
             :default-expand-all="true"
-            :check-strictly="false"
+            :check-strictly="true"
             node-key="admin_menu_id"
             highlight-current
             show-checkbox
