@@ -7,8 +7,8 @@
         <el-col class="ya-margin-bottom">
           <el-select v-model="query.search_field" class="ya-search-field" placeholder="搜索字段">
             <el-option value="title" label="标题" />
-            <el-option value="username" label="添加用户" />
-            <el-option value="admin_user_id" label="添加用户ID" />
+            <el-option value="admin_user_id" label="用户ID" />
+            <el-option value="username" label="用户账号" />
             <el-option value="is_open" label="是否开启" />
             <el-option :value="idkey" label="ID" />
           </el-select>
@@ -84,7 +84,8 @@
       <el-table-column prop="open_time_start" label="开始时间" min-width="160" sortable="custom" />
       <el-table-column prop="open_time_end" label="结束时间" min-width="160" sortable="custom" />
       <el-table-column prop="sort" label="排序" min-width="80" sortable="custom" />
-      <el-table-column prop="username" label="添加用户" min-width="120" show-overflow-tooltip />
+      <el-table-column prop="admin_user_id" label="用户ID" min-width="80" sortable="custom" />
+      <el-table-column prop="username" label="用户账号" min-width="120" show-overflow-tooltip />
       <el-table-column prop="create_time" label="添加时间" min-width="155" sortable="custom" />
       <el-table-column label="操作" min-width="90" align="right" fixed="right">
         <template slot-scope="{ row }">
@@ -104,9 +105,6 @@
         <el-form-item label="标题颜色" prop="color">
           <el-color-picker v-model="model.color" />
         </el-form-item>
-        <el-form-item label="开启" prop="is_open">
-          <el-switch v-model="model.is_open" :active-value="1" :inactive-value="0" />
-        </el-form-item>
         <el-form-item label="排序" prop="sort">
           <el-input v-model="model.sort" type="number" />
         </el-form-item>
@@ -122,11 +120,11 @@
         <el-form-item label="内容" prop="content">
           <rich-editor v-model="model.content" />
         </el-form-item>
-        <el-form-item v-if="model[idkey]" label="用户" prop="username">
-          <el-input v-model="model.username" disabled />
-        </el-form-item>
         <el-form-item v-if="model[idkey]" label="用户ID" prop="admin_user_id">
           <el-input v-model="model.admin_user_id" disabled />
+        </el-form-item>
+        <el-form-item v-if="model[idkey]" label="用户账号" prop="username">
+          <el-input v-model="model.username" disabled />
         </el-form-item>
         <el-form-item v-if="model[idkey]" label="添加时间" prop="create_time">
           <el-input v-model="model.create_time" disabled />
@@ -179,7 +177,6 @@ export default {
         color: '#606266',
         type: 1,
         sort: 250,
-        is_open: 1,
         open_time_start: '',
         open_time_end: '',
         intro: '',

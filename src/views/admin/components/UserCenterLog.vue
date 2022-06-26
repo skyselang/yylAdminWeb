@@ -5,6 +5,7 @@
       <el-row>
         <el-col>
           <el-select v-model="query.search_field" class="ya-search-field" placeholder="搜索字段">
+            <el-option value="admin_menu_id" label="菜单ID" />
             <el-option value="menu_url" label="菜单链接" />
             <el-option value="menu_name" label="菜单名称" />
             <el-option value="request_ip" label="请求IP" />
@@ -36,6 +37,7 @@
     <!-- 列表 -->
     <el-table v-loading="loading" :data="data" :height="height" @sort-change="sort">
       <el-table-column :prop="idkey" label="ID" min-width="100" sortable="custom" />
+      <el-table-column prop="admin_menu_id" label="菜单ID" min-width="100" />
       <el-table-column prop="menu_url" label="菜单链接" min-width="250" show-overflow-tooltip />
       <el-table-column prop="menu_name" label="菜单名称" min-width="150" show-overflow-tooltip />
       <el-table-column prop="request_ip" label="请求IP" min-width="130" />

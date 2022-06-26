@@ -46,38 +46,41 @@ service.interceptors.response.use(
    * 还可以通过HTTP状态代码来判断请求状态
    */
   response => {
-    // 响应数据
-    const res = response.data
-
-    // 返回码200：成功
-    if (res.code === 200) {
-      return res
+    if (response.data && response.config.responseType === 'blob') {
+      // 文件下载
+      return response.data
     } else {
-      // 返回码401：AdminToken 无效
-      if (res.code === 401) {
-        MessageBox.confirm(res.msg, '提示', {
-          confirmButtonText: '重新登录',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          store.dispatch('user/resetAdminToken').then(() => {
-            location.reload()
-          })
-        }).catch(() => { })
+      // 响应数据
+      const res = response.data
+      // 返回码200：成功
+      if (res.code === 200) {
+        return res
       } else {
-        Message({
-          showClose: true,
-          message: res.msg || 'Server error',
-          type: 'error',
-          duration: 5000
-        })
+        // 返回码401：AdminToken 无效
+        if (res.code === 401) {
+          MessageBox.confirm(res.msg, '提示', {
+            confirmButtonText: '重新登录',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            store.dispatch('user/resetAdminToken').then(() => {
+              location.reload()
+            })
+          }).catch(() => { })
+        } else {
+          Message({
+            showClose: true,
+            message: res.msg || 'Server error',
+            type: 'error',
+            duration: 5000
+          })
+        }
+        return Promise.reject(new Error(res.msg || 'Server error'))
       }
-      return Promise.reject(new Error(res.msg || 'Server error'))
     }
   },
   error => {
     // 响应错误
-    console.log(error.response)
     const res = error.response.data
     if (res.code === 401) {
       MessageBox.confirm(res.message, '提示', {
@@ -96,6 +99,9 @@ service.interceptors.response.use(
         type: 'error',
         duration: 5000
       })
+    }
+    if (process.env.NODE_ENV === 'development') {
+      console.log(error.response)
     }
     return Promise.reject(error)
   }

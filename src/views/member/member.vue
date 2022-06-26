@@ -313,7 +313,8 @@ export default {
         page: 1,
         limit: 15,
         search_field: 'username',
-        date_field: 'create_time'
+        date_field: 'create_time',
+        is_extra: 1
       },
       dialog: false,
       dialogTitle: '',
@@ -355,22 +356,22 @@ export default {
   created() {
     this.recycle = this.$route.meta.query.recycle
     this.height = screenHeight()
-    this.list(1)
+    this.list()
   },
   methods: {
     // 列表
-    list(is_extra = 0) {
+    list() {
       this.loading = true
-      this.query.is_extra = is_extra
       if (this.recycle) {
         recover(this.query).then(res => {
           this.data = res.data.list
           this.count = res.data.count
-          if (is_extra) {
+          if (this.query.is_extra) {
             this.reg_channels = res.data.reg_channels
             this.reg_types = res.data.reg_types
             this.regionData = res.data.region
           }
+          this.query.is_extra = 0
           this.loading = false
         }).catch(() => {
           this.loading = false
@@ -379,11 +380,12 @@ export default {
         list(this.query).then(res => {
           this.data = res.data.list
           this.count = res.data.count
-          if (is_extra) {
+          if (this.query.is_extra) {
             this.reg_channels = res.data.reg_channels
             this.reg_types = res.data.reg_types
             this.regionData = res.data.region
           }
+          this.query.is_extra = 0
           this.loading = false
         }).catch(() => {
           this.loading = false

@@ -67,7 +67,7 @@ export default {
   data() {
     return {
       loading: false,
-      userCenter: '/auth/user-center'
+      userCenter: '/system/user-center'
     }
   },
   computed: {
