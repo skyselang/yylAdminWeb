@@ -24,10 +24,10 @@ service.interceptors.request.use(
         config.headers[tokenName] = tokenValue
       } else {
         // 请求参数token
-        if (config.method === 'post') {
-          config.data = { ...config.data, [tokenName]: tokenValue }
-        } else if (config.method === 'get') {
+        if (config.method === 'get') {
           config.params = { ...config.params, [tokenName]: tokenValue }
+        } else {
+          config.data = { ...config.data, [tokenName]: tokenValue }
         }
       }
     }
@@ -46,35 +46,28 @@ service.interceptors.response.use(
    * 还可以通过HTTP状态代码来判断请求状态
    */
   response => {
+    // 响应数据
+    const res = response.data
     if (response.data && response.config.responseType === 'blob') {
       // 文件下载
-      return response.data
+      if (response.data.type === 'application/json') {
+        const reader = new FileReader()
+        reader.readAsText(response.data, 'utf-8')
+        reader.onload = () => {
+          const resf = JSON.parse(reader.result)
+          responseHandle(resf)
+          return Promise.reject(new Error(resf.msg || 'Server error'))
+        }
+        return Promise.reject()
+      } else {
+        return response.data
+      }
     } else {
-      // 响应数据
-      const res = response.data
       // 返回码200：成功
       if (res.code === 200) {
         return res
       } else {
-        // 返回码401：AdminToken 无效
-        if (res.code === 401) {
-          MessageBox.confirm(res.msg, '提示', {
-            confirmButtonText: '重新登录',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }).then(() => {
-            store.dispatch('user/resetAdminToken').then(() => {
-              location.reload()
-            })
-          }).catch(() => { })
-        } else {
-          Message({
-            showClose: true,
-            message: res.msg || 'Server error',
-            type: 'error',
-            duration: 5000
-          })
-        }
+        responseHandle(res)
         return Promise.reject(new Error(res.msg || 'Server error'))
       }
     }
@@ -82,29 +75,35 @@ service.interceptors.response.use(
   error => {
     // 响应错误
     const res = error.response.data
-    if (res.code === 401) {
-      MessageBox.confirm(res.message, '提示', {
-        confirmButtonText: '重新登录',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        store.dispatch('user/resetAdminToken').then(() => {
-          location.reload()
-        })
-      }).catch(() => { })
-    } else {
-      Message({
-        showClose: true,
-        message: res.message || error.message,
-        type: 'error',
-        duration: 5000
-      })
-    }
+    responseHandle(res)
     if (process.env.NODE_ENV === 'development') {
       console.log(error.response)
     }
     return Promise.reject(error)
   }
 )
+
+// 响应处理
+function responseHandle(res) {
+  // 返回码401：Token 无效
+  if (res.code === 401) {
+    MessageBox.confirm(res.msg, '提示', {
+      confirmButtonText: '重新登录',
+      cancelButtonText: '取消',
+      type: 'warning'
+    }).then(() => {
+      store.dispatch('user/resetAdminToken').then(() => {
+        location.reload()
+      })
+    }).catch(() => { })
+  } else {
+    Message({
+      showClose: true,
+      message: res.msg || 'Server error',
+      type: 'error',
+      duration: 5000
+    })
+  }
+}
 
 export default service

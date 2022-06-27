@@ -415,7 +415,6 @@ export default {
       var id = {}
       id[this.idkey] = row[this.idkey]
       down(id).then(res => {
-        console.log(res)
         const blob = new Blob([res])
         const url = window.URL.createObjectURL(blob)
         const ele = document.createElement('a')

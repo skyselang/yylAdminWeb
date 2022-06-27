@@ -450,6 +450,7 @@ export default {
     // 刷新
     refresh() {
       this.query = this.$options.data().query
+      this.query.is_extra = 0
       this.list()
     },
     // 排序
