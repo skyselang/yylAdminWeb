@@ -21,6 +21,7 @@ yylAdmin是一个基于ThinkPHP6和Vue2极简后台管理系统，只有登录�
 - 设置管理
 - 权限管理
 - 系统管理
+- 数据库管理
 - 代码生成器
 - 接口文档与调试...
 - 前台基础功能：登录注册、微信登录、Token认证、接口管理...  
@@ -176,4 +177,4 @@ cnpm run build:stage
 
 ## 安全
 
-[![OSCS Status](https://www.oscs1024.com/platform/badge/skyselang/yylAdminWeb.svg?size=small)](https://www.oscs1024.com/project/skyselang/yylAdminWeb?ref=badge_small)
+- yylAdminWeb ：[![OSCS Status](https://www.oscs1024.com/platform/badge/skyselang/yylAdminWeb.svg?size=small)](https://www.oscs1024.com/project/skyselang/yylAdminWeb?ref=badge_small) [REPORT](https://www.murphysec.com/dr/DAcNBM8aGWLb6vAf3I)
