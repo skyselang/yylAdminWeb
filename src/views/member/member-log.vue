@@ -63,14 +63,14 @@
       <el-table-column :prop="idkey" label="ID" min-width="100" sortable="custom" />
       <el-table-column prop="member_id" label="会员ID" min-width="100" sortable="custom" />
       <el-table-column prop="username" label="会员用户名" min-width="110" show-overflow-tooltip />
-      <el-table-column prop="api_id" label="接口ID" min-width="100" />
+      <el-table-column prop="api_id" label="接口ID" min-width="80" />
       <el-table-column prop="api_url" label="接口链接" min-width="220" show-overflow-tooltip />
       <el-table-column prop="api_name" label="接口名称" min-width="130" show-overflow-tooltip />
       <el-table-column prop="request_ip" label="请求IP" min-width="130" />
       <el-table-column prop="request_region" label="请求地区" min-width="150" show-overflow-tooltip />
-      <el-table-column prop="request_isp" label="请求ISP" min-width="110" />
-      <el-table-column prop="response_code" label="返回码" min-width="80" />
-      <el-table-column prop="response_msg" label="返回描述" min-width="130" show-overflow-tooltip />
+      <el-table-column prop="request_isp" label="请求ISP" min-width="100" show-overflow-tooltip />
+      <el-table-column prop="response_code" label="返回码" min-width="80" show-overflow-tooltip />
+      <el-table-column prop="response_msg" label="返回描述" min-width="120" show-overflow-tooltip />
       <el-table-column prop="create_time" label="请求时间" min-width="155" sortable="custom" />
       <el-table-column label="操作" min-width="85" align="right" fixed="right">
         <template slot-scope="{ row }">

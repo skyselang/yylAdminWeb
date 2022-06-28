@@ -110,7 +110,7 @@
         </el-col>
         <!-- 备份列表 -->
         <el-col v-else>
-          <el-table ref="table" :data="data" border :height="height" @sort-change="sort" @selection-change="select">
+          <el-table ref="table" :data="data" :height="height" @sort-change="sort" @selection-change="select">
             <el-table-column type="selection" width="42" title="全选/反选" />
             <el-table-column :prop="idkey" label="ID" min-width="100" sortable="custom" />
             <el-table-column prop="file" label="文件" min-width="230" show-overflow-tooltip />
@@ -120,7 +120,7 @@
             <el-table-column prop="admin_user_id" label="用户ID" min-width="70" show-overflow-tooltip />
             <el-table-column prop="username" label="用户账号" min-width="100" show-overflow-tooltip />
             <el-table-column prop="create_time" label="备份时间" min-width="155" sortable="custom" />
-            <el-table-column label="操作" min-width="120" align="right" fixed="right">
+            <el-table-column label="操作" min-width="130" align="right" fixed="right">
               <template slot-scope="{ row }">
                 <el-button size="mini" type="text" @click="down(row)">下载</el-button>
                 <el-button size="mini" type="text" @click="restore(row)">还原</el-button>
