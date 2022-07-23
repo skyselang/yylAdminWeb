@@ -1,30 +1,28 @@
 <template>
-  <div class="dialog-body">
-    <el-card v-loading="loading">
-      <el-row style="text-align:center;">
-        <el-col>
-          <el-select v-model="date_type" class="filter-item" @change="typeChange">
-            <el-option label="日" value="day" />
-            <el-option label="月" value="month" />
-          </el-select>
-          <el-date-picker
-            v-model="date_range"
-            class="filter-item"
-            style="width:350px"
-            :type="date_ptype"
-            :value-format="date_format"
-            :picker-options="date_options"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            @change="dateChange"
-          />
-        </el-col>
-        <el-col>
-          <div id="numberEchart" :style="{height:height+'px'}" />
-        </el-col>
-      </el-row>
-    </el-card>
-  </div>
+  <el-card v-loading="loading">
+    <el-row style="text-align:center;">
+      <el-col>
+        <el-select v-model="date_type" class="filter-item" @change="typeChange">
+          <el-option label="日" value="day" />
+          <el-option label="月" value="month" />
+        </el-select>
+        <el-date-picker
+          v-model="date_range"
+          class="filter-item"
+          style="width:350px"
+          :type="date_ptype"
+          :value-format="date_format"
+          :picker-options="date_options"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          @change="dateChange"
+        />
+      </el-col>
+      <el-col>
+        <div id="numberEchart" :style="{height:height+'px'}" />
+      </el-col>
+    </el-row>
+  </el-card>
 </template>
 
 <script>
