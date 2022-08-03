@@ -388,7 +388,7 @@
             </el-form-item>
             <el-form-item label="图片大小" prop="image_size">
               <el-col :span="11">
-                <el-input v-model="model.image_size" clearable>
+                <el-input v-model="model.image_size" type="number" clearable>
                   <template slot="append">MB</template>
                 </el-input>
               </el-col>
@@ -407,7 +407,7 @@
             </el-form-item>
             <el-form-item label="视频大小" prop="video_size">
               <el-col :span="11">
-                <el-input v-model="model.video_size" clearable>
+                <el-input v-model="model.video_size" type="number" clearable>
                   <template slot="append">MB</template>
                 </el-input>
               </el-col>
@@ -426,7 +426,7 @@
             </el-form-item>
             <el-form-item label="音频大小" prop="audio_size">
               <el-col :span="11">
-                <el-input v-model="model.audio_size" clearable>
+                <el-input v-model="model.audio_size" type="number" clearable>
                   <template slot="append">MB</template>
                 </el-input>
               </el-col>
@@ -445,7 +445,7 @@
             </el-form-item>
             <el-form-item label="文档大小" prop="word_size">
               <el-col :span="11">
-                <el-input v-model="model.word_size" clearable>
+                <el-input v-model="model.word_size" type="number" clearable>
                   <template slot="append">MB</template>
                 </el-input>
               </el-col>
@@ -464,12 +464,21 @@
             </el-form-item>
             <el-form-item label="其它大小" prop="other_size">
               <el-col :span="11">
-                <el-input v-model="model.other_size" clearable>
+                <el-input v-model="model.other_size" type="number" clearable>
                   <template slot="append">MB</template>
                 </el-input>
               </el-col>
               <el-col class="line" :span="13">
                 允许上传的其它文件大小，单位 MB
+              </el-col>
+            </el-form-item>
+
+            <el-form-item label="最大上传个数" prop="limit_max" class="ya-margin-bottom">
+              <el-col :span="11">
+                <el-input v-model="model.limit_max" type="number" clearable />
+              </el-col>
+              <el-col class="line" :span="13">
+                允许上传最大文件个数（每次最多选择）
               </el-col>
             </el-form-item>
           </el-tab-pane>
@@ -501,7 +510,6 @@ export default {
       loading: false,
       storages: [],
       model: {
-        setting_id: '',
         is_open: 1,
         storage: 'local',
         qiniu_access_key: '',
@@ -585,16 +593,16 @@ export default {
     // 信息
     info() {
       info().then((res) => {
-        this.storages = res.data.storage
         this.model = res.data.setting
+        this.storages = res.data.storage
       })
     },
     // 刷新
     refresh() {
       this.loading = true
       info().then((res) => {
-        this.storages = res.data.storage
         this.model = res.data.setting
+        this.storages = res.data.storage
         this.loading = false
         this.$message.success(res.msg)
       }).catch(() => {

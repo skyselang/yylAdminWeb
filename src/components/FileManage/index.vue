@@ -52,6 +52,7 @@
           :action="uploadAction"
           :headers="uploadHeaders"
           :data="uploadData"
+          :accept="uploadAccept"
           :before-upload="uploadBefore"
           :on-success="uploadSuccess"
           :on-error="uploadError"
@@ -408,6 +409,7 @@ export default {
       uploadHeaders: {},
       uploadData: {},
       uploadLimit: 9,
+      uploadAccept: '',
       uploadFilelist: [],
       groupDialog: false,
       groupTitle: '',
@@ -461,31 +463,29 @@ export default {
       this.loading = true
       if (this.recycle) {
         recover(this.query).then(res => {
-          this.data = res.data.list
-          this.count = res.data.count
-          this.filetype = res.data.filetype
-          this.storage = res.data.storage
-          this.fileIds = res.data.ids
-          this.loading = false
-          this.groupList(res.data.group)
-          this.imagePreview(res.data.list)
+          this.listData(res.data)
         }).catch(() => {
           this.loading = false
         })
       } else {
         list(this.query).then(res => {
-          this.data = res.data.list
-          this.count = res.data.count
-          this.filetype = res.data.filetype
-          this.storage = res.data.storage
-          this.fileIds = res.data.ids
-          this.loading = false
-          this.groupList(res.data.group)
-          this.imagePreview(res.data.list)
+          this.listData(res.data)
         }).catch(() => {
           this.loading = false
         })
       }
+    },
+    listData(data) {
+      this.data = data.list
+      this.count = data.count
+      this.filetype = data.filetype
+      this.storage = data.storage
+      this.fileIds = data.ids
+      this.uploadLimit = data.setting.limit_max
+      this.uploadAccept = data.setting.accept_ext
+      this.loading = false
+      this.groupList(data.group)
+      this.imagePreview(data.list)
     },
     // 上传
     uploadBefore() {
