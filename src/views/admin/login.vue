@@ -158,6 +158,7 @@ export default {
               this.loading = false
             })
           }).catch(() => {
+            this.$refs.ajcaptcha.refresh()
             this.loading = false
           })
         } else {
