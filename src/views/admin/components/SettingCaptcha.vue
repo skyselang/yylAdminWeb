@@ -5,9 +5,18 @@
         <el-switch v-model="model.captcha_switch" :active-value="1" :inactive-value="0" />
         <span style="margin-left:180px">开启后，后台登录需要输入验证码。</span>
       </el-form-item>
+      <el-form-item label="验证码方式" prop="captcha_mode">
+        <el-select v-model="model.captcha_mode" placeholder="" @change="moldChange">
+          <el-option v-for="item in mold" :key="item.value" :label="item.label" :value="item.value" />
+        </el-select>
+        <span>字符：输入字符；行为：滑动或点击。</span>
+      </el-form-item>
       <el-form-item label="验证码类型" prop="captcha_type">
-        <el-select v-model="model.captcha_type" placeholder="">
-          <el-option v-for="item in type" :key="item.value" :label="item.label" :value="item.value" />
+        <el-select v-if="model.captcha_mode==1" v-model="model.captcha_type" placeholder="">
+          <el-option v-for="item in typestr" :key="item.value" :label="item.label" :value="item.value" />
+        </el-select>
+        <el-select v-else v-model="model.captcha_type" placeholder="">
+          <el-option v-for="item in typeaj" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -32,15 +41,24 @@ export default {
       loading: false,
       model: {
         captcha_switch: 0,
+        captcha_mode: 1,
         captcha_type: 1
       },
       rules: {},
-      type: [
+      mold: [
+        { value: 1, label: '字符' },
+        { value: 2, label: '行为' }
+      ],
+      typestr: [
         { value: 1, label: '数字' },
         { value: 2, label: '字母' },
         { value: 3, label: '数字字母' },
         { value: 4, label: '算术' },
         { value: 5, label: '中文' }
+      ],
+      typeaj: [
+        { value: 1, label: '滑动' },
+        { value: 2, label: '文字' }
       ]
     }
   },
@@ -79,6 +97,9 @@ export default {
           })
         }
       })
+    },
+    moldChange(value) {
+      this.model.captcha_type = 1
     }
   }
 }

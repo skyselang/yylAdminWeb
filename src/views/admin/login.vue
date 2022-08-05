@@ -16,7 +16,7 @@
       <el-form-item prop="password">
         <el-input v-model="model.password" type="password" placeholder="请输入密码" prefix-icon="el-icon-lock" autocomplete="on" clearable show-password />
       </el-form-item>
-      <el-form-item v-if="captcha_switch" prop="captcha_code">
+      <el-form-item v-if="captcha_switch && captcha_src" prop="captcha_code">
         <el-col :span="13">
           <el-input v-model="model.captcha_code" placeholder="请输入验证码" prefix-icon="el-icon-picture" autocomplete="off" clearable />
         </el-col>
@@ -24,18 +24,29 @@
           <el-image class="login-captcha" :src="captcha_src" fit="fill" alt="验证码" title="点击刷新验证码" @click="captcha" />
         </el-col>
       </el-form-item>
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px" @click.native.prevent="handleLogin">登录</el-button>
+      <AjCaptcha
+        v-if="captcha_switch && captcha_mode==2"
+        ref="ajcaptcha"
+        mode="pop"
+        :captcha-type="captcha_type"
+        :img-size="{ width: '330px', height: '155px' }"
+        @success="ajcaptchaSuccess"
+      />
+
+      <el-button v-if="captcha_switch && captcha_mode==2" :loading="loading" type="primary" style="width:100%;margin-bottom:30px" @click="ajcaptchaShow">登录</el-button>
+      <el-button v-else :loading="loading" type="primary" style="width:100%;margin-bottom:30px" @click.native.prevent="handleLogin">登录</el-button>
     </el-form>
   </div>
 </template>
 
 <script>
+import AjCaptcha from '@/components/AjCaptcha'
 import { captcha, setting } from '@/api/admin/login'
 import { delNotice } from '@/utils/settings'
 
 export default {
   name: 'AdminLogin',
-  components: {},
+  components: { AjCaptcha },
   data() {
     return {
       name: '登录',
@@ -44,6 +55,8 @@ export default {
       redirect: undefined,
       otherQuery: {},
       captcha_switch: 0,
+      captcha_mode: 1,
+      captcha_type: 'blockPuzzle',
       captcha_src: '',
       logo_url: '',
       login_bg_url: '',
@@ -51,7 +64,8 @@ export default {
         username: '',
         password: '',
         captcha_id: '',
-        captcha_code: ''
+        captcha_code: '',
+        ajcaptcha: {}
       },
       rules: {
         username: [{ required: true, message: '请输入账号', trigger: 'blur' }],
@@ -81,31 +95,53 @@ export default {
     // 验证码
     captcha() {
       captcha().then(res => {
-        this.captchaSet(res)
+        this.captchaData(res.data)
       })
     },
-    captchaSet(res) {
+    captchaData(data) {
       this.model.captcha_id = ''
       this.model.captcha_code = ''
-      if (res.data.captcha_switch) {
-        this.captcha_src = res.data.captcha_src
-        this.model.captcha_id = res.data.captcha_id
+      if (data.captcha_switch) {
+        if (data.captcha_mode === 1) {
+          this.captcha_src = data.captcha_src
+          this.model.captcha_id = data.captcha_id
+        }
       }
-      this.captcha_switch = res.data.captcha_switch
+      this.captcha_switch = data.captcha_switch
+      this.captcha_mode = data.captcha_mode
+      if (data.captcha_type === 1) {
+        this.captcha_type = 'blockPuzzle'
+      } else {
+        this.captcha_type = 'clickWord'
+      }
+    },
+    ajcaptchaSuccess(params) {
+      this.model.ajcaptcha = params
+      this.handleLogin()
+    },
+    ajcaptchaShow() {
+      this.$refs['ref'].validate(valid => {
+        if (valid) {
+          this.$refs.ajcaptcha.show()
+        } else {
+          return false
+        }
+      })
     },
     // 设置
     setting() {
       this.model.captcha_id = ''
       this.model.captcha_code = ''
       setting().then(res => {
-        this.captchaSet(res)
-        this.login_bg_url = res.data.login_bg_url
-        this.system_name = res.data.system_name
-        this.logo_url = res.data.logo_url
-        this.$store.dispatch('settings/changeSetting', { key: 'systemName', value: res.data.system_name })
-        this.$store.dispatch('settings/changeSetting', { key: 'pageTitle', value: res.data.page_title })
-        this.$store.dispatch('settings/changeSetting', { key: 'logoUrl', value: res.data.logo_url })
-        this.$store.dispatch('settings/changeSetting', { key: 'faviconUrl', value: res.data.favicon_url })
+        const data = res.data
+        this.captchaData(data)
+        this.login_bg_url = data.login_bg_url
+        this.system_name = data.system_name
+        this.logo_url = data.logo_url
+        this.$store.dispatch('settings/changeSetting', { key: 'systemName', value: data.system_name })
+        this.$store.dispatch('settings/changeSetting', { key: 'pageTitle', value: data.page_title })
+        this.$store.dispatch('settings/changeSetting', { key: 'logoUrl', value: data.logo_url })
+        this.$store.dispatch('settings/changeSetting', { key: 'faviconUrl', value: data.favicon_url })
       })
     },
     // 登录
