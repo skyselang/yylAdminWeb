@@ -85,7 +85,7 @@
         </el-col>
         <!-- 数据库表信息 -->
         <el-col v-if="tableName">
-          <el-col :span="7">
+          <el-col :span="8">
             <el-descriptions :column="1" border>
               <el-descriptions-item label="表名">{{ tableInfo.Name }}</el-descriptions-item>
               <el-descriptions-item label="注释">{{ tableInfo.Comment }}</el-descriptions-item>
@@ -104,7 +104,7 @@
               <el-descriptions-item label="修改日期">{{ tableInfo.Update_time }}</el-descriptions-item>
             </el-descriptions>
           </el-col>
-          <el-col :span="17" class="dialog-body" :style="{height:height+50+'px'}">
+          <el-col :span="16" class="dialog-body" :style="{height:height+50+'px'}">
             <el-input v-model="tableDdl" type="textarea" :autosize="{ minRows: 25}" />
           </el-col>
         </el-col>
@@ -120,7 +120,7 @@
             <el-table-column prop="admin_user_id" label="用户ID" min-width="70" show-overflow-tooltip />
             <el-table-column prop="username" label="用户账号" min-width="100" show-overflow-tooltip />
             <el-table-column prop="create_time" label="备份时间" min-width="155" sortable="custom" />
-            <el-table-column label="操作" min-width="130" align="right" fixed="right">
+            <el-table-column label="操作" min-width="155" align="right" fixed="right">
               <template slot-scope="{ row }">
                 <el-button size="mini" type="text" @click="down(row)">下载</el-button>
                 <el-button size="mini" type="text" @click="restore(row)">还原</el-button>

@@ -185,7 +185,8 @@ export default {
       query: {
         page: 1,
         limit: 15,
-        search_field: 'username'
+        search_field: 'username',
+        date_field: 'create_time'
       },
       dialog: false,
       dialogTitle: '',

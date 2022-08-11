@@ -110,7 +110,7 @@
       <el-table-column :prop="idkey" label="ID" min-width="95" sortable="custom" />
       <el-table-column prop="region_pid" label="PID" min-width="95" />
       <el-table-column prop="region_sort" label="排序" min-width="80" sortable="custom" />
-      <el-table-column label="操作" width="130" fixed="right" align="right">
+      <el-table-column label="操作" width="130" align="right">
         <template slot-scope="{ row }">
           <el-button size="mini" type="text" title="添加下级" @click="add(row)">添加</el-button>
           <el-button size="mini" type="text" @click="edit(row)">修改</el-button>

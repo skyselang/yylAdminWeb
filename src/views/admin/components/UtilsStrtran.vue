@@ -23,7 +23,7 @@
             <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.upper, $event)" />
           </el-input>
         </el-form-item>
-        <el-form-item label="反转" prop="rev">
+        <el-form-item label="翻转" prop="rev">
           <el-input v-model="model.rev">
             <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.rev, $event)" />
           </el-input>

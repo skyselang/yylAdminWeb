@@ -364,33 +364,28 @@ export default {
       this.loading = true
       if (this.recycle) {
         recover(this.query).then(res => {
-          this.data = res.data.list
-          this.count = res.data.count
-          if (this.query.is_extra) {
-            this.reg_channels = res.data.reg_channels
-            this.reg_types = res.data.reg_types
-            this.regionData = res.data.region
-          }
-          this.query.is_extra = 0
-          this.loading = false
+          this.listData(res.data)
         }).catch(() => {
           this.loading = false
         })
       } else {
         list(this.query).then(res => {
-          this.data = res.data.list
-          this.count = res.data.count
-          if (this.query.is_extra) {
-            this.reg_channels = res.data.reg_channels
-            this.reg_types = res.data.reg_types
-            this.regionData = res.data.region
-          }
-          this.query.is_extra = 0
-          this.loading = false
+          this.listData(res.data)
         }).catch(() => {
           this.loading = false
         })
       }
+    },
+    listData(data) {
+      this.data = data.list
+      this.count = data.count
+      if (this.query.is_extra) {
+        this.reg_channels = data.reg_channels
+        this.reg_types = data.reg_types
+        this.regionData = data.region
+      }
+      this.query.is_extra = 0
+      this.loading = false
     },
     // 添加修改
     add() {

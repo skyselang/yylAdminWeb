@@ -389,23 +389,23 @@ export default {
       this.loading = true
       if (this.recycle) {
         recover(this.query).then(res => {
-          this.data = res.data.list
-          this.count = res.data.count
-          this.category(res.data.category)
-          this.loading = false
+          this.listData(res.data)
         }).catch(() => {
           this.loading = false
         })
       } else {
         list(this.query).then(res => {
-          this.data = res.data.list
-          this.count = res.data.count
-          this.category(res.data.category)
-          this.loading = false
+          this.listData(res.data)
         }).catch(() => {
           this.loading = false
         })
       }
+    },
+    listData(data) {
+      this.data = data.list
+      this.count = data.count
+      this.category(data.category)
+      this.loading = false
     },
     // 添加修改
     add() {
