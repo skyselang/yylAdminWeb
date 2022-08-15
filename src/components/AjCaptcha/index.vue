@@ -214,7 +214,7 @@ export default {
   background-color: #fff;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   left: 50%;
-  top: 50%;
+  top: 386px;
   transform: translate(-50%, -50%);
 }
 .verifybox-top {
