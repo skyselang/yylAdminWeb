@@ -16,7 +16,7 @@
       <el-form-item prop="password">
         <el-input v-model="model.password" type="password" placeholder="请输入密码" prefix-icon="el-icon-lock" autocomplete="on" clearable show-password />
       </el-form-item>
-      <el-form-item v-if="captcha_switch && captcha_src" prop="captcha_code">
+      <el-form-item v-if="captcha_switch&&captcha_src" prop="captcha_code">
         <el-col :span="13">
           <el-input v-model="model.captcha_code" placeholder="请输入验证码" prefix-icon="el-icon-picture" autocomplete="off" clearable />
         </el-col>
@@ -25,16 +25,15 @@
         </el-col>
       </el-form-item>
       <AjCaptcha
-        v-if="captcha_switch && captcha_mode==2"
+        v-if="captcha_switch&&captcha_mode==2"
         ref="ajcaptcha"
         mode="pop"
         :captcha-type="captcha_type"
         :img-size="{ width: '330px', height: '155px' }"
         @success="ajcaptchaSuccess"
       />
-
-      <el-button v-if="captcha_switch && captcha_mode==2" :loading="loading" type="primary" style="width:100%;margin-bottom:30px" @click="ajcaptchaShow">登录</el-button>
-      <el-button v-else :loading="loading" type="primary" style="width:100%;margin-bottom:30px" @click.native.prevent="handleLogin">登录</el-button>
+      <el-button v-if="captcha_switch&&captcha_mode==2" :loading="loading" type="primary" class="login-bottom" @click="ajcaptchaShow">登录</el-button>
+      <el-button v-else :loading="loading" type="primary" class="login-bottom" @click.native.prevent="handleLogin">登录</el-button>
     </el-form>
   </div>
 </template>
@@ -158,8 +157,10 @@ export default {
               this.loading = false
             })
           }).catch(() => {
-            this.$refs.ajcaptcha.refresh()
             this.loading = false
+            if (this.captcha_switch && this.captcha_mode === 2) {
+              this.$refs.ajcaptcha.refresh()
+            }
           })
         } else {
           return false
@@ -223,6 +224,11 @@ export default {
     width: 200px;
     height: 36px;
     border-radius: 4px;
+  }
+
+  .login-bottom {
+    width:100%;
+    margin-bottom:30px;
   }
 }
 </style>
