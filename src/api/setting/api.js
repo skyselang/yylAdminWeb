@@ -68,12 +68,23 @@ export function pid(data) {
   })
 }
 /**
- * 接口是否无需登录
+ * 接口是否免登
  * @param {array} data 请求数据
  */
 export function unlogin(data) {
   return request({
     url: url + 'unlogin',
+    method: 'post',
+    data
+  })
+}
+/**
+ * 接口是否免限
+ * @param {array} data 请求数据
+ */
+export function unrate(data) {
+  return request({
+    url: url + 'unrate',
     method: 'post',
     data
   })

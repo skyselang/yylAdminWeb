@@ -10,6 +10,7 @@
             <el-option value="api_url" label="接口链接" />
             <el-option value="api_pid" label="上级" />
             <el-option value="is_unlogin" label="免登" />
+            <el-option value="is_unrate" label="免限" />
             <el-option value="is_disable" label="禁用" />
             <el-option :value="idkey" label="ID" />
           </el-select>
@@ -25,7 +26,7 @@
             @change="pidQuery"
           />
           <el-select
-            v-else-if="query.search_field==='is_unlogin'||query.search_field==='is_disable'"
+            v-else-if="query.search_field==='is_unlogin'||query.search_field==='is_unrate'||query.search_field==='is_disable'"
             v-model="query.search_value"
             class="filter-item ya-search-value"
             placeholder="请选择"
@@ -56,6 +57,7 @@
           <el-checkbox v-model="isExpandAll" style="margin-right:10px;top:-2px" border title="收起/展开" @change="expandAll">收起</el-checkbox>
           <el-button title="修改上级" @click="selectOpen('editpid')">上级</el-button>
           <el-button title="是否免登" @click="selectOpen('unlogin')">免登</el-button>
+          <el-button title="是否免限" @click="selectOpen('unrate')">免限</el-button>
           <el-button title="是否禁用" @click="selectOpen('disable')">禁用</el-button>
           <el-button title="删除" @click="selectOpen('dele')">删除</el-button>
           <el-button type="primary" @click="add()">添加</el-button>
@@ -80,6 +82,9 @@
           </el-form-item>
           <el-form-item v-else-if="selectType==='unlogin'" label="是否免登" prop="">
             <el-switch v-model="is_unlogin" :active-value="1" :inactive-value="0" />
+          </el-form-item>
+          <el-form-item v-else-if="selectType==='unrate'" label="是否免限" prop="">
+            <el-switch v-model="is_unrate" :active-value="1" :inactive-value="0" />
           </el-form-item>
           <el-form-item v-else-if="selectType==='disable'" label="是否禁用" prop="">
             <el-switch v-model="is_disable" :active-value="1" :inactive-value="0" />
@@ -131,6 +136,18 @@
           <el-switch v-if="scope.row.api_url" v-model="scope.row.is_unlogin" :active-value="1" :inactive-value="0" @change="unlogin([scope.row])" />
         </template>
       </el-table-column>
+      <el-table-column prop="is_unrate" label="是否免限" min-width="95" align="center">
+        <template slot="header">
+          <span>是否免限</span>
+          <el-tooltip placement="top">
+            <div slot="content">开启后不受接口速率限制</div>
+            <i class="el-icon-info" title="" />
+          </el-tooltip>
+        </template>
+        <template slot-scope="scope">
+          <el-switch v-if="scope.row.api_url" v-model="scope.row.is_unrate" :active-value="1" :inactive-value="0" @change="unrate([scope.row])" />
+        </template>
+      </el-table-column>
       <el-table-column prop="is_disable" label="是否禁用" min-width="95" align="center">
         <template slot="header">
           <span>是否禁用</span>
@@ -146,7 +163,7 @@
       <el-table-column :prop="idkey" label="ID" min-width="80" />
       <el-table-column prop="api_pid" label="PID" min-width="80" />
       <el-table-column prop="api_sort" label="排序" min-width="80" />
-      <el-table-column label="操作" min-width="130" align="right" fixed="right">
+      <el-table-column label="操作" min-width="130" align="right">
         <template slot-scope="{ row }">
           <el-button size="mini" type="text" title="添加下级" @click="add(row)">添加</el-button>
           <el-button size="mini" type="text" @click="edit(row)">修改</el-button>
@@ -201,7 +218,7 @@
 import screenHeight from '@/utils/screen-height'
 import clip from '@/utils/clipboard'
 import { arrayColumn } from '@/utils/index'
-import { list, info, add, edit, dele, pid, disable, unlogin } from '@/api/setting/api'
+import { list, info, add, edit, dele, pid, unlogin, unrate, disable } from '@/api/setting/api'
 
 export default {
   name: 'SettingApi',
@@ -242,6 +259,7 @@ export default {
       selectType: '',
       api_pid: 0,
       is_unlogin: 0,
+      is_unrate: 0,
       is_disable: 0
     }
   },
@@ -410,6 +428,8 @@ export default {
           this.editpid(this.selection)
         } else if (selectType === 'unlogin') {
           this.unlogin(this.selection, true)
+        } else if (selectType === 'unrate') {
+          this.unrate(this.selection, true)
         } else if (selectType === 'disable') {
           this.disable(this.selection, true)
         } else if (selectType === 'dele') {
@@ -444,6 +464,27 @@ export default {
         unlogin({
           ids: this.selectGetIds(row),
           is_unlogin: is_unlogin
+        }).then(res => {
+          this.list()
+          this.$message.success(res.msg)
+        }).catch(() => {
+          this.list()
+        })
+      }
+    },
+    // 是否免限
+    unrate(row, select = false) {
+      if (!row.length) {
+        this.selectAlert()
+      } else {
+        this.loading = true
+        var is_unrate = row[0].is_unrate
+        if (select) {
+          is_unrate = this.is_unrate
+        }
+        unrate({
+          ids: this.selectGetIds(row),
+          is_unrate: is_unrate
         }).then(res => {
           this.list()
           this.$message.success(res.msg)

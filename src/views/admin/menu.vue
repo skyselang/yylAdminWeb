@@ -12,6 +12,7 @@
             <el-option value="menu_type" label="类型" />
             <el-option value="is_unlogin" label="免登" />
             <el-option value="is_unauth" label="免权" />
+            <el-option value="is_unrate" label="免限" />
             <el-option value="hidden" label="隐藏" />
             <el-option value="is_disable" label="禁用" />
             <el-option value="meta_query" label="参数" />
@@ -40,7 +41,7 @@
             <el-option :value="3" label="按钮" />
           </el-select>
           <el-select
-            v-else-if="query.search_field==='is_unlogin'||query.search_field==='is_unauth'||query.search_field==='hidden'||query.search_field==='is_disable'"
+            v-else-if="query.search_field==='is_unlogin'||query.search_field==='is_unauth'||query.search_field==='is_unrate'||query.search_field==='hidden'||query.search_field==='is_disable'"
             v-model="query.search_value"
             class="filter-item ya-search-value"
             placeholder="请选择"
@@ -82,6 +83,7 @@
           <el-button title="修改上级" @click="selectOpen('editpid')">上级</el-button>
           <el-button title="是否免登" @click="selectOpen('unlogin')">免登</el-button>
           <el-button title="是否免权" @click="selectOpen('unauth')">免权</el-button>
+          <el-button title="是否免限" @click="selectOpen('unrate')">免限</el-button>
           <el-button title="是否隐藏" @click="selectOpen('hidden')">隐藏</el-button>
           <el-button title="是否禁用" @click="selectOpen('disable')">禁用</el-button>
           <el-button title="删除" @click="selectOpen('dele')">删除</el-button>
@@ -110,6 +112,9 @@
           </el-form-item>
           <el-form-item v-else-if="selectType==='unauth'" label="是否免权" prop="">
             <el-switch v-model="is_unauth" :active-value="1" :inactive-value="0" />
+          </el-form-item>
+          <el-form-item v-else-if="selectType==='unrate'" label="是否免限" prop="">
+            <el-switch v-model="is_unrate" :active-value="1" :inactive-value="0" />
           </el-form-item>
           <el-form-item v-else-if="selectType==='hidden'" label="是否隐藏" prop="">
             <el-switch v-model="hidden" :active-value="1" :inactive-value="0" />
@@ -159,24 +164,29 @@
           <i v-else-if="scope.row.menu_type==3" title="按钮" class="el-icon-open" />
         </template>
       </el-table-column>
-      <el-table-column prop="is_unlogin" label="免登" min-width="80" align="center">
+      <el-table-column prop="is_unlogin" label="免登" min-width="70" align="center">
         <template slot-scope="scope">
-          <el-switch v-if="scope.row.menu_url" v-model="scope.row.is_unlogin" :active-value="1" :inactive-value="0" @change="unlogin([scope.row])" />
+          <el-switch v-if="scope.row.menu_url" v-model="scope.row.is_unlogin" :width="35" :active-value="1" :inactive-value="0" @change="unlogin([scope.row])" />
         </template>
       </el-table-column>
-      <el-table-column prop="is_unauth" label="免权" min-width="80" align="center">
+      <el-table-column prop="is_unauth" label="免权" min-width="70" align="center">
         <template slot-scope="scope">
-          <el-switch v-if="scope.row.menu_url" v-model="scope.row.is_unauth" :active-value="1" :inactive-value="0" @change="unauth([scope.row])" />
+          <el-switch v-if="scope.row.menu_url" v-model="scope.row.is_unauth" :width="35" :active-value="1" :inactive-value="0" @change="unauth([scope.row])" />
         </template>
       </el-table-column>
-      <el-table-column prop="hidden" label="隐藏" min-width="80" align="center">
+      <el-table-column prop="is_unrate" label="免限" min-width="70" align="center">
         <template slot-scope="scope">
-          <el-switch v-model="scope.row.hidden" :active-value="1" :inactive-value="0" @change="ishidden([scope.row])" />
+          <el-switch v-if="scope.row.menu_url" v-model="scope.row.is_unrate" :width="35" :active-value="1" :inactive-value="0" @change="unrate([scope.row])" />
         </template>
       </el-table-column>
-      <el-table-column prop="is_disable" label="禁用" min-width="80" align="center">
+      <el-table-column prop="hidden" label="隐藏" min-width="70" align="center">
         <template slot-scope="scope">
-          <el-switch v-if="scope.row.menu_url" v-model="scope.row.is_disable" :active-value="1" :inactive-value="0" @change="disable([scope.row])" />
+          <el-switch v-model="scope.row.hidden" :width="35" :active-value="1" :inactive-value="0" @change="ishidden([scope.row])" />
+        </template>
+      </el-table-column>
+      <el-table-column prop="is_disable" label="禁用" min-width="70" align="center">
+        <template slot-scope="scope">
+          <el-switch v-if="scope.row.menu_url" v-model="scope.row.is_disable" :width="35" :active-value="1" :inactive-value="0" @change="disable([scope.row])" />
         </template>
       </el-table-column>
       <el-table-column :prop="idkey" label="ID" min-width="55" />
@@ -370,7 +380,7 @@ import Pagination from '@/components/Pagination'
 import clip from '@/utils/clipboard'
 import { EIconPicker } from 'e-icon-picker'
 import { arrayColumn } from '@/utils/index'
-import { list, info, add, edit, dele, pid, unauth, unlogin, ishidden, disable, role, roleRemove, user, userRemove } from '@/api/admin/menu'
+import { list, info, add, edit, dele, pid, unlogin, unauth, unrate, ishidden, disable, role, roleRemove, user, userRemove } from '@/api/admin/menu'
 
 export default {
   name: 'AdminMenu',
@@ -427,6 +437,7 @@ export default {
       menu_pid: 0,
       is_unlogin: 0,
       is_unauth: 0,
+      is_unrate: 0,
       is_disable: 0,
       hidden: 0,
       roleDialog: false,
@@ -601,10 +612,12 @@ export default {
           this.selectTitle = '是否免登'
         } else if (selectType === 'unauth') {
           this.selectTitle = '是否免权'
-        } else if (selectType === 'disable') {
-          this.selectTitle = '是否禁用'
+        } else if (selectType === 'unrate') {
+          this.selectTitle = '是否免限'
         } else if (selectType === 'hidden') {
           this.selectTitle = '是否隐藏'
+        } else if (selectType === 'disable') {
+          this.selectTitle = '是否禁用'
         } else if (selectType === 'dele') {
           this.selectTitle = '删除' + this.name
         }
@@ -626,10 +639,12 @@ export default {
           this.unlogin(this.selection, true)
         } else if (selectType === 'unauth') {
           this.unauth(this.selection, true)
-        } else if (selectType === 'disable') {
-          this.disable(this.selection, true)
+        } else if (selectType === 'unrate') {
+          this.unrate(this.selection, true)
         } else if (selectType === 'hidden') {
           this.ishidden(this.selection, true)
+        } else if (selectType === 'disable') {
+          this.disable(this.selection, true)
         } else if (selectType === 'dele') {
           this.dele(this.selection)
         }
@@ -683,6 +698,27 @@ export default {
         unauth({
           ids: this.selectGetIds(row),
           is_unauth: is_unauth
+        }).then(res => {
+          this.list()
+          this.$message.success(res.msg)
+        }).catch(() => {
+          this.list()
+        })
+      }
+    },
+    // 是否免限
+    unrate(row, select = false) {
+      if (!row.length) {
+        this.selectAlert()
+      } else {
+        this.loading = true
+        let is_unrate = row[0].is_unrate
+        if (select) {
+          is_unrate = this.is_unrate
+        }
+        unrate({
+          ids: this.selectGetIds(row),
+          is_unrate: is_unrate
         }).then(res => {
           this.list()
           this.$message.success(res.msg)

@@ -90,6 +90,17 @@ export function unauth(data) {
   })
 }
 /**
+ * 菜单是否免限
+ * @param {array} data 请求数据
+ */
+export function unrate(data) {
+  return request({
+    url: url + 'unrate',
+    method: 'post',
+    data
+  })
+}
+/**
  * 菜单是否隐藏
  * @param {array} data 请求数据
  */
