@@ -69,8 +69,12 @@
           <el-button title="重置密码" @click="selectOpen('repwd')">密码</el-button>
           <el-button title="是否禁用" @click="selectOpen('disable')">禁用</el-button>
           <el-button title="删除" @click="selectOpen('dele')">删除</el-button>
+          <el-button title="导出" @click="selectOpen('export')">导出</el-button>
           <el-button v-if="recycle" type="primary" @click="selectOpen('reco')">恢复</el-button>
           <el-button v-else type="primary" @click="add()">添加</el-button>
+          <el-tooltip class="item" effect="dark" content="表头：昵称，用户名，手机，邮箱，密码" placement="left">
+            <excel-import v-if="checkPermission(['admin/member.Member/export'])" :limit-size="1" title="导入" @on-import="imports" />
+          </el-tooltip>
         </el-col>
       </el-row>
       <el-dialog :title="selectTitle" :visible.sync="selectDialog" top="20vh" :close-on-click-modal="false" :close-on-press-escape="false">
@@ -100,6 +104,20 @@
             <span v-if="recycle" style="color:red">确定要彻底删除选中的{{ name }}吗？删除后不可恢复！</span>
             <span v-else style="color:red">确定要删除选中的{{ name }}吗？</span>
           </el-form-item>
+          <div v-else-if="selectType==='export'">
+            <el-form-item label="文件名称" prop="">
+              <el-input v-model="exportFileName" placeholder="请输入文件名称" clearable />
+            </el-form-item>
+            <el-form-item label="文件类型" prop="">
+              <el-select v-model="exportBookType">
+                <el-option v-for="item in ['xlsx','csv', 'txt']" :key="item" :label="item" :value="item" />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="自动宽度" prop="">
+              <el-switch v-model="exportAutoWidth" :active-value="true" :inactive-value="false" />
+              <span> 宽度是否自适应</span>
+            </el-form-item>
+          </div>
           <el-form-item v-else-if="selectType==='reco'" label="" prop="">
             <span style="color:red">确定要恢复选中的{{ name }}吗？</span>
           </el-form-item>
@@ -290,16 +308,18 @@
 </template>
 
 <script>
+import checkPermission from '@/utils/permission' // 权限判断函数
 import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination'
 import FileManage from '@/components/FileManage'
 import clip from '@/utils/clipboard'
+import ExcelImport from '@/components/ExcelImport/index.vue'
 import { arrayColumn } from '@/utils/index'
-import { list, info, add, edit, dele, region, repwd, disable, recover, recoverReco, recoverDele } from '@/api/member/member'
+import { list, info, add, edit, dele, region, repwd, disable, imports, recover, recoverReco, recoverDele } from '@/api/member/member'
 
 export default {
   name: 'Member',
-  components: { Pagination, FileManage },
+  components: { Pagination, FileManage, ExcelImport },
   data() {
     return {
       name: '会员',
@@ -350,7 +370,10 @@ export default {
       region_id: 0,
       password: '',
       is_disable: 0,
-      fileDialog: false
+      fileDialog: false,
+      exportFileName: '',
+      exportBookType: 'xlsx',
+      exportAutoWidth: false
     }
   },
   created() {
@@ -359,6 +382,7 @@ export default {
     this.list()
   },
   methods: {
+    checkPermission,
     // 列表
     list() {
       this.loading = true
@@ -489,6 +513,14 @@ export default {
           this.selectTitle = '是否禁用'
         } else if (selectType === 'dele') {
           this.selectTitle = '删除' + this.name
+        } else if (selectType === 'export') {
+          var date = new Date()
+          var month = date.getMonth() + 1
+          month = month < 10 ? '0' + month : month
+          this.exportFileName = this.name + date.getFullYear() + '-' + month + '-' + date.getDate()
+          this.selectTitle = '导出'
+        } else if (selectType === 'import') {
+          this.selectTitle = '导入'
         } else if (selectType === 'reco') {
           this.selectTitle = '恢复' + this.name
         }
@@ -512,6 +544,10 @@ export default {
           this.disable(this.selection, true)
         } else if (selectType === 'dele') {
           this.dele(this.selection)
+        } else if (selectType === 'export') {
+          this.export(this.selection)
+        } else if (selectType === 'import') {
+          this.import(this.selection)
         } else if (selectType === 'reco') {
           this.reco(this.selection)
         }
@@ -603,6 +639,35 @@ export default {
           })
         }
       }
+    },
+    // 导出
+    export(row) {
+      this.loading = true
+      import('@/components/ExcelExport/index').then(excel => {
+        const header = [
+          { member_id: '会员id' },
+          { nickname: '昵称' },
+          { username: '用户名' },
+          { phone: '手机' },
+          { email: '邮箱' },
+          { remark: '备注' },
+          { create_time: '注册时间' }
+        ]
+        excel.excelExport(row, header, this.exportFileName, this.exportBookType, this.exportAutoWidth)
+        this.loading = false
+      })
+    },
+    // 导入，results数据，header表头
+    imports({ results, header }) {
+      this.loading = true
+      imports({
+        import: results
+      }).then(res => {
+        this.list()
+        this.$message.success(res.msg)
+      }).catch(() => {
+        this.loading = false
+      })
     },
     // 恢复
     reco(row) {

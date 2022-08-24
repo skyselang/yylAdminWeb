@@ -90,6 +90,17 @@ export function disable(data) {
   })
 }
 /**
+ * 会员导入
+ * @param {array} data 请求数据
+ */
+export function imports(data) {
+  return request({
+    url: url + 'import',
+    method: 'post',
+    data
+  })
+}
+/**
  * 会员统计
  * @param {array} params 请求参数
  */
