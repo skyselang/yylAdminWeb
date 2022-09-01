@@ -83,7 +83,7 @@
     <pagination v-show="count > 0" :total="count" :page.sync="query.page" :limit.sync="query.limit" @pagination="list" />
     <!-- 详情 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false">
-      <el-form ref="ref" :rules="rules" :model="model" label-width="100px" class="dialog-body" :style="{height:height+'px'}">
+      <el-form ref="ref" :rules="rules" :model="model" label-width="110px" class="dialog-body" :style="{height:height+'px'}">
         <el-form-item label="会员ID" prop="member_id">
           <el-input v-model="model.member_id" />
         </el-form-item>
@@ -123,6 +123,9 @@
         <el-form-item label="返回描述" prop="response_msg">
           <el-input v-model="model.response_msg" />
         </el-form-item>
+        <el-form-item label="USER_AGENT" prop="user_agent">
+          <el-input v-model="model.user_agent" type="textarea" />
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancel">取消</el-button>
@@ -131,7 +134,7 @@
     </el-dialog>
     <!-- 清除 -->
     <el-dialog :title="clearDialogTitle" :visible.sync="clearDialog" :before-close="clearCancel" :close-on-click-modal="false" :close-on-press-escape="false">
-      <el-form ref="clearRef" :rules="clearRules" :model="clearModel" label-width="100px" class="dialog-body">
+      <el-form ref="clearRef" :rules="clearRules" :model="clearModel" label-width="110px" class="dialog-body">
         <el-form-item label="会员ID" prop="member_id">
           <el-input v-model="clearModel.member_id" placeholder="多个逗号,隔开" clearable />
         </el-form-item>

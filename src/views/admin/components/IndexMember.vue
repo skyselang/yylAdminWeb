@@ -171,7 +171,8 @@ export default {
       var option = {
         title: {
           text: '会员',
-          textStyle: { fontSize: 12 }
+          left: 'center',
+          textStyle: { fontSize: 15 }
         },
         legend: {
           top: '20px',

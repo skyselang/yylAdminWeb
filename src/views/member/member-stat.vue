@@ -74,7 +74,7 @@ export default {
       loading: false,
       count: [],
       echart_id: 'echartid',
-      echart_num: 0,
+      echart_num: 1,
       echart_data: [],
       date_type: 'day',
       date_range: [],

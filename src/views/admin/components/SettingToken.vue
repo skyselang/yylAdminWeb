@@ -3,7 +3,7 @@
     <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
       <el-form-item label="Token密钥" prop="token_key">
         <el-col :span="8">
-          <el-input v-model="model.token_key" type="password" clearable show-password />
+          <el-input v-model="model.token_key" type="password" autocomplete="off" clearable show-password />
         </el-col>
         <el-col :span="13">
           修改后用户登录状态失效，需重新登录。
@@ -16,7 +16,15 @@
           </el-input>
         </el-col>
         <el-col :span="13">
-          登录成功后超过此时间，需重新登录。
+          登录成功后超过有效时间，需重新登录。
+        </el-col>
+      </el-form-item>
+      <el-form-item label="多端登录" prop="is_multi_login">
+        <el-col :span="8">
+          <el-switch v-model="model.is_multi_login" :active-value="1" :inactive-value="0" />
+        </el-col>
+        <el-col :span="16">
+          开启后可以在多个设备（浏览器）同时登录。
         </el-col>
       </el-form-item>
       <el-form-item>
@@ -41,7 +49,8 @@ export default {
       loading: false,
       model: {
         token_key: '',
-        token_exp: 12
+        token_exp: 12,
+        is_multi_login: 0
       },
       rules: {}
     }

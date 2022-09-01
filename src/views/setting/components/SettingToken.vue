@@ -4,7 +4,7 @@
       <el-col :xs="24" :sm="22" :md="20" :lg="16" :xl="12">
         <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
           <el-form-item label="Token密钥" prop="token_key">
-            <el-input v-model="model.token_key" type="password" clearable show-password>
+            <el-input v-model="model.token_key" type="password" autocomplete="off" clearable show-password>
               <template slot="append">修改后会员登录状态失效，需重新登录。</template>
             </el-input>
           </el-form-item>
@@ -12,6 +12,14 @@
             <el-input v-model="model.token_exp" type="number">
               <template slot="append">小时，登录后超过此时间，需重新登录。</template>
             </el-input>
+          </el-form-item>
+          <el-form-item label="多端登录" prop="is_multi_login">
+            <el-col :span="13">
+              <el-switch v-model="model.is_multi_login" :active-value="1" :inactive-value="0" />
+            </el-col>
+            <el-col :span="11">
+              开启后可以在多个设备同时登录。
+            </el-col>
           </el-form-item>
           <el-form-item>
             <el-button :loading="loading" @click="refresh()">刷新</el-button>
@@ -37,7 +45,8 @@ export default {
       loading: false,
       model: {
         token_key: '',
-        token_exp: 720
+        token_exp: 720,
+        is_multi_login: 0
       },
       rules: {}
     }

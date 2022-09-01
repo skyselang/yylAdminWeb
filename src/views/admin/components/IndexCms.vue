@@ -53,7 +53,8 @@ export default {
         title: {
           text: '内容',
           subtext: '分类：' + data.category + '，内容：' + data.content,
-          left: 'center'
+          left: 'center',
+          textStyle: { fontSize: 15 }
         },
         tooltip: {
           trigger: 'axis'

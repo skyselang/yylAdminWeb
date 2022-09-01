@@ -57,7 +57,8 @@ export default {
         title: {
           text: '文件',
           subtext: '文件：' + data.count,
-          left: 'center'
+          left: 'center',
+          textStyle: { fontSize: 15 }
         },
         legend: {
           left: 'center',
