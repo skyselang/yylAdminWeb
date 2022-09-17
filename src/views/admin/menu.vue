@@ -266,7 +266,7 @@
             </template>
           </el-input>
         </el-form-item>
-        <el-form-item v-if="model.menu_type===2" label="组件地址" prop="component">
+        <el-form-item v-if="model.menu_type===1||model.menu_type===2" label="组件地址" prop="component">
           <el-input v-model="model.component" clearable placeholder="component；组件路径，如：member/member，默认在 views 目录下">
             <template slot="prepend">
               <el-button icon="el-icon-question" title="component；组件路径，如：member/member，默认在 views 目录下" />
