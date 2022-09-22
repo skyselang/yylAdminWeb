@@ -52,14 +52,16 @@ const actions = {
       username,
       password,
       captcha_id,
-      captcha_code
+      captcha_code,
+      ajcaptcha
     } = userInfo
     return new Promise((resolve, reject) => {
       login({
         username: username,
         password: password,
         captcha_id: captcha_id,
-        captcha_code: captcha_code
+        captcha_code: captcha_code,
+        ajcaptcha: ajcaptcha
       }).then(response => {
         const { data } = response
         commit('SET_ADMINTOKEN', data.admin_token)
