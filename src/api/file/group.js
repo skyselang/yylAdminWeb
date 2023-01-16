@@ -68,34 +68,23 @@ export function disable(data) {
   })
 }
 /**
- * 文件分组回收站
- * @param {array} data 请求参数
+ * 文件分组文件
+ * @param {array} params 请求参数
  */
-export function recover(params) {
+export function file(params) {
   return request({
-    url: url + 'recover',
+    url: url + 'file',
     method: 'get',
     params: params
   })
 }
 /**
- * 文件分组回收站恢复
+ * 文件分组文件解除
  * @param {array} data 请求数据
  */
-export function recoverReco(data) {
+export function fileRemove(data) {
   return request({
-    url: url + 'recoverReco',
-    method: 'post',
-    data
-  })
-}
-/**
- * 文件分组回收站删除
- * @param {array} data 请求数据
- */
-export function recoverDele(data) {
-  return request({
-    url: url + 'recoverDele',
+    url: url + 'fileRemove',
     method: 'post',
     data
   })

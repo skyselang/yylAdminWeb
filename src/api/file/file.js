@@ -63,6 +63,17 @@ export function editgroup(data) {
   })
 }
 /**
+ * 文件修改标签
+ * @param {array} data 请求数据
+ */
+export function edittag(data) {
+  return request({
+    url: url + 'edittag',
+    method: 'post',
+    data
+  })
+}
+/**
  * 文件修改类型
  * @param {array} data 请求数据
  */
@@ -99,9 +110,9 @@ export function disable(data) {
  * 文件回收站
  * @param {array} data 请求参数
  */
-export function recover(params) {
+export function recycle(params) {
   return request({
-    url: url + 'recover',
+    url: url + 'recycle',
     method: 'get',
     params: params
   })
@@ -110,9 +121,9 @@ export function recover(params) {
  * 文件回收站恢复
  * @param {array} data 请求数据
  */
-export function recoverReco(data) {
+export function recycleReco(data) {
   return request({
-    url: url + 'recoverReco',
+    url: url + 'recycleReco',
     method: 'post',
     data
   })
@@ -121,9 +132,9 @@ export function recoverReco(data) {
  * 文件回收站删除
  * @param {array} data 请求数据
  */
-export function recoverDele(data) {
+export function recycleDele(data) {
   return request({
-    url: url + 'recoverDele',
+    url: url + 'recycleDele',
     method: 'post',
     data
   })

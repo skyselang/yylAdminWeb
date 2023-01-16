@@ -21,5 +21,17 @@ module.exports = {
    * @type {boolean} true | false
    * @description 是否在侧边栏中显示logo、系统简称
    */
-  sidebarLogo: true
+  sidebarLogo: true,
+
+  /**
+   * @type {string} 前后端必须一致
+   * @description token名称
+   */
+  tokenName: 'AdminToken',
+
+  /**
+   * @type {string} header、param
+   * @description token方式
+   */
+  tokenType: 'param'
 }

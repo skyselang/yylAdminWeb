@@ -57,12 +57,34 @@ export function dele(data) {
   })
 }
 /**
- * 会员修改地区
+ * 会员修改所在地
  * @param {array} data 请求数据
  */
 export function region(data) {
   return request({
     url: url + 'region',
+    method: 'post',
+    data
+  })
+}
+/**
+ * 会员修改标签
+ * @param {array} data 请求数据
+ */
+export function edittag(data) {
+  return request({
+    url: url + 'edittag',
+    method: 'post',
+    data
+  })
+}
+/**
+ * 会员修改标签
+ * @param {array} data 请求数据
+ */
+export function editgroup(data) {
+  return request({
+    url: url + 'editgroup',
     method: 'post',
     data
   })
@@ -74,6 +96,17 @@ export function region(data) {
 export function repwd(data) {
   return request({
     url: url + 'repwd',
+    method: 'post',
+    data
+  })
+}
+/**
+ * 会员是否超会
+ * @param {array} data 请求数据
+ */
+export function issuper(data) {
+  return request({
+    url: url + 'super',
     method: 'post',
     data
   })
@@ -104,43 +137,10 @@ export function imports(data) {
  * 会员统计
  * @param {array} params 请求参数
  */
-export function stat(params) {
+export function statistic(params) {
   return request({
-    url: url + 'stat',
+    url: url + 'statistic',
     method: 'get',
     params: params
-  })
-}
-/**
- * 会员回收站
- * @param {array} data 请求参数
- */
-export function recover(params) {
-  return request({
-    url: url + 'recover',
-    method: 'get',
-    params: params
-  })
-}
-/**
- * 会员回收站恢复
- * @param {array} data 请求数据
- */
-export function recoverReco(data) {
-  return request({
-    url: url + 'recoverReco',
-    method: 'post',
-    data
-  })
-}
-/**
- * 会员回收站删除
- * @param {array} data 请求数据
- */
-export function recoverDele(data) {
-  return request({
-    url: url + 'recoverDele',
-    method: 'post',
-    data
   })
 }

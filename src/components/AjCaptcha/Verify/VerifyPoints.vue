@@ -239,6 +239,7 @@ export default {
           this.backToken = res.repData.token
           this.secretKey = res.repData.secretKey
           this.poinTextList = res.repData.wordList
+          this.checkNum = res.repData.wordList.length
           this.text = '请依次点击【' + this.poinTextList.join(',') + '】'
         } else {
           this.text = res.repMsg

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <i class="el-icon-full-screen" title="全屏" @click="click" />
+    <i class="el-icon-full-screen" title="全屏/恢复" @click="click" />
   </div>
 </template>
 

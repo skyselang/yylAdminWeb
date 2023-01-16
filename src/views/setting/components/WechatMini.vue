@@ -2,52 +2,51 @@
   <el-card>
     <el-form ref="ref" :model="model" :rules="rules" label-width="130px" class="dialog-body" :style="{height:height+'px'}">
       <el-form-item label="名称" prop="name">
-        <el-col :span="10">
+        <el-col :span="12">
           <el-input v-model="model.name" clearable>
             <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.name, $event)" />
           </el-input>
         </el-col>
-        <el-col :span="13" />
       </el-form-item>
       <el-form-item label="原始ID" prop="origin_id">
-        <el-col :span="10">
+        <el-col :span="12">
           <el-input v-model="model.origin_id" clearable>
             <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.origin_id, $event)" />
           </el-input>
         </el-col>
-        <el-col :span="13" />
       </el-form-item>
       <el-form-item label="小程序码" prop="qrcode_url">
         <el-col :span="12">
-          <el-col :span="10">
-            <el-image class="ya-img-form" :src="model.qrcode_url" :preview-src-list="[model.qrcode_url]" title="点击查看大图">
+          <el-col :span="12">
+            <el-image v-if="model.qrcode_url" class="ya-img-form" :src="model.qrcode_url" :preview-src-list="[model.qrcode_url]" title="点击看大图">
               <div slot="error" class="image-slot">
                 <i class="el-icon-picture-outline" />
               </div>
             </el-image>
+            <el-image v-else class="ya-img-form">
+              <div slot="error" class="image-slot" />
+            </el-image>
           </el-col>
-          <el-col :span="13">
+          <el-col :span="12">
             <el-button size="mini" @click="fileUpload()">上传小程序码</el-button>
             <el-button size="mini" @click="fileDelete()">删除</el-button>
-            <p>jpg、png图片，小于200kb。</p>
+            <p>图片小于 200 KB，jpg、png格式。</p>
           </el-col>
         </el-col>
       </el-form-item>
-      <el-form-item label="AppID" prop="appid">
-        <el-col :span="10">
+      <el-form-item label="* AppID" prop="appid">
+        <el-col :span="12">
           <el-input v-model="model.appid" clearable>
             <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.appid, $event)" />
           </el-input>
         </el-col>
-        <el-col :span="13" />
       </el-form-item>
-      <el-form-item label="AppSecret" prop="appsecret">
-        <el-col :span="10">
+      <el-form-item label="* AppSecret" prop="appsecret">
+        <el-col :span="12">
           <el-input v-model="model.appsecret" clearable>
             <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.appsecret, $event)" />
           </el-input>
         </el-col>
-        <el-col :span="13" />
       </el-form-item>
     </el-form>
     <el-form ref="form" label-width="120px">
@@ -85,8 +84,6 @@ export default {
         appsecret: ''
       },
       rules: {
-        appid: [{ required: true, message: '请输入appid', trigger: 'blur' }],
-        appsecret: [{ required: true, message: '请输入appsecret', trigger: 'blur' }]
       },
       fileDialog: false
     }
@@ -156,5 +153,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>

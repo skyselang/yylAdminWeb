@@ -86,7 +86,7 @@ export default {
     },
     explain: {
       type: String,
-      default: ''
+      default: '向右滑动完成验证'
     },
     imgSize: {
       type: Object,

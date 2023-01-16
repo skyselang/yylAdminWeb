@@ -1,17 +1,18 @@
 import Cookies from 'js-cookie'
+const key_prefix = 'yaAuth'
 
-const AdminTokenKey = 'yylAdminAdminToken'
-export function setAdminToken(AdminToken) {
-  return Cookies.set(AdminTokenKey, AdminToken)
+const UserTokenKey = key_prefix + 'UserToken'
+export function setUserToken(UserToken) {
+  return Cookies.set(UserTokenKey, UserToken)
 }
-export function getAdminToken() {
-  return Cookies.get(AdminTokenKey)
+export function getUserToken() {
+  return Cookies.get(UserTokenKey)
 }
-export function delAdminToken() {
-  return Cookies.remove(AdminTokenKey)
+export function delUserToken() {
+  return Cookies.remove(UserTokenKey)
 }
 
-const UsernameKey = 'yylAdminUsername'
+const UsernameKey = key_prefix + 'Username'
 export function setUsername(username) {
   return Cookies.set(UsernameKey, username)
 }
@@ -22,7 +23,7 @@ export function delUsername() {
   return Cookies.remove(UsernameKey)
 }
 
-const NicknameKey = 'yylAdminNickname'
+const NicknameKey = key_prefix + 'Nickname'
 export function setNickname(nickname) {
   return Cookies.set(NicknameKey, nickname)
 }
@@ -33,7 +34,7 @@ export function delNickname() {
   return Cookies.remove(NicknameKey)
 }
 
-const AvatarKey = 'yylAdminAvatar'
+const AvatarKey = key_prefix + 'Avatar'
 export function setAvatar(avatar) {
   return Cookies.set(AvatarKey, avatar)
 }
