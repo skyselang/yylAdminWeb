@@ -166,3 +166,14 @@ export function systemEdit(data) {
     data
   })
 }
+/**
+ * 服务器信息
+ * @param {array} params 请求参数
+ */
+export function serverInfo(params) {
+  return request({
+    url: url + 'serverInfo',
+    method: 'get',
+    params: params
+  })
+}

@@ -22,6 +22,9 @@
       <el-tab-pane v-if="checkPermission(['admin/system.Setting/systemInfo'])" label="系统设置" lazy>
         <setting-system />
       </el-tab-pane>
+      <el-tab-pane v-if="checkPermission(['admin/system.Setting/serverInfo'])" label="服务器信息" lazy>
+        <setting-server />
+      </el-tab-pane>
     </el-tabs>
   </div>
 </template>
@@ -33,13 +36,14 @@ import SettingCache from './components/SettingCache'
 import SettingCaptcha from './components/SettingCaptcha'
 import SettingEmail from './components/SettingEmail'
 import SettingLog from './components/SettingLog'
+import SettingServer from './components/SettingServer'
 import SettingSystem from './components/SettingSystem'
 import SettingToken from './components/SettingToken'
 
 export default {
   name: 'SystemSetting',
   directives: {},
-  components: { SettingApi, SettingCache, SettingCaptcha, SettingEmail, SettingLog, SettingSystem, SettingToken },
+  components: { SettingApi, SettingCache, SettingCaptcha, SettingEmail, SettingLog, SettingServer, SettingSystem, SettingToken },
   data() {
     return {
       name: '系统设置'
