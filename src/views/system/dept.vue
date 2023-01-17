@@ -329,8 +329,10 @@ export default {
     },
     // 刷新
     refresh() {
+      const limit = this.query.limit
       this.query = this.$options.data().query
       this.$refs['table'].clearSort()
+      this.query.limit = limit
       this.list()
     },
     // 收起/展开

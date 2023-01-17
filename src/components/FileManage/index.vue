@@ -687,7 +687,9 @@ export default {
     },
     // 刷新
     refresh() {
+      const limit = this.query.limit
       this.query = this.$options.data().query
+      this.query.limit = limit
       this.reset()
       this.list()
     },
@@ -726,6 +728,7 @@ export default {
       }
       if (this.$refs['table'] !== undefined) {
         this.$refs['table'].clearSelection()
+        this.$refs['table'].clearSort()
       }
     },
     // 展示切换
