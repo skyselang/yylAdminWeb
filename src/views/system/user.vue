@@ -155,6 +155,9 @@
         <el-form-item label="排序" prop="sort">
           <el-input v-model="model.sort" type="number" />
         </el-form-item>
+        <el-form-item v-if="model[idkey]" label="登录次数" prop="login_ip">
+          <el-input v-model="model.login_num" disabled />
+        </el-form-item>
         <el-form-item v-if="model[idkey]" label="登录IP" prop="login_ip">
           <el-input v-model="model.login_ip" disabled />
         </el-form-item>
