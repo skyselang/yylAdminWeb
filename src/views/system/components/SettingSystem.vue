@@ -1,7 +1,7 @@
 <template>
   <el-card class="dialog-body" :style="{height:height+'px'}">
-    <el-row :gutter="0">
-      <el-col :span="13">
+    <el-row>
+      <el-col :span="14">
         <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
           <el-form-item label="* 系统简称" prop="system_name">
             <el-col :span="8">

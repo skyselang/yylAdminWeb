@@ -1,7 +1,7 @@
 <template>
   <el-card class="dialog-body" :style="{height:height+'px'}">
-    <el-row :gutter="0">
-      <el-col :span="12">
+    <el-row>
+      <el-col :span="14">
         <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
           <el-form-item label="会员接口" prop="is_member_api">
             <el-col :span="24">

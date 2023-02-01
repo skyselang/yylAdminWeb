@@ -1,7 +1,7 @@
 import axios from 'axios'
 import store from '@/store'
 import { Message, MessageBox } from 'element-ui'
-import { getUserToken } from '@/utils/auth'
+import { getAdminToken } from '@/utils/auth'
 
 // 创建axios实例
 const service = axios.create({
@@ -18,7 +18,7 @@ service.interceptors.request.use(
       // 设置Token，请求头部header或请求参数param
       const tokenType = store.getters.tokenType
       const tokenName = store.getters.tokenName
-      const tokenValue = getUserToken()
+      const tokenValue = getAdminToken()
       if (tokenType === 'header') {
         // 请求头部token
         config.headers[tokenName] = tokenValue
@@ -92,7 +92,7 @@ function responseHandle(res) {
       cancelButtonText: '取消',
       type: 'warning'
     }).then(() => {
-      store.dispatch('user/resetUserToken').then(() => {
+      store.dispatch('user/resetAdminToken').then(() => {
         location.reload()
       })
     }).catch(() => { })

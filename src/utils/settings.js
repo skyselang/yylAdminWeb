@@ -1,79 +1,79 @@
 import Cookies from 'js-cookie'
-const key_prefix = 'yaSettings'
+const keyPrefix = 'yaSettings'
 
-const SystemNameKey = key_prefix + 'SystemName'
-export function setSystemName(SystemName) {
-  return Cookies.set(SystemNameKey, SystemName)
+const systemNameKey = keyPrefix + 'SystemName'
+export function setSystemName(systemName) {
+  return Cookies.set(systemNameKey, systemName)
 }
 export function getSystemName() {
-  return Cookies.get(SystemNameKey)
+  return Cookies.get(systemNameKey)
 }
 export function delSystemName() {
-  return Cookies.remove(SystemNameKey)
+  return Cookies.remove(systemNameKey)
 }
 
-const FaviconUrlKey = key_prefix + 'FaviconUrl'
-export function setFaviconUrl(FaviconUrl) {
-  return Cookies.set(FaviconUrlKey, FaviconUrl)
+const faviconUrlKey = keyPrefix + 'FaviconUrl'
+export function setFaviconUrl(faviconUrl) {
+  return Cookies.set(faviconUrlKey, faviconUrl)
 }
 export function getFaviconUrl() {
-  return Cookies.get(FaviconUrlKey)
+  return Cookies.get(faviconUrlKey)
 }
 export function delFaviconUrl() {
-  return Cookies.remove(FaviconUrlKey)
+  return Cookies.remove(faviconUrlKey)
 }
 
-const PageTitleKey = key_prefix + 'PageTitle'
-export function setPageTitle(PageTitle) {
-  return Cookies.set(PageTitleKey, PageTitle)
+const pageTitleKey = keyPrefix + 'PageTitle'
+export function setPageTitle(pageTitle) {
+  return Cookies.set(pageTitleKey, pageTitle)
 }
 export function getPageTitle() {
-  return Cookies.get(PageTitleKey)
+  return Cookies.get(pageTitleKey)
 }
 export function delPageTitle() {
-  return Cookies.remove(PageTitleKey)
+  return Cookies.remove(pageTitleKey)
 }
 
-const LogoUrlKey = key_prefix + 'LogoUrl'
-export function setLogoUrl(LogoUrl) {
-  return Cookies.set(LogoUrlKey, LogoUrl)
+const logoUrlKey = keyPrefix + 'LogoUrl'
+export function setLogoUrl(logoUrl) {
+  return Cookies.set(logoUrlKey, logoUrl)
 }
 export function getLogoUrl() {
-  return Cookies.get(LogoUrlKey)
+  return Cookies.get(logoUrlKey)
 }
 export function delLogoUrl() {
-  return Cookies.remove(LogoUrlKey)
+  return Cookies.remove(logoUrlKey)
 }
 
-const NoticeKey = key_prefix + 'Notice'
+const noticeKey = keyPrefix + 'Notice'
 export function setNotice(notice) {
-  return Cookies.set(NoticeKey, notice)
+  return Cookies.set(noticeKey, notice)
 }
 export function getNotice() {
-  return Cookies.get(NoticeKey)
+  return Cookies.get(noticeKey)
 }
 export function delNotice() {
-  return Cookies.remove(NoticeKey)
+  return Cookies.remove(noticeKey)
 }
 
-const TokenNameKey = key_prefix + 'TokenName'
-export function setTokenName(TokenName) {
-  return Cookies.set(TokenNameKey, TokenName)
+const tokenNameKey = keyPrefix + 'TokenName'
+export function setTokenName(tokenName) {
+  return Cookies.set(tokenNameKey, tokenName)
 }
 export function getTokenName() {
-  return Cookies.get(TokenNameKey)
+  return Cookies.get(tokenNameKey)
 }
 export function delTokenName() {
-  return Cookies.remove(TokenNameKey)
+  return Cookies.remove(tokenNameKey)
 }
 
-const TokenTypeKey = key_prefix + 'TokenType'
-export function setTokenType(TokenType) {
-  return Cookies.set(TokenTypeKey, TokenType)
+const tokenTypeKey = keyPrefix + 'TokenType'
+export function setTokenType(tokenType) {
+  return Cookies.set(tokenTypeKey, tokenType)
 }
 export function getTokenType() {
-  return Cookies.get(TokenTypeKey)
+  return Cookies.get(tokenTypeKey)
 }
 export function delTokenType() {
-  return Cookies.remove(TokenTypeKey)
+  return Cookies.remove(tokenTypeKey)
 }

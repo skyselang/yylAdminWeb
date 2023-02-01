@@ -1,9 +1,9 @@
 import { login, logout } from '@/api/system/login'
 import { info as userInfo } from '@/api/system/user-center'
 import {
-  setUserToken,
-  getUserToken,
-  delUserToken,
+  setAdminToken,
+  getAdminToken,
+  delAdminToken,
   setUsername,
   delUsername,
   setNickname,
@@ -15,7 +15,7 @@ import { getTokenName } from '@/utils/settings'
 import router, { resetRouter } from '@/router'
 
 const state = {
-  userToken: getUserToken(),
+  userToken: getAdminToken(),
   username: '',
   nickname: '',
   avatar: '',
@@ -64,7 +64,7 @@ const actions = {
       }).then(response => {
         const { data } = response
         commit('SET_USERTOKEN', data[getTokenName()])
-        setUserToken(data[getTokenName()])
+        setAdminToken(data[getTokenName()])
         resolve()
       }).catch(error => {
         reject(error)
@@ -120,7 +120,7 @@ const actions = {
         commit('SET_AVATAR', '')
         commit('SET_ROLES', [])
         commit('SET_MENUS', [])
-        delUserToken()
+        delAdminToken()
         delUsername()
         delNickname()
         delAvatar()
@@ -137,11 +137,11 @@ const actions = {
   },
 
   // 重置token
-  resetUserToken({ commit }) {
+  resetAdminToken({ commit }) {
     return new Promise(resolve => {
       commit('SET_USERTOKEN', '')
       commit('SET_ROLES', [])
-      delUserToken()
+      delAdminToken()
       resolve()
     })
   },
@@ -151,7 +151,7 @@ const actions = {
     const userToken = role + '-userToken'
 
     commit('SET_USERTOKEN', userToken)
-    setUserToken(userToken)
+    setAdminToken(userToken)
 
     const { roles } = await dispatch('userInfo')
 

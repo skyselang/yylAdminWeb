@@ -3,7 +3,7 @@ import store from './store'
 import { Message } from 'element-ui'
 import NProgress from 'nprogress' // 进度条
 import 'nprogress/nprogress.css' // 进度条样式
-import { getUserToken } from '@/utils/auth' // 从cookie中获取token
+import { getAdminToken } from '@/utils/auth' // 从cookie中获取token
 import getPageTitle from '@/utils/page-title'
 import Layout from '@/layout'
 
@@ -29,7 +29,7 @@ router.beforeEach(async(to, from, next) => {
   document.title = getPageTitle(to.meta.title)
 
   // 判断用户是否已登录
-  const hasToken = getUserToken()
+  const hasToken = getAdminToken()
 
   if (hasToken) {
     if (to.path === '/login') {
@@ -61,7 +61,7 @@ router.beforeEach(async(to, from, next) => {
           next({ ...to, replace: true })
         } catch (error) {
           // 删除token并转到登录页面重新登录
-          await store.dispatch('user/resetUserToken')
+          await store.dispatch('user/resetAdminToken')
           Message.error(error || 'Has Error')
           next(`/login?redirect=${to.path}`)
           NProgress.done()

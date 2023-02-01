@@ -423,7 +423,7 @@ import Pagination from '@/components/Pagination'
 import clip from '@/utils/clipboard'
 import store from '@/store'
 import { arrayColumn } from '@/utils/index'
-import { getUserToken } from '@/utils/auth'
+import { getAdminToken } from '@/utils/auth'
 import { list, info, add, edit, dele, editgroup, edittag, edittype, editdomain, disable, recycle, recycleReco, recycleDele } from '@/api/file/file'
 import { info as groupInfo, add as groupAdd, edit as groupEdit, dele as groupDele } from '@/api/file/group'
 import { info as tagInfo, add as tagAdd, edit as tagEdit, dele as tagDele } from '@/api/file/tag'
@@ -563,7 +563,7 @@ export default {
     this.list()
     const tokenType = store.getters.tokenType
     const tokenName = store.getters.tokenName
-    const tokenValue = getUserToken()
+    const tokenValue = getAdminToken()
     if (tokenType === 'header') {
       const uploadHeaders = {}
       uploadHeaders[tokenName] = tokenValue

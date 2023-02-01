@@ -1,7 +1,7 @@
 <template>
   <el-card class="dialog-body" :style="{height:height+'px'}">
     <el-row>
-      <el-col :span="13">
+      <el-col :span="14">
         <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
           <el-form-item label="Token密钥" prop="token_key">
             <el-col :span="8">

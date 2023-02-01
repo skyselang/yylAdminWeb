@@ -1,11 +1,19 @@
 <template>
   <el-card class="dialog-body" :style="{height:height+'px'}">
-    <el-row :gutter="0">
+    <el-row>
       <el-col :span="12">
         <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
           <el-form-item label="注册" prop="is_register">
             <el-col :span="8">
               <el-switch v-model="model.is_register" :active-value="1" :inactive-value="0" />
+            </el-col>
+            <el-col :span="16">
+              关闭后，不能再注册（用户名、手机、邮箱）
+            </el-col>
+          </el-form-item>
+          <el-form-item label="登录" prop="is_login">
+            <el-col :span="8">
+              <el-switch v-model="model.is_login" :active-value="1" :inactive-value="0" />
             </el-col>
             <el-col :span="16">
               关闭后，不能再登录（用户名、手机、邮箱）

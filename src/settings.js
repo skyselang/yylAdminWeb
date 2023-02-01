@@ -24,14 +24,14 @@ module.exports = {
   sidebarLogo: true,
 
   /**
-   * @type {string} 前后端必须一致
-   * @description token名称
-   */
-  tokenName: 'AdminToken',
-
-  /**
    * @type {string} header、param
    * @description token方式
    */
-  tokenType: 'param'
+  tokenType: 'param',
+
+  /**
+   * @type {string} 前后端必须一致
+   * @description token名称
+   */
+  tokenName: 'AdminToken'
 }
