@@ -1,6 +1,6 @@
 /**
  * 获取屏幕高度
- * @param {number} height 要减去的高度
+ * @param {number} height 要减去的高度 260
  * @return {number}
  */
 export default function screenHeight(height = 260) {

@@ -6,7 +6,7 @@
       <el-form label-width="0">
         <el-form-item label="" prop="">
           <el-table v-loading="loading" :data="excelData.results" :height="height">
-            <el-table-column v-for="item of excelData.header" :key="item" :prop="item" :label="item" />
+            <el-table-column v-for="item in excelData.header" :key="item" :prop="item" :label="item" />
           </el-table>
         </el-form-item>
       </el-form>

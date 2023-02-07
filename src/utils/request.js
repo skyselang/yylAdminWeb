@@ -14,10 +14,10 @@ const service = axios.create({
 service.interceptors.request.use(
   config => {
     // 发送请求之前
-    if (store.getters.adminToken) {
+    if (store.getters.userToken) {
       // 设置Token，请求头部header或请求参数param
-      const tokenType = process.env.VUE_APP_TOKEN_TYPE || 'header'
-      const tokenName = process.env.VUE_APP_TOKEN_NAME || 'AdminToken'
+      const tokenType = store.getters.tokenType
+      const tokenName = store.getters.tokenName
       const tokenValue = getAdminToken()
       if (tokenType === 'header') {
         // 请求头部token

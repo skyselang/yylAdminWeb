@@ -41,7 +41,7 @@ export const constantRoutes = [
     children: [
       {
         path: '/redirect/:path(.*)',
-        component: () => import('@/views/admin/redirect')
+        component: () => import('@/views/system/components/systemRedirect')
       }
     ]
   },
@@ -49,19 +49,19 @@ export const constantRoutes = [
     path: '/401',
     meta: { title: '401' },
     hidden: true,
-    component: () => import('@/views/admin/401')
+    component: () => import('@/views/system/components/system401')
   },
   {
     path: '/404',
     meta: { title: '404' },
     hidden: true,
-    component: () => import('@/views/admin/404')
+    component: () => import('@/views/system/components/system404')
   },
   {
     path: '/login',
     meta: { title: '登录' },
     hidden: true,
-    component: () => import('@/views/admin/login')
+    component: () => import('@/views/system/login')
   },
   {
     path: '/',
@@ -72,7 +72,7 @@ export const constantRoutes = [
         path: 'dashboard',
         name: 'Dashboard',
         meta: { title: '控制台', icon: 'el-icon-s-home', affix: true },
-        component: () => import('@/views/admin/index')
+        component: () => import('@/views/system/index')
       }
     ]
   }

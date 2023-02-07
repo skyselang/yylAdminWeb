@@ -2,84 +2,79 @@
   <el-card>
     <el-form ref="ref" :model="model" :rules="rules" label-width="130px" class="dialog-body" :style="{height:height+'px'}">
       <el-form-item label="名称" prop="name">
-        <el-col :span="10">
+        <el-col :span="12">
           <el-input v-model="model.name" clearable>
             <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.name, $event)" />
           </el-input>
         </el-col>
-        <el-col :span="13" />
       </el-form-item>
       <el-form-item label="原始ID" prop="origin_id">
-        <el-col :span="10">
+        <el-col :span="12">
           <el-input v-model="model.origin_id" clearable>
             <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.origin_id, $event)" />
           </el-input>
         </el-col>
-        <el-col :span="13" />
       </el-form-item>
-      <el-form-item label="二维码" prop="qrcode_url">
+      <el-form-item label="公众号码" prop="qrcode_url">
         <el-col :span="12">
-          <el-col :span="10">
-            <el-image class="ya-img-form" :src="model.qrcode_url" :preview-src-list="[model.qrcode_url]" title="点击查看大图">
+          <el-col :span="12">
+            <el-image v-if="model.qrcode_url" class="ya-img-form" :src="model.qrcode_url" :preview-src-list="[model.qrcode_url]" title="点击看大图">
               <div slot="error" class="image-slot">
                 <i class="el-icon-picture-outline" />
               </div>
             </el-image>
+            <el-image v-else class="ya-img-form">
+              <div slot="error" class="image-slot" />
+            </el-image>
           </el-col>
-          <el-col :span="13">
+          <el-col :span="12">
             <el-button size="mini" @click="fileUpload()">上传二维码</el-button>
             <el-button size="mini" @click="fileDelete()">删除</el-button>
-            <p>jpg、png图片，小于200kb。</p>
+            <p>图片小于 200 KB，jpg、png格式。</p>
           </el-col>
         </el-col>
       </el-form-item>
-      <el-form-item label="AppID" prop="appid">
-        <el-col :span="10">
+      <el-form-item label="* AppID" prop="appid">
+        <el-col :span="12">
           <el-input v-model="model.appid" clearable>
             <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.appid, $event)" />
           </el-input>
         </el-col>
-        <el-col :span="13" />
       </el-form-item>
-      <el-form-item label="AppSecret" prop="appsecret">
-        <el-col :span="10">
+      <el-form-item label="* AppSecret" prop="appsecret">
+        <el-col :span="12">
           <el-input v-model="model.appsecret" clearable>
             <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.appsecret, $event)" />
           </el-input>
         </el-col>
-        <el-col :span="13" />
       </el-form-item>
       <el-form-item label="服务器地址(URL)" prop="server_url">
-        <el-col :span="10">
+        <el-col :span="12">
           <el-input v-model="model.server_url" clearable>
             <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.server_url, $event)" />
           </el-input>
         </el-col>
-        <el-col :span="13" />
       </el-form-item>
       <el-form-item label="令牌(Token)" prop="token">
-        <el-col :span="10">
+        <el-col :span="12">
           <el-input v-model="model.token" clearable>
             <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.token, $event)" />
           </el-input>
         </el-col>
-        <el-col :span="13" />
       </el-form-item>
       <el-form-item label="消息加解密密钥" prop="encoding_aes_key">
-        <el-col :span="10">
+        <el-col :span="12">
           <el-input v-model="model.encoding_aes_key" clearable>
             <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.encoding_aes_key, $event)" />
           </el-input>
         </el-col>
-        <el-col :span="13" />
       </el-form-item>
       <el-form-item label="消息加解密方式" prop="encoding_aes_type">
-        <el-col :span="10">
+        <el-col :span="12">
           <el-radio-group v-model="model.encoding_aes_type">
             <el-radio v-for="item in encoding_aes_types" :key="item.value" :label="item.value">{{ item.label }}</el-radio>
           </el-radio-group>
         </el-col>
-        <el-col :span="13" />
       </el-form-item>
     </el-form>
     <el-form ref="form" label-width="120px">
@@ -121,8 +116,6 @@ export default {
         encoding_aes_type: 1
       },
       rules: {
-        appid: [{ required: true, message: '请输入appid', trigger: 'blur' }],
-        appsecret: [{ required: true, message: '请输入appsecret', trigger: 'blur' }]
       },
       encoding_aes_types: [
         { value: 1, label: '明文模式' },
@@ -199,5 +192,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>

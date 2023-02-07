@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 // 登录退出
-const url = '/admin/admin.Login/'
+const url = '/admin/system.Login/'
 
 // 获取验证图片以及token
 export function reqGet(params) {

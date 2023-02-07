@@ -3,20 +3,18 @@
     <el-card>
       <el-form ref="ref" :model="model" :rules="rules" label-width="150px">
         <el-tabs>
-          <el-tab-pane label="上传设置" class="dialog-body" :style="{height:height+'px'}" lazy>
-            <el-form-item label="文件上传" prop="is_open">
-              <el-switch v-model="model.is_open" :active-value="1" :inactive-value="0" />
-              <span> 关闭后无法上传文件</span>
+          <el-tab-pane label="文件设置" class="dialog-body" :style="{height:height+'px'}" lazy>
+            <el-form-item label="后台上传" prop="is_upload_admin">
+              <el-switch v-model="model.is_upload_admin" :active-value="1" :inactive-value="0" />
+              <span> 后台文件上传是否开启</span>
+            </el-form-item>
+            <el-form-item label="前台上传" prop="is_upload_api">
+              <el-switch v-model="model.is_upload_api" :active-value="1" :inactive-value="0" />
+              <span> 前台文件上传是否开启</span>
             </el-form-item>
             <el-form-item label="存储方式" prop="storage">
               <el-select v-model="model.storage" placeholder="请选择">
-                <el-option
-                  v-for="(item, index) in storages"
-                  :key="index"
-                  :label="item"
-                  :value="index"
-                  @change="storageChange"
-                />
+                <el-option v-for="(item, index) in storages" :key="index" :label="item" :value="index" @change="storageChange" />
               </el-select>
             </el-form-item>
             <div v-if="model.storage=='local'">
@@ -315,7 +313,7 @@
                 </el-col>
               </el-form-item>
             </div>
-            <div v-else-if="model.storage=='s3'">
+            <div v-else-if="model.storage=='aws'">
               <el-form-item label="">
                 <el-card>
                   <div>
@@ -325,50 +323,50 @@
                   </div>
                 </el-card>
               </el-form-item>
-              <el-form-item label="Access Key ID" prop="s3_access_key_id">
+              <el-form-item label="Access Key ID" prop="aws_access_key_id">
                 <el-col :span="11">
-                  <el-input v-model="model.s3_access_key_id" clearable>
-                    <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.s3_access_key_id, $event)" />
+                  <el-input v-model="model.aws_access_key_id" clearable>
+                    <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.aws_access_key_id, $event)" />
                   </el-input>
                 </el-col>
                 <el-col class="line" :span="13">
                   Access Key ID 在 [ AWS > 我的账号 > 安全凭证 ] 设置和获取
                 </el-col>
               </el-form-item>
-              <el-form-item label="Secret Access KEY" prop="s3_secret_access_key">
+              <el-form-item label="Secret Access KEY" prop="aws_secret_access_key">
                 <el-col :span="11">
-                  <el-input v-model="model.s3_secret_access_key" clearable>
-                    <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.s3_secret_access_key, $event)" />
+                  <el-input v-model="model.aws_secret_access_key" clearable>
+                    <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.aws_secret_access_key, $event)" />
                   </el-input>
                 </el-col>
                 <el-col class="line" :span="13">
                   Secret Access KEY 在 [ AWS > 我的账号 > 安全凭证 ] 设置和获取
                 </el-col>
               </el-form-item>
-              <el-form-item label="区域终端节点" prop="s3_region">
+              <el-form-item label="区域终端节点" prop="aws_region">
                 <el-col :span="11">
-                  <el-input v-model="model.s3_region" clearable>
-                    <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.s3_region, $event)" />
+                  <el-input v-model="model.aws_region" clearable>
+                    <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.aws_region, $event)" />
                   </el-input>
                 </el-col>
                 <el-col class="line" :span="13">
                   区域终端节点 在 [ AWS > S3 ] 设置和获取
                 </el-col>
               </el-form-item>
-              <el-form-item label="存储桶名称" prop="s3_bucket">
+              <el-form-item label="存储桶名称" prop="aws_bucket">
                 <el-col :span="11">
-                  <el-input v-model="model.s3_bucket" clearable>
-                    <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.s3_bucket, $event)" />
+                  <el-input v-model="model.aws_bucket" clearable>
+                    <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.aws_bucket, $event)" />
                   </el-input>
                 </el-col>
                 <el-col class="line" :span="13">
                   存储桶名称 在 [ AWS > S3 ] 设置和获取
                 </el-col>
               </el-form-item>
-              <el-form-item label="访问域名" prop="s3_domain">
+              <el-form-item label="访问域名" prop="aws_domain">
                 <el-col :span="11">
-                  <el-input v-model="model.s3_domain" clearable>
-                    <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.s3_domain, $event)" />
+                  <el-input v-model="model.aws_domain" clearable>
+                    <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.aws_domain, $event)" />
                   </el-input>
                 </el-col>
                 <el-col class="line" :span="13">
@@ -377,7 +375,7 @@
               </el-form-item>
             </div>
           </el-tab-pane>
-          <el-tab-pane label="上传限制" class="dialog-body" :style="{height:height+'px'}" lazy>
+          <el-tab-pane label="文件限制" class="dialog-body" :style="{height:height+'px'}" lazy>
             <el-form-item label="图片格式" prop="image_ext" class="ya-margin-bottom">
               <el-col :span="11">
                 <el-input v-model="model.image_ext" clearable />
@@ -502,7 +500,7 @@ import { info, edit } from '@/api/file/setting'
 
 export default {
   name: 'FileSetting',
-  components: { },
+  components: {},
   data() {
     return {
       name: '文件设置',
@@ -510,7 +508,8 @@ export default {
       loading: false,
       storages: [],
       model: {
-        is_open: 1,
+        is_upload_admin: 1,
+        is_upload_api: 1,
         storage: 'local',
         qiniu_access_key: '',
         qiniu_secret_key: '',
@@ -535,11 +534,11 @@ export default {
         upyun_operator_name: '',
         upyun_operator_pwd: '',
         upyun_domain: '',
-        s3_access_key_id: '',
-        s3_secret_access_key: '',
-        s3_bucket: '',
-        s3_region: '',
-        s3_domain: '',
+        aws_access_key_id: '',
+        aws_secret_access_key: '',
+        aws_bucket: '',
+        aws_region: '',
+        aws_domain: '',
         image_ext: '',
         image_size: 0,
         video_ext: '',
@@ -576,11 +575,11 @@ export default {
         upyun_operator_name: [{ required: true, message: '请输入操作员', trigger: 'blur' }],
         upyun_operator_pwd: [{ required: true, message: '请输入操作员密码', trigger: 'blur' }],
         upyun_domain: [{ required: true, message: '请输入加速域名', trigger: 'blur' }],
-        s3_access_key_id: [{ required: true, message: '请输入 Access Key ID', trigger: 'blur' }],
-        s3_secret_access_key: [{ required: true, message: '请输入 Secret Access Key', trigger: 'blur' }],
-        s3_bucket: [{ required: true, message: '请输入存储桶名称', trigger: 'blur' }],
-        s3_region: [{ required: true, message: '请输入区域终端节点', trigger: 'blur' }],
-        s3_domain: [{ required: true, message: '请输入访问域名', trigger: 'blur' }]
+        aws_access_key_id: [{ required: true, message: '请输入 Access Key ID', trigger: 'blur' }],
+        aws_secret_access_key: [{ required: true, message: '请输入 Secret Access Key', trigger: 'blur' }],
+        aws_bucket: [{ required: true, message: '请输入存储桶名称', trigger: 'blur' }],
+        aws_region: [{ required: true, message: '请输入区域终端节点', trigger: 'blur' }],
+        aws_domain: [{ required: true, message: '请输入访问域名', trigger: 'blur' }]
       }
     }
   },

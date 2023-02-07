@@ -1,0 +1,57 @@
+<template>
+  <div class="app-container">
+    <el-tabs>
+      <el-tab-pane v-if="checkPermission(['admin/system.Setting/captchaInfo'])" label="验证码设置" lazy>
+        <setting-captcha />
+      </el-tab-pane>
+      <el-tab-pane v-if="checkPermission(['admin/system.Setting/cacheInfo'])" label="缓存设置" lazy>
+        <setting-cache />
+      </el-tab-pane>
+      <el-tab-pane v-if="checkPermission(['admin/system.Setting/tokenInfo'])" label="Token设置" lazy>
+        <setting-token />
+      </el-tab-pane>
+      <el-tab-pane v-if="checkPermission(['admin/system.Setting/logInfo'])" label="日志设置" lazy>
+        <setting-log />
+      </el-tab-pane>
+      <el-tab-pane v-if="checkPermission(['admin/system.Setting/apiInfo'])" label="接口设置" lazy>
+        <setting-api />
+      </el-tab-pane>
+      <el-tab-pane v-if="checkPermission(['admin/system.Setting/emailInfo'])" label="邮件设置" lazy>
+        <setting-email />
+      </el-tab-pane>
+      <el-tab-pane v-if="checkPermission(['admin/system.Setting/systemInfo'])" label="系统设置" lazy>
+        <setting-system />
+      </el-tab-pane>
+      <el-tab-pane v-if="checkPermission(['admin/system.Setting/serverInfo'])" label="服务器信息" lazy>
+        <setting-server />
+      </el-tab-pane>
+    </el-tabs>
+  </div>
+</template>
+
+<script>
+import checkPermission from '@/utils/permission' // 权限判断函数
+import SettingApi from './components/SettingApi'
+import SettingCache from './components/SettingCache'
+import SettingCaptcha from './components/SettingCaptcha'
+import SettingEmail from './components/SettingEmail'
+import SettingLog from './components/SettingLog'
+import SettingServer from './components/SettingServer'
+import SettingSystem from './components/SettingSystem'
+import SettingToken from './components/SettingToken'
+
+export default {
+  name: 'SystemSetting',
+  directives: {},
+  components: { SettingApi, SettingCache, SettingCaptcha, SettingEmail, SettingLog, SettingServer, SettingSystem, SettingToken },
+  data() {
+    return {
+      name: '系统设置'
+    }
+  },
+  created() { },
+  methods: {
+    checkPermission
+  }
+}
+</script>

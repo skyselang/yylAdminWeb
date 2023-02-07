@@ -3,29 +3,35 @@ import defaultSettings from '@/settings'
 import {
   setSystemName,
   getSystemName,
+  setFaviconUrl,
+  getFaviconUrl,
   setPageTitle,
   getPageTitle,
   setLogoUrl,
   getLogoUrl,
-  setFaviconUrl,
-  getFaviconUrl
+  setTokenName,
+  setTokenType
 } from '@/utils/settings'
 
 const {
   tagsView,
   fixedHeader,
-  sidebarLogo
+  sidebarLogo,
+  tokenName,
+  tokenType
 } = defaultSettings
 
 const state = {
   systemName: getSystemName(),
+  faviconUrl: getFaviconUrl(),
   pageTitle: getPageTitle(),
   logoUrl: getLogoUrl(),
-  faviconUrl: getFaviconUrl(),
   theme: variables.theme,
   tagsView: tagsView,
   fixedHeader: fixedHeader,
-  sidebarLogo: sidebarLogo
+  sidebarLogo: sidebarLogo,
+  tokenName: tokenName,
+  tokenType: tokenType
 }
 
 const mutations = {
@@ -38,12 +44,16 @@ const mutations = {
       state[key] = value
       if (key === 'systemName') {
         setSystemName(value)
+      } else if (key === 'faviconUrl') {
+        setFaviconUrl(value)
       } else if (key === 'pageTitle') {
         setPageTitle(value)
       } else if (key === 'logoUrl') {
         setLogoUrl(value)
-      } else if (key === 'faviconUrl') {
-        setFaviconUrl(value)
+      } else if (key === 'tokenName') {
+        setTokenName(value)
+      } else if (key === 'tokenType') {
+        setTokenType(value)
       }
     }
   }

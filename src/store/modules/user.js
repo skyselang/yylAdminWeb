@@ -1,5 +1,5 @@
-import { login, logout } from '@/api/admin/login'
-import { info as userInfo } from '@/api/admin/user-center'
+import { login, logout } from '@/api/system/login'
+import { info as userInfo } from '@/api/system/user-center'
 import {
   setAdminToken,
   getAdminToken,
@@ -11,12 +11,11 @@ import {
   setAvatar,
   delAvatar
 } from '@/utils/auth'
-import router, {
-  resetRouter
-} from '@/router'
+import { getTokenName } from '@/utils/settings'
+import router, { resetRouter } from '@/router'
 
 const state = {
-  adminToken: getAdminToken(),
+  userToken: getAdminToken(),
   username: '',
   nickname: '',
   avatar: '',
@@ -25,8 +24,8 @@ const state = {
 }
 
 const mutations = {
-  SET_ADMINTOKEN: (state, adminToken) => {
-    state.adminToken = adminToken
+  SET_USERTOKEN: (state, userToken) => {
+    state.userToken = userToken
   },
   SET_USERNAME: (state, username) => {
     state.username = username
@@ -64,8 +63,8 @@ const actions = {
         ajcaptcha: ajcaptcha
       }).then(response => {
         const { data } = response
-        commit('SET_ADMINTOKEN', data.admin_token)
-        setAdminToken(data.admin_token)
+        commit('SET_USERTOKEN', data[getTokenName()])
+        setAdminToken(data[getTokenName()])
         resolve()
       }).catch(error => {
         reject(error)
@@ -115,7 +114,7 @@ const actions = {
   logout({ commit, state, dispatch }) {
     return new Promise((resolve, reject) => {
       logout().then(() => {
-        commit('SET_ADMINTOKEN', '')
+        commit('SET_USERTOKEN', '')
         commit('SET_USERNAME', '')
         commit('SET_NICKNAME', '')
         commit('SET_AVATAR', '')
@@ -140,7 +139,7 @@ const actions = {
   // 重置token
   resetAdminToken({ commit }) {
     return new Promise(resolve => {
-      commit('SET_ADMINTOKEN', '')
+      commit('SET_USERTOKEN', '')
       commit('SET_ROLES', [])
       delAdminToken()
       resolve()
@@ -149,10 +148,10 @@ const actions = {
 
   // 动态修改权限
   async changeRoles({ commit, dispatch }, role) {
-    const adminToken = role + '-adminToken'
+    const userToken = role + '-userToken'
 
-    commit('SET_ADMINTOKEN', adminToken)
-    setAdminToken(adminToken)
+    commit('SET_USERTOKEN', userToken)
+    setAdminToken(userToken)
 
     const { roles } = await dispatch('userInfo')
 

@@ -88,7 +88,8 @@ function filterAsyncRoutes(obj) {
       if (item.component === 'Layout') {
         item.component = Layout
       } else {
-        if (typeof item.component === 'string') { // 这个判断非常重要
+        // 这个判断非常重要
+        if (typeof item.component === 'string') {
           item.component = loadView(item.component)
         }
       }

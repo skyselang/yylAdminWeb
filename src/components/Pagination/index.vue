@@ -1,17 +1,6 @@
 <template>
   <div :class="{'hidden': hidden }" class="pagination-container" :style="{'text-align':align}">
-    <el-pagination
-      :small="small"
-      :background="background"
-      :current-page.sync="currentPage"
-      :page-size.sync="pageSize"
-      :layout="layout"
-      :page-sizes="pageSizes"
-      :total="total"
-      v-bind="$attrs"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-    />
+    <el-pagination :small="small" :background="background" :current-page.sync="currentPage" :page-size.sync="pageSize" :layout="layout" :page-sizes="pageSizes" :total="total" v-bind="$attrs" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
   </div>
 </template>
 
@@ -40,7 +29,7 @@ export default {
     pageSizes: {
       type: Array,
       default() {
-        return [10, 12, 15, 18, 20, 30, 50, 80, 100, 150, 200, 300, 500]
+        return [10, 12, 15, 18, 20, 30, 50, 80, 100, 150, 200, 300, 500, 800, 1000]
       }
     },
     layout: {

@@ -1,5 +1,5 @@
 <template>
-  <file-manage :is-recycle="recycle" />
+  <file-manage />
 </template>
 
 <script>
@@ -10,20 +10,14 @@ export default {
   components: { FileManage },
   data() {
     return {
-      name: '文件管理',
-      recycle: 0 // 是否回收站
+      name: '文件管理'
     }
   },
   watch: {
-
   },
   created() {
-    this.recycle = this.$route.meta.query.recycle
   },
-  methods: {}
+  methods: {
+  }
 }
 </script>
-
-<style scoped>
-
-</style>

@@ -60,9 +60,9 @@ export function dele(data) {
  * 地区修改上级
  * @param {array} data 请求数据
  */
-export function pid(data) {
+export function editpid(data) {
   return request({
-    url: url + 'pid',
+    url: url + 'editpid',
     method: 'post',
     data
   })
@@ -85,6 +85,17 @@ export function citycode(data) {
 export function zipcode(data) {
   return request({
     url: url + 'zipcode',
+    method: 'post',
+    data
+  })
+}
+/**
+ * 地区是否禁用
+ * @param {array} data 请求数据
+ */
+export function disable(data) {
+  return request({
+    url: url + 'disable',
     method: 'post',
     data
   })

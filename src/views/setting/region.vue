@@ -5,42 +5,28 @@
       <!-- 查询 -->
       <el-row>
         <el-col>
-          <el-select v-model="query.search_field" class="filter-item ya-search-field" placeholder="搜索字段">
+          <el-select v-model="query.search_field" class="filter-item ya-search-field" placeholder="查询字段">
+            <el-option :value="idkey" label="ID" />
+            <el-option value="region_pid" label="上级" />
             <el-option value="region_name" label="名称" />
             <el-option value="region_pinyin" label="拼音" />
-            <el-option value="region_pid" label="上级" />
             <el-option value="region_jianpin" label="简拼" />
             <el-option value="region_initials" label="首字母" />
             <el-option value="region_citycode" label="区号" />
             <el-option value="region_zipcode" label="邮编" />
-            <el-option :value="idkey" label="ID" />
           </el-select>
-          <el-cascader
-            v-if="query.search_field==='region_pid'"
-            v-model="query.region_pid"
-            :options="trees"
-            :props="props"
-            class="filter-item ya-search-value"
-            placeholder="请选择"
-            clearable
-            filterable
-            @change="pidQuery"
-          />
-          <el-input v-else v-model="query.search_value" class="filter-item ya-search-value" placeholder="搜索内容" clearable />
+          <el-select v-model="query.search_exp" class="filter-item ya-search-exp">
+            <el-option v-for="exp in exps" :key="exp.exp" :value="exp.exp" :label="exp.name" />
+          </el-select>
+          <el-cascader v-if="query.search_field==='region_pid'" v-model="query.region_pid" :options="trees" :props="props" class="filter-item ya-search-value" clearable filterable />
+          <el-input v-else v-model="query.search_value" class="filter-item ya-search-value" placeholder="查询内容" clearable />
           <el-select v-model="query.date_field" class="filter-item ya-date-field" placeholder="时间类型">
             <el-option value="create_time" label="添加时间" />
             <el-option value="update_time" label="修改时间" />
           </el-select>
-          <el-date-picker
-            v-model="query.date_value"
-            type="daterange"
-            class="filter-item ya-date-value"
-            value-format="yyyy-MM-dd"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-          />
-          <el-button class="filter-item" type="primary" @click="search()">查询</el-button>
-          <el-button class="filter-item" @click="refresh()">刷新</el-button>
+          <el-date-picker v-model="query.date_value" type="daterange" class="filter-item ya-date-value" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd" />
+          <el-button class="filter-item" type="primary" title="查询/刷新" @click="search()">查询</el-button>
+          <el-button class="filter-item" icon="el-icon-refresh" title="重置" @click="refresh()" />
         </el-col>
       </el-row>
       <!-- 选中操作 -->
@@ -49,32 +35,27 @@
           <el-button title="修改上级" @click="selectOpen('editpid')">上级</el-button>
           <el-button title="修改区号" @click="selectOpen('citycode')">区号</el-button>
           <el-button title="修改邮编" @click="selectOpen('zipcode')">邮编</el-button>
+          <el-button title="是否禁用" @click="selectOpen('disable')">禁用</el-button>
           <el-button title="删除" @click="selectOpen('dele')">删除</el-button>
-          <el-button type="primary" @click="add('')">添加</el-button>
+          <el-button type="primary" @click="add()">添加</el-button>
         </el-col>
       </el-row>
       <el-dialog :title="selectTitle" :visible.sync="selectDialog" top="20vh" :close-on-click-modal="false" :close-on-press-escape="false" destroy-on-close>
         <el-form ref="selectRef" label-width="120px">
           <el-form-item :label="name+'ID'" prop="">
-            <el-input v-model="selectIds" type="textarea" :autosize="{minRows: 2, maxRows: 12}" disabled />
+            <el-input v-model="selectIds" type="textarea" :autosize="{minRows: 5, maxRows: 12}" disabled />
           </el-form-item>
           <el-form-item v-if="selectType==='editpid'" label="上级" prop="">
-            <el-cascader
-              v-model="region_pid"
-              :options="trees"
-              :props="props"
-              style="width:100%"
-              placeholder="一级地区"
-              clearable
-              filterable
-              @change="pidSelect"
-            />
+            <el-cascader v-model="region_pid" :options="trees" :props="props" style="width:100%" placeholder="一级地区" clearable filterable />
           </el-form-item>
           <el-form-item v-else-if="selectType==='citycode'" label="区号" prop="">
             <el-input v-model="region_citycode" placeholder="请输入区号，eg：010" clearable />
           </el-form-item>
           <el-form-item v-else-if="selectType==='zipcode'" label="邮编" prop="">
             <el-input v-model="region_zipcode" placeholder="请输入邮编，eg：1000" clearable />
+          </el-form-item>
+          <el-form-item v-else-if="selectType==='disable'" label="是否禁用" prop="">
+            <el-switch v-model="is_disable" :active-value="1" :inactive-value="0" />
           </el-form-item>
           <el-form-item v-else-if="selectType==='dele'" label="" prop="">
             <span style="color:red">确定要删除选中的{{ name }}吗？</span>
@@ -87,34 +68,26 @@
       </el-dialog>
     </div>
     <!-- 列表 -->
-    <el-table
-      ref="table"
-      :key="tbKey"
-      v-loading="loading"
-      :data="data"
-      :height="height"
-      :row-key="idkey"
-      lazy
-      :load="load"
-      @sort-change="sort"
-      @selection-change="select"
-      @cell-dblclick="cellDbclick"
-    >
+    <el-table ref="table" :key="tbKey" v-loading="loading" :data="data" :height="height" :row-key="idkey" lazy :load="load" @sort-change="sort" @selection-change="select" @cell-dblclick="cellDbclick">
       <el-table-column type="selection" width="42" title="全选/反选" />
-      <el-table-column prop="region_name" label="名称" min-width="250" />
-      <el-table-column prop="region_pinyin" label="拼音" min-width="250" sortable="custom" />
+      <el-table-column prop="region_name" label="名称" min-width="250" show-overflow-tooltip />
+      <el-table-column prop="region_pinyin" label="拼音" min-width="250" sortable="custom" show-overflow-tooltip />
       <el-table-column prop="region_citycode" label="区号" min-width="80" sortable="custom" />
       <el-table-column prop="region_zipcode" label="邮编" min-width="80" sortable="custom" />
       <el-table-column prop="region_longitude" label="经度" min-width="110" sortable="custom" />
       <el-table-column prop="region_latitude" label="纬度" min-width="110" sortable="custom" />
+      <el-table-column prop="is_disable" label="禁用" width="75" sortable="custom">
+        <template slot-scope="scope">
+          <el-switch v-model="scope.row.is_disable" :active-value="1" :inactive-value="0" @change="disable([scope.row])" />
+        </template>
+      </el-table-column>
       <el-table-column :prop="idkey" label="ID" min-width="95" sortable="custom" />
-      <el-table-column prop="region_pid" label="PID" min-width="95" />
-      <el-table-column prop="region_sort" label="排序" min-width="80" sortable="custom" />
-      <el-table-column label="操作" width="130" align="right">
-        <template slot-scope="{ row }">
-          <el-button size="mini" type="text" title="添加下级" @click="add(row)">添加</el-button>
-          <el-button size="mini" type="text" @click="edit(row)">修改</el-button>
-          <el-button size="mini" type="text" @click="selectOpen('dele',row)">删除</el-button>
+      <el-table-column prop="sort" label="排序" min-width="80" sortable="custom" />
+      <el-table-column label="操作" width="120">
+        <template slot-scope="scope">
+          <el-button size="mini" type="text" title="添加下级" @click="add(scope.row)">添加</el-button>
+          <el-button size="mini" type="text" @click="edit(scope.row)">修改</el-button>
+          <el-button size="mini" type="text" @click="selectOpen('dele',scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -122,16 +95,7 @@
     <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false">
       <el-form ref="ref" :rules="rules" :model="model" label-width="100px" class="dialog-body" :style="{height:height-50+'px'}">
         <el-form-item label="上级" prop="region_pid">
-          <el-cascader
-            v-model="model.region_pid"
-            :options="trees"
-            :props="props"
-            style="width:100%"
-            placeholder="一级地区"
-            clearable
-            filterable
-            @change="pidEdit"
-          />
+          <el-cascader v-model="model.region_pid" :options="trees" :props="props" style="width:100%" placeholder="一级地区" clearable filterable />
         </el-form-item>
         <el-form-item label="名称" prop="region_name">
           <el-input v-model="model.region_name" placeholder="请输入名称，eg：北京市" clearable>
@@ -173,20 +137,19 @@
             <el-button slot="append" icon="el-icon-document-copy" title="复制" @click="copy(model.region_latitude, $event)" />
           </el-input>
         </el-form-item>
-        <el-form-item label="排序" prop="region_sort">
-          <el-input v-model="model.region_sort" type="number" placeholder="请输入排序，eg：2250" clearable>
-            <el-button slot="append" icon="el-icon-document-copy" title="复制" @click="copy(model.region_sort, $event)" />
+        <el-form-item label="排序" prop="sort">
+          <el-input v-model="model.sort" type="number" placeholder="请输入排序，eg：2250" clearable>
+            <el-button slot="append" icon="el-icon-document-copy" title="复制" @click="copy(model.sort, $event)" />
           </el-input>
-        </el-form-item>
-        <el-form-item label="" prop="">
-          <el-link type="info" href="https://www.ip138.com/post/" style="margin-right:10px" target="_blank">查询区号邮编</el-link>
-          <el-link type="info" href="http://api.map.baidu.com/lbsapi/getpoint/index.html" target="_blank">查询经度纬度</el-link>
         </el-form-item>
         <el-form-item v-if="model[idkey]" label="添加时间" prop="create_time">
           <el-input v-model="model.create_time" placeholder="" disabled />
         </el-form-item>
         <el-form-item v-if="model[idkey]" label="修改时间" prop="update_time">
           <el-input v-model="model.update_time" placeholder="" disabled />
+        </el-form-item>
+        <el-form-item v-if="model.delete_time" label="删除时间" prop="delete_time">
+          <el-input v-model="model.delete_time" disabled />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -201,11 +164,11 @@
 import screenHeight from '@/utils/screen-height'
 import clip from '@/utils/clipboard'
 import { arrayColumn } from '@/utils/index'
-import { list, info, add, edit, pid, citycode, zipcode, dele } from '@/api/setting/region'
+import { list, info, add, edit, dele, editpid, citycode, zipcode, disable } from '@/api/setting/region'
 
 export default {
   name: 'SettingRegion',
-  components: { },
+  components: {},
   data() {
     return {
       name: '地区',
@@ -213,13 +176,9 @@ export default {
       loading: false,
       idkey: 'region_id',
       tbKey: 1,
-      query: {
-        search_field: 'region_name',
-        date_field: 'create_time'
-      },
+      exps: [],
+      query: { search_field: 'region_name', search_exp: 'like', date_field: 'create_time' },
       data: [],
-      trees: [],
-      props: { expandTrigger: 'click', checkStrictly: true, value: 'region_id', label: 'region_name' },
       dialog: false,
       dialogTitle: '',
       model: {
@@ -233,11 +192,13 @@ export default {
         region_zipcode: '',
         region_longitude: '',
         region_latitude: '',
-        region_sort: 2250
+        sort: 2250
       },
       rules: {
-        region_name: [{ required: true, message: '请输入名称', trigger: 'blur' }]
+        region_name: [{ required: true, message: '请输入地区名称', trigger: 'blur' }]
       },
+      trees: [],
+      props: { expandTrigger: 'click', checkStrictly: true, value: 'region_id', label: 'region_name', emitPath: false },
       selection: [],
       selectIds: '',
       selectTitle: '选中操作',
@@ -245,7 +206,8 @@ export default {
       selectType: '',
       region_pid: 0,
       region_citycode: '',
-      region_zipcode: ''
+      region_zipcode: '',
+      is_disable: 0
     }
   },
   created() {
@@ -256,11 +218,9 @@ export default {
     // 列表
     list() {
       this.loading = true
-      this.data = []
       list(this.query).then(res => {
         this.data = res.data.list
         this.trees = res.data.tree
-        this.count = res.data.count
         this.loading = false
       }).catch(() => {
         this.loading = false
@@ -286,15 +246,15 @@ export default {
     edit(row) {
       this.dialog = true
       this.dialogTitle = this.name + '修改：' + row[this.idkey]
-      this.reset()
       var id = {}
       id[this.idkey] = row[this.idkey]
       info(id).then(res => {
-        this.model = res.data
-      })
+        this.reset(res.data)
+      }).catch(() => { })
     },
     cancel() {
       this.dialog = false
+      this.reset()
     },
     submit() {
       this.$refs['ref'].validate(valid => {
@@ -329,9 +289,7 @@ export default {
       }
       if (this.$refs['ref'] !== undefined) {
         this.$refs['ref'].resetFields()
-      }
-      if (this.$refs['table'] !== undefined) {
-        this.$refs['table'].doLayout()
+        this.$refs['ref'].clearValidate()
       }
     },
     // 查询
@@ -340,8 +298,12 @@ export default {
     },
     // 刷新
     refresh() {
+      const limit = this.query.limit
       this.query = this.$options.data().query
+      this.$refs['table'].clearSort()
+      this.query.limit = limit
       this.list()
+      ++this.tbKey
     },
     // 排序
     sort(sort) {
@@ -365,7 +327,7 @@ export default {
       return arrayColumn(selection, this.idkey)
     },
     selectAlert() {
-      this.$alert('请选择需要操作的' + this.name, '提示', { type: 'warning', callback: action => {} })
+      this.$alert('请选择需要操作的' + this.name, '提示', { type: 'warning', callback: action => { } })
     },
     selectOpen(selectType, selectRow = '') {
       if (selectRow) {
@@ -377,13 +339,15 @@ export default {
       } else {
         this.selectTitle = '选中操作'
         if (selectType === 'editpid') {
-          this.selectTitle = '修改上级'
+          this.selectTitle = this.name + '修改上级'
         } else if (selectType === 'citycode') {
-          this.selectTitle = '修改区号'
+          this.selectTitle = this.name + '修改区号'
         } else if (selectType === 'zipcode') {
-          this.selectTitle = '修改邮编'
+          this.selectTitle = this.name + '修改邮编'
+        } else if (selectType === 'disable') {
+          this.selectTitle = this.name + '是否禁用'
         } else if (selectType === 'dele') {
-          this.selectTitle = '删除' + this.name
+          this.selectTitle = this.name + '删除'
         }
         this.selectDialog = true
         this.selectType = selectType
@@ -403,6 +367,8 @@ export default {
           this.citycode(this.selection)
         } else if (selectType === 'zipcode') {
           this.zipcode(this.selection)
+        } else if (selectType === 'disable') {
+          this.disable(this.selection, true)
         } else if (selectType === 'dele') {
           this.dele(this.selection)
         }
@@ -411,12 +377,12 @@ export default {
     },
     // 修改上级
     editpid(row) {
-      pid({
+      editpid({
         ids: this.selectGetIds(row),
         region_pid: this.region_pid
       }).then(res => {
         this.list()
-        ++this.tbKey
+        this.reset()
         this.selectDialog = false
         this.$message.success(res.msg)
       }).catch(() => {
@@ -430,6 +396,7 @@ export default {
         region_citycode: this.region_citycode
       }).then(res => {
         this.list()
+        this.reset()
         this.selectDialog = false
         this.$message.success(res.msg)
       }).catch(() => {
@@ -443,11 +410,34 @@ export default {
         region_zipcode: this.region_zipcode
       }).then(res => {
         this.list()
+        this.reset()
         this.selectDialog = false
         this.$message.success(res.msg)
       }).catch(() => {
         this.loading = false
       })
+    },
+    // 是否禁用
+    disable(row, select = false) {
+      if (!row.length) {
+        this.selectAlert()
+      } else {
+        this.loading = true
+        var is_disable = row[0].is_disable
+        if (select) {
+          is_disable = this.is_disable
+        }
+        disable({
+          ids: this.selectGetIds(row),
+          is_disable: is_disable
+        }).then(res => {
+          this.list()
+          this.reset()
+          this.$message.success(res.msg)
+        }).catch(() => {
+          this.list()
+        })
+      }
     },
     // 删除
     dele(row) {
@@ -459,27 +449,11 @@ export default {
           ids: this.selectGetIds(row)
         }).then(res => {
           this.list()
-          ++this.tbKey
+          this.reset()
           this.$message.success(res.msg)
         }).catch(() => {
           this.loading = false
         })
-      }
-    },
-    // 上级选择
-    pidEdit(value) {
-      if (value) {
-        this.model.region_pid = value[value.length - 1]
-      }
-    },
-    pidQuery(value) {
-      if (value) {
-        this.query.region_pid = value[value.length - 1]
-      }
-    },
-    pidSelect(value) {
-      if (value) {
-        this.region_pid = value[value.length - 1]
       }
     },
     // 复制
