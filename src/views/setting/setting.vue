@@ -21,13 +21,10 @@
             </el-form-item>
             <el-form-item label="logo" prop="logo_id">
               <el-col :span="6">
-                <el-image v-if="model.logo_url" class="ya-height-100" :src="model.logo_url" :preview-src-list="[model.logo_url]" title="点击看大图">
+                <el-image class="ya-height-100" :src="model.logo_url" :preview-src-list="[model.logo_url]" title="点击看大图">
                   <div slot="error" class="image-slot">
                     <i class="el-icon-picture-outline" />
                   </div>
-                </el-image>
-                <el-image v-else class="ya-height-100" title="">
-                  <div slot="error" class="image-slot" />
                 </el-image>
               </el-col>
               <el-col :span="6">
