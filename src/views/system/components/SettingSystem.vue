@@ -22,13 +22,10 @@
           <el-form-item label="favicon" prop="favicon_id">
             <el-col :span="24">
               <el-col :span="8">
-                <el-image v-if="model.favicon_url" class="image-favicon" :src="model.favicon_url" :preview-src-list="[model.favicon_url]" title="点击看大图">
+                <el-image class="image-favicon" :src="model.favicon_url" :preview-src-list="[model.favicon_url]" title="点击看大图">
                   <div slot="error" class="image-slot">
                     <i class="el-icon-picture-outline" />
                   </div>
-                </el-image>
-                <el-image v-else class="image-favicon" title="">
-                  <div slot="error" class="image-slot" />
                 </el-image>
               </el-col>
               <el-col :span="16">
@@ -41,13 +38,10 @@
           <el-form-item label="logo" prop="logo_id">
             <el-col :span="24">
               <el-col :span="8">
-                <el-image v-if="model.logo_url" class="image-logo" :src="model.logo_url" :preview-src-list="[model.logo_url]" title="点击看大图">
+                <el-image class="image-logo" :src="model.logo_url" :preview-src-list="[model.logo_url]" title="点击看大图">
                   <div slot="error" class="image-slot">
                     <i class="el-icon-picture-outline" />
                   </div>
-                </el-image>
-                <el-image v-else class="image-logo" title="">
-                  <div slot="error" class="image-slot" />
                 </el-image>
               </el-col>
               <el-col :span="16">
@@ -60,13 +54,10 @@
           <el-form-item label="登录背景图" prop="login_bg_id">
             <el-col :span="24">
               <el-col :span="8">
-                <el-image v-if="model.login_bg_url" class="image-login-bg" :src="model.login_bg_url" :preview-src-list="[model.login_bg_url]" title="点击看大图">
+                <el-image class="image-login-bg" :src="model.login_bg_url" :preview-src-list="[model.login_bg_url]" title="点击看大图">
                   <div slot="error" class="image-slot">
                     <i class="el-icon-picture-outline" />
                   </div>
-                </el-image>
-                <el-image v-else class="image-login-bg" title="">
-                  <div slot="error" class="image-slot" />
                 </el-image>
               </el-col>
               <el-col :span="16">

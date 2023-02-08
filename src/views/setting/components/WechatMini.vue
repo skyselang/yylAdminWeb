@@ -18,13 +18,10 @@
       <el-form-item label="小程序码" prop="qrcode_url">
         <el-col :span="12">
           <el-col :span="12">
-            <el-image v-if="model.qrcode_url" class="ya-img-form" :src="model.qrcode_url" :preview-src-list="[model.qrcode_url]" title="点击看大图">
+            <el-image class="ya-img-form" :src="model.qrcode_url" :preview-src-list="[model.qrcode_url]" title="点击看大图">
               <div slot="error" class="image-slot">
                 <i class="el-icon-picture-outline" />
               </div>
-            </el-image>
-            <el-image v-else class="ya-img-form">
-              <div slot="error" class="image-slot" />
             </el-image>
           </el-col>
           <el-col :span="12">

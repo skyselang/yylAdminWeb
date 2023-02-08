@@ -4,16 +4,13 @@
     <el-card>
       <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
         <el-tabs>
-          <el-tab-pane label="基本信息" name="" class="dialog-body" :style="{height:height+'px'}">
+          <el-tab-pane label="基本信息" name="" class="dialog-body" :style="{ height: height + 'px' }">
             <el-form-item label="favicon" prop="favicon_id">
               <el-col :span="6">
-                <el-image v-if="model.favicon_url" class="ya-height-100" :src="model.favicon_url" :preview-src-list="[model.favicon_url]" title="点击看大图">
+                <el-image class="ya-height-100" :src="model.favicon_url" :preview-src-list="[model.favicon_url]" title="点击看大图">
                   <div slot="error" class="image-slot">
                     <i class="el-icon-picture-outline" />
                   </div>
-                </el-image>
-                <el-image v-else class="ya-height-100" title="">
-                  <div slot="error" class="image-slot" />
                 </el-image>
               </el-col>
               <el-col :span="6">
@@ -56,7 +53,7 @@
             </el-form-item>
             <el-form-item label="描述" prop="description">
               <el-col :span="12">
-                <el-input v-model="model.description" type="textarea" placeholder="description" :autosize="{minRows:2,maxRows:20}" />
+                <el-input v-model="model.description" type="textarea" placeholder="description" :autosize="{ minRows: 2, maxRows: 20 }" />
               </el-col>
             </el-form-item>
             <el-form-item label="备案号" prop="icp">
@@ -70,17 +67,14 @@
               </el-col>
             </el-form-item>
           </el-tab-pane>
-          <el-tab-pane label="联系信息" name="" class="dialog-body" :style="{height:height+'px'}">
+          <el-tab-pane label="联系信息" name="" class="dialog-body" :style="{ height: height + 'px' }">
             <el-form-item label="公众号" prop="offi_id">
               <el-col :span="12">
                 <el-col :span="12">
-                  <el-image v-if="model.offi_url" class="ya-height-100" :src="model.offi_url" :preview-src-list="[model.offi_url]" title="点击看大图">
+                  <el-image class="ya-height-100" :src="model.offi_url" :preview-src-list="[model.offi_url]" title="点击看大图">
                     <div slot="error" class="image-slot">
                       <i class="el-icon-picture-outline" />
                     </div>
-                  </el-image>
-                  <el-image v-else class="ya-height-100" title="">
-                    <div slot="error" class="image-slot" />
                   </el-image>
                 </el-col>
                 <el-col :span="12">
@@ -93,13 +87,10 @@
             <el-form-item label="小程序" prop="mini_id">
               <el-col :span="12">
                 <el-col :span="12">
-                  <el-image v-if="model.mini_url" class="ya-height-100" :src="model.mini_url" :preview-src-list="[model.mini_url]" title="点击看大图">
+                  <el-image class="ya-height-100" :src="model.mini_url" :preview-src-list="[model.mini_url]" title="点击看大图">
                     <div slot="error" class="image-slot">
                       <i class="el-icon-picture-outline" />
                     </div>
-                  </el-image>
-                  <el-image v-else class="ya-height-100" title="">
-                    <div slot="error" class="image-slot" />
                   </el-image>
                 </el-col>
                 <el-col :span="12">
@@ -145,7 +136,7 @@
               </el-col>
             </el-form-item>
           </el-tab-pane>
-          <el-tab-pane label="设置管理" name="" class="dialog-body" :style="{height:height+'px'}">
+          <el-tab-pane label="设置管理" name="" class="dialog-body" :style="{ height: height + 'px' }">
             <el-form-item label="反馈管理" prop="is_feedback">
               <el-col :span="3">
                 <el-switch v-model="model.is_feedback" :active-value="1" :inactive-value="0" />
@@ -190,16 +181,21 @@
         </el-form-item>
       </el-form>
     </el-card>
+    <!-- 文件管理 -->
+    <el-dialog :title="fileTitle" :visible.sync="fileDialog" width="80%" top="1vh" :close-on-click-modal="false" :close-on-press-escape="false">
+      <file-manage file-type="image" @fileCancel="fileCancel" @fileSubmit="fileSubmit" />
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import screenHeight from '@/utils/screen-height'
+import FileManage from '@/components/FileManage'
 import { info, edit } from '@/api/setting/setting'
 
 export default {
   name: 'SettingSetting',
-  components: {},
+  components: { FileManage },
   data() {
     return {
       name: '设置管理',
@@ -231,7 +227,10 @@ export default {
         is_feedback: 1,
         diy_config: []
       },
-      rules: {}
+      rules: {},
+      fileDialog: false,
+      fileField: 'logo',
+      fileTitle: '文件管理'
     }
   },
   created() {
@@ -285,10 +284,52 @@ export default {
           this.$message.error('请完善必填项*')
         }
       })
+    },
+    // 上传图片
+    fileUpload(field, title = '') {
+      this.fileField = field
+      this.fileTitle = title
+      this.fileDialog = true
+    },
+    fileCancel() {
+      this.fileDialog = false
+    },
+    fileSubmit(filelists) {
+      this.fileDialog = false
+      this.fileTitle = ''
+      if (this.fileField === 'favicon') {
+        this.model.favicon_id = filelists[0]['file_id']
+        this.model.favicon_url = filelists[0]['file_url']
+      } else if (this.fileField === 'logo') {
+        this.model.logo_id = filelists[0]['file_id']
+        this.model.logo_url = filelists[0]['file_url']
+      } else if (this.fileField === 'offi') {
+        this.model.offi_id = filelists[0]['file_id']
+        this.model.offi_url = filelists[0]['file_url']
+      } else if (this.fileField === 'mini') {
+        this.model.mini_id = filelists[0]['file_id']
+        this.model.mini_url = filelists[0]['file_url']
+      }
+    },
+    fileDelete(field = '') {
+      if (field === 'favicon') {
+        this.model.favicon_id = 0
+        this.model.favicon_url = ''
+      } else if (field === 'logo') {
+        this.model.logo_id = 0
+        this.model.logo_url = ''
+      } else if (field === 'offi') {
+        this.model.offi_id = 0
+        this.model.offi_url = ''
+      } else if (field === 'mini') {
+        this.model.mini_id = 0
+        this.model.mini_url = ''
+      }
     }
   }
 }
 </script>
 
 <style scoped>
+
 </style>
