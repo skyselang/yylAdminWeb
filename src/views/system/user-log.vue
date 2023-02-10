@@ -18,13 +18,33 @@
           <el-select v-model="query.search_exp" class="filter-item ya-search-exp">
             <el-option v-for="exp in exps" :key="exp.exp" :value="exp.exp" :label="exp.name" />
           </el-select>
-          <el-select v-if="query.search_field==='user_id'" v-model="query.search_value" class="filter-item ya-search-value" placeholder="用户" clearable filterable collapse-tags multiple allow-create>
+          <el-select
+            v-if="query.search_field === 'user_id'"
+            v-model="query.search_value"
+            class="filter-item ya-search-value"
+            placeholder="用户"
+            clearable
+            filterable
+            collapse-tags
+            multiple
+            allow-create
+          >
             <el-option v-for="item in userData" :key="item.user_id" :value="item.user_id" :label="item.nickname">
               {{ item.nickname }} ({{ item.username }})
             </el-option>
           </el-select>
-          <el-cascader v-else-if="query.search_field==='menu_id'" v-model="query.search_value" class="filter-item ya-search-value" placeholder="菜单" :options="menuData" :props="menuProps" clearable filterable collapse-tags />
-          <el-select v-else-if="query.search_field==='log_type'" v-model="query.search_value" class="filter-item ya-search-value" placeholder="日志类型" clearable filterable>
+          <el-cascader
+            v-else-if="query.search_field === 'menu_id'"
+            v-model="query.search_value"
+            class="filter-item ya-search-value"
+            placeholder="菜单"
+            :options="menuData"
+            :props="menuProps"
+            clearable
+            filterable
+            collapse-tags
+          />
+          <el-select v-else-if="query.search_field === 'log_type'" v-model="query.search_value" class="filter-item ya-search-value" placeholder="日志类型" clearable filterable>
             <el-option v-for="(item, index) in logTypes" :key="index" :value="index" :label="item" />
           </el-select>
           <el-input v-else v-model="query.search_value" class="filter-item ya-search-value" placeholder="查询内容" clearable />
@@ -42,10 +62,10 @@
       </el-row>
       <el-dialog :title="selectTitle" :visible.sync="selectDialog" top="20vh" :close-on-click-modal="false" :close-on-press-escape="false">
         <el-form ref="selectRef" label-width="120px">
-          <el-form-item :label="name+'ID'" prop="">
-            <el-input v-model="selectIds" type="textarea" :autosize="{minRows: 5, maxRows: 12}" disabled />
+          <el-form-item :label="name + 'ID'" prop="">
+            <el-input v-model="selectIds" type="textarea" :autosize="{ minRows: 5, maxRows: 12 }" disabled />
           </el-form-item>
-          <el-form-item v-if="selectType==='dele'" label="" prop="">
+          <el-form-item v-if="selectType === 'dele'" label="" prop="">
             <span style="color:red">确定要删除选中的{{ name }}吗？</span>
           </el-form-item>
         </el-form>
@@ -74,15 +94,15 @@
       <el-table-column label="操作" width="90">
         <template slot-scope="scope">
           <el-button size="mini" type="text" @click="info(scope.row)">详情</el-button>
-          <el-button size="mini" type="text" @click="selectOpen('dele',scope.row)">删除</el-button>
+          <el-button size="mini" type="text" @click="selectOpen('dele', scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
     <!-- 分页 -->
-    <pagination v-show="count>0" :total="count" :page.sync="query.page" :limit.sync="query.limit" @pagination="list" />
+    <pagination v-show="count > 0" :total="count" :page.sync="query.page" :limit.sync="query.limit" @pagination="list" />
     <!-- 详情 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false">
-      <el-form ref="ref" :rules="rules" :model="model" label-width="110px" class="dialog-body" :style="{height:height+'px'}">
+      <el-form ref="ref" :rules="rules" :model="model" label-width="110px" class="dialog-body" :style="{ height: height + 'px' }">
         <el-form-item label="用户ID" prop="user_id">
           <el-input v-model="model.user_id" />
         </el-form-item>
@@ -116,9 +136,6 @@
         <el-form-item label="请求时间" prop="create_time">
           <el-input v-model="model.create_time" />
         </el-form-item>
-        <el-form-item label="请求参数" prop="request_param">
-          <pre>{{ model.request_param }}</pre>
-        </el-form-item>
         <el-form-item label="返回码" prop="response_code">
           <el-input v-model="model.response_code" />
         </el-form-item>
@@ -127,6 +144,9 @@
         </el-form-item>
         <el-form-item label="用户代理" prop="user_agent">
           <el-input v-model="model.user_agent" type="textarea" />
+        </el-form-item>
+        <el-form-item label="请求参数" prop="request_param">
+          <pre>{{ model.request_param }}</pre>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
