@@ -95,23 +95,24 @@
       <el-table-column :prop="idkey" label="ID" width="60" sortable="custom" />
       <el-table-column prop="nickname" label="昵称" min-width="120" sortable="custom" show-overflow-tooltip />
       <el-table-column prop="username" label="账号" min-width="120" sortable="custom" show-overflow-tooltip />
-      <el-table-column prop="dept_names" label="部门" min-width="180" show-overflow-tooltip />
-      <el-table-column prop="post_names" label="职位" min-width="180" show-overflow-tooltip />
-      <el-table-column prop="role_names" label="角色" min-width="180" show-overflow-tooltip />
-      <el-table-column prop="is_super" label="超管" min-width="75" sortable="custom">
+      <el-table-column prop="dept_names" label="部门" min-width="166" show-overflow-tooltip />
+      <el-table-column prop="post_names" label="职位" min-width="166" show-overflow-tooltip />
+      <el-table-column prop="role_names" label="角色" min-width="166" show-overflow-tooltip />
+      <el-table-column prop="is_super" label="超管" min-width="73" sortable="custom">
         <template slot-scope="scope">
           <el-switch v-model="scope.row.is_super" :active-value="1" :inactive-value="0" @change="issuper([scope.row])" />
         </template>
       </el-table-column>
-      <el-table-column prop="is_disable" label="禁用" min-width="75" sortable="custom">
+      <el-table-column prop="is_disable" label="禁用" min-width="73" sortable="custom">
         <template slot-scope="scope">
           <el-switch v-model="scope.row.is_disable" :active-value="1" :inactive-value="0" @change="disable([scope.row])" />
         </template>
       </el-table-column>
-      <el-table-column prop="sort" label="排序" min-width="75" sortable="custom" />
+      <el-table-column prop="sort" label="排序" min-width="73" sortable="custom" />
       <el-table-column prop="create_time" label="添加时间" min-width="155" sortable="custom" />
       <el-table-column prop="update_time" label="修改时间" min-width="155" sortable="custom" />
-      <el-table-column label="操作" width="90">
+      <el-table-column prop="login_time" label="登录时间" min-width="155" sortable="custom" />
+      <el-table-column label="操作" width="86">
         <template slot-scope="scope">
           <el-button size="mini" type="text" title="信息/修改" @click="edit(scope.row)">修改</el-button>
           <el-button size="mini" type="text" title="删除" @click="selectOpen('dele', scope.row)">删除</el-button>
