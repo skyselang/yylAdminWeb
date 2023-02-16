@@ -221,6 +221,7 @@ export default {
       list(this.query).then(res => {
         this.data = res.data.list
         this.trees = res.data.tree
+        this.exps = res.data.exps
         this.loading = false
       }).catch(() => {
         this.loading = false
