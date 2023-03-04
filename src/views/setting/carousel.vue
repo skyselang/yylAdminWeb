@@ -8,17 +8,15 @@
           <el-select v-model="query.search_field" class="filter-item ya-search-field" placeholder="查询字段">
             <el-option :value="idkey" label="ID" />
             <el-option value="title" label="标题" />
-            <el-option value="file_type" label="类型" />
+            <el-option value="unique" label="标识" />
             <el-option value="position" label="位置" />
+            <el-option value="desc" label="描述" />
             <el-option value="is_disable" label="禁用" />
           </el-select>
           <el-select v-model="query.search_exp" class="filter-item ya-search-exp">
             <el-option v-for="exp in exps" :key="exp.exp" :value="exp.exp" :label="exp.name" />
           </el-select>
-          <el-select v-if="query.search_field==='file_type'" v-model="query.search_value" class="filter-item ya-search-value">
-            <el-option v-for="(item, index) in filetypes" :key="index" :value="index" :label="item" />
-          </el-select>
-          <el-select v-else-if="query.search_field==='is_disable'" v-model="query.search_value" class="filter-item ya-search-value">
+          <el-select v-if="query.search_field==='is_disable'" v-model="query.search_value" class="filter-item ya-search-value">
             <el-option :value="1" label="是" />
             <el-option :value="0" label="否" />
           </el-select>
@@ -68,43 +66,39 @@
       <el-table-column :prop="idkey" label="ID" width="80" sortable="custom" />
       <el-table-column prop="file_url" label="文件" min-width="130">
         <template slot-scope="scope">
-          <div v-if="scope.row.file_url" style="height:40px">
-            <div v-if="scope.row.file_type==='image'" style="width:100%">
-              <el-image :src="scope.row.file_url" :preview-src-list="[scope.row.file_url]" style="height:40px" title="点击看大图">
+          <div v-if="scope.row.file_url" style="height:30px">
+            <div v-if="scope.row.file_type==='image'">
+              <el-image style="height:30px" fit="contain" :src="scope.row.file_url" :preview-src-list="[scope.row.file_url]" title="点击看大图">
                 <div slot="error" class="image-slot">
                   <i class="el-icon-picture-outline" />
                 </div>
               </el-image>
             </div>
-            <video v-else-if="scope.row.file_type==='video'" width="100%" height="100%" controls>
+            <video v-else-if="scope.row.file_type==='video'" height="100%" controls>
               <source :src="scope.row.file_url" type="video/mp4">
-              <object :data="scope.row.file_url" width="100%" height="100%">
-                <embed :src="scope.row.file_url" width="100%" height="100%">
+              <object :data="scope.row.file_url" height="100%">
+                <embed :src="scope.row.file_url" height="100%">
               </object>
             </video>
-            <audio v-else-if="scope.row.file_type==='audio'" width="100%" height="100%" controls>
+            <audio v-else-if="scope.row.file_type==='audio'" height="100%" controls>
               <source :src="scope.row.file_url" type="audio/mp3">
-              <embed :src="scope.row.file_url" width="100%" height="100%">
+              <embed :src="scope.row.file_url" height="100%">
             </audio>
-            <el-image v-else-if="scope.row.file_type==='word'" :src="scope.row.file_url" class="ya-file-img">
-              <div slot="error" class="image-slot">
-                <i class="el-icon-document ya-file-icon" />
-              </div>
-            </el-image>
-            <div v-else class="image-slot">
+            <div v-else-if="scope.row.file_type==='word'">
+              <i class="el-icon-document ya-file-icon" />
+            </div>
+            <div v-else>
               <i class="el-icon-folder ya-file-icon" />
             </div>
           </div>
         </template>
       </el-table-column>
-      <el-table-column prop="file_type" label="类型" min-width="75" sortable="custom">
-        <template slot-scope="scope">
-          <span>{{ scope.row.file_type_name }}</span>
-        </template>
-      </el-table-column>
+      <el-table-column prop="file_type_name" label="类型" min-width="75" />
       <el-table-column prop="title" label="标题" min-width="150" sortable="custom" show-overflow-tooltip />
+      <el-table-column prop="unique" label="标识" min-width="100" sortable="custom" show-overflow-tooltip />
       <el-table-column prop="link" label="链接" min-width="180" sortable="custom" show-overflow-tooltip />
       <el-table-column prop="position" label="位置" min-width="120" sortable="custom" show-overflow-tooltip />
+      <el-table-column prop="desc" label="描述" min-width="120" show-overflow-tooltip />
       <el-table-column prop="is_disable" label="禁用" min-width="75" sortable="custom">
         <template slot-scope="scope">
           <el-switch v-model="scope.row.is_disable" :active-value="1" :inactive-value="0" @change="disable([scope.row])" />
@@ -127,51 +121,51 @@
       <el-form ref="ref" :rules="rules" :model="model" label-width="100px" class="dialog-body" :style="{height:height+'px'}">
         <el-form-item label="文件" prop="file_id">
           <el-col :span="16">
-            <div style="height:220px">
-              <div v-if="model.file_type==='image'" style="height:180px;width:100%">
-                <el-image v-if="model.file_url" :src="model.file_url" :preview-src-list="[model.file_url]" style="height:180px;" title="点击查大图">
-                  <div slot="error" class="image-slot">
-                    <i class="el-icon-picture-outline" />
-                  </div>
-                </el-image>
-                <el-image v-else class="ya-img-form" title="">
-                  <div slot="error" class="image-slot" />
-                </el-image>
-              </div>
-              <video v-else-if="model.file_type==='video'" width="100%" height="180" controls>
-                <source :src="model.file_url" type="video/mp4">
-                <object :data="model.file_url" width="100%" height="180">
-                  <embed :src="model.file_url" width="100%" height="180">
-                </object>
-              </video>
-              <audio v-else-if="model.file_type==='audio'" width="100%" height="180" controls>
-                <source :src="model.file_url" type="audio/mp3">
-                <embed :src="model.file_url" width="100%" height="180">
-              </audio>
-              <el-image v-else-if="model.file_type==='word'" :src="model.file_url">
-                <div slot="error" class="image-slot">
+            <div style="height:180px">
+              <div v-if="model.file_url">
+                <div v-if="model.file_type==='image'">
+                  <el-image style="height:180px;" fit="contain" :src="model.file_url" :preview-src-list="[model.file_url]" title="点击看大图">
+                    <div slot="error" class="image-slot">
+                      <i class="el-icon-picture-outline" />
+                    </div>
+                  </el-image>
+                </div>
+                <video v-else-if="model.file_type==='video'" height="100%" controls>
+                  <source :src="model.file_url" type="video/mp4">
+                  <object :data="model.file_url" height="100%">
+                    <embed :src="model.file_url" height="100%">
+                  </object>
+                </video>
+                <audio v-else-if="model.file_type==='audio'" height="100%" controls>
+                  <source :src="model.file_url" type="audio/mp3">
+                  <embed :src="model.file_url" height="100%">
+                </audio>
+                <div v-else-if="model.file_type==='word'">
                   <i class="el-icon-document ya-file-icon" />
                 </div>
-              </el-image>
-              <div v-else class="image-slot">
-                <i class="el-icon-folder ya-file-icon" />
+                <div v-else-if="model.file_type==='other'">
+                  <i class="el-icon-folder ya-file-icon" />
+                </div>
+                <div v-else />
               </div>
-              <p><span class="ya-file-name" :title="model.file_name">{{ model.file_name }}</span></p>
             </div>
           </el-col>
-          <el-col :span="8">
-            <el-button size="mini" @click="fileUpload()">上传</el-button>
-            <el-button size="mini" @click="fileDelete()">删除</el-button>
+          <el-col :span="5" class="ya-center">
+            <span>{{ model.file_name }}.{{ model.file_ext }}</span>
           </el-col>
-        </el-form-item>
-        <el-form-item label="类型" prop="file_type">
-          <el-select v-model="model.file_type" class="filter-item ya-search-value">
-            <el-option v-for="(item, index) in filetypes" :key="index" :value="index" :label="item" />
-          </el-select>
+          <el-col :span="3" class="ya-center">
+            <el-button size="mini" @click="fileUpload('image', 'file', '上传文件')">上传</el-button>
+            <el-button size="mini" style="margin-left:0" @click="fileDelete(0, 'file')">删除</el-button>
+          </el-col>
         </el-form-item>
         <el-form-item label="标题" prop="title">
           <el-input v-model="model.title" placeholder="请输入标题" clearable>
             <el-button slot="append" icon="el-icon-document-copy" title="复制" @click="copy(model.title, $event)" />
+          </el-input>
+        </el-form-item>
+        <el-form-item label="标识" prop="unique">
+          <el-input v-model="model.unique" placeholder="请输入标识（唯一）" clearable>
+            <el-button slot="append" icon="el-icon-document-copy" title="复制" @click="copy(model.unique, $event)" />
           </el-input>
         </el-form-item>
         <el-form-item label="链接" prop="link">
@@ -179,13 +173,56 @@
             <el-button slot="append" icon="el-icon-document-copy" title="复制" @click="copy(model.link, $event)" />
           </el-input>
         </el-form-item>
-        <el-form-item label="位置" prop="position">
-          <el-input v-model="model.position" placeholder="请输入位置" clearable>
-            <el-button slot="append" icon="el-icon-document-copy" title="复制" @click="copy(model.position, $event)" />
+        <el-form-item label="描述" prop="desc">
+          <el-input v-model="model.desc" placeholder="请输入描述" clearable>
+            <el-button slot="append" icon="el-icon-document-copy" title="复制" @click="copy(model.desc, $event)" />
           </el-input>
         </el-form-item>
         <el-form-item label="排序" prop="sort">
           <el-input v-model="model.sort" type="number" />
+        </el-form-item>
+        <el-form-item label="文件列表" prop="file_list">
+          <el-row>
+            <el-col :span="12">
+              <el-button size="mini" @click="fileUpload('image', 'file_list', '上传文件列表')">上传文件</el-button>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col v-for="(item, index) in model.file_list" :key="index" :span="6" class="ya-file">
+              <div v-if="item.file_url" style="height:100px">
+                <div v-if="item.file_type==='image'">
+                  <el-image style="height:100px" fit="contain" :src="item.file_url" :preview-src-list="[item.file_url]" title="点击看大图">
+                    <div slot="error" class="image-slot">
+                      <i class="el-icon-picture-outline" />
+                    </div>
+                  </el-image>
+                </div>
+                <video v-else-if="item.file_type==='video'" height="100%" controls>
+                  <source :src="item.file_url" type="video/mp4">
+                  <object :data="item.file_url" height="100%">
+                    <embed :src="item.file_url" height="100%">
+                  </object>
+                </video>
+                <audio v-else-if="item.file_type==='audio'" height="100%" controls>
+                  <source :src="item.file_url" height="100%" type="audio/mp3">
+                  <embed :src="item.file_url" height="100%">
+                </audio>
+                <div v-else-if="item.file_type==='word'">
+                  <i class="el-icon-document ya-file-icon" />
+                </div>
+                <div v-else>
+                  <i class="el-icon-folder ya-file-icon" />
+                </div>
+              </div>
+              <div>
+                <span class="ya-file-name" :title="item.file_name+'.'+item.file_ext">{{ item.file_name }}.{{ item.file_ext }}</span>
+                <el-button type="text" size="medium" icon="el-icon-d-arrow-left" title="向左移动" @click="fileRemoval(index, 'file_list', 'left')" />
+                <el-button type="text" size="medium" icon="el-icon-d-arrow-right" title="向左移动" @click="fileRemoval(index, 'file_list', 'right')" />
+                <el-button type="text" size="medium" icon="el-icon-download" title="下载" @click="fileDownload(item, $event)" />
+                <el-button type="text" size="medium" icon="el-icon-delete" title="删除" @click="fileDelete(index, 'file_list')" />
+              </div>
+            </el-col>
+          </el-row>
         </el-form-item>
         <el-form-item v-if="model[idkey]" label="添加时间" prop="create_time">
           <el-input v-model="model.create_time" disabled />
@@ -199,8 +236,8 @@
         <el-button :loading="loading" type="primary" @click="submit">提交</el-button>
       </div>
     </el-dialog>
-    <el-dialog title="上传文件" :visible.sync="fileDialog" width="80%" top="1vh" :close-on-click-modal="false" :close-on-press-escape="false">
-      <file-manage file-type="image" @fileCancel="fileCancel" @fileSubmit="fileSubmit" />
+    <el-dialog :title="fileTitle" :visible.sync="fileDialog" width="80%" top="1vh" :close-on-click-modal="false" :close-on-press-escape="false">
+      <file-manage :file-type="fileType" @fileCancel="fileCancel" @fileSubmit="fileSubmit" />
     </el-dialog>
   </div>
 </template>
@@ -231,21 +268,24 @@ export default {
       dialogTitle: '',
       model: {
         carousel_id: '',
+        unique: '',
         file_id: 0,
         file_url: '',
-        file_type: 'image',
+        file_type: '',
         file_name: '',
+        file_ext: '',
         title: '',
         link: '',
         position: '',
+        desc: '',
         sort: 250,
-        is_disable: 0
+        is_disable: 0,
+        file_list: []
       },
       rules: {
         file_type: [{ required: true, message: '请选择类型', trigger: 'blur' }],
         title: [{ required: true, message: '请输入标题', trigger: 'blur' }]
       },
-      filetypes: [],
       selection: [],
       selectIds: '',
       selectTitle: '选中操作',
@@ -253,7 +293,10 @@ export default {
       selectType: '',
       positions: '',
       is_disable: 0,
-      fileDialog: false
+      fileDialog: false,
+      fileTitle: '文件管理',
+      fileType: 'image',
+      fileField: ''
     }
   },
   created() {
@@ -267,7 +310,6 @@ export default {
       list(this.query).then(res => {
         this.data = res.data.list
         this.count = res.data.count
-        this.filetypes = res.data.filetypes
         this.exps = res.data.exps
         this.loading = false
       }).catch(() => {
@@ -462,25 +504,74 @@ export default {
         })
       }
     },
-    // 文件
-    fileUpload() {
+    // 上传文件
+    fileUpload(fileType, fileField = '', fileTitle = '文件管理') {
+      this.fileType = fileType
+      this.fileField = fileField
+      this.fileTitle = fileTitle
       this.fileDialog = true
     },
     fileCancel() {
+      this.fileType = 'image'
+      this.fileField = ''
+      this.fileTitle = '文件管理'
       this.fileDialog = false
     },
-    fileSubmit(filelists) {
+    fileSubmit(fileList) {
       this.fileDialog = false
-      this.model.file_id = filelists[0]['file_id']
-      this.model.file_url = filelists[0]['file_url']
-      this.model.file_type = filelists[0]['file_type']
-      this.model.file_name = filelists[0]['file_name'] + '.' + filelists[0]['file_ext']
+      const fileField = this.fileField
+      const fileLength = fileList.length
+      if (fileLength) {
+        if (fileField === 'file') {
+          const i = fileLength - 1
+          this.model.file_id = fileList[i]['file_id']
+          this.model.file_url = fileList[i]['file_url']
+          this.model.file_type = fileList[i]['file_type']
+          this.model.file_name = fileList[i]['file_name']
+          this.model.file_ext = fileList[i]['file_ext']
+        } else {
+          for (let i = 0; i < fileLength; i++) {
+            if (fileField === 'file_list') {
+              this.model.file_list.push(fileList[i])
+            }
+          }
+        }
+      }
     },
-    fileDelete() {
-      this.model.file_id = 0
-      this.model.file_url = ''
-      this.model.file_type = 'image'
-      this.model.file_name = ''
+    fileRemoval(index, field, direction) {
+      const length = this.model[field].length
+      var index1 = index
+      if (direction === 'left') {
+        if (index <= 0) {
+          return false
+        }
+        --index1
+      } else {
+        if (index >= (length - 1)) {
+          return false
+        }
+        ++index1
+      }
+      const value = this.model[field][index]
+      const value1 = this.model[field][index1]
+      this.model[field][index] = value1
+      this.model[field][index1] = value
+      this.$forceUpdate()
+    },
+    fileDownload(file, event) {
+      clip(file.file_name, event, '文件名复制成功')
+      setTimeout(() => { window.open(file.file_url, '_blank') }, 500)
+    },
+    fileDelete(index, field = '') {
+      if (field === 'file') {
+        this.model.file_id = 0
+        this.model.file_url = ''
+        this.model.file_type = ''
+        this.model.file_name = ''
+        this.model.file_ext = ''
+      } else if (field === 'file_list') {
+        this.model.file_list.splice(index, 1)
+      }
     },
     // 复制
     copy(text, event) {
@@ -494,19 +585,28 @@ export default {
 }
 </script>
 <style scoped>
-.ya-file-icon {
-  font-size: 50px;
+.ya-file {
+  text-align: center;
+  border: 1px solid #dcdfe6;
 }
 .ya-file-img {
   width: 100%;
   height: 100%;
 }
+.ya-file-icon {
+  font-size: 30px;
+}
 .ya-file-name {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
   display: block;
-  padding-right: 0;
-  font-size: 14px;
+  height: 24px;
+  line-height: 24px;
+  padding: 0 4px;
+  font-size: 12px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.ya-file-link {
+  margin-right: 6px;
 }
 </style>

@@ -120,10 +120,10 @@
     <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false" destroy-on-close>
       <el-form ref="ref" :rules="rules" :model="model" label-width="100px" class="dialog-body" :style="{height:height+'px'}">
         <el-form-item label="名称" prop="group_name">
-          <el-input v-model="model.group_name" placeholder="请输入分组名称" clearable />
+          <el-input v-model="model.group_name" placeholder="请输入名称" clearable />
         </el-form-item>
         <el-form-item label="描述" prop="group_desc">
-          <el-input v-model="model.group_desc" placeholder="" clearable />
+          <el-input v-model="model.group_desc" placeholder="请输入描述" clearable />
         </el-form-item>
         <el-form-item label="排序" prop="sort" placeholder="250">
           <el-input v-model="model.sort" type="number" />
@@ -193,19 +193,22 @@
         <el-table-column :prop="memberPk" label="会员ID" min-width="100" sortable="custom" />
         <el-table-column prop="avatar_id" label="头像" min-width="60">
           <template slot-scope="scope">
-            <el-image v-if="scope.row.avatar_url" class="ya-img-table" :src="scope.row.avatar_url" :preview-src-list="[scope.row.avatar_url]" title="点击看大图">
-              <div slot="error" class="image-slot">
-                <i class="el-icon-picture-outline" />
-              </div>
-            </el-image>
+            <div style="height:30px">
+              <el-image v-if="scope.row.avatar_url" style="height:30px" fit="contain" :src="scope.row.avatar_url" :preview-src-list="[scope.row.avatar_url]" title="点击看大图">
+                <div slot="error" class="image-slot">
+                  <i class="el-icon-picture-outline" />
+                </div>
+              </el-image>
+            </div>
           </template>
         </el-table-column>
-        <el-table-column prop="nickname" label="昵称" min-width="170" sortable="custom" show-overflow-tooltip />
-        <el-table-column prop="username" label="用户名" min-width="170" sortable="custom" show-overflow-tooltip />
+        <el-table-column prop="nickname" label="昵称" min-width="150" sortable="custom" show-overflow-tooltip />
+        <el-table-column prop="username" label="用户名" min-width="145" sortable="custom" show-overflow-tooltip />
         <el-table-column prop="phone" label="手机" min-width="120" sortable="custom" show-overflow-tooltip />
-        <el-table-column prop="email" label="邮箱" min-width="220" sortable="custom" show-overflow-tooltip />
-        <el-table-column prop="group_names" label="分组" width="230" show-overflow-tooltip />
-        <el-table-column label="操作" min-width="80">
+        <el-table-column prop="email" label="邮箱" min-width="180" sortable="custom" show-overflow-tooltip />
+        <el-table-column prop="tag_names" label="标签" min-width="190" show-overflow-tooltip />
+        <el-table-column prop="group_names" label="分组" width="190" show-overflow-tooltip />
+        <el-table-column label="操作" min-width="65">
           <template slot-scope="scope">
             <el-button size="mini" type="text" @click="memberSelectOpen('memberRemove',scope.row)">解除</el-button>
           </template>

@@ -49,21 +49,16 @@
         </el-form-item>
       </el-form>
     </el-card>
-    <!-- 文件管理 -->
-    <el-dialog :title="fileTitle" :visible.sync="fileDialog" width="80%" top="1vh" :close-on-click-modal="false" :close-on-press-escape="false">
-      <file-manage file-type="image" @fileCancel="fileCancel" @fileSubmit="fileSubmit" />
-    </el-dialog>
   </div>
 </template>
 
 <script>
 import screenHeight from '@/utils/screen-height'
-import FileManage from '@/components/FileManage'
 import { info, edit } from '@/api/content/setting'
 
 export default {
   name: 'ContentSetting',
-  components: { FileManage },
+  components: { },
   data() {
     return {
       name: '内容设置',
@@ -73,10 +68,7 @@ export default {
         is_content: 1,
         diy_config: []
       },
-      rules: {},
-      fileDialog: false,
-      fileTitle: '文件管理',
-      fileField: 'logo'
+      rules: {}
     }
   },
   created() {
@@ -130,49 +122,6 @@ export default {
           this.$message.error('请完善必填项*')
         }
       })
-    },
-    // 上传文件
-    fileUpload(field, title = '') {
-      this.fileDialog = true
-      this.fileField = field
-      this.fileTitle = title
-    },
-    fileCancel() {
-      this.fileDialog = false
-    },
-    fileSubmit(filelist) {
-      this.fileDialog = false
-      this.fileTitle = ''
-      if (filelist) {
-        if (this.fileField === 'favicon') {
-          this.model.favicon_id = filelist[0]['file_id']
-          this.model.favicon_url = filelist[0]['file_url']
-        } else if (this.fileField === 'logo') {
-          this.model.logo_id = filelist[0]['file_id']
-          this.model.logo_url = filelist[0]['file_url']
-        } else if (this.fileField === 'offi') {
-          this.model.offi_id = filelist[0]['file_id']
-          this.model.offi_url = filelist[0]['file_url']
-        } else if (this.fileField === 'mini') {
-          this.model.mini_id = filelist[0]['file_id']
-          this.model.mini_url = filelist[0]['file_url']
-        }
-      }
-    },
-    fileDelete(field = '') {
-      if (field === 'favicon') {
-        this.model.favicon_id = 0
-        this.model.favicon_url = ''
-      } else if (field === 'logo') {
-        this.model.logo_id = 0
-        this.model.logo_url = ''
-      } else if (field === 'offi') {
-        this.model.offi_id = 0
-        this.model.offi_url = ''
-      } else if (field === 'mini') {
-        this.model.mini_id = 0
-        this.model.mini_url = ''
-      }
     }
   }
 }

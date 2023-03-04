@@ -84,14 +84,14 @@
       <el-table-column prop="username" label="用户账号" min-width="100" show-overflow-tooltip />
       <el-table-column prop="menu_id" label="菜单ID" min-width="70" />
       <el-table-column prop="menu_name" label="菜单名称" min-width="130" show-overflow-tooltip />
-      <el-table-column prop="menu_url" label="菜单链接" min-width="200" show-overflow-tooltip />
+      <el-table-column prop="menu_url" label="菜单链接" min-width="195" show-overflow-tooltip />
       <el-table-column prop="request_ip" label="请求IP" min-width="125" show-overflow-tooltip />
       <el-table-column prop="request_region" label="请求地区" min-width="150" show-overflow-tooltip />
       <el-table-column prop="request_isp" label="请求ISP" min-width="110" show-overflow-tooltip />
       <el-table-column prop="response_code" label="返回码" min-width="80" show-overflow-tooltip />
       <el-table-column prop="response_msg" label="返回描述" min-width="115" show-overflow-tooltip />
       <el-table-column prop="create_time" label="请求时间" min-width="155" sortable="custom" />
-      <el-table-column label="操作" width="90">
+      <el-table-column label="操作" width="85">
         <template slot-scope="scope">
           <el-button size="mini" type="text" @click="info(scope.row)">详情</el-button>
           <el-button size="mini" type="text" @click="selectOpen('dele', scope.row)">删除</el-button>

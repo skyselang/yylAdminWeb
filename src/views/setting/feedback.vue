@@ -113,11 +113,9 @@
           </el-row>
           <el-row>
             <el-col v-for="(item, index) in model.images" :key="index" :span="6" class="ya-file">
-              <el-image class="ya-img-form" :src="item.file_url" :preview-src-list="[item.file_url]" fit="contain" title="点击看大图" />
+              <el-image style="height:100px" fit="contain" :src="item.file_url" :preview-src-list="[item.file_url]" title="点击看大图" />
               <div>
-                <span class="ya-file-name" :title="item.file_name+'.'+item.file_ext">
-                  {{ item.file_name }}.{{ item.file_ext }}
-                </span>
+                <span class="ya-file-name" :title="item.file_name+'.'+item.file_ext">{{ item.file_name }}.{{ item.file_ext }}</span>
                 <el-button type="text" size="medium" icon="el-icon-d-arrow-left" title="向左移动" @click="fileRemoval(index, 'images', 'left')" />
                 <el-button type="text" size="medium" icon="el-icon-d-arrow-right" title="向左移动" @click="fileRemoval(index, 'images', 'right')" />
                 <el-button type="text" size="medium" icon="el-icon-download" title="下载" @click="fileDownload(item, $event)" />
@@ -405,7 +403,8 @@ export default {
       this.fileTitle = '文件管理'
       this.fileDialog = false
     },
-    fileSubmit(fileList, fileType) {
+    fileSubmit(fileList) {
+      this.fileDialog = false
       const fileField = this.fileField
       const fileLength = fileList.length
       if (fileLength) {
@@ -415,7 +414,6 @@ export default {
           }
         }
       }
-      this.fileDialog = false
     },
     fileRemoval(index, field, direction) {
       const length = this.model[field].length

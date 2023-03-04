@@ -6,28 +6,28 @@
         <el-tabs>
           <el-tab-pane label="基本信息" name="" class="dialog-body" :style="{ height: height + 'px' }">
             <el-form-item label="favicon" prop="favicon_id">
-              <el-col :span="6">
-                <el-image class="ya-height-100" :src="model.favicon_url" :preview-src-list="[model.favicon_url]" title="点击看大图">
+              <el-col :span="6" style="height:100px">
+                <el-image v-if="model.favicon_url" style="height:100px" fit="contain" :src="model.favicon_url" :preview-src-list="[model.favicon_url]" title="点击看大图">
                   <div slot="error" class="image-slot">
                     <i class="el-icon-picture-outline" />
                   </div>
                 </el-image>
               </el-col>
-              <el-col :span="6">
+              <el-col :span="6" class="ya-center">
                 <el-button size="mini" @click="fileUpload('favicon', '上传favicon')">上传favicon</el-button>
                 <el-button size="mini" @click="fileDelete('favicon')">删除</el-button>
                 <p>图片小于 50 KB，jpg、png、ico格式，128 x 128。</p>
               </el-col>
             </el-form-item>
             <el-form-item label="logo" prop="logo_id">
-              <el-col :span="6">
-                <el-image class="ya-height-100" :src="model.logo_url" :preview-src-list="[model.logo_url]" title="点击看大图">
+              <el-col :span="6" style="height:100px">
+                <el-image v-if="model.logo_url" style="height:100px" fit="contain" :src="model.logo_url" :preview-src-list="[model.logo_url]" title="点击看大图">
                   <div slot="error" class="image-slot">
                     <i class="el-icon-picture-outline" />
                   </div>
                 </el-image>
               </el-col>
-              <el-col :span="6">
+              <el-col :span="6" class="ya-center">
                 <el-button size="mini" @click="fileUpload('logo', '上传logo')">上传logo</el-button>
                 <el-button size="mini" @click="fileDelete('logo')">删除</el-button>
                 <p>图片小于 200 KB，jpg、png格式。</p>
@@ -66,35 +66,31 @@
           </el-tab-pane>
           <el-tab-pane label="联系信息" name="" class="dialog-body" :style="{ height: height + 'px' }">
             <el-form-item label="公众号" prop="offi_id">
-              <el-col :span="12">
-                <el-col :span="12">
-                  <el-image class="ya-height-100" :src="model.offi_url" :preview-src-list="[model.offi_url]" title="点击看大图">
-                    <div slot="error" class="image-slot">
-                      <i class="el-icon-picture-outline" />
-                    </div>
-                  </el-image>
-                </el-col>
-                <el-col :span="12">
-                  <el-button size="mini" @click="fileUpload('offi', '上传二维码')">上传二维码</el-button>
-                  <el-button size="mini" @click="fileDelete('offi')">删除</el-button>
-                  <p>图片小于 200 KB，jpg、png格式。</p>
-                </el-col>
+              <el-col :span="6" style="height:100px">
+                <el-image v-if="model.offi_url" style="height:100px" fit="contain" :src="model.offi_url" :preview-src-list="[model.offi_url]" title="点击看大图">
+                  <div slot="error" class="image-slot">
+                    <i class="el-icon-picture-outline" />
+                  </div>
+                </el-image>
+              </el-col>
+              <el-col :span="6" class="ya-center">
+                <el-button size="mini" @click="fileUpload('offi', '上传公众号码')">上传公众号码</el-button>
+                <el-button size="mini" @click="fileDelete('offi')">删除</el-button>
+                <p>图片小于 200 KB，jpg、png格式。</p>
               </el-col>
             </el-form-item>
             <el-form-item label="小程序" prop="mini_id">
-              <el-col :span="12">
-                <el-col :span="12">
-                  <el-image class="ya-height-100" :src="model.mini_url" :preview-src-list="[model.mini_url]" title="点击看大图">
-                    <div slot="error" class="image-slot">
-                      <i class="el-icon-picture-outline" />
-                    </div>
-                  </el-image>
-                </el-col>
-                <el-col :span="12">
-                  <el-button size="mini" @click="fileUpload('mini', '上传小程序码')">上传小程序码</el-button>
-                  <el-button size="mini" @click="fileDelete('mini')">删除</el-button>
-                  <p>图片小于 200 KB，jpg、png格式。</p>
-                </el-col>
+              <el-col :span="6" style="height:100px">
+                <el-image v-if="model.mini_url" style="height:100px" fit="contain" :src="model.mini_url" :preview-src-list="[model.mini_url]" title="点击看大图">
+                  <div slot="error" class="image-slot">
+                    <i class="el-icon-picture-outline" />
+                  </div>
+                </el-image>
+              </el-col>
+              <el-col :span="6" class="ya-center">
+                <el-button size="mini" @click="fileUpload('mini', '上传小程序码')">上传小程序码</el-button>
+                <el-button size="mini" @click="fileDelete('mini')">删除</el-button>
+                <p>图片小于 200 KB，jpg、png格式。</p>
               </el-col>
             </el-form-item>
             <el-form-item label="地址" prop="address">
@@ -291,21 +287,25 @@ export default {
     fileCancel() {
       this.fileDialog = false
     },
-    fileSubmit(filelists) {
+    fileSubmit(fileList) {
       this.fileDialog = false
-      this.fileTitle = ''
-      if (this.fileField === 'favicon') {
-        this.model.favicon_id = filelists[0]['file_id']
-        this.model.favicon_url = filelists[0]['file_url']
-      } else if (this.fileField === 'logo') {
-        this.model.logo_id = filelists[0]['file_id']
-        this.model.logo_url = filelists[0]['file_url']
-      } else if (this.fileField === 'offi') {
-        this.model.offi_id = filelists[0]['file_id']
-        this.model.offi_url = filelists[0]['file_url']
-      } else if (this.fileField === 'mini') {
-        this.model.mini_id = filelists[0]['file_id']
-        this.model.mini_url = filelists[0]['file_url']
+      const fileField = this.fileField
+      const fileLength = fileList.length
+      if (fileLength) {
+        const i = fileLength - 1
+        if (fileField === 'favicon') {
+          this.model.favicon_id = fileList[i]['file_id']
+          this.model.favicon_url = fileList[i]['file_url']
+        } else if (fileField === 'logo') {
+          this.model.logo_id = fileList[i]['file_id']
+          this.model.logo_url = fileList[i]['file_url']
+        } else if (fileField === 'offi') {
+          this.model.offi_id = fileList[i]['file_id']
+          this.model.offi_url = fileList[i]['file_url']
+        } else if (fileField === 'mini') {
+          this.model.mini_id = fileList[i]['file_id']
+          this.model.mini_url = fileList[i]['file_url']
+        }
       }
     },
     fileDelete(field = '') {

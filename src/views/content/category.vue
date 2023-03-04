@@ -71,11 +71,13 @@
       <el-table-column prop="category_name" label="名称" min-width="250" show-overflow-tooltip />
       <el-table-column prop="cover_url" label="封面" min-width="60">
         <template slot-scope="scope">
-          <el-image v-if="scope.row.cover_url" class="ya-img-table" :src="scope.row.cover_url" :preview-src-list="[scope.row.cover_url]" title="点击看大图">
-            <div slot="error" class="image-slot">
-              <i class="el-icon-picture-outline" />
-            </div>
-          </el-image>
+          <div style="height:30px">
+            <el-image v-if="scope.row.cover_url" style="height:30px" fit="contain" :src="scope.row.cover_url" :preview-src-list="[scope.row.cover_url]" title="点击看大图">
+              <div slot="error" class="image-slot">
+                <i class="el-icon-picture-outline" />
+              </div>
+            </el-image>
+          </div>
         </template>
       </el-table-column>
       <el-table-column prop="category_unique" label="标识" min-width="100" show-overflow-tooltip />
@@ -107,17 +109,14 @@
           <el-input v-model="model.category_name" placeholder="请输入分类名称" clearable />
         </el-form-item>
         <el-form-item label="封面" prop="cover_id">
-          <el-col :span="12">
-            <el-image v-if="model.cover_url" class="ya-height-100" fit="scale-down" :src="model.cover_url" :preview-src-list="[model.cover_url]" title="点击看大图">
+          <el-col :span="12" style="height:100px">
+            <el-image v-if="model.cover_url" style="height:100px" fit="contain" :src="model.cover_url" :preview-src-list="[model.cover_url]" title="点击看大图">
               <div slot="error" class="image-slot">
                 <i class="el-icon-picture-outline" />
               </div>
             </el-image>
-            <el-image v-else class="ya-height-100" fit="scale-down" title="">
-              <div slot="error" class="image-slot" />
-            </el-image>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="12" class="ya-center">
             <el-button size="mini" @click="fileUpload('image', 'cover_id', '上传封面')">上传封面</el-button>
             <el-button size="mini" @click="fileDelete(0, 'cover_id')">删除</el-button>
             <p>图片小于 200 KB，jpg、png格式。</p>
@@ -141,16 +140,14 @@
               <el-button size="mini" @click="fileUpload('image', 'images', '上传图片')">上传图片</el-button>
             </el-col>
             <el-col :span="12">
-              <div>图片小于 250 KB，jpg、png格式。</div>
+              <span>图片小于 250 KB，jpg、png格式。</span>
             </el-col>
           </el-row>
           <el-row>
             <el-col v-for="(item, index) in model.images" :key="index" :span="6" class="ya-file">
-              <el-image class="ya-img-form" :src="item.file_url" :preview-src-list="[item.file_url]" fit="fill" title="点击看大图" />
+              <el-image style="height:100px" fit="contain" :src="item.file_url" :preview-src-list="[item.file_url]" title="点击看大图" />
               <div>
-                <span class="ya-file-name" :title="item.file_name+'.'+item.file_ext">
-                  {{ item.file_name }}.{{ item.file_ext }}
-                </span>
+                <span class="ya-file-name" :title="item.file_name+'.'+item.file_ext">{{ item.file_name }}.{{ item.file_ext }}</span>
                 <el-button type="text" size="medium" icon="el-icon-d-arrow-left" title="向左移动" @click="fileRemoval(index, 'images', 'left')" />
                 <el-button type="text" size="medium" icon="el-icon-d-arrow-right" title="向左移动" @click="fileRemoval(index, 'images', 'right')" />
                 <el-button type="text" size="medium" icon="el-icon-download" title="下载" @click="fileDownload(item, $event)" />
@@ -209,11 +206,13 @@
         <el-table-column :prop="contentPk" label="内容ID" min-width="80" sortable="custom" />
         <el-table-column prop="cover_url" label="封面" min-width="60">
           <template slot-scope="scope">
-            <el-image v-if="scope.row.cover_url" class="ya-img-table" :src="scope.row.cover_url" :preview-src-list="[scope.row.cover_url]" title="点击看大图">
-              <div slot="error" class="image-slot">
-                <i class="el-icon-picture-outline" />
-              </div>
-            </el-image>
+            <div style="height:30px">
+              <el-image v-if="scope.row.cover_url" style="height:30px" fit="contain" :src="scope.row.cover_url" :preview-src-list="[scope.row.cover_url]" title="点击看大图">
+                <div slot="error" class="image-slot">
+                  <i class="el-icon-picture-outline" />
+                </div>
+              </el-image>
+            </div>
           </template>
         </el-table-column>
         <el-table-column prop="name" label="名称" min-width="230" show-overflow-tooltip />
@@ -550,20 +549,23 @@ export default {
       this.fileTitle = '文件管理'
       this.fileDialog = false
     },
-    fileSubmit(fileList, fileType) {
+    fileSubmit(fileList) {
+      this.fileDialog = false
       const fileField = this.fileField
       const fileLength = fileList.length
       if (fileLength) {
-        for (let i = 0; i < fileLength; i++) {
-          if (fileField === 'cover_id') {
-            this.model.cover_id = fileList[i]['file_id']
-            this.model.cover_url = fileList[i]['file_url']
-          } else if (fileField === 'images') {
-            this.model.images.push(fileList[i])
+        if (fileField === 'cover_id') {
+          const i = fileLength - 1
+          this.model.cover_id = fileList[i]['file_id']
+          this.model.cover_url = fileList[i]['file_url']
+        } else {
+          for (let i = 0; i < fileLength; i++) {
+            if (fileField === 'images') {
+              this.model.images.push(fileList[i])
+            }
           }
         }
       }
-      this.fileDialog = false
     },
     fileRemoval(index, field, direction) {
       const length = this.model[field].length

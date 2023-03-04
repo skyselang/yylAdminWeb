@@ -58,7 +58,7 @@
       <el-table-column prop="username" label="会员用户名" min-width="100" show-overflow-tooltip />
       <el-table-column prop="api_id" label="接口ID" min-width="70" />
       <el-table-column prop="api_name" label="接口名称" min-width="130" show-overflow-tooltip />
-      <el-table-column prop="api_url" label="接口链接" min-width="190" show-overflow-tooltip />
+      <el-table-column prop="api_url" label="接口链接" min-width="185" show-overflow-tooltip />
       <el-table-column prop="request_ip" label="请求IP" min-width="130" />
       <el-table-column prop="request_region" label="请求地区" min-width="150" show-overflow-tooltip />
       <el-table-column prop="request_isp" label="请求ISP" min-width="110" show-overflow-tooltip />

@@ -132,11 +132,13 @@
       <el-table-column :prop="idkey" label="ID" width="80" sortable="custom" />
       <el-table-column prop="avatar_id" label="头像" min-width="60">
         <template slot-scope="scope">
-          <el-image v-if="scope.row.avatar_url" class="ya-img-table" :src="scope.row.avatar_url" :preview-src-list="[scope.row.avatar_url]" title="点击看大图">
-            <div slot="error" class="image-slot">
-              <i class="el-icon-picture-outline" />
-            </div>
-          </el-image>
+          <div style="height:30px">
+            <el-image v-if="scope.row.avatar_url" style="height:30px" fit="contain" :src="scope.row.avatar_url" :preview-src-list="[scope.row.avatar_url]" title="点击看大图">
+              <div slot="error" class="image-slot">
+                <i class="el-icon-picture-outline" />
+              </div>
+            </el-image>
+          </div>
         </template>
       </el-table-column>
       <el-table-column prop="nickname" label="昵称" min-width="170" sortable="custom" show-overflow-tooltip />
@@ -170,19 +172,16 @@
     <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false">
       <el-form ref="ref" :model="model" :rules="rules" label-width="100px" class="dialog-body" :style="{height:height+'px'}">
         <el-form-item label="头像" prop="avatar_url">
-          <el-col :span="12">
-            <el-image v-if="model.avatar_url" class="ya-img-form" :src="model.avatar_url" fit="contain" :preview-src-list="[model.avatar_url]" title="点击看大图">
+          <el-col :span="12" style="height:100px">
+            <el-image v-if="model.avatar_url" style="height:100px" fit="contain" :src="model.avatar_url" :preview-src-list="[model.avatar_url]" title="点击看大图">
               <div slot="error" class="image-slot">
                 <i class="el-icon-picture-outline" />
               </div>
             </el-image>
-            <el-image v-else class="ya-img-form" fit="contain" title="">
-              <div slot="error" class="image-slot" />
-            </el-image>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="12" class="ya-center">
             <el-button size="mini" @click="fileUpload()">上传头像</el-button>
-            <el-button size="mini" @click="fileDelete('avatar')">删除</el-button>
+            <el-button size="mini" @click="fileDelete()">删除</el-button>
             <p>图片小于 200 KB，jpg、png格式。</p>
           </el-col>
         </el-form-item>
@@ -733,11 +732,13 @@ export default {
     fileCancel() {
       this.fileDialog = false
     },
-    fileSubmit(filelist) {
+    fileSubmit(fileList) {
       this.fileDialog = false
-      if (filelist) {
-        this.model.avatar_id = filelist[0]['file_id']
-        this.model.avatar_url = filelist[0]['file_url']
+      const fileLength = fileList.length
+      if (fileLength) {
+        const i = fileLength - 1
+        this.model.avatar_id = fileList[i]['file_id']
+        this.model.avatar_url = fileList[i]['file_url']
       }
     },
     fileDelete() {

@@ -6,7 +6,7 @@
           <el-form ref="ref" :rules="rules" :model="model" label-width="120px">
             <el-form-item label="头像" prop="avatar_url">
               <el-col :span="12">
-                <el-avatar v-if="model.avatar_url" :src="model.avatar_url" :size="100" fit="contain" shape="circle" />
+                <el-avatar v-if="model.avatar_url" :size="100" fit="contain" :src="model.avatar_url" shape="circle" />
                 <el-avatar v-else icon="el-icon-user-solid" :size="100" />
               </el-col>
               <el-col :span="12">
@@ -127,10 +127,14 @@ export default {
     fileCancel() {
       this.fileDialog = false
     },
-    fileSubmit(filelists) {
+    fileSubmit(fileList) {
       this.fileDialog = false
-      this.model.avatar_id = filelists[0]['file_id']
-      this.model.avatar_url = filelists[0]['file_url']
+      const fileLength = fileList.length
+      if (fileLength) {
+        const i = fileLength - 1
+        this.model.avatar_id = fileList[i]['file_id']
+        this.model.avatar_url = fileList[i]['file_url']
+      }
     },
     fileDelete() {
       this.model.avatar_id = 0

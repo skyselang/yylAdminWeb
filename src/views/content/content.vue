@@ -91,11 +91,13 @@
       <el-table-column :prop="idkey" label="ID" width="80" sortable="custom" />
       <el-table-column prop="cover_url" label="封面" min-width="60">
         <template slot-scope="scope">
-          <el-image v-if="scope.row.cover_url" class="ya-img-table" :src="scope.row.cover_url" :preview-src-list="[scope.row.cover_url]" title="点击看大图">
-            <div slot="error" class="image-slot">
-              <i class="el-icon-picture-outline" />
-            </div>
-          </el-image>
+          <div style="height:30px">
+            <el-image v-if="scope.row.cover_url" style="height:30px" fit="contain" :src="scope.row.cover_url" :preview-src-list="[scope.row.cover_url]" title="点击看大图">
+              <div slot="error" class="image-slot">
+                <i class="el-icon-picture-outline" />
+              </div>
+            </el-image>
+          </div>
         </template>
       </el-table-column>
       <el-table-column prop="name" label="名称" min-width="200" show-overflow-tooltip />
@@ -138,13 +140,19 @@
     <!-- 添加修改 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false">
       <el-form ref="ref" :rules="rules" :model="model" label-width="100px" class="dialog-body" :style="{height:height+'px'}">
-        <el-form-item label="分类" prop="category_ids">
-          <el-cascader v-model="model.category_ids" :options="categoryData" :props="categoryProps" class="ya-width-100p" clearable filterable />
-        </el-form-item>
-        <el-form-item label="标签" prop="tag_ids">
-          <el-select v-model="model.tag_ids" class="ya-width-100p" multiple clearable filterable>
-            <el-option v-for="item in tagData" :key="item.tag_id" :label="item.tag_name" :value="item.tag_id" />
-          </el-select>
+        <el-form-item label="封面" prop="cover_id">
+          <el-col :span="12" style="height:100px">
+            <el-image v-if="model.cover_url" style="height:100px" fit="contain" :src="model.cover_url" :preview-src-list="[model.cover_url]" title="点击看大图">
+              <div slot="error" class="image-slot">
+                <i class="el-icon-picture-outline" />
+              </div>
+            </el-image>
+          </el-col>
+          <el-col :span="12" class="ya-center">
+            <el-button size="mini" @click="fileUpload('image', 'cover_id', '上传封面')">上传封面</el-button>
+            <el-button size="mini" @click="fileDelete(0, 'cover_id')">删除</el-button>
+            <p>图片小于 200 KB，jpg、png格式。</p>
+          </el-col>
         </el-form-item>
         <el-form-item label="名称" prop="name">
           <el-input v-model="model.name" placeholder="请输入名称" clearable />
@@ -152,22 +160,13 @@
         <el-form-item label="标识" prop="unique">
           <el-input v-model="model.unique" placeholder="请输入标识（唯一）" clearable />
         </el-form-item>
-        <el-form-item label="封面" prop="cover_id">
-          <el-col :span="12">
-            <el-image v-if="model.cover_url" class="ya-height-100" fit="scale-down" :src="model.cover_url" :preview-src-list="[model.cover_url]" title="点击看大图">
-              <div slot="error" class="image-slot">
-                <i class="el-icon-picture-outline" />
-              </div>
-            </el-image>
-            <el-image v-else class="ya-height-100" fit="scale-down" title="">
-              <div slot="error" class="image-slot" />
-            </el-image>
-          </el-col>
-          <el-col :span="12">
-            <el-button size="mini" @click="fileUpload('image', 'cover_id', '上传封面')">上传封面</el-button>
-            <el-button size="mini" @click="fileDelete(0, 'cover_id')">删除</el-button>
-            <p>图片小于 200 KB，jpg、png格式。</p>
-          </el-col>
+        <el-form-item label="分类" prop="category_ids">
+          <el-cascader v-model="model.category_ids" :options="categoryData" :props="categoryProps" class="ya-width-100p" clearable filterable />
+        </el-form-item>
+        <el-form-item label="标签" prop="tag_ids">
+          <el-select v-model="model.tag_ids" class="ya-width-100p" multiple clearable filterable>
+            <el-option v-for="item in tagData" :key="item.tag_id" :label="item.tag_name" :value="item.tag_id" />
+          </el-select>
         </el-form-item>
         <el-form-item label="标题" prop="title">
           <el-input v-model="model.title" placeholder="title" clearable />
@@ -190,16 +189,14 @@
               <el-button size="mini" @click="fileUpload('image', 'images', '上传图片')">上传图片</el-button>
             </el-col>
             <el-col :span="12">
-              <div>图片小于 250 KB，jpg、png格式。</div>
+              <span>图片小于 250 KB，jpg、png格式。</span>
             </el-col>
           </el-row>
           <el-row>
             <el-col v-for="(item, index) in model.images" :key="index" :span="6" class="ya-file">
-              <el-image class="ya-img-form" :src="item.file_url" :preview-src-list="[item.file_url]" fit="contain" title="点击看大图" />
+              <el-image style="height:100px" fit="contain" :src="item.file_url" :preview-src-list="[item.file_url]" title="点击看大图" />
               <div>
-                <span class="ya-file-name" :title="item.file_name+'.'+item.file_ext">
-                  {{ item.file_name }}.{{ item.file_ext }}
-                </span>
+                <span class="ya-file-name" :title="item.file_name+'.'+item.file_ext">{{ item.file_name }}.{{ item.file_ext }}</span>
                 <el-button type="text" size="medium" icon="el-icon-d-arrow-left" title="向左移动" @click="fileRemoval(index, 'images', 'left')" />
                 <el-button type="text" size="medium" icon="el-icon-d-arrow-right" title="向左移动" @click="fileRemoval(index, 'images', 'right')" />
                 <el-button type="text" size="medium" icon="el-icon-download" title="下载" @click="fileDownload(item, $event)" />
@@ -214,7 +211,7 @@
               <el-button size="mini" @click="fileUpload('video', 'videos', '上传视频')">上传视频</el-button>
             </el-col>
             <el-col :span="12">
-              <div>视频小于 30 MB。</div>
+              <span>视频小于 30 MB。</span>
             </el-col>
           </el-row>
           <el-row>
@@ -222,15 +219,13 @@
               <div :style="{width:'100%',height:((height-height*0.1)/3)-((height-height*0.1)/3*0.5)+'px'}">
                 <video width="100%" height="100%" controls>
                   <source :src="item.file_url" type="video/mp4">
-                  <object :data="item.file_url" width="100%" height="100%">
-                    <embed :src="item.file_url" width="100%" height="100%">
+                  <object :data="item.file_url" height="100%">
+                    <embed :src="item.file_url" height="100%">
                   </object>
                 </video>
               </div>
               <div>
-                <span class="ya-file-name" :title="item.file_name+'.'+item.file_ext">
-                  {{ item.file_name }}.{{ item.file_ext }}
-                </span>
+                <span class="ya-file-name" :title="item.file_name+'.'+item.file_ext">{{ item.file_name }}.{{ item.file_ext }}</span>
                 <el-button type="text" size="medium" icon="el-icon-d-arrow-left" title="向左移动" @click="fileRemoval(index, 'videos', 'left')" />
                 <el-button type="text" size="medium" icon="el-icon-d-arrow-right" title="向左移动" @click="fileRemoval(index, 'videos', 'right')" />
                 <el-button type="text" size="medium" icon="el-icon-download" title="下载" @click="fileDownload(item, $event)" />
@@ -245,7 +240,7 @@
               <el-button size="mini" @click="fileUpload('word', 'annexs', '上传附件')">上传附件</el-button>
             </el-col>
             <el-col :span="12">
-              <div>附件小于 5 MB。</div>
+              <span>附件小于 5 MB。</span>
             </el-col>
           </el-row>
           <el-row v-for="(item, index) in model.annexs" :key="index">
@@ -255,9 +250,7 @@
               <i v-else-if="item.file_type==='video'" class="el-icon-video-play" />
               <i v-else-if="item.file_type==='word'" class="el-icon-document" />
               <i v-else class="el-icon-folder" />
-              <span :title="item.file_name+'.'+item.file_ext">
-                {{ item.file_name }}.{{ item.file_ext }}
-              </span>
+              <span style="margin-left:5px" :title="item.file_name+'.'+item.file_ext">{{ item.file_name }}.{{ item.file_ext }}</span>
             </el-col>
             <el-col :span="6">
               <el-button type="text" size="medium" icon="el-icon-top" title="向上移动" @click="fileRemoval(index, 'annexs', 'left')" />
@@ -663,24 +656,27 @@ export default {
       this.fileTitle = '文件管理'
       this.fileDialog = false
     },
-    fileSubmit(fileList, fileType) {
+    fileSubmit(fileList) {
+      this.fileDialog = false
       const fileField = this.fileField
       const fileLength = fileList.length
       if (fileLength) {
-        for (let i = 0; i < fileLength; i++) {
-          if (fileField === 'cover_id') {
-            this.model.cover_id = fileList[i]['file_id']
-            this.model.cover_url = fileList[i]['file_url']
-          } else if (fileField === 'images') {
-            this.model.images.push(fileList[i])
-          } else if (fileField === 'videos') {
-            this.model.videos.push(fileList[i])
-          } else if (fileField === 'annexs') {
-            this.model.annexs.push(fileList[i])
+        if (fileField === 'cover_id') {
+          const i = fileLength - 1
+          this.model.cover_id = fileList[i]['file_id']
+          this.model.cover_url = fileList[i]['file_url']
+        } else {
+          for (let i = 0; i < fileLength; i++) {
+            if (fileField === 'images') {
+              this.model.images.push(fileList[i])
+            } else if (fileField === 'videos') {
+              this.model.videos.push(fileList[i])
+            } else if (fileField === 'annexs') {
+              this.model.annexs.push(fileList[i])
+            }
           }
         }
       }
-      this.fileDialog = false
     },
     fileRemoval(index, field, direction) {
       const length = this.model[field].length

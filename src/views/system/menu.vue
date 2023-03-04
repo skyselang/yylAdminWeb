@@ -107,7 +107,7 @@
           <i :class="scope.row.meta_icon" />
         </template>
       </el-table-column>
-      <el-table-column prop="menu_url" label="菜单链接" min-width="240" show-overflow-tooltip />
+      <el-table-column prop="menu_url" label="菜单链接" min-width="235" show-overflow-tooltip />
       <el-table-column prop="path" label="路由地址" min-width="150" show-overflow-tooltip />
       <el-table-column prop="name" label="路由名称" min-width="130" show-overflow-tooltip />
       <el-table-column prop="component" label="组件路径" min-width="135" show-overflow-tooltip />

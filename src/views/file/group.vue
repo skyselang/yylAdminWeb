@@ -137,8 +137,8 @@
         <el-table-column :prop="filePk" label="ID" width="80" sortable="custom" />
         <el-table-column prop="file_url" label="文件" min-width="90">
           <template slot-scope="scope">
-            <div style="height:30px">
-              <el-image v-if="scope.row.file_type==='image'" style="height:30px" fit="contain" :src="scope.row.file_url" title="点击看大图" />
+            <div v-if="scope.row.file_url" style="height:30px">
+              <el-image v-if="scope.row.file_type==='image'" style="height:30px" fit="contain" :src="scope.row.file_url" :preview-src-list="[scope.row.file_url]" title="点击看大图" />
               <video v-else-if="scope.row.file_type==='video'" height="100%" controls>
                 <source :src="scope.row.file_url" type="video/mp4">
                 <object :data="scope.row.file_url" height="100%">
@@ -149,11 +149,9 @@
                 <source :src="scope.row.file_url" type="audio/mp3">
                 <embed :src="scope.row.file_url" height="100%">
               </audio>
-              <el-image v-else-if="scope.row.file_type==='word'" style="height:30px" :src="scope.row.file_url">
-                <div slot="error" class="image-slot">
-                  <i class="el-icon-document" />
-                </div>
-              </el-image>
+              <div v-else-if="scope.row.file_type==='word'">
+                <i class="el-icon-document" />
+              </div>
               <div v-else class="image-slot">
                 <i class="el-icon-folder" />
               </div>
@@ -172,7 +170,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="sort" label="排序" min-width="75" sortable="custom" />
-        <el-table-column label="操作" min-width="80">
+        <el-table-column label="操作" min-width="70">
           <template slot-scope="scope">
             <el-button size="mini" type="text" @click="fileSelectOpen('fileRemove',scope.row)">解除</el-button>
           </template>

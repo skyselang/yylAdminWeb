@@ -20,51 +20,45 @@
             </el-col>
           </el-form-item>
           <el-form-item label="favicon" prop="favicon_id">
-            <el-col :span="24">
-              <el-col :span="8">
-                <el-image class="image-favicon" :src="model.favicon_url" :preview-src-list="[model.favicon_url]" title="点击看大图">
-                  <div slot="error" class="image-slot">
-                    <i class="el-icon-picture-outline" />
-                  </div>
-                </el-image>
-              </el-col>
-              <el-col :span="16">
-                <el-button size="mini" @click="fileUpload('favicon', '上传favicon')">上传favicon</el-button>
-                <el-button size="mini" @click="fileDelete('favicon')">删除</el-button>
-                <p>图片小于 50 KB，jpg、png、ico格式，128 x 128。</p>
-              </el-col>
+            <el-col :span="8" style="height:100px">
+              <el-image v-if="model.favicon_url" style="height:100px" fit="contain" :src="model.favicon_url" :preview-src-list="[model.favicon_url]" title="点击看大图">
+                <div slot="error" class="image-slot">
+                  <i class="el-icon-picture-outline" />
+                </div>
+              </el-image>
+            </el-col>
+            <el-col :span="16" class="ya-center">
+              <el-button size="mini" @click="fileUpload('favicon', '上传favicon')">上传favicon</el-button>
+              <el-button size="mini" @click="fileDelete('favicon')">删除</el-button>
+              <p>图片小于 50 KB，jpg、png、ico格式，128 x 128。</p>
             </el-col>
           </el-form-item>
           <el-form-item label="logo" prop="logo_id">
-            <el-col :span="24">
-              <el-col :span="8">
-                <el-image class="image-logo" :src="model.logo_url" :preview-src-list="[model.logo_url]" title="点击看大图">
-                  <div slot="error" class="image-slot">
-                    <i class="el-icon-picture-outline" />
-                  </div>
-                </el-image>
-              </el-col>
-              <el-col :span="16">
-                <el-button size="mini" @click="fileUpload('logo', '上传logo')">上传logo</el-button>
-                <el-button size="mini" @click="fileDelete('logo')">删除</el-button>
-                <p>图片小于 100 KB，jpg、png格式，200 x 200。</p>
-              </el-col>
+            <el-col :span="8" style="height:100px">
+              <el-image v-if="model.logo_url" style="height:100px" fit="contain" :src="model.logo_url" :preview-src-list="[model.logo_url]" title="点击看大图">
+                <div slot="error" class="image-slot">
+                  <i class="el-icon-picture-outline" />
+                </div>
+              </el-image>
+            </el-col>
+            <el-col :span="16" class="ya-center">
+              <el-button size="mini" @click="fileUpload('logo', '上传logo')">上传logo</el-button>
+              <el-button size="mini" @click="fileDelete('logo')">删除</el-button>
+              <p>图片小于 100 KB，jpg、png格式，200 x 200。</p>
             </el-col>
           </el-form-item>
           <el-form-item label="登录背景图" prop="login_bg_id">
-            <el-col :span="24">
-              <el-col :span="8">
-                <el-image class="image-login-bg" :src="model.login_bg_url" :preview-src-list="[model.login_bg_url]" title="点击看大图">
-                  <div slot="error" class="image-slot">
-                    <i class="el-icon-picture-outline" />
-                  </div>
-                </el-image>
-              </el-col>
-              <el-col :span="16">
-                <el-button size="mini" @click="fileUpload('login_bg', '上传登录背景')">上传背景图</el-button>
-                <el-button size="mini" @click="fileDelete('login_bg')">删除</el-button>
-                <p>图片小于 200 KB，jpg、png格式，1920 x 1080。</p>
-              </el-col>
+            <el-col :span="8" style="height:100px">
+              <el-image v-if="model.login_bg_url" style="height:100px" fit="contain" :src="model.login_bg_url" :preview-src-list="[model.login_bg_url]" title="点击看大图">
+                <div slot="error" class="image-slot">
+                  <i class="el-icon-picture-outline" />
+                </div>
+              </el-image>
+            </el-col>
+            <el-col :span="16" class="ya-center">
+              <el-button size="mini" @click="fileUpload('login_bg', '上传登录背景')">上传背景图</el-button>
+              <el-button size="mini" @click="fileDelete('login_bg')">删除</el-button>
+              <p>图片小于 200 KB，jpg、png格式，1920 x 1080。</p>
             </el-col>
           </el-form-item>
           <el-form-item>
@@ -160,18 +154,22 @@ export default {
     fileCancel() {
       this.fileDialog = false
     },
-    fileSubmit(filelists) {
+    fileSubmit(fileList) {
       this.fileDialog = false
-      this.fileTitle = ''
-      if (this.fileField === 'favicon') {
-        this.model.favicon_id = filelists[0]['file_id']
-        this.model.favicon_url = filelists[0]['file_url']
-      } else if (this.fileField === 'logo') {
-        this.model.logo_id = filelists[0]['file_id']
-        this.model.logo_url = filelists[0]['file_url']
-      } else if (this.fileField === 'login_bg') {
-        this.model.login_bg_id = filelists[0]['file_id']
-        this.model.login_bg_url = filelists[0]['file_url']
+      const fileField = this.fileField
+      const fileLength = fileList.length
+      if (fileLength) {
+        const i = fileLength - 1
+        if (fileField === 'favicon') {
+          this.model.favicon_id = fileList[i]['file_id']
+          this.model.favicon_url = fileList[i]['file_url']
+        } else if (fileField === 'logo') {
+          this.model.logo_id = fileList[i]['file_id']
+          this.model.logo_url = fileList[i]['file_url']
+        } else if (fileField === 'login_bg') {
+          this.model.login_bg_id = fileList[i]['file_id']
+          this.model.login_bg_url = fileList[i]['file_url']
+        }
       }
     },
     fileDelete(field = '') {
@@ -191,16 +189,4 @@ export default {
 </script>
 
 <style scoped>
-.image-logo {
-  width: 60px;
-  height: 100%;
-}
-.image-favicon {
-  width: 32px;
-  height: 100%;
-}
-.image-login-bg {
-  width: 150px;
-  height: 100%;
-}
 </style>

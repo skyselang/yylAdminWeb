@@ -7,8 +7,8 @@
         <el-col>
           <el-select v-model="query.search_field" class="filter-item ya-search-field" placeholder="查询字段">
             <el-option :value="idkey" label="ID" />
-            <el-option value="unique" label="标识" />
             <el-option value="name" label="名称" />
+            <el-option value="unique" label="标识" />
             <el-option value="is_disable" label="禁用" />
           </el-select>
           <el-select v-model="query.search_exp" class="filter-item ya-search-exp">
@@ -58,8 +58,8 @@
     <el-table ref="table" v-loading="loading" :data="data" :height="height" @sort-change="sort" @selection-change="select" @cell-dblclick="cellDbclick">
       <el-table-column type="selection" width="42" title="全选/反选" />
       <el-table-column :prop="idkey" label="ID" width="80" sortable="custom" />
-      <el-table-column prop="unique" label="标识" min-width="120" sortable="custom" show-overflow-tooltip />
       <el-table-column prop="name" label="名称" min-width="220" sortable="custom" show-overflow-tooltip />
+      <el-table-column prop="unique" label="标识" min-width="120" sortable="custom" show-overflow-tooltip />
       <el-table-column prop="is_disable" label="禁用" min-width="75" sortable="custom">
         <template slot-scope="scope">
           <el-switch v-model="scope.row.is_disable" :active-value="1" :inactive-value="0" @change="disable([scope.row])" />
@@ -80,14 +80,14 @@
     <!-- 添加修改 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false" destroy-on-close>
       <el-form ref="ref" :rules="rules" :model="model" label-width="100px" class="dialog-body" :style="{height:height+'px'}">
-        <el-form-item label="标识" prop="unique">
-          <el-input v-model="model.unique" placeholder="请输入标识" clearable>
-            <el-button slot="append" icon="el-icon-document-copy" title="复制" @click="copy(model.unique, $event)" />
-          </el-input>
-        </el-form-item>
         <el-form-item label="名称" prop="name">
           <el-input v-model="model.name" placeholder="请输入名称" clearable>
             <el-button slot="append" icon="el-icon-document-copy" title="复制" @click="copy(model.name, $event)" />
+          </el-input>
+        </el-form-item>
+        <el-form-item label="标识" prop="unique">
+          <el-input v-model="model.unique" placeholder="请输入标识（唯一）" clearable>
+            <el-button slot="append" icon="el-icon-document-copy" title="复制" @click="copy(model.unique, $event)" />
           </el-input>
         </el-form-item>
         <el-form-item label="内容" prop="content">

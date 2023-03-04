@@ -605,10 +605,14 @@ export default {
     fileCancel() {
       this.fileDialog = false
     },
-    fileSubmit(filelist) {
+    fileSubmit(fileList) {
       this.fileDialog = false
-      this.model.avatar_id = filelist[0]['file_id']
-      this.model.avatar_url = filelist[0]['file_url']
+      const fileLength = fileList.length
+      if (fileLength) {
+        const i = fileLength - 1
+        this.model.avatar_id = fileList[i]['file_id']
+        this.model.avatar_url = fileList[i]['file_url']
+      }
     },
     fileDelete() {
       this.model.avatar_id = 0

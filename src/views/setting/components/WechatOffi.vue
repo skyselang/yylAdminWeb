@@ -16,19 +16,17 @@
         </el-col>
       </el-form-item>
       <el-form-item label="公众号码" prop="qrcode_url">
-        <el-col :span="12">
-          <el-col :span="12">
-            <el-image class="ya-img-form" :src="model.qrcode_url" :preview-src-list="[model.qrcode_url]" title="点击看大图">
-              <div slot="error" class="image-slot">
-                <i class="el-icon-picture-outline" />
-              </div>
-            </el-image>
-          </el-col>
-          <el-col :span="12">
-            <el-button size="mini" @click="fileUpload()">上传二维码</el-button>
-            <el-button size="mini" @click="fileDelete()">删除</el-button>
-            <p>图片小于 200 KB，jpg、png格式。</p>
-          </el-col>
+        <el-col :span="6" style="height:100px">
+          <el-image v-if="model.qrcode_url" style="height:100px" fit="contain" :src="model.qrcode_url" :preview-src-list="[model.qrcode_url]" title="点击看大图">
+            <div slot="error" class="image-slot">
+              <i class="el-icon-picture-outline" />
+            </div>
+          </el-image>
+        </el-col>
+        <el-col :span="6" class="ya-center">
+          <el-button size="mini" @click="fileUpload()">上传公众号码</el-button>
+          <el-button size="mini" @click="fileDelete()">删除</el-button>
+          <p>图片小于 200 KB，jpg、png格式。</p>
         </el-col>
       </el-form-item>
       <el-form-item label="* AppID" prop="appid">
@@ -165,11 +163,13 @@ export default {
     fileCancel() {
       this.fileDialog = false
     },
-    fileSubmit(filelist) {
+    fileSubmit(fileList) {
       this.fileDialog = false
-      if (filelist) {
-        this.model.qrcode_id = filelist[0]['file_id']
-        this.model.qrcode_url = filelist[0]['file_url']
+      const fileLength = fileList.length
+      if (fileLength) {
+        const i = fileLength - 1
+        this.model.qrcode_id = fileList[i]['file_id']
+        this.model.qrcode_url = fileList[i]['file_url']
       }
     },
     fileDelete() {

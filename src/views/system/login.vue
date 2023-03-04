@@ -5,7 +5,7 @@
         <h3 class="login-title-name">{{ system_name }}</h3>
       </div>
       <div class="login-logo">
-        <el-image v-if="logo_url" class="login-logo-img" :src="logo_url" fit="contain">
+        <el-image v-if="logo_url" style="height:130px" fit="contain" :src="logo_url">
           <div slot="error" class="image-slot" />
         </el-image>
         <div v-else style="height:134px" />
@@ -21,7 +21,7 @@
           <el-input v-model="model.captcha_code" placeholder="请输入验证码" prefix-icon="el-icon-picture" autocomplete="off" clearable />
         </el-col>
         <el-col :span="11">
-          <el-image class="login-captcha" :src="captcha_src" fit="fill" alt="验证码" title="点击刷新验证码" @click="captcha" />
+          <el-image class="login-captcha" fit="fill" :src="captcha_src" alt="验证码" title="点击刷新验证码" @click="captcha" />
         </el-col>
       </el-form-item>
       <aj-captcha v-if="captcha_switch&&captcha_mode==2" ref="ajcaptcha" mode="pop" :captcha-type="captcha_type" :img-size="{ width: '330px', height: '155px' }" @success="ajcaptchaSuccess" />
@@ -210,10 +210,6 @@ export default {
   .login-logo {
     margin-bottom: 22px;
     text-align: center;
-
-    .login-logo-img {
-      height: 130px;
-    }
   }
 
   .login-captcha {

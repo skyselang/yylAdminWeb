@@ -24,10 +24,20 @@ export function info(params) {
   })
 }
 /**
- * 文件上传
+ * 文件上传、添加
+ * @param {array} data 请求数据
+ * @param {string} type upl上传，url添加
  */
-export function add() {
-  return process.env.VUE_APP_BASE_URL + url + 'add'
+export function add(data, type = 'upl') {
+  if (type === 'url') {
+    return request({
+      url: url + 'add',
+      method: 'post',
+      data
+    })
+  } else {
+    return process.env.VUE_APP_BASE_URL + url + 'add'
+  }
 }
 /**
  * 文件修改

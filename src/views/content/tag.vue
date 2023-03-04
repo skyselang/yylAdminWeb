@@ -135,13 +135,15 @@
       <el-table ref="contentRef" v-loading="contentLoad" :data="contentData" :height="height-20" @sort-change="contentSort" @selection-change="contentSelect">
         <el-table-column type="selection" width="42" title="全选/反选" />
         <el-table-column :prop="contentPk" label="内容ID" min-width="80" sortable="custom" />
-        <el-table-column prop="img_url" label="封面" min-width="60">
+        <el-table-column prop="cover_url" label="封面" min-width="60">
           <template slot-scope="scope">
-            <el-image v-if="scope.row.img_url" class="ya-img-table" :src="scope.row.img_url" :preview-src-list="[scope.row.img_url]" title="点击看大图">
-              <div slot="error" class="image-slot">
-                <i class="el-icon-picture-outline" />
-              </div>
-            </el-image>
+            <div style="height:30px">
+              <el-image v-if="scope.row.cover_url" style="height:30px" fit="contain" :src="scope.row.cover_url" :preview-src-list="[scope.row.cover_url]" title="点击看大图">
+                <div slot="error" class="image-slot">
+                  <i class="el-icon-picture-outline" />
+                </div>
+              </el-image>
+            </div>
           </template>
         </el-table-column>
         <el-table-column prop="name" label="名称" min-width="230" show-overflow-tooltip />
