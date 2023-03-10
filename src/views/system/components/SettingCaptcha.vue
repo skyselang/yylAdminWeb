@@ -18,7 +18,7 @@
               </el-select>
             </el-col>
             <el-col :span="16">
-              字符：输入字符；行为：滑动或点击。
+              字符：输入字符；行为：滑动或点选。
             </el-col>
           </el-form-item>
           <el-form-item label="验证码类型" prop="captcha_type">
@@ -71,8 +71,8 @@ export default {
         { value: 5, label: '中文' }
       ],
       typeaj: [
-        { value: 1, label: '滑动' },
-        { value: 2, label: '文字' }
+        { value: 1, label: '滑动拼图' },
+        { value: 2, label: '点选文字' }
       ]
     }
   },

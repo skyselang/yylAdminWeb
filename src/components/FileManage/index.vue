@@ -426,7 +426,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancel">取消</el-button>
-        <el-button type="primary" @click="submit">提交</el-button>
+        <el-button :loading="loading" type="primary" @click="submit">提交</el-button>
       </div>
     </el-dialog>
     <!-- 文件管理操作 -->
