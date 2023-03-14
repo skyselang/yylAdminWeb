@@ -583,7 +583,7 @@ export default {
     if (this.fileType) {
       this.query.is_disable = 0
       this.query.file_type = this.fileType
-      this.height = this.height - 105
+      this.height = this.height - 95
     }
     this.list()
     const tokenType = store.getters.tokenType

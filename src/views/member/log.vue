@@ -110,9 +110,6 @@
         <el-form-item label="请求时间" prop="create_time">
           <el-input v-model="model.create_time" />
         </el-form-item>
-        <el-form-item label="请求参数" prop="request_param">
-          <pre>{{ model.request_param }}</pre>
-        </el-form-item>
         <el-form-item label="返回码" prop="response_code">
           <el-input v-model="model.response_code" />
         </el-form-item>
@@ -121,6 +118,9 @@
         </el-form-item>
         <el-form-item label="用户代理" prop="user_agent">
           <el-input v-model="model.user_agent" type="textarea" />
+        </el-form-item>
+        <el-form-item label="请求参数" prop="request_param">
+          <pre>{{ model.request_param }}</pre>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
