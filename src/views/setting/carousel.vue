@@ -68,7 +68,7 @@
         <template slot-scope="scope">
           <div v-if="scope.row.file_url" style="height:30px">
             <div v-if="scope.row.file_type==='image'">
-              <el-image style="height:30px" fit="contain" :src="scope.row.file_url" :preview-src-list="[scope.row.file_url]" title="点击看大图">
+              <el-image style="height:30px" fit="contain" :src="scope.row.file_url" :preview-src-list="[scope.row.file_url]" title="点击看大图" lazy scroll-container=".el-table__body-wrapper">
                 <div slot="error" class="image-slot">
                   <i class="el-icon-picture-outline" />
                 </div>
@@ -150,12 +150,17 @@
               </div>
             </div>
           </el-col>
-          <el-col :span="5" class="ya-center">
-            <span>{{ model.file_name }}.{{ model.file_ext }}</span>
-          </el-col>
-          <el-col :span="3" class="ya-center">
-            <el-button size="mini" @click="fileUpload('image', 'file', '上传文件')">上传</el-button>
-            <el-button size="mini" style="margin-left:0" @click="fileDelete(0, 'file')">删除</el-button>
+          <el-col :span="8">
+            <el-col :span="24">
+              <el-button size="mini" @click="fileUpload('image', 'file', '上传文件')">上传</el-button>
+              <el-button size="mini" @click="fileDelete(0, 'file')">删除</el-button>
+            </el-col>
+            <el-col :span="24">
+              <div>图片小于 200 KB，jpg、png格式。</div>
+            </el-col>
+            <el-col :span="24">
+              <span>{{ model.file_name }}.{{ model.file_ext }}</span>
+            </el-col>
           </el-col>
         </el-form-item>
         <el-form-item label="标题" prop="title">
@@ -203,7 +208,7 @@
                     <embed :src="item.file_url" height="100%">
                   </object>
                 </video>
-                <audio v-else-if="item.file_type==='audio'" height="100%" controls>
+                <audio v-else-if="item.file_type==='audio'" style="width:100%" height="100%" controls>
                   <source :src="item.file_url" height="100%" type="audio/mp3">
                   <embed :src="item.file_url" height="100%">
                 </audio>
@@ -356,6 +361,8 @@ export default {
               this.loading = false
             })
           }
+        } else {
+          this.$message.error('请完善必填项*')
         }
       })
     },

@@ -90,11 +90,11 @@
             <el-button slot="append" icon="el-icon-document-copy" title="复制" @click="copy(model.unique, $event)" />
           </el-input>
         </el-form-item>
-        <el-form-item label="内容" prop="content">
-          <rich-editor v-model="model.content" />
-        </el-form-item>
         <el-form-item label="排序" prop="sort">
           <el-input v-model="model.sort" type="number" />
+        </el-form-item>
+        <el-form-item label="内容" prop="content">
+          <rich-editor v-model="model.content" />
         </el-form-item>
         <el-form-item v-if="model[idkey]" label="添加时间" prop="create_time">
           <el-input v-model="model.create_time" disabled />

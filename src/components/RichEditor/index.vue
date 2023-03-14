@@ -64,6 +64,7 @@ export default {
       const that = this
       // 扩展菜单
       const { BtnMenu } = E
+
       class upimg extends BtnMenu {
         constructor(editor) {
           const $elem = E.$(`<div class="w-e-menu" data-title="上传图片"><el-button>图片</el-button></div>`)
@@ -90,13 +91,39 @@ export default {
         tryChangeActive() {}
       }
 
-      class upfile extends BtnMenu {
+      class upaudio extends BtnMenu {
+        constructor(editor) {
+          const $elem = E.$(`<div class="w-e-menu" data-title="上传音频"><el-button>音频</el-button></div>`)
+          super($elem, editor)
+        }
+        clickHandler() {
+          that.fileType = 'audio'
+          that.fileTitle = '上传音频'
+          that.fileDialog = true
+        }
+        tryChangeActive() {}
+      }
+
+      class upword extends BtnMenu {
+        constructor(editor) {
+          const $elem = E.$(`<div class="w-e-menu" data-title="上传文档"><el-button>文档</el-button></div>`)
+          super($elem, editor)
+        }
+        clickHandler() {
+          that.fileType = 'word'
+          that.fileTitle = '上传文档'
+          that.fileDialog = true
+        }
+        tryChangeActive() {}
+      }
+
+      class upother extends BtnMenu {
         constructor(editor) {
           const $elem = E.$(`<div class="w-e-menu" data-title="上传附件"><el-button>附件</el-button></div>`)
           super($elem, editor)
         }
         clickHandler() {
-          that.fileType = 'word'
+          that.fileType = 'other'
           that.fileTitle = '上传附件'
           that.fileDialog = true
         }
@@ -120,8 +147,12 @@ export default {
       that.editor.config.menus = that.editor.config.menus.concat('upimgKey')
       that.editor.menus.extend('upvideoKey', upvideo)
       that.editor.config.menus = that.editor.config.menus.concat('upvideoKey')
-      that.editor.menus.extend('upfileKey', upfile)
-      that.editor.config.menus = that.editor.config.menus.concat('upfileKey')
+      that.editor.menus.extend('upaudioKey', upaudio)
+      that.editor.config.menus = that.editor.config.menus.concat('upaudioKey')
+      that.editor.menus.extend('upwordKey', upword)
+      that.editor.config.menus = that.editor.config.menus.concat('upwordKey')
+      that.editor.menus.extend('upotherKey', upother)
+      that.editor.config.menus = that.editor.config.menus.concat('upotherKey')
       that.editor.menus.extend('clearKey', clear)
       that.editor.config.menus = that.editor.config.menus.concat('clearKey')
 
@@ -169,10 +200,18 @@ export default {
                 </object>
               </video>`
             )
+          } else if (filetype === 'audio') {
+            this.editor.cmd.do(
+              'insertHTML',
+              `<audio width="50%" height="50%" controls>
+                <source file-id="${filelist[i]['file_id']}" src="${filelist[i]['file_url']}" type="audio/mp3">
+                <embed file-id="${filelist[i]['file_id']}" src="${filelist[i]['file_url']}" width="50%" height="50%">
+              </audio>`
+            )
           } else {
             this.editor.cmd.do(
               'insertHTML',
-              `<a file-id="${filelist[i]['file_id']}" href="${filelist[i]['file_url']}" download="${filelist[i]['file_url']}" target="_blank">${filelist[i]['file_name']}</el-link>`
+              `<a file-id="${filelist[i]['file_id']}" href="${filelist[i]['file_url']}" download="${filelist[i]['file_url']}" target="_blank">${filelist[i]['file_name']}.${filelist[i]['file_ext']}</el-link>`
             )
           }
         }
@@ -181,6 +220,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-</style>

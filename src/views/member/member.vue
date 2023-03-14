@@ -133,7 +133,7 @@
       <el-table-column prop="avatar_id" label="头像" min-width="60">
         <template slot-scope="scope">
           <div style="height:30px">
-            <el-image v-if="scope.row.avatar_url" style="height:30px" fit="contain" :src="scope.row.avatar_url" :preview-src-list="[scope.row.avatar_url]" title="点击看大图">
+            <el-image v-if="scope.row.avatar_url" style="height:30px" fit="contain" :src="scope.row.avatar_url" :preview-src-list="[scope.row.avatar_url]" title="点击看大图" lazy scroll-container=".el-table__body-wrapper">
               <div slot="error" class="image-slot">
                 <i class="el-icon-picture-outline" />
               </div>
@@ -179,7 +179,7 @@
               </div>
             </el-image>
           </el-col>
-          <el-col :span="12" class="ya-center">
+          <el-col :span="12">
             <el-button size="mini" @click="fileUpload()">上传头像</el-button>
             <el-button size="mini" @click="fileDelete()">删除</el-button>
             <p>图片小于 200 KB，jpg、png格式。</p>
@@ -437,6 +437,8 @@ export default {
               this.loading = false
             })
           }
+        } else {
+          this.$message.error('请完善必填项*')
         }
       })
     },

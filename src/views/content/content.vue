@@ -92,7 +92,7 @@
       <el-table-column prop="cover_url" label="封面" min-width="60">
         <template slot-scope="scope">
           <div style="height:30px">
-            <el-image v-if="scope.row.cover_url" style="height:30px" fit="contain" :src="scope.row.cover_url" :preview-src-list="[scope.row.cover_url]" title="点击看大图">
+            <el-image v-if="scope.row.cover_url" style="height:30px" fit="contain" :src="scope.row.cover_url" :preview-src-list="[scope.row.cover_url]" title="点击看大图" lazy scroll-container=".el-table__body-wrapper">
               <div slot="error" class="image-slot">
                 <i class="el-icon-picture-outline" />
               </div>
@@ -148,7 +148,7 @@
               </div>
             </el-image>
           </el-col>
-          <el-col :span="12" class="ya-center">
+          <el-col :span="12">
             <el-button size="mini" @click="fileUpload('image', 'cover_id', '上传封面')">上传封面</el-button>
             <el-button size="mini" @click="fileDelete(0, 'cover_id')">删除</el-button>
             <p>图片小于 200 KB，jpg、png格式。</p>
@@ -183,13 +183,16 @@
         <el-form-item label="链接" prop="url">
           <el-input v-model="model.url" placeholder="url" clearable />
         </el-form-item>
+        <el-form-item label="排序" prop="sort">
+          <el-input v-model="model.sort" type="number" placeholder="sort" clearable />
+        </el-form-item>
         <el-form-item label="图片" prop="images">
           <el-row>
             <el-col :span="12">
               <el-button size="mini" @click="fileUpload('image', 'images', '上传图片')">上传图片</el-button>
             </el-col>
             <el-col :span="12">
-              <span>图片小于 250 KB，jpg、png格式。</span>
+              <span>图片文件。</span>
             </el-col>
           </el-row>
           <el-row>
@@ -211,13 +214,13 @@
               <el-button size="mini" @click="fileUpload('video', 'videos', '上传视频')">上传视频</el-button>
             </el-col>
             <el-col :span="12">
-              <span>视频小于 30 MB。</span>
+              <span>视频文件。</span>
             </el-col>
           </el-row>
           <el-row>
             <el-col v-for="(item, index) in model.videos" :key="index" :span="6" class="ya-file">
               <div :style="{width:'100%',height:((height-height*0.1)/3)-((height-height*0.1)/3*0.5)+'px'}">
-                <video width="100%" height="100%" controls>
+                <video height="100%" controls>
                   <source :src="item.file_url" type="video/mp4">
                   <object :data="item.file_url" height="100%">
                     <embed :src="item.file_url" height="100%">
@@ -234,16 +237,65 @@
             </el-col>
           </el-row>
         </el-form-item>
-        <el-form-item label="附件" prop="annexs">
+        <el-form-item label="音频" prop="audios">
           <el-row>
             <el-col :span="12">
-              <el-button size="mini" @click="fileUpload('word', 'annexs', '上传附件')">上传附件</el-button>
+              <el-button size="mini" @click="fileUpload('audio', 'audios', '上传音频')">上传音频</el-button>
             </el-col>
             <el-col :span="12">
-              <span>附件小于 5 MB。</span>
+              <span>音频文件。</span>
             </el-col>
           </el-row>
-          <el-row v-for="(item, index) in model.annexs" :key="index">
+          <el-row>
+            <el-col v-for="(item, index) in model.audios" :key="index" :span="6" class="ya-file">
+              <div :style="{width:'100%',height:((height-height*0.1)/3)-((height-height*0.1)/3*0.5)+'px'}">
+                <audio height="100%" controls>
+                  <source :src="item.file_url" type="audio/mp3">
+                  <embed :src="item.file_url" height="100%">
+                </audio>
+              </div>
+              <div>
+                <span class="ya-file-name" :title="item.file_name+'.'+item.file_ext">{{ item.file_name }}.{{ item.file_ext }}</span>
+                <el-button type="text" size="medium" icon="el-icon-d-arrow-left" title="向左移动" @click="fileRemoval(index, 'audios', 'left')" />
+                <el-button type="text" size="medium" icon="el-icon-d-arrow-right" title="向左移动" @click="fileRemoval(index, 'audios', 'right')" />
+                <el-button type="text" size="medium" icon="el-icon-download" title="下载" @click="fileDownload(item, $event)" />
+                <el-button type="text" size="medium" icon="el-icon-delete" title="删除" @click="fileDelete(index, 'audios')" />
+              </div>
+            </el-col>
+          </el-row>
+        </el-form-item>
+        <el-form-item label="文档" prop="words">
+          <el-row>
+            <el-col :span="12">
+              <el-button size="mini" @click="fileUpload('word', 'words', '上传文档')">上传文档</el-button>
+            </el-col>
+            <el-col :span="12">
+              <span>文档文件。</span>
+            </el-col>
+          </el-row>
+          <el-row v-for="(item, index) in model.words" :key="index">
+            <el-col :span="18" class="ya-file-name">
+              <i class="el-icon-document" />
+              <span style="margin-left:5px" :title="item.file_name+'.'+item.file_ext">{{ item.file_name }}.{{ item.file_ext }}</span>
+            </el-col>
+            <el-col :span="6">
+              <el-button type="text" size="medium" icon="el-icon-top" title="向上移动" @click="fileRemoval(index, 'words', 'left')" />
+              <el-button type="text" size="medium" icon="el-icon-bottom" title="向下移动" @click="fileRemoval(index, 'words', 'right')" />
+              <el-button type="text" size="medium" icon="el-icon-download" title="下载" @click="fileDownload(item, $event)" />
+              <el-button type="text" size="medium" icon="el-icon-delete" title="删除" @click="fileDelete(index, 'words')" />
+            </el-col>
+          </el-row>
+        </el-form-item>
+        <el-form-item label="其它" prop="others">
+          <el-row>
+            <el-col :span="12">
+              <el-button size="mini" @click="fileUpload('other', 'others', '上传其它')">上传其它</el-button>
+            </el-col>
+            <el-col :span="12">
+              <span>其它文件。</span>
+            </el-col>
+          </el-row>
+          <el-row v-for="(item, index) in model.others" :key="index">
             <el-col :span="18" class="ya-file-name">
               <i v-if="item.file_type==='image'" class="el-icon-picture" />
               <i v-else-if="item.file_type==='audio'" class="el-icon-headset" />
@@ -253,15 +305,12 @@
               <span style="margin-left:5px" :title="item.file_name+'.'+item.file_ext">{{ item.file_name }}.{{ item.file_ext }}</span>
             </el-col>
             <el-col :span="6">
-              <el-button type="text" size="medium" icon="el-icon-top" title="向上移动" @click="fileRemoval(index, 'annexs', 'left')" />
-              <el-button type="text" size="medium" icon="el-icon-bottom" title="向下移动" @click="fileRemoval(index, 'annexs', 'right')" />
+              <el-button type="text" size="medium" icon="el-icon-top" title="向上移动" @click="fileRemoval(index, 'others', 'left')" />
+              <el-button type="text" size="medium" icon="el-icon-bottom" title="向下移动" @click="fileRemoval(index, 'others', 'right')" />
               <el-button type="text" size="medium" icon="el-icon-download" title="下载" @click="fileDownload(item, $event)" />
-              <el-button type="text" size="medium" icon="el-icon-delete" title="删除" @click="fileDelete(index, 'annexs')" />
+              <el-button type="text" size="medium" icon="el-icon-delete" title="删除" @click="fileDelete(index, 'others')" />
             </el-col>
           </el-row>
-        </el-form-item>
-        <el-form-item label="排序" prop="sort">
-          <el-input v-model="model.sort" type="number" placeholder="sort" clearable />
         </el-form-item>
         <el-form-item label="内容" prop="content">
           <rich-editor v-model="model.content" />
@@ -327,8 +376,10 @@ export default {
         author: '',
         url: '',
         images: [],
-        annexs: [],
         videos: [],
+        audios: [],
+        words: [],
+        others: [],
         sort: 250
       },
       rules: {
@@ -408,6 +459,8 @@ export default {
               this.$message.success(res.msg)
             }).catch(() => { })
           }
+        } else {
+          this.$message.error('请完善必填项*')
         }
       })
     },
@@ -643,7 +696,7 @@ export default {
         })
       }
     },
-    // 上传图片、视频、附件
+    // 上传文件
     fileUpload(fileType, fileField = '', fileTitle = '文件管理') {
       this.fileType = fileType
       this.fileField = fileField
@@ -671,8 +724,12 @@ export default {
               this.model.images.push(fileList[i])
             } else if (fileField === 'videos') {
               this.model.videos.push(fileList[i])
-            } else if (fileField === 'annexs') {
-              this.model.annexs.push(fileList[i])
+            } else if (fileField === 'audios') {
+              this.model.audios.push(fileList[i])
+            } else if (fileField === 'words') {
+              this.model.words.push(fileList[i])
+            } else if (fileField === 'others') {
+              this.model.others.push(fileList[i])
             }
           }
         }
@@ -710,8 +767,12 @@ export default {
         this.model.images.splice(index, 1)
       } else if (field === 'videos') {
         this.model.videos.splice(index, 1)
-      } else if (field === 'annexs') {
-        this.model.annexs.splice(index, 1)
+      } else if (field === 'audios') {
+        this.model.audios.splice(index, 1)
+      } else if (field === 'words') {
+        this.model.words.splice(index, 1)
+      } else if (field === 'others') {
+        this.model.others.splice(index, 1)
       }
     }
   }

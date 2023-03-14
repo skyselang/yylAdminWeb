@@ -23,7 +23,7 @@
             </div>
           </el-image>
         </el-col>
-        <el-col :span="6" class="ya-center">
+        <el-col :span="6">
           <el-button size="mini" @click="fileUpload()">上传小程序码</el-button>
           <el-button size="mini" @click="fileDelete()">删除</el-button>
           <p>图片小于 200 KB，jpg、png格式。</p>

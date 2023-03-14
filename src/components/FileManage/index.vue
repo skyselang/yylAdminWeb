@@ -228,7 +228,7 @@
                     <el-checkbox :key="item[idkey]" :label="item[idkey]">{{ item[idkey] }} ({{ item.file_size }}，{{ item.file_ext }})</el-checkbox>
                   </div>
                   <div :style="{width:'100%', height:((height-height*0.1)/3)-((height-height*0.1)/3*0.5)+'px', minHeight:'62px'}">
-                    <el-image v-if="item.file_type==='image'" style="height:100%" fit="contain" :src="item.file_url" :preview-src-list="fileImgPre" title="点击看大图" />
+                    <el-image v-if="item.file_type==='image'" style="height:100%" fit="contain" :src="item.file_url" :preview-src-list="fileImgPre" title="点击看大图" lazy />
                     <video v-else-if="item.file_type==='video'" height="100%" controls>
                       <source :src="item.file_url" type="video/mp4">
                       <object :data="item.file_url" height="100%">
@@ -274,7 +274,7 @@
             <el-table-column prop="file_url" label="文件" min-width="90">
               <template slot-scope="scope">
                 <div style="height:30px">
-                  <el-image v-if="scope.row.file_type==='image'" style="height:30px" fit="contain" :src="scope.row.file_url" :preview-src-list="fileImgPre" title="点击看大图" />
+                  <el-image v-if="scope.row.file_type==='image'" style="height:30px" fit="contain" :src="scope.row.file_url" :preview-src-list="fileImgPre" title="点击看大图" lazy scroll-container=".el-table__body-wrapper" />
                   <video v-else-if="scope.row.file_type==='video'" height="100%" controls>
                     <source :src="scope.row.file_url" type="video/mp4">
                     <object :data="scope.row.file_url" height="100%">

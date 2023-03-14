@@ -98,20 +98,20 @@
         <el-form-item label="标题颜色" prop="title_color">
           <el-color-picker v-model="model.title_color" />
         </el-form-item>
+        <el-form-item label="简介" prop="intro">
+          <el-input v-model="model.intro" type="textarea" placeholder="请输入简介" :autosize="{ minRows: 2, maxRows: 5}" />
+        </el-form-item>
         <el-form-item label="开始时间" prop="start_time">
           <el-date-picker v-model="model.start_time" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" default-time="00:00:00" placeholder="禁用开始时间" />
         </el-form-item>
         <el-form-item label="结束时间" prop="end_time">
           <el-date-picker v-model="model.end_time" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" default-time="23:59:59" placeholder="禁用结束时间" />
         </el-form-item>
-        <el-form-item label="简介" prop="intro">
-          <el-input v-model="model.intro" type="textarea" :autosize="{ minRows: 2, maxRows: 5}" />
+        <el-form-item label="排序" prop="sort">
+          <el-input v-model="model.sort" type="number" />
         </el-form-item>
         <el-form-item label="内容" prop="content">
           <rich-editor v-model="model.content" />
-        </el-form-item>
-        <el-form-item label="排序" prop="sort">
-          <el-input v-model="model.sort" type="number" />
         </el-form-item>
         <el-form-item v-if="model[idkey]" label="添加时间" prop="create_time">
           <el-input v-model="model.create_time" disabled />

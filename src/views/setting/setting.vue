@@ -4,6 +4,44 @@
     <el-card>
       <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
         <el-tabs>
+          <el-tab-pane label="设置管理" name="" class="dialog-body" :style="{ height: height + 'px' }">
+            <el-form-item label="反馈管理" prop="is_feedback">
+              <el-col :span="3">
+                <el-switch v-model="model.is_feedback" :active-value="1" :inactive-value="0" />
+              </el-col>
+              <el-col :span="21">
+                <span>反馈是否开启。关闭后无法提交反馈。</span>
+              </el-col>
+            </el-form-item>
+            <el-form-item label="自定义设置">
+              <el-col :span="3">
+                键名
+              </el-col>
+              <el-col :span="5">
+                键值
+              </el-col>
+              <el-col :span="6">
+                说明
+              </el-col>
+              <el-col :span="2">
+                <el-button type="primary" @click="add()">增加</el-button>
+              </el-col>
+            </el-form-item>
+            <el-form-item v-for="(item, index) in model.diy_config" :key="index" label="">
+              <el-col :span="3">
+                <el-input v-model="item.config_key" clearable placeholder="请输入键名" />
+              </el-col>
+              <el-col :span="5">
+                <el-input v-model="item.config_val" clearable placeholder="请输入键值" />
+              </el-col>
+              <el-col :span="6">
+                <el-input v-model="item.config_desc" clearable placeholder="请输入说明" />
+              </el-col>
+              <el-col :span="2">
+                <el-button type="text" @click="dele(index)">删除</el-button>
+              </el-col>
+            </el-form-item>
+          </el-tab-pane>
           <el-tab-pane label="基本信息" name="" class="dialog-body" :style="{ height: height + 'px' }">
             <el-form-item label="favicon" prop="favicon_id">
               <el-col :span="6" style="height:100px">
@@ -13,7 +51,7 @@
                   </div>
                 </el-image>
               </el-col>
-              <el-col :span="6" class="ya-center">
+              <el-col :span="6">
                 <el-button size="mini" @click="fileUpload('favicon', '上传favicon')">上传favicon</el-button>
                 <el-button size="mini" @click="fileDelete('favicon')">删除</el-button>
                 <p>图片小于 50 KB，jpg、png、ico格式，128 x 128。</p>
@@ -27,7 +65,7 @@
                   </div>
                 </el-image>
               </el-col>
-              <el-col :span="6" class="ya-center">
+              <el-col :span="6">
                 <el-button size="mini" @click="fileUpload('logo', '上传logo')">上传logo</el-button>
                 <el-button size="mini" @click="fileDelete('logo')">删除</el-button>
                 <p>图片小于 200 KB，jpg、png格式。</p>
@@ -73,7 +111,7 @@
                   </div>
                 </el-image>
               </el-col>
-              <el-col :span="6" class="ya-center">
+              <el-col :span="6">
                 <el-button size="mini" @click="fileUpload('offi', '上传公众号码')">上传公众号码</el-button>
                 <el-button size="mini" @click="fileDelete('offi')">删除</el-button>
                 <p>图片小于 200 KB，jpg、png格式。</p>
@@ -87,7 +125,7 @@
                   </div>
                 </el-image>
               </el-col>
-              <el-col :span="6" class="ya-center">
+              <el-col :span="6">
                 <el-button size="mini" @click="fileUpload('mini', '上传小程序码')">上传小程序码</el-button>
                 <el-button size="mini" @click="fileDelete('mini')">删除</el-button>
                 <p>图片小于 200 KB，jpg、png格式。</p>
@@ -126,44 +164,6 @@
             <el-form-item label="QQ" prop="qq">
               <el-col :span="12">
                 <el-input v-model="model.qq" placeholder="qq" clearable />
-              </el-col>
-            </el-form-item>
-          </el-tab-pane>
-          <el-tab-pane label="设置管理" name="" class="dialog-body" :style="{ height: height + 'px' }">
-            <el-form-item label="反馈管理" prop="is_feedback">
-              <el-col :span="3">
-                <el-switch v-model="model.is_feedback" :active-value="1" :inactive-value="0" />
-              </el-col>
-              <el-col :span="21">
-                <span>反馈是否开启。关闭后无法提交反馈。</span>
-              </el-col>
-            </el-form-item>
-            <el-form-item label="自定义设置">
-              <el-col :span="3">
-                键名
-              </el-col>
-              <el-col :span="5">
-                键值
-              </el-col>
-              <el-col :span="6">
-                说明
-              </el-col>
-              <el-col :span="2">
-                <el-button type="primary" @click="add()">增加</el-button>
-              </el-col>
-            </el-form-item>
-            <el-form-item v-for="(item, index) in model.diy_config" :key="index" label="">
-              <el-col :span="3">
-                <el-input v-model="item.config_key" clearable placeholder="请输入键名" />
-              </el-col>
-              <el-col :span="5">
-                <el-input v-model="item.config_val" clearable placeholder="请输入键值" />
-              </el-col>
-              <el-col :span="6">
-                <el-input v-model="item.config_desc" clearable placeholder="请输入说明" />
-              </el-col>
-              <el-col :span="2">
-                <el-button type="text" @click="dele(index)">删除</el-button>
               </el-col>
             </el-form-item>
           </el-tab-pane>

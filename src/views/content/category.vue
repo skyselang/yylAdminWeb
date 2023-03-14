@@ -116,7 +116,7 @@
               </div>
             </el-image>
           </el-col>
-          <el-col :span="12" class="ya-center">
+          <el-col :span="12">
             <el-button size="mini" @click="fileUpload('image', 'cover_id', '上传封面')">上传封面</el-button>
             <el-button size="mini" @click="fileDelete(0, 'cover_id')">删除</el-button>
             <p>图片小于 200 KB，jpg、png格式。</p>
@@ -133,6 +133,9 @@
         </el-form-item>
         <el-form-item label="描述" prop="description">
           <el-input v-model="model.description" type="textarea" placeholder="description" clearable />
+        </el-form-item>
+        <el-form-item label="排序" prop="sort">
+          <el-input v-model="model.sort" placeholder="250" clearable />
         </el-form-item>
         <el-form-item label="图片" prop="images">
           <el-row>
@@ -155,9 +158,6 @@
               </div>
             </el-col>
           </el-row>
-        </el-form-item>
-        <el-form-item label="排序" prop="sort">
-          <el-input v-model="model.sort" placeholder="250" clearable />
         </el-form-item>
         <el-form-item v-if="model[idkey]" label="添加时间" prop="create_time">
           <el-input v-model="model.create_time" disabled />

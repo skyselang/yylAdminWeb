@@ -96,6 +96,15 @@
             <el-option v-for="(item,index) in types" :key="index" :label="item" :value="index" />
           </el-select>
         </el-form-item>
+        <el-form-item label="手机" prop="phone">
+          <el-input v-model="model.phone" placeholder="" clearable />
+        </el-form-item>
+        <el-form-item label="邮箱" prop="email">
+          <el-input v-model="model.email" placeholder="" clearable />
+        </el-form-item>
+        <el-form-item label="备注" prop="remark">
+          <el-input v-model="model.remark" placeholder="" clearable />
+        </el-form-item>
         <el-form-item label="标题" prop="title">
           <el-input v-model="model.title" placeholder="请输入标题" clearable />
         </el-form-item>
@@ -123,15 +132,6 @@
               </div>
             </el-col>
           </el-row>
-        </el-form-item>
-        <el-form-item label="手机" prop="phone">
-          <el-input v-model="model.phone" placeholder="" clearable />
-        </el-form-item>
-        <el-form-item label="邮箱" prop="email">
-          <el-input v-model="model.email" placeholder="" clearable />
-        </el-form-item>
-        <el-form-item label="备注" prop="remark">
-          <el-input v-model="model.remark" placeholder="" clearable />
         </el-form-item>
         <el-form-item v-if="model[idkey]" label="添加时间" prop="create_time">
           <el-input v-model="model.create_time" disabled />

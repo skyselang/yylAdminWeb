@@ -27,7 +27,7 @@
                 </div>
               </el-image>
             </el-col>
-            <el-col :span="16" class="ya-center">
+            <el-col :span="16">
               <el-button size="mini" @click="fileUpload('favicon', '上传favicon')">上传favicon</el-button>
               <el-button size="mini" @click="fileDelete('favicon')">删除</el-button>
               <p>图片小于 50 KB，jpg、png、ico格式，128 x 128。</p>
@@ -41,7 +41,7 @@
                 </div>
               </el-image>
             </el-col>
-            <el-col :span="16" class="ya-center">
+            <el-col :span="16">
               <el-button size="mini" @click="fileUpload('logo', '上传logo')">上传logo</el-button>
               <el-button size="mini" @click="fileDelete('logo')">删除</el-button>
               <p>图片小于 100 KB，jpg、png格式，200 x 200。</p>
@@ -55,7 +55,7 @@
                 </div>
               </el-image>
             </el-col>
-            <el-col :span="16" class="ya-center">
+            <el-col :span="16">
               <el-button size="mini" @click="fileUpload('login_bg', '上传登录背景')">上传背景图</el-button>
               <el-button size="mini" @click="fileDelete('login_bg')">删除</el-button>
               <p>图片小于 200 KB，jpg、png格式，1920 x 1080。</p>

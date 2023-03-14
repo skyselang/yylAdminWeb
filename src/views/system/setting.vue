@@ -1,6 +1,9 @@
 <template>
   <div class="app-container">
     <el-tabs>
+      <el-tab-pane v-if="checkPermission(['admin/system.Setting/systemInfo'])" label="系统设置" lazy>
+        <setting-system />
+      </el-tab-pane>
       <el-tab-pane v-if="checkPermission(['admin/system.Setting/captchaInfo'])" label="验证码设置" lazy>
         <setting-captcha />
       </el-tab-pane>
@@ -18,9 +21,6 @@
       </el-tab-pane>
       <el-tab-pane v-if="checkPermission(['admin/system.Setting/emailInfo'])" label="邮件设置" lazy>
         <setting-email />
-      </el-tab-pane>
-      <el-tab-pane v-if="checkPermission(['admin/system.Setting/systemInfo'])" label="系统设置" lazy>
-        <setting-system />
       </el-tab-pane>
       <el-tab-pane v-if="checkPermission(['admin/system.Setting/serverInfo'])" label="服务器信息" lazy>
         <setting-server />
