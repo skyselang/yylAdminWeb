@@ -58,10 +58,10 @@
       <el-table-column prop="username" label="会员用户名" min-width="100" show-overflow-tooltip />
       <el-table-column prop="api_id" label="接口ID" min-width="70" />
       <el-table-column prop="api_name" label="接口名称" min-width="130" show-overflow-tooltip />
-      <el-table-column prop="api_url" label="接口链接" min-width="185" show-overflow-tooltip />
-      <el-table-column prop="request_ip" label="请求IP" min-width="130" />
+      <el-table-column prop="api_url" label="接口链接" min-width="180" show-overflow-tooltip />
+      <el-table-column prop="request_ip" label="请求IP" min-width="125" />
       <el-table-column prop="request_region" label="请求地区" min-width="150" show-overflow-tooltip />
-      <el-table-column prop="request_isp" label="请求ISP" min-width="110" show-overflow-tooltip />
+      <el-table-column prop="request_isp" label="请求ISP" min-width="105" show-overflow-tooltip />
       <el-table-column prop="response_code" label="返回码" min-width="80" show-overflow-tooltip />
       <el-table-column prop="response_msg" label="返回描述" min-width="120" show-overflow-tooltip />
       <el-table-column prop="create_time" label="请求时间" min-width="155" sortable="custom" />
@@ -120,7 +120,8 @@
           <el-input v-model="model.user_agent" type="textarea" />
         </el-form-item>
         <el-form-item label="请求参数" prop="request_param">
-          <pre>{{ model.request_param }}</pre>
+          <el-button type="text" icon="el-icon-copy-document" title="复制参数" @click="requestParamCopy($event)" />
+          <pre ref="requestParamRef">{{ model.request_param }}</pre>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -134,6 +135,7 @@
 <script>
 import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination'
+import clip from '@/utils/clipboard'
 import { arrayColumn } from '@/utils/index'
 import { list, info, dele, clear } from '@/api/member/log'
 
@@ -307,6 +309,15 @@ export default {
         })
       }).catch(() => {
       })
+    },
+    // 复制
+    copy(text, event) {
+      clip(text, event)
+    },
+    // 参数复制
+    requestParamCopy(event) {
+      const text = this.$refs.requestParamRef
+      this.copy(text, event)
     }
   }
 }

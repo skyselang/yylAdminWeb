@@ -10,7 +10,7 @@
                 <el-switch v-model="model.is_content" :active-value="1" :inactive-value="0" />
               </el-col>
               <el-col :span="21">
-                <span>内容是否开启。关闭后无法访问。</span>
+                <span>内容是否开启，关闭后前台无法访问内容。</span>
               </el-col>
             </el-form-item>
             <el-form-item label="自定义设置">

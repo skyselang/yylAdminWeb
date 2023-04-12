@@ -10,7 +10,7 @@
                 <el-switch v-model="model.is_feedback" :active-value="1" :inactive-value="0" />
               </el-col>
               <el-col :span="21">
-                <span>反馈是否开启。关闭后无法提交反馈。</span>
+                <span>反馈是否开启，关闭后前台无法提交反馈。</span>
               </el-col>
             </el-form-item>
             <el-form-item label="自定义设置">
