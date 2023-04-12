@@ -4,7 +4,7 @@
 
 ## 文档
 
-- [开发文档](http://skyselang.gitee.io/yyladmindoc/) 
+- [开发文档](http://skyselang.gitee.io/yyladmindoc/)
 
 ## 简介
 
@@ -66,6 +66,8 @@ composer install
 ##### 导入数据库
 ```bash
 数据库文件：private/yyladmin.sql
+数据库字符集：utf8mb4
+数据库排序规则：utf8mb4_general_ci
 ```
 ##### 修改配置
 ```bash
