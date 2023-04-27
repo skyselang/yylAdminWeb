@@ -117,7 +117,7 @@
               <el-button size="mini" @click="fileUpload('image', 'images', '上传图片')">上传图片</el-button>
             </el-col>
             <el-col :span="12">
-              <div>图片小于 200 KB，jpg、png格式。</div>
+              <span><el-button size="mini" @click="fileDelete('all', 'images')">全部删除</el-button>图片小于 200 KB，jpg、png格式。</span>
             </el-col>
           </el-row>
           <el-row>
@@ -441,7 +441,11 @@ export default {
     },
     fileDelete(index, field = '') {
       if (field === 'images') {
-        this.model.images.splice(index, 1)
+        if (index === 'all') {
+          this.model.images = []
+        } else {
+          this.model.images.splice(index, 1)
+        }
       }
     }
   }

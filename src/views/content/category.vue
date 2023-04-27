@@ -143,7 +143,7 @@
               <el-button size="mini" @click="fileUpload('image', 'images', '上传图片')">上传图片</el-button>
             </el-col>
             <el-col :span="12">
-              <span>图片小于 250 KB，jpg、png格式。</span>
+              <span><el-button size="mini" @click="fileDelete('all', 'images')">全部删除</el-button>图片小于 250 KB，jpg、png格式。</span>
             </el-col>
           </el-row>
           <el-row>
@@ -596,7 +596,11 @@ export default {
         this.model.cover_id = 0
         this.model.cover_url = ''
       } else if (field === 'images') {
-        this.model.images.splice(index, 1)
+        if (index === 'all') {
+          this.model.images = []
+        } else {
+          this.model.images.splice(index, 1)
+        }
       }
     },
     // 分类内容显示

@@ -102,6 +102,9 @@
         <el-form-item v-if="model[idkey]" label="修改时间" prop="update_time">
           <el-input v-model="model.update_time" disabled />
         </el-form-item>
+        <el-form-item v-if="model.delete_time" label="删除时间" prop="delete_time">
+          <el-input v-model="model.delete_time" disabled />
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button :loading="loading" @click="cancel">取消</el-button>

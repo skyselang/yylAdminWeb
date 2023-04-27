@@ -65,6 +65,17 @@
     <el-table ref="table" v-loading="loading" :data="data" :height="height" @sort-change="sort" @selection-change="select">
       <el-table-column type="selection" width="42" title="全选/反选" />
       <el-table-column :prop="idkey" label="ID" width="80" sortable="custom" />
+      <el-table-column prop="image_id" label="图片" min-width="60">
+        <template slot-scope="scope">
+          <div style="height:30px">
+            <el-image v-if="scope.row.image_url" style="height:30px" fit="contain" :src="scope.row.image_url" :preview-src-list="[scope.row.image_url]" title="点击看大图" lazy scroll-container=".el-table__body-wrapper">
+              <div slot="error" class="image-slot">
+                <i class="el-icon-picture-outline" />
+              </div>
+            </el-image>
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column prop="title" label="标题" min-width="260" show-overflow-tooltip>
         <template slot-scope="scope">
           <span :style="{'color':scope.row.title_color}">{{ scope.row.title }}</span>
@@ -92,6 +103,20 @@
     <!-- 添加修改 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false">
       <el-form ref="ref" :model="model" :rules="rules" label-width="100px" class="dialog-body" :style="{height:height+'px'}">
+        <el-form-item label="图片" prop="image_url">
+          <el-col :span="12" style="height:100px">
+            <el-image v-if="model.image_url" style="height:100px" fit="contain" :src="model.image_url" :preview-src-list="[model.image_url]" title="点击看大图">
+              <div slot="error" class="image-slot">
+                <i class="el-icon-picture-outline" />
+              </div>
+            </el-image>
+          </el-col>
+          <el-col :span="12">
+            <el-button size="mini" @click="fileUpload()">上传图片</el-button>
+            <el-button size="mini" @click="fileDelete()">删除</el-button>
+            <p>图片小于 200 KB，jpg、png格式。</p>
+          </el-col>
+        </el-form-item>
         <el-form-item label="标题" prop="title">
           <el-input v-model="model.title" placeholder="请输入标题" clearable />
         </el-form-item>
@@ -119,8 +144,8 @@
         <el-form-item v-if="model[idkey]" label="修改时间" prop="update_time">
           <el-input v-model="model.update_time" disabled />
         </el-form-item>
-        <el-form-item v-if="model.update_time" label="删除时间" prop="update_time">
-          <el-input v-model="model.update_time" disabled />
+        <el-form-item v-if="model.delete_time" label="删除时间" prop="delete_time">
+          <el-input v-model="model.delete_time" disabled />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -128,19 +153,24 @@
         <el-button :loading="loading" type="primary" @click="submit">提交</el-button>
       </div>
     </el-dialog>
+    <!-- 文件管理 -->
+    <el-dialog title="上传图片" :visible.sync="fileDialog" width="80%" top="1vh" :close-on-click-modal="false" :close-on-press-escape="false">
+      <file-manage file-type="image" @fileCancel="fileCancel" @fileSubmit="fileSubmit" />
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination'
+import FileManage from '@/components/FileManage'
 import RichEditor from '@/components/RichEditor'
 import { arrayColumn } from '@/utils/index'
 import { list, info, add, edit, dele, disable, datetime } from '@/api/system/notice'
 
 export default {
   name: 'SystemNotice',
-  components: { Pagination, RichEditor },
+  components: { Pagination, FileManage, RichEditor },
   data() {
     return {
       name: '公告',
@@ -155,6 +185,8 @@ export default {
       dialogTitle: '',
       model: {
         notice_id: '',
+        image_id: 0,
+        image_url: '',
         type: 1,
         title: '',
         title_color: '#606266',
@@ -176,7 +208,8 @@ export default {
       selectType: '',
       is_disable: 0,
       start_time: '',
-      end_time: ''
+      end_time: '',
+      fileDialog: false
     }
   },
   created() {
@@ -379,6 +412,26 @@ export default {
           this.loading = false
         })
       }
+    },
+    // 上传图片
+    fileUpload() {
+      this.fileDialog = true
+    },
+    fileCancel() {
+      this.fileDialog = false
+    },
+    fileSubmit(fileList) {
+      this.fileDialog = false
+      const fileLength = fileList.length
+      if (fileLength) {
+        const i = fileLength - 1
+        this.model.image_id = fileList[i]['file_id']
+        this.model.image_url = fileList[i]['file_url']
+      }
+    },
+    fileDelete() {
+      this.model.image_id = 0
+      this.model.image_url = ''
     }
   }
 }

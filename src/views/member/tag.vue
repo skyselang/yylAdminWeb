@@ -94,13 +94,13 @@
         <el-form-item label="排序" prop="sort">
           <el-input v-model="model.sort" type="number" />
         </el-form-item>
-        <el-form-item v-show="model[idkey]" label="添加时间" prop="create_time">
+        <el-form-item v-if="model[idkey]" label="添加时间" prop="create_time">
           <el-input v-model="model.create_time" disabled />
         </el-form-item>
-        <el-form-item v-show="model[idkey]" label="修改时间" prop="update_time">
+        <el-form-item v-if="model[idkey]" label="修改时间" prop="update_time">
           <el-input v-model="model.update_time" disabled />
         </el-form-item>
-        <el-form-item v-show="model.delete_time" label="删除时间" prop="delete_time">
+        <el-form-item v-if="model.delete_time" label="删除时间" prop="delete_time">
           <el-input v-model="model.delete_time" disabled />
         </el-form-item>
       </el-form>

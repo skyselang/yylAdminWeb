@@ -85,7 +85,7 @@
       <el-table-column prop="menu_id" label="菜单ID" min-width="70" />
       <el-table-column prop="menu_name" label="菜单名称" min-width="130" show-overflow-tooltip />
       <el-table-column prop="menu_url" label="菜单链接" min-width="180" show-overflow-tooltip />
-      <el-table-column prop="request_ip" label="请求IP" min-width="125" show-overflow-tooltip />
+      <el-table-column prop="request_ip" label="请求IP" min-width="130" show-overflow-tooltip />
       <el-table-column prop="request_region" label="请求地区" min-width="150" show-overflow-tooltip />
       <el-table-column prop="request_isp" label="请求ISP" min-width="105" show-overflow-tooltip />
       <el-table-column prop="response_code" label="返回码" min-width="80" show-overflow-tooltip />

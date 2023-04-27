@@ -19,11 +19,24 @@
           <el-select v-model="query.search_exp" class="filter-item ya-search-exp">
             <el-option v-for="exp in exps" :key="exp.exp" :value="exp.exp" :label="exp.name" />
           </el-select>
-          <el-cascader v-if="query.search_field==='category_ids'" v-model="query.search_value" class="filter-item ya-search-value" :options="categoryData" :props="categoryProps" clearable filterable collapse-tags />
-          <el-select v-else-if="query.search_field==='tag_ids'" v-model="query.search_value" class="filter-item ya-search-value" clearable filterable multiple collapse-tags>
+          <el-cascader
+            v-if="query.search_field === 'category_ids'"
+            v-model="query.search_value"
+            class="filter-item ya-search-value"
+            :options="categoryData"
+            :props="categoryProps"
+            clearable
+            filterable
+            collapse-tags
+          />
+          <el-select v-else-if="query.search_field === 'tag_ids'" v-model="query.search_value" class="filter-item ya-search-value" clearable filterable multiple collapse-tags>
             <el-option v-for="item in tagData" :key="item.tag_id" :label="item.tag_name" :value="item.tag_id" />
           </el-select>
-          <el-select v-else-if="query.search_field==='is_top'||query.search_field==='is_hot'||query.search_field==='is_rec'||query.search_field==='is_disable'" v-model="query.search_value" class="filter-item ya-search-value">
+          <el-select
+            v-else-if="query.search_field === 'is_top' || query.search_field === 'is_hot' || query.search_field === 'is_rec' || query.search_field === 'is_disable'"
+            v-model="query.search_value"
+            class="filter-item ya-search-value"
+          >
             <el-option :value="1" label="是" />
             <el-option :value="0" label="否" />
           </el-select>
@@ -52,30 +65,30 @@
       </el-row>
       <el-dialog :title="selectTitle" :visible.sync="selectDialog" top="20vh" :close-on-click-modal="false" :close-on-press-escape="false">
         <el-form ref="selectRef" label-width="120px">
-          <el-form-item :label="name+'ID'" prop="">
-            <el-input v-model="selectIds" type="textarea" :autosize="{minRows: 5, maxRows: 12}" disabled />
+          <el-form-item :label="name + 'ID'" prop="">
+            <el-input v-model="selectIds" type="textarea" :autosize="{ minRows: 5, maxRows: 12 }" disabled />
           </el-form-item>
-          <el-form-item v-if="selectType==='editcate'" label="分类" prop="">
+          <el-form-item v-if="selectType === 'editcate'" label="分类" prop="">
             <el-cascader v-model="category_ids" :options="categoryData" :props="categoryProps" class="ya-width-100p" clearable filterable />
           </el-form-item>
-          <el-form-item v-else-if="selectType==='edittag'" label="标签" prop="">
+          <el-form-item v-else-if="selectType === 'edittag'" label="标签" prop="">
             <el-select v-model="tag_ids" multiple clearable filterable class="ya-width-100p">
               <el-option v-for="item in tagData" :key="item.tag_id" :label="item.tag_name" :value="item.tag_id" />
             </el-select>
           </el-form-item>
-          <el-form-item v-else-if="selectType==='istop'" label="是否置顶" prop="">
+          <el-form-item v-else-if="selectType === 'istop'" label="是否置顶" prop="">
             <el-switch v-model="is_top" :active-value="1" :inactive-value="0" />
           </el-form-item>
-          <el-form-item v-else-if="selectType==='ishot'" label="是否热门" prop="">
+          <el-form-item v-else-if="selectType === 'ishot'" label="是否热门" prop="">
             <el-switch v-model="is_hot" :active-value="1" :inactive-value="0" />
           </el-form-item>
-          <el-form-item v-else-if="selectType==='isrec'" label="是否推荐" prop="">
+          <el-form-item v-else-if="selectType === 'isrec'" label="是否推荐" prop="">
             <el-switch v-model="is_rec" :active-value="1" :inactive-value="0" />
           </el-form-item>
-          <el-form-item v-else-if="selectType==='disable'" label="是否禁用" prop="">
+          <el-form-item v-else-if="selectType === 'disable'" label="是否禁用" prop="">
             <el-switch v-model="is_disable" :active-value="1" :inactive-value="0" />
           </el-form-item>
-          <el-form-item v-else-if="selectType==='dele'" label="" prop="">
+          <el-form-item v-else-if="selectType === 'dele'" label="" prop="">
             <span style="color:red">确定要删除选中的{{ name }}吗？</span>
           </el-form-item>
         </el-form>
@@ -92,7 +105,16 @@
       <el-table-column prop="cover_url" label="封面" min-width="60">
         <template slot-scope="scope">
           <div style="height:30px">
-            <el-image v-if="scope.row.cover_url" style="height:30px" fit="contain" :src="scope.row.cover_url" :preview-src-list="[scope.row.cover_url]" title="点击看大图" lazy scroll-container=".el-table__body-wrapper">
+            <el-image
+              v-if="scope.row.cover_url"
+              style="height:30px"
+              fit="contain"
+              :src="scope.row.cover_url"
+              :preview-src-list="[scope.row.cover_url]"
+              title="点击看大图"
+              lazy
+              scroll-container=".el-table__body-wrapper"
+            >
               <div slot="error" class="image-slot">
                 <i class="el-icon-picture-outline" />
               </div>
@@ -131,15 +153,15 @@
       <el-table-column label="操作" width="90">
         <template slot-scope="scope">
           <el-button size="mini" type="text" title="信息/修改" @click="edit(scope.row)">修改</el-button>
-          <el-button size="mini" type="text" @click="selectOpen('dele',scope.row)">删除</el-button>
+          <el-button size="mini" type="text" @click="selectOpen('dele', scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
     <!-- 分页 -->
-    <pagination v-show="count>0" :total="count" :page.sync="query.page" :limit.sync="query.limit" @pagination="list" />
+    <pagination v-show="count > 0" :total="count" :page.sync="query.page" :limit.sync="query.limit" @pagination="list" />
     <!-- 添加修改 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false">
-      <el-form ref="ref" :rules="rules" :model="model" label-width="100px" class="dialog-body" :style="{height:height+'px'}">
+      <el-form ref="ref" :rules="rules" :model="model" label-width="100px" class="dialog-body" :style="{ height: height + 'px' }">
         <el-form-item label="封面" prop="cover_id">
           <el-col :span="12" style="height:100px">
             <el-image v-if="model.cover_url" style="height:100px" fit="contain" :src="model.cover_url" :preview-src-list="[model.cover_url]" title="点击看大图">
@@ -192,14 +214,14 @@
               <el-button size="mini" @click="fileUpload('image', 'images', '上传图片')">上传图片</el-button>
             </el-col>
             <el-col :span="12">
-              <span>图片文件。</span>
+              <span><el-button size="mini" @click="fileDelete('all', 'images')">全部删除</el-button>图片文件</span>
             </el-col>
           </el-row>
           <el-row>
             <el-col v-for="(item, index) in model.images" :key="index" :span="6" class="ya-file">
               <el-image style="height:100px" fit="contain" :src="item.file_url" :preview-src-list="[item.file_url]" title="点击看大图" />
               <div>
-                <span class="ya-file-name" :title="item.file_name+'.'+item.file_ext">{{ item.file_name }}.{{ item.file_ext }}</span>
+                <span class="ya-file-name" :title="item.file_name + '.' + item.file_ext">{{ item.file_name }}.{{ item.file_ext }}</span>
                 <el-button type="text" size="medium" icon="el-icon-d-arrow-left" title="向左移动" @click="fileRemoval(index, 'images', 'left')" />
                 <el-button type="text" size="medium" icon="el-icon-d-arrow-right" title="向左移动" @click="fileRemoval(index, 'images', 'right')" />
                 <el-button type="text" size="medium" icon="el-icon-download" title="下载" @click="fileDownload(item, $event)" />
@@ -214,12 +236,12 @@
               <el-button size="mini" @click="fileUpload('video', 'videos', '上传视频')">上传视频</el-button>
             </el-col>
             <el-col :span="12">
-              <span>视频文件。</span>
+              <span><el-button size="mini" @click="fileDelete('all', 'videos')">全部删除</el-button>视频文件</span>
             </el-col>
           </el-row>
           <el-row>
             <el-col v-for="(item, index) in model.videos" :key="index" :span="6" class="ya-file">
-              <div :style="{width:'100%',height:((height-height*0.1)/3)-((height-height*0.1)/3*0.5)+'px'}">
+              <div :style="{ width: '100%', height: ((height - height * 0.1) / 3) - ((height - height * 0.1) / 3 * 0.5) + 'px' }">
                 <video height="100%" controls>
                   <source :src="item.file_url" type="video/mp4">
                   <object :data="item.file_url" height="100%">
@@ -228,7 +250,7 @@
                 </video>
               </div>
               <div>
-                <span class="ya-file-name" :title="item.file_name+'.'+item.file_ext">{{ item.file_name }}.{{ item.file_ext }}</span>
+                <span class="ya-file-name" :title="item.file_name + '.' + item.file_ext">{{ item.file_name }}.{{ item.file_ext }}</span>
                 <el-button type="text" size="medium" icon="el-icon-d-arrow-left" title="向左移动" @click="fileRemoval(index, 'videos', 'left')" />
                 <el-button type="text" size="medium" icon="el-icon-d-arrow-right" title="向左移动" @click="fileRemoval(index, 'videos', 'right')" />
                 <el-button type="text" size="medium" icon="el-icon-download" title="下载" @click="fileDownload(item, $event)" />
@@ -243,24 +265,23 @@
               <el-button size="mini" @click="fileUpload('audio', 'audios', '上传音频')">上传音频</el-button>
             </el-col>
             <el-col :span="12">
-              <span>音频文件。</span>
+              <span><el-button size="mini" @click="fileDelete('all', 'audios')">全部删除</el-button>音频文件</span>
             </el-col>
           </el-row>
-          <el-row>
-            <el-col v-for="(item, index) in model.audios" :key="index" :span="6" class="ya-file">
-              <div :style="{width:'100%',height:((height-height*0.1)/3)-((height-height*0.1)/3*0.5)+'px'}">
-                <audio height="100%" controls>
-                  <source :src="item.file_url" type="audio/mp3">
-                  <embed :src="item.file_url" height="100%">
-                </audio>
-              </div>
-              <div>
-                <span class="ya-file-name" :title="item.file_name+'.'+item.file_ext">{{ item.file_name }}.{{ item.file_ext }}</span>
-                <el-button type="text" size="medium" icon="el-icon-d-arrow-left" title="向左移动" @click="fileRemoval(index, 'audios', 'left')" />
-                <el-button type="text" size="medium" icon="el-icon-d-arrow-right" title="向左移动" @click="fileRemoval(index, 'audios', 'right')" />
-                <el-button type="text" size="medium" icon="el-icon-download" title="下载" @click="fileDownload(item, $event)" />
-                <el-button type="text" size="medium" icon="el-icon-delete" title="删除" @click="fileDelete(index, 'audios')" />
-              </div>
+          <el-row v-for="(item, index) in model.audios" :key="index">
+            <el-col :span="19" class="ya-file-name-audio">
+              <i class="el-icon-headset" />
+              <audio style="vertical-align: middle;" height="100%" controls>
+                <source :src="item.file_url" type="audio/mp3">
+                <embed :src="item.file_url" height="100%">
+              </audio>
+              <span style="margin-left:5px" :title="item.file_name + '.' + item.file_ext">{{ item.file_name }}.{{ item.file_ext }}</span>
+            </el-col>
+            <el-col :span="5" class="ya-file-name-audio">
+              <el-button type="text" size="medium" icon="el-icon-top" title="向上移动" @click="fileRemoval(index, 'audios', 'left')" />
+              <el-button type="text" size="medium" icon="el-icon-bottom" title="向下移动" @click="fileRemoval(index, 'audios', 'right')" />
+              <el-button type="text" size="medium" icon="el-icon-download" title="下载" @click="fileDownload(item, $event)" />
+              <el-button type="text" size="medium" icon="el-icon-delete" title="删除" @click="fileDelete(index, 'audios')" />
             </el-col>
           </el-row>
         </el-form-item>
@@ -270,15 +291,15 @@
               <el-button size="mini" @click="fileUpload('word', 'words', '上传文档')">上传文档</el-button>
             </el-col>
             <el-col :span="12">
-              <span>文档文件。</span>
+              <span><el-button size="mini" @click="fileDelete('all', 'words')">全部删除</el-button>文档文件</span>
             </el-col>
           </el-row>
           <el-row v-for="(item, index) in model.words" :key="index">
-            <el-col :span="18" class="ya-file-name">
+            <el-col :span="19" class="ya-file-name">
               <i class="el-icon-document" />
-              <span style="margin-left:5px" :title="item.file_name+'.'+item.file_ext">{{ item.file_name }}.{{ item.file_ext }}</span>
+              <span style="margin-left:5px" :title="item.file_name + '.' + item.file_ext">{{ item.file_name }}.{{ item.file_ext }}</span>
             </el-col>
-            <el-col :span="6">
+            <el-col :span="5">
               <el-button type="text" size="medium" icon="el-icon-top" title="向上移动" @click="fileRemoval(index, 'words', 'left')" />
               <el-button type="text" size="medium" icon="el-icon-bottom" title="向下移动" @click="fileRemoval(index, 'words', 'right')" />
               <el-button type="text" size="medium" icon="el-icon-download" title="下载" @click="fileDownload(item, $event)" />
@@ -292,19 +313,19 @@
               <el-button size="mini" @click="fileUpload('other', 'others', '上传其它')">上传其它</el-button>
             </el-col>
             <el-col :span="12">
-              <span>其它文件。</span>
+              <span><el-button size="mini" @click="fileDelete('all', 'others')">全部删除</el-button>其它文件</span>
             </el-col>
           </el-row>
           <el-row v-for="(item, index) in model.others" :key="index">
-            <el-col :span="18" class="ya-file-name">
-              <i v-if="item.file_type==='image'" class="el-icon-picture" />
-              <i v-else-if="item.file_type==='audio'" class="el-icon-headset" />
-              <i v-else-if="item.file_type==='video'" class="el-icon-video-play" />
-              <i v-else-if="item.file_type==='word'" class="el-icon-document" />
+            <el-col :span="19" class="ya-file-name">
+              <i v-if="item.file_type === 'image'" class="el-icon-picture" />
+              <i v-else-if="item.file_type === 'audio'" class="el-icon-headset" />
+              <i v-else-if="item.file_type === 'video'" class="el-icon-video-play" />
+              <i v-else-if="item.file_type === 'word'" class="el-icon-document" />
               <i v-else class="el-icon-folder" />
-              <span style="margin-left:5px" :title="item.file_name+'.'+item.file_ext">{{ item.file_name }}.{{ item.file_ext }}</span>
+              <span style="margin-left:5px" :title="item.file_name + '.' + item.file_ext">{{ item.file_name }}.{{ item.file_ext }}</span>
             </el-col>
-            <el-col :span="6">
+            <el-col :span="5">
               <el-button type="text" size="medium" icon="el-icon-top" title="向上移动" @click="fileRemoval(index, 'others', 'left')" />
               <el-button type="text" size="medium" icon="el-icon-bottom" title="向下移动" @click="fileRemoval(index, 'others', 'right')" />
               <el-button type="text" size="medium" icon="el-icon-download" title="下载" @click="fileDownload(item, $event)" />
@@ -393,7 +414,7 @@ export default {
       selectTitle: '选中操作',
       selectDialog: false,
       selectType: '',
-      category_ids: 0,
+      category_ids: [],
       tag_ids: [],
       is_top: 0,
       is_hot: 0,
@@ -764,15 +785,35 @@ export default {
         this.model.cover_id = 0
         this.model.cover_url = ''
       } else if (field === 'images') {
-        this.model.images.splice(index, 1)
+        if (index === 'all') {
+          this.model.images = []
+        } else {
+          this.model.images.splice(index, 1)
+        }
       } else if (field === 'videos') {
-        this.model.videos.splice(index, 1)
+        if (index === 'all') {
+          this.model.videos = []
+        } else {
+          this.model.videos.splice(index, 1)
+        }
       } else if (field === 'audios') {
-        this.model.audios.splice(index, 1)
+        if (index === 'all') {
+          this.model.audios = []
+        } else {
+          this.model.audios.splice(index, 1)
+        }
       } else if (field === 'words') {
-        this.model.words.splice(index, 1)
+        if (index === 'all') {
+          this.model.words = []
+        } else {
+          this.model.words.splice(index, 1)
+        }
       } else if (field === 'others') {
-        this.model.others.splice(index, 1)
+        if (index === 'all') {
+          this.model.others = []
+        } else {
+          this.model.others.splice(index, 1)
+        }
       }
     }
   }
@@ -788,6 +829,16 @@ export default {
   display: block;
   height: 24px;
   line-height: 24px;
+  padding: 0 4px;
+  font-size: 12px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.ya-file-name-audio {
+  display: block;
+  height: 55px;
+  line-height: 55px;
   padding: 0 4px;
   font-size: 12px;
   overflow: hidden;

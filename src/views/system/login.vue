@@ -1,14 +1,14 @@
 <template>
   <div class="login-container" :style="{backgroundImage:'url('+login_bg_url+')' }">
     <el-form ref="ref" class="login-form" :model="model" :rules="rules" label-position="left">
-      <div class="login-title">
-        <h3 class="login-title-name">{{ system_name }}</h3>
-      </div>
       <div class="login-logo">
-        <el-image v-if="logo_url" style="height:130px" fit="contain" :src="logo_url">
+        <el-image v-if="logo_url" style="height:108px" fit="contain" :src="logo_url">
           <div slot="error" class="image-slot" />
         </el-image>
-        <div v-else style="height:134px" />
+        <div v-else style="height:108px" />
+      </div>
+      <div class="login-title">
+        <h3 class="login-title-name">{{ system_name }}</h3>
       </div>
       <el-form-item prop="username">
         <el-input v-model="model.username" type="text" placeholder="账号/手机/邮箱" prefix-icon="el-icon-user" autocomplete="on" clearable />
@@ -42,7 +42,7 @@ export default {
   data() {
     return {
       name: '登录',
-      system_name: '',
+      system_name: 'yylAdmin',
       loading: false,
       redirect: undefined,
       otherQuery: {},

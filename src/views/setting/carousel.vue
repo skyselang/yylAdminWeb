@@ -191,6 +191,9 @@
             <el-col :span="12">
               <el-button size="mini" @click="fileUpload('image', 'file_list', '上传文件列表')">上传文件</el-button>
             </el-col>
+            <el-col :span="12">
+              <span><el-button size="mini" @click="fileDelete('all', 'file_list')">全部删除</el-button></span>
+            </el-col>
           </el-row>
           <el-row>
             <el-col v-for="(item, index) in model.file_list" :key="index" :span="6" class="ya-file">
@@ -234,6 +237,9 @@
         </el-form-item>
         <el-form-item v-if="model[idkey]" label="修改时间" prop="update_time">
           <el-input v-model="model.update_time" disabled />
+        </el-form-item>
+        <el-form-item v-if="model.delete_time" label="删除时间" prop="delete_time">
+          <el-input v-model="model.delete_time" disabled />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -577,7 +583,11 @@ export default {
         this.model.file_name = ''
         this.model.file_ext = ''
       } else if (field === 'file_list') {
-        this.model.file_list.splice(index, 1)
+        if (index === 'all') {
+          this.model.file_list = []
+        } else {
+          this.model.file_list.splice(index, 1)
+        }
       }
     },
     // 复制

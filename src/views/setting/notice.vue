@@ -75,6 +75,17 @@
     <el-table ref="table" v-loading="loading" :data="data" :height="height" @sort-change="sort" @selection-change="select">
       <el-table-column type="selection" width="42" title="全选/反选" />
       <el-table-column :prop="idkey" label="ID" width="80" sortable="custom" />
+      <el-table-column prop="image_id" label="图片" min-width="60">
+        <template slot-scope="scope">
+          <div style="height:30px">
+            <el-image v-if="scope.row.image_url" style="height:30px" fit="contain" :src="scope.row.image_url" :preview-src-list="[scope.row.image_url]" title="点击看大图" lazy scroll-container=".el-table__body-wrapper">
+              <div slot="error" class="image-slot">
+                <i class="el-icon-picture-outline" />
+              </div>
+            </el-image>
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column prop="type_name" label="类型" min-width="75" />
       <el-table-column prop="title" label="标题" min-width="260" show-overflow-tooltip>
         <template slot-scope="scope">
@@ -103,6 +114,20 @@
     <!-- 添加修改 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false">
       <el-form ref="ref" :model="model" :rules="rules" label-width="100px" class="dialog-body" :style="{height:height+'px'}">
+        <el-form-item label="图片" prop="image_url">
+          <el-col :span="12" style="height:100px">
+            <el-image v-if="model.image_url" style="height:100px" fit="contain" :src="model.image_url" :preview-src-list="[model.image_url]" title="点击看大图">
+              <div slot="error" class="image-slot">
+                <i class="el-icon-picture-outline" />
+              </div>
+            </el-image>
+          </el-col>
+          <el-col :span="12">
+            <el-button size="mini" @click="fileUpload()">上传图片</el-button>
+            <el-button size="mini" @click="fileDelete()">删除</el-button>
+            <p>图片小于 200 KB，jpg、png格式。</p>
+          </el-col>
+        </el-form-item>
         <el-form-item label="类型" prop="type">
           <el-select v-model="model.type">
             <el-option v-for="(item, index) in types" :key="index" :value="index" :label="item" />
@@ -144,19 +169,24 @@
         <el-button :loading="loading" type="primary" @click="submit">提交</el-button>
       </div>
     </el-dialog>
+    <!-- 文件管理 -->
+    <el-dialog title="上传图片" :visible.sync="fileDialog" width="80%" top="1vh" :close-on-click-modal="false" :close-on-press-escape="false">
+      <file-manage file-type="image" @fileCancel="fileCancel" @fileSubmit="fileSubmit" />
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination'
+import FileManage from '@/components/FileManage'
 import RichEditor from '@/components/RichEditor'
 import { arrayColumn } from '@/utils/index'
 import { list, info, add, edit, dele, edittype, datetime, disable } from '@/api/setting/notice'
 
 export default {
   name: 'SettingNotice',
-  components: { Pagination, RichEditor },
+  components: { Pagination, FileManage, RichEditor },
   data() {
     return {
       name: '通告',
@@ -171,6 +201,8 @@ export default {
       dialogTitle: '',
       model: {
         notice_id: '',
+        image_id: 0,
+        image_url: '',
         type: 0,
         title: '',
         title_color: '#606266',
@@ -194,7 +226,8 @@ export default {
       type: 0,
       start_time: '',
       end_time: '',
-      is_disable: 0
+      is_disable: 0,
+      fileDialog: false
     }
   },
   created() {
@@ -421,6 +454,26 @@ export default {
           this.loading = false
         })
       }
+    },
+    // 上传图片
+    fileUpload() {
+      this.fileDialog = true
+    },
+    fileCancel() {
+      this.fileDialog = false
+    },
+    fileSubmit(fileList) {
+      this.fileDialog = false
+      const fileLength = fileList.length
+      if (fileLength) {
+        const i = fileLength - 1
+        this.model.image_id = fileList[i]['file_id']
+        this.model.image_url = fileList[i]['file_url']
+      }
+    },
+    fileDelete() {
+      this.model.image_id = 0
+      this.model.image_url = ''
     }
   }
 }

@@ -16,12 +16,12 @@
               <el-input v-model="model.page_title" type="text" clearable />
             </el-col>
             <el-col :span="16">
-              浏览器页面标题后缀，128字以内。
+              浏览器页面标题后缀，63字以内。
             </el-col>
           </el-form-item>
           <el-form-item label="favicon" prop="favicon_id">
             <el-col :span="8" style="height:100px">
-              <el-image v-if="model.favicon_url" style="height:100px" fit="contain" :src="model.favicon_url" :preview-src-list="[model.favicon_url]" title="点击看大图">
+              <el-image v-if="model.favicon_url" style="height:50px" fit="contain" :src="model.favicon_url" :preview-src-list="[model.favicon_url]" title="点击看大图">
                 <div slot="error" class="image-slot">
                   <i class="el-icon-picture-outline" />
                 </div>
