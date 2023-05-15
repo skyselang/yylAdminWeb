@@ -4,13 +4,13 @@
       <el-form ref="ref" :model="model" :rules="rules" label-width="150px">
         <el-tabs>
           <el-tab-pane label="文件设置" class="dialog-body" :style="{height:height+'px'}" lazy>
-            <el-form-item label="后台上传" prop="is_upload_admin">
-              <el-switch v-model="model.is_upload_admin" :active-value="1" :inactive-value="0" />
-              <span> 后台文件上传是否开启</span>
-            </el-form-item>
             <el-form-item label="前台上传" prop="is_upload_api">
               <el-switch v-model="model.is_upload_api" :active-value="1" :inactive-value="0" />
-              <span> 前台文件上传是否开启</span>
+              <span> 关闭后，前台无法上传文件</span>
+            </el-form-item>
+            <el-form-item label="后台上传" prop="is_upload_admin">
+              <el-switch v-model="model.is_upload_admin" :active-value="1" :inactive-value="0" />
+              <span> 关闭后，后台无法上传文件</span>
             </el-form-item>
             <el-form-item label="存储方式" prop="storage">
               <el-select v-model="model.storage" placeholder="请选择">
@@ -592,16 +592,16 @@ export default {
     // 信息
     info() {
       info().then((res) => {
-        this.model = res.data.setting
-        this.storages = res.data.storage
+        this.model = res.data
+        this.storages = res.data.storages
       })
     },
     // 刷新
     refresh() {
       this.loading = true
       info().then((res) => {
-        this.model = res.data.setting
-        this.storages = res.data.storage
+        this.model = res.data
+        this.storages = res.data.storages
         this.loading = false
         this.$message.success(res.msg)
       }).catch(() => {

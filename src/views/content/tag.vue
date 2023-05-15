@@ -153,7 +153,7 @@
         </el-table-column>
         <el-table-column prop="name" label="名称" min-width="230" show-overflow-tooltip />
         <el-table-column prop="unique" label="标识" min-width="80" show-overflow-tooltip />
-        <el-table-column prop="category_name" label="分类" min-width="120" show-overflow-tooltip />
+        <el-table-column prop="category_names" label="分类" min-width="120" show-overflow-tooltip />
         <el-table-column prop="tag_names" label="标签" min-width="120" show-overflow-tooltip />
         <el-table-column prop="is_top" label="置顶" min-width="75" sortable="custom">
           <template slot-scope="scope">

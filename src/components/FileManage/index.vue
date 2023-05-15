@@ -170,7 +170,7 @@
           <el-col class="ya-padding-left">
             <el-link :type="query.file_type===''?'primary':''" :underline="false" class="ya-height-26" @click="typeSelect('')">全部</el-link>
           </el-col>
-          <el-col v-for="(item, index) in filetype" :key="index" class="ya-padding-left">
+          <el-col v-for="(item, index) in file_types" :key="index" class="ya-padding-left">
             <el-link :type="query.file_type===index?'primary':''" :underline="false" class="ya-height-26" @click="typeSelect(index)">{{ item }}</el-link>
           </el-col>
         </el-row>
@@ -212,7 +212,7 @@
           <el-col class="ya-padding-left">
             <el-link :type="query.storage===''?'primary':''" :underline="false" class="ya-height-26" @click="storageSelect('')">全部</el-link>
           </el-col>
-          <el-col v-for="(item, index) in storage" :key="index" class="ya-padding-left">
+          <el-col v-for="(item, index) in storages" :key="index" class="ya-padding-left">
             <el-link :type="query.storage===index?'primary':''" :underline="false" class="ya-height-26" @click="storageSelect(index)">{{ item }}</el-link>
           </el-col>
         </el-row>
@@ -369,7 +369,7 @@
         </el-form-item>
         <el-form-item label="文件类型" prop="file_type">
           <el-select v-model="model.file_type">
-            <el-option v-for="(item, index) in filetype" :key="index" :value="index" :label="item" />
+            <el-option v-for="(item, index) in file_types" :key="index" :value="index" :label="item" />
           </el-select>
         </el-form-item>
         <el-form-item label="文件排序" prop="sort">
@@ -392,7 +392,7 @@
         </el-form-item>
         <el-form-item label="存储方式" prop="storage">
           <el-select v-model="model.storage" placeholder="" :disabled="model.file_id?true:false">
-            <el-option v-for="(item, index) in storage" :key="index" :value="index" :label="item" />
+            <el-option v-for="(item, index) in storages" :key="index" :value="index" :label="item" />
           </el-select>
         </el-form-item>
         <el-form-item v-if="model.file_id" label="是否禁用" prop="is_disable">
@@ -507,9 +507,9 @@ export default {
         file_type: [{ required: true, message: '请选择文件类型', trigger: 'blur' }],
         file_url: [{ required: true, message: '请输入文件链接', trigger: 'blur' }]
       },
-      storage: [],
       fileIds: [],
-      filetype: [],
+      storages: [],
+      file_types: [],
       fileImgPre: [],
       selectAll: false,
       selectAllInd: false,
@@ -624,8 +624,8 @@ export default {
       this.fileIds = data.ids
       this.uploadLimit = data.setting.limit_max
       this.uploadAccept = data.setting.accept_ext
-      this.storage = data.storage
-      this.filetype = data.filetype
+      this.storages = data.setting.storages
+      this.file_types = data.setting.file_types
       this.groupData = data.group
       this.tagData = data.tag
       this.exps = data.exps

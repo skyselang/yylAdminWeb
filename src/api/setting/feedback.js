@@ -57,12 +57,23 @@ export function dele(data) {
   })
 }
 /**
- * 反馈是否未读
+ * 反馈状态
  * @param {array} data 请求数据
  */
-export function unread(data) {
+export function status(data) {
   return request({
-    url: url + 'unread',
+    url: url + 'status',
+    method: 'post',
+    data
+  })
+}
+/**
+ * 反馈是否禁用
+ * @param {array} data 请求数据
+ */
+export function disable(data) {
+  return request({
+    url: url + 'disable',
     method: 'post',
     data
   })

@@ -130,12 +130,12 @@
     <el-table ref="table" v-loading="loading" :data="data" :height="height" @sort-change="sort" @selection-change="select" @cell-dblclick="cellDbclick">
       <el-table-column type="selection" width="42" title="全选/反选" />
       <el-table-column :prop="idkey" label="ID" width="80" sortable="custom" />
-      <el-table-column prop="avatar_id" label="头像" min-width="60">
+      <el-table-column prop="avatar_id" label="头像" min-width="50">
         <template slot-scope="scope">
-          <div style="height:30px">
-            <el-image v-if="scope.row.avatar_url" style="height:30px" fit="contain" :src="scope.row.avatar_url" :preview-src-list="[scope.row.avatar_url]" title="点击看大图" lazy scroll-container=".el-table__body-wrapper">
+          <div style="height:25px">
+            <el-image style="width:25px;height:25px;border-radius:50%;" :src="scope.row.avatar_url" :preview-src-list="[scope.row.avatar_url]" fit="contain" title="点击看大图" lazy scroll-container=".el-table__body-wrapper">
               <div slot="error" class="image-slot">
-                <i class="el-icon-picture-outline" />
+                <el-avatar :size="25" icon="el-icon-user-solid" />
               </div>
             </el-image>
           </div>
@@ -173,9 +173,9 @@
       <el-form ref="ref" :model="model" :rules="rules" label-width="100px" class="dialog-body" :style="{height:height+'px'}">
         <el-form-item label="头像" prop="avatar_url">
           <el-col :span="12" style="height:100px">
-            <el-image v-if="model.avatar_url" style="height:100px" fit="contain" :src="model.avatar_url" :preview-src-list="[model.avatar_url]" title="点击看大图">
+            <el-image style="width:100px;height:100px;border-radius:50%;" :src="model.avatar_url" :preview-src-list="[model.avatar_url]" fit="contain" title="点击看大图">
               <div slot="error" class="image-slot">
-                <i class="el-icon-picture-outline" />
+                <el-avatar :size="100" icon="el-icon-user-solid" />
               </div>
             </el-image>
           </el-col>

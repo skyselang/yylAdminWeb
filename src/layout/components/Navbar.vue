@@ -16,18 +16,23 @@
 
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
-          <el-avatar v-if="avatar" shape="circle" fit="contain" :size="48" :src="avatar" />
-          <el-avatar v-else icon="el-icon-user-solid" :size="48" />
+          <el-avatar v-if="avatar" :src="avatar" :size="48" shape="circle" fit="contain" />
+          <el-avatar v-else :size="48" shape="circle" icon="el-icon-user-solid" />
           <i class="el-icon-caret-bottom" />
         </div>
-        <el-dropdown-menu slot="dropdown" style="text-align:center">
+        <el-dropdown-menu slot="dropdown">
           <el-dropdown-item>
             <router-link to="/">
               <el-dropdown-item>控制台</el-dropdown-item>
             </router-link>
           </el-dropdown-item>
+          <el-dropdown-item>
+            <router-link v-if="checkPermission(['admin/system.UserCenter/info'])" to="/system/user-center">
+              <el-dropdown-item>个人中心</el-dropdown-item>
+            </router-link>
+          </el-dropdown-item>
           <el-dropdown-item divided @click.native="logout">
-            <span style="display:block;">退出</span>
+            <span style="display:block;">退出登录</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -144,7 +149,7 @@ export default {
     }
 
     .avatar-container {
-      margin-right: 30px;
+      margin-right: 15px;
 
       .avatar-wrapper {
         margin-top: 0px;
@@ -160,12 +165,21 @@ export default {
         .el-icon-caret-bottom {
           cursor: pointer;
           position: absolute;
-          right: -20px;
+          right: -10px;
           top: 25px;
           font-size: 12px;
         }
       }
     }
   }
+}
+
+.el-dropdown-menu {
+  top: 42px !important;
+  text-align:center;
+}
+
+.el-dropdown-menu__item {
+  padding: 0 12px;
 }
 </style>

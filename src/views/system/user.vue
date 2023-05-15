@@ -93,11 +93,22 @@
     <el-table ref="table" v-loading="loading" :data="data" :height="height" @sort-change="sort" @selection-change="select">
       <el-table-column type="selection" width="42" title="全选/反选" />
       <el-table-column :prop="idkey" label="ID" width="60" sortable="custom" />
-      <el-table-column prop="nickname" label="昵称" min-width="120" sortable="custom" show-overflow-tooltip />
-      <el-table-column prop="username" label="账号" min-width="120" sortable="custom" show-overflow-tooltip />
-      <el-table-column prop="dept_names" label="部门" min-width="166" show-overflow-tooltip />
-      <el-table-column prop="post_names" label="职位" min-width="166" show-overflow-tooltip />
-      <el-table-column prop="role_names" label="角色" min-width="166" show-overflow-tooltip />
+      <el-table-column prop="avatar_id" label="头像" min-width="50">
+        <template slot-scope="scope">
+          <div style="height:25px">
+            <el-image style="height:25px;border-radius:50%;" fit="contain" :src="scope.row.avatar_url" :preview-src-list="[scope.row.avatar_url]" title="点击看大图" lazy scroll-container=".el-table__body-wrapper">
+              <div slot="error" class="image-slot">
+                <el-avatar :size="25" icon="el-icon-user-solid" />
+              </div>
+            </el-image>
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column prop="nickname" label="昵称" min-width="105" sortable="custom" show-overflow-tooltip />
+      <el-table-column prop="username" label="账号" min-width="105" sortable="custom" show-overflow-tooltip />
+      <el-table-column prop="dept_names" label="部门" min-width="155" show-overflow-tooltip />
+      <el-table-column prop="post_names" label="职位" min-width="155" show-overflow-tooltip />
+      <el-table-column prop="role_names" label="角色" min-width="155" show-overflow-tooltip />
       <el-table-column prop="is_super" label="超管" min-width="73" sortable="custom">
         <template slot-scope="scope">
           <el-switch v-model="scope.row.is_super" :active-value="1" :inactive-value="0" @change="issuper([scope.row])" />
@@ -126,8 +137,8 @@
       <el-form ref="ref" :model="model" :rules="rules" label-width="100px" class="dialog-body" :style="{height:height+'px'}">
         <el-form-item label="头像" prop="avatar_url">
           <el-col :span="12">
-            <el-avatar v-if="model.avatar_url" shape="circle" fit="contain" :size="100" :src="model.avatar_url" />
-            <el-avatar v-else icon="el-icon-user-solid" :size="100" />
+            <el-avatar v-if="model.avatar_url" :src="model.avatar_url" :size="100" shape="circle" fit="contain" />
+            <el-avatar v-else :size="100" icon="el-icon-user-solid" />
           </el-col>
           <el-col :span="12">
             <el-button size="mini" @click="fileUpload()">上传头像</el-button>
