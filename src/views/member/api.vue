@@ -28,7 +28,7 @@
             <el-option value="create_time" label="添加时间" />
             <el-option value="update_time" label="修改时间" />
           </el-select>
-          <el-date-picker v-model="query.date_value" type="daterange" class="filter-item ya-date-value" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd" />
+          <el-date-picker v-model="query.date_value" type="datetimerange" class="filter-item ya-date-value" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00','23:59:59']" value-format="yyyy-MM-dd HH:mm:ss" />
           <el-button class="filter-item" type="primary" title="查询/刷新" @click="search()">查询</el-button>
           <el-button class="filter-item" icon="el-icon-refresh" title="重置" @click="refresh()" />
         </el-col>
@@ -123,6 +123,11 @@
         </template>
       </el-table-column>
     </el-table>
+    <el-row>
+      <el-descriptions title="" :column="12" :colon="false" size="medium">
+        <el-descriptions-item label="">共 {{ count }} 条</el-descriptions-item>
+      </el-descriptions>
+    </el-row>
     <!-- 添加修改 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false" destroy-on-close>
       <el-form ref="ref" :rules="rules" :model="model" label-width="100px" class="dialog-body" :style="{height:height-50+'px'}">
@@ -218,7 +223,7 @@ export default {
       height: 680,
       loading: false,
       idkey: 'api_id',
-      exps: [],
+      exps: [{ exp: 'like', name: '包含' }],
       query: { search_field: 'api_name', search_exp: 'like', date_field: 'create_time' },
       data: [],
       dialog: false,
@@ -260,7 +265,8 @@ export default {
       groupSelectIds: '',
       groupSelectTitle: '选中操作',
       groupSelectDialog: false,
-      groupSelectType: ''
+      groupSelectType: '',
+      count: {}
     }
   },
   created() {
@@ -275,6 +281,7 @@ export default {
         this.data = res.data.list
         this.trees = res.data.tree
         this.exps = res.data.exps
+        this.count = res.data.count
         this.isExpandAll = false
         this.loading = false
       }).catch(() => {

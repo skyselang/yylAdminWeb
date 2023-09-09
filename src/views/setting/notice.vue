@@ -9,6 +9,8 @@
             <el-option :value="idkey" label="ID" />
             <el-option value="type" label="类型" />
             <el-option value="title" label="标题" />
+            <el-option value="desc" label="描述" />
+            <el-option value="remark" label="备注" />
             <el-option value="is_disable" label="禁用" />
           </el-select>
           <el-select v-model="query.search_exp" class="filter-item ya-search-exp">
@@ -28,7 +30,7 @@
             <el-option value="start_time" label="开始时间" />
             <el-option value="end_time" label="结束时间" />
           </el-select>
-          <el-date-picker v-model="query.date_value" type="daterange" class="filter-item ya-date-value" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd" />
+          <el-date-picker v-model="query.date_value" type="datetimerange" class="filter-item ya-date-value" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00','23:59:59']" value-format="yyyy-MM-dd HH:mm:ss" />
           <el-button class="filter-item" type="primary" title="查询/刷新" @click="search()">查询</el-button>
           <el-button class="filter-item" icon="el-icon-refresh" title="重置" @click="refresh()" />
         </el-col>
@@ -92,16 +94,16 @@
           <span :style="{'color':scope.row.title_color}">{{ scope.row.title }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="start_time" label="开始时间" min-width="160" sortable="custom" />
-      <el-table-column prop="end_time" label="结束时间" min-width="160" sortable="custom" />
+      <el-table-column prop="start_time" label="开始时间" width="155" sortable="custom" />
+      <el-table-column prop="end_time" label="结束时间" width="155" sortable="custom" />
       <el-table-column prop="is_disable" label="禁用" min-width="75" sortable="custom">
         <template slot-scope="scope">
           <el-switch v-model="scope.row.is_disable" :active-value="1" :inactive-value="0" @change="disable([scope.row])" />
         </template>
       </el-table-column>
       <el-table-column prop="sort" label="排序" min-width="75" sortable="custom" />
-      <el-table-column prop="create_time" label="添加时间" min-width="155" sortable="custom" />
-      <el-table-column prop="update_time" label="修改时间" min-width="155" sortable="custom" />
+      <el-table-column prop="create_time" label="添加时间" width="155" sortable="custom" />
+      <el-table-column prop="update_time" label="修改时间" width="155" sortable="custom" />
       <el-table-column label="操作" width="90">
         <template slot-scope="scope">
           <el-button size="mini" type="text" @click="edit(scope.row)">修改</el-button>
@@ -134,19 +136,25 @@
           </el-select>
         </el-form-item>
         <el-form-item label="标题" prop="title">
-          <el-input v-model="model.title" placeholder="请输入标题" clearable />
+          <el-col :span="18">
+            <el-input v-model="model.title" placeholder="请输入标题" clearable />
+          </el-col>
+          <el-col :span="3" class="ya-center">标题颜色</el-col>
+          <el-col :span="3">
+            <el-color-picker v-model="model.title_color" />
+          </el-col>
         </el-form-item>
-        <el-form-item label="标题颜色" prop="title_color">
-          <el-color-picker v-model="model.title_color" />
-        </el-form-item>
-        <el-form-item label="简介" prop="intro">
-          <el-input v-model="model.intro" type="textarea" placeholder="请输入简介" :autosize="{ minRows: 2, maxRows: 5}" />
+        <el-form-item label="描述" prop="desc">
+          <el-input v-model="model.desc" type="textarea" autosize placeholder="请输入描述" />
         </el-form-item>
         <el-form-item label="开始时间" prop="start_time">
-          <el-date-picker v-model="model.start_time" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" default-time="00:00:00" placeholder="禁用开始时间" />
+          <el-date-picker v-model="model.start_time" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" default-time="00:00:00" placeholder="开始时间" />
         </el-form-item>
         <el-form-item label="结束时间" prop="end_time">
-          <el-date-picker v-model="model.end_time" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" default-time="23:59:59" placeholder="禁用结束时间" />
+          <el-date-picker v-model="model.end_time" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" default-time="23:59:59" placeholder="结束时间" />
+        </el-form-item>
+        <el-form-item label="备注" prop="remark">
+          <el-input v-model="model.remark" placeholder="请输入备注" clearable />
         </el-form-item>
         <el-form-item label="排序" prop="sort">
           <el-input v-model="model.sort" type="number" placeholder="请输入排序" />
@@ -193,7 +201,7 @@ export default {
       height: 680,
       loading: false,
       idkey: 'notice_id',
-      exps: [],
+      exps: [{ exp: 'like', name: '包含' }],
       query: { page: 1, limit: 12, search_field: 'title', search_exp: 'like', date_field: 'create_time' },
       data: [],
       count: 0,
@@ -208,8 +216,9 @@ export default {
         title_color: '#606266',
         start_time: '',
         end_time: '',
-        intro: '',
+        desc: '',
         content: '',
+        remark: '',
         sort: 250
       },
       rules: {

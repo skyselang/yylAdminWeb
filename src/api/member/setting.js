@@ -2,6 +2,28 @@ import request from '@/utils/request'
 // 会员设置
 const url = '/admin/member.Setting/'
 /**
+ * 会员设置信息
+ * @param {array} params 请求参数
+ */
+export function memberInfo(params) {
+  return request({
+    url: url + 'memberInfo',
+    method: 'get',
+    params: params
+  })
+}
+/**
+ * 会员设置修改
+ * @param {array} data 请求数据
+ */
+export function memberEdit(data) {
+  return request({
+    url: url + 'memberEdit',
+    method: 'post',
+    data
+  })
+}
+/**
  * Token设置信息
  * @param {array} params 请求参数
  */
@@ -107,6 +129,28 @@ export function logregInfo(params) {
 export function logregEdit(data) {
   return request({
     url: url + 'logregEdit',
+    method: 'post',
+    data
+  })
+}
+/**
+ * 第三方账号设置信息
+ * @param {array} params 请求参数
+ */
+export function thirdInfo(params) {
+  return request({
+    url: url + 'thirdInfo',
+    method: 'get',
+    params: params
+  })
+}
+/**
+ * 第三方账号设置修改
+ * @param {array} data 请求数据
+ */
+export function thirdEdit(data) {
+  return request({
+    url: url + 'thirdEdit',
     method: 'post',
     data
   })

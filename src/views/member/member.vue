@@ -19,8 +19,8 @@
             <el-option value="name" label="姓名" />
             <el-option value="gender" label="性别" />
             <el-option value="region_id" label="所在地" />
-            <el-option value="reg_channel" label="注册渠道" />
-            <el-option value="reg_type" label="注册方式" />
+            <el-option value="platform" label="注册平台" />
+            <el-option value="application" label="注册应用" />
           </el-select>
           <el-select v-model="query.search_exp" class="filter-item ya-search-exp">
             <el-option v-for="exp in exps" :key="exp.exp" :value="exp.exp" :label="exp.name" />
@@ -35,12 +35,12 @@
             <el-option :value="1" label="是" />
             <el-option :value="0" label="否" />
           </el-select>
-          <el-select v-else-if="query.search_field==='reg_channel'" v-model="query.search_value" class="filter-item ya-search-value" clearable>
-            <el-option v-for="(item,index) in reg_channels" :key="index" :label="item" :value="index" />
+          <el-select v-else-if="query.search_field==='application'" v-model="query.search_value" class="filter-item ya-search-value" clearable>
+            <el-option v-for="(item,index) in applications" :key="index" :label="item" :value="index" />
           </el-select>
           <el-cascader v-else-if="query.search_field==='region_id'" v-model="query.search_value" class="filter-item ya-search-value" :options="regionData" :props="regionQueryProps" clearable filterable collapse-tags />
-          <el-select v-else-if="query.search_field==='reg_type'" v-model="query.search_value" class="filter-item ya-search-value" clearable>
-            <el-option v-for="(item,index) in reg_types" :key="index" :label="item" :value="index" />
+          <el-select v-else-if="query.search_field==='platform'" v-model="query.search_value" class="filter-item ya-search-value" clearable>
+            <el-option v-for="(item,index) in platforms" :key="index" :label="item" :value="index" />
           </el-select>
           <el-select v-else-if="query.search_field==='gender'" v-model="query.search_value" class="filter-item ya-search-value" clearable>
             <el-option v-for="(item,index) in genders" :key="index" :label="item" :value="index" />
@@ -51,7 +51,7 @@
             <el-option value="login_time" label="登录时间" />
             <el-option value="update_time" label="修改时间" />
           </el-select>
-          <el-date-picker v-model="query.date_value" type="daterange" class="filter-item ya-date-value" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd" />
+          <el-date-picker v-model="query.date_value" type="datetimerange" class="filter-item ya-date-value" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00','23:59:59']" value-format="yyyy-MM-dd HH:mm:ss" />
           <el-button class="filter-item" type="primary" title="查询/刷新" @click="search()">查询</el-button>
           <el-button class="filter-item" icon="el-icon-refresh" title="重置" @click="refresh()" />
         </el-col>
@@ -158,7 +158,7 @@
         </template>
       </el-table-column>
       <el-table-column prop="sort" label="排序" width="75" sortable="custom" />
-      <el-table-column prop="create_time" label="注册时间" min-width="155" sortable="custom" />
+      <el-table-column prop="create_time" label="注册时间" width="155" sortable="custom" />
       <el-table-column label="操作" width="90">
         <template slot-scope="scope">
           <el-button size="mini" type="text" @click="edit(scope.row)">修改</el-button>
@@ -171,124 +171,180 @@
     <!-- 添加修改 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false">
       <el-form ref="ref" :model="model" :rules="rules" label-width="100px" class="dialog-body" :style="{height:height+'px'}">
-        <el-form-item label="头像" prop="avatar_url">
-          <el-col :span="12" style="height:100px">
-            <el-image style="width:100px;height:100px;border-radius:50%;" :src="model.avatar_url" :preview-src-list="[model.avatar_url]" fit="contain" title="点击看大图">
-              <div slot="error" class="image-slot">
-                <el-avatar :size="100" icon="el-icon-user-solid" />
-              </div>
-            </el-image>
-          </el-col>
-          <el-col :span="12">
-            <el-button size="mini" @click="fileUpload()">上传头像</el-button>
-            <el-button size="mini" @click="fileDelete()">删除</el-button>
-            <p>图片小于 200 KB，jpg、png格式。</p>
-          </el-col>
-        </el-form-item>
-        <el-form-item label="昵称" prop="nickname">
-          <el-input key="nickname" v-model="model.nickname" placeholder="请输入昵称" clearable>
-            <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.nickname, $event)" />
-          </el-input>
-        </el-form-item>
-        <el-form-item label="用户名" prop="username">
-          <el-input key="username" v-model="model.username" placeholder="请输入用户名" clearable>
-            <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.username, $event)" />
-          </el-input>
-        </el-form-item>
-        <el-form-item v-if="model.member_id==''" label="密码" prop="password">
-          <el-input key="password" v-model="model.password" placeholder="请输入密码" clearable show-password />
-        </el-form-item>
-        <el-form-item label="手机" prop="phone">
-          <el-input v-model="model.phone" clearable>
-            <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.phone, $event)" />
-          </el-input>
-        </el-form-item>
-        <el-form-item label="邮箱" prop="email">
-          <el-input v-model="model.email" clearable>
-            <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.email, $event)" />
-          </el-input>
-        </el-form-item>
-        <el-form-item label="姓名" prop="name">
-          <el-input v-model="model.name" clearable>
-            <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.name, $event)" />
-          </el-input>
-        </el-form-item>
-        <el-form-item label="性别" prop="gender">
-          <el-select v-model="model.gender">
-            <el-option v-for="(item,index) in genders" :key="index" :label="item" :value="index" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="标签" prop="tag_ids">
-          <el-select v-model="model.tag_ids" class="ya-width-100p" multiple clearable filterable>
-            <el-option v-for="item in tagData" :key="item.tag_id" :label="item.tag_name" :value="item.tag_id" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="分组" prop="group_ids">
-          <el-select v-model="model.group_ids" class="ya-width-100p" clearable filterable multiple>
-            <el-option v-for="item in groupData" :key="item.group_id" :label="item.group_name" :value="item.group_id" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="所在地" prop="region_id">
-          <el-cascader v-model="model.region_id" class="ya-width-100p" :options="regionData" :props="regionProps" clearable />
-        </el-form-item>
-        <el-form-item label="排序" prop="sort">
-          <el-input v-model="model.sort" type="number" />
-        </el-form-item>
-        <el-form-item label="备注" prop="remark">
-          <el-input v-model="model.remark" clearable />
-        </el-form-item>
-        <el-form-item v-if="model[idkey]" label="openid" prop="openid">
-          <el-input v-model="model.openid" disabled />
-        </el-form-item>
-        <el-form-item v-if="model[idkey]" label="unionid" prop="unionid">
-          <el-input v-model="model.unionid" disabled />
-        </el-form-item>
-        <el-form-item v-if="model[idkey]" label="注册时间" prop="create_time">
-          <el-input v-model="model.create_time" disabled />
-        </el-form-item>
-        <el-form-item v-if="model[idkey]" label="修改时间" prop="update_time">
-          <el-input v-model="model.update_time" disabled />
-        </el-form-item>
-        <el-form-item v-if="model.delete_time" label="删除时间" prop="delete_time">
-          <el-input v-model="model.delete_time" disabled />
-        </el-form-item>
-        <el-form-item v-if="model[idkey]" label="登录时间" prop="login_time">
-          <el-input v-model="model.login_time" disabled />
-        </el-form-item>
-        <el-form-item v-if="model[idkey]" label="登录地区" prop="login_region">
-          <el-input v-model="model.login_region" disabled />
-        </el-form-item>
-        <el-form-item v-if="model[idkey]" label="注册渠道" prop="reg_channel_name">
-          <el-input v-model="model.reg_channel_name" disabled />
-        </el-form-item>
-        <el-form-item v-if="model[idkey]" label="注册方式" prop="reg_type_name">
-          <el-input v-model="model.reg_type_name" disabled />
-        </el-form-item>
-        <el-form-item v-if="model[idkey]" label="接口(权限)" prop="api_ids">
-          <span>
-            <el-checkbox v-model="apiExpandAll" @change="apiExpandAllChange">展开</el-checkbox>
-          </span>
-          <el-tree ref="apiRef" :data="model.api_tree" :props="apiProps" :default-checked-keys="model.api_ids" :expand-on-click-node="true" :default-expand-all="false" :check-strictly="true" node-key="api_id" highlight-current>
-            <span slot-scope="scope" class="custom-tree-node">
-              <span>{{ scope.node.label }}<i v-if="scope.data.is_check" class="el-icon-check" style="color:#1890ff" title="已分配" /></span>
+        <el-tabs>
+          <el-tab-pane label="基础信息">
+            <el-form-item label="头像" prop="avatar_url">
+              <el-col :span="12" style="height:100px">
+                <el-image style="width:100px;height:100px;border-radius:50%;" :src="model.avatar_url" :preview-src-list="[model.avatar_url]" fit="contain" title="点击看大图">
+                  <div slot="error" class="image-slot">
+                    <el-avatar :size="100" icon="el-icon-user-solid" />
+                  </div>
+                </el-image>
+              </el-col>
+              <el-col :span="12">
+                <el-button size="mini" @click="fileUpload()">上传头像</el-button>
+                <el-button size="mini" @click="fileDelete()">删除</el-button>
+                <p>图片小于 200 KB，jpg、png格式。</p>
+              </el-col>
+            </el-form-item>
+            <el-form-item label="昵称" prop="nickname">
+              <el-input key="nickname" v-model="model.nickname" placeholder="请输入昵称" clearable>
+                <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.nickname, $event)" />
+              </el-input>
+            </el-form-item>
+            <el-form-item label="用户名" prop="username">
+              <el-input key="username" v-model="model.username" placeholder="请输入用户名" clearable>
+                <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.username, $event)" />
+              </el-input>
+            </el-form-item>
+            <el-form-item v-if="model.member_id==''" label="密码" prop="password">
+              <el-input key="password" v-model="model.password" placeholder="请输入密码" clearable show-password />
+            </el-form-item>
+            <el-form-item label="手机" prop="phone">
+              <el-input v-model="model.phone" clearable>
+                <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.phone, $event)" />
+              </el-input>
+            </el-form-item>
+            <el-form-item label="邮箱" prop="email">
+              <el-input v-model="model.email" clearable>
+                <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.email, $event)" />
+              </el-input>
+            </el-form-item>
+            <el-form-item label="姓名" prop="name">
+              <el-input v-model="model.name" clearable>
+                <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.name, $event)" />
+              </el-input>
+            </el-form-item>
+            <el-form-item label="性别" prop="gender">
+              <el-select v-model="model.gender">
+                <el-option v-for="(item,index) in genders" :key="index" :label="item" :value="index" />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="所在地" prop="region_id">
+              <el-cascader v-model="model.region_id" class="ya-width-100p" :options="regionData" :props="regionProps" clearable />
+            </el-form-item>
+            <el-form-item label="排序" prop="sort">
+              <el-input v-model="model.sort" type="number" />
+            </el-form-item>
+            <el-form-item label="备注" prop="remark">
+              <el-input v-model="model.remark" clearable />
+            </el-form-item>
+          </el-tab-pane>
+          <el-tab-pane label="权限信息">
+            <el-form-item label="超会" prop="is_super">
+              <el-switch v-model="model.is_super" :active-value="1" :inactive-value="0" disabled />
+            </el-form-item>
+            <el-form-item label="禁用" prop="is_disable">
+              <el-switch v-model="model.is_disable" :active-value="1" :inactive-value="0" disabled />
+            </el-form-item>
+            <el-form-item label="标签" prop="tag_ids">
+              <el-select v-model="model.tag_ids" class="ya-width-100p" multiple clearable filterable>
+                <el-option v-for="item in tagData" :key="item.tag_id" :label="item.tag_name" :value="item.tag_id" />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="分组(角色)" prop="group_ids">
+              <el-select v-model="model.group_ids" class="ya-width-100p" clearable filterable multiple>
+                <el-option v-for="item in groupData" :key="item.group_id" :label="item.group_name" :value="item.group_id" />
+              </el-select>
+            </el-form-item>
+            <el-form-item v-if="model[idkey]" label="接口(权限)" prop="api_ids">
               <span>
-                <i v-if="scope.data.api_url" class="el-icon-link" style="margin-left:10px" :title="scope.data.api_url" />
-                <i v-else class="el-icon-link" style="margin-left:10px;color:#fff" />
-                <i v-if="scope.data.is_group" class="el-icon-s-custom" style="margin-left:10px" title="分组" />
-                <i v-else class="el-icon-s-custom" style="margin-left:10px;color:#fff" />
-                <i v-if="scope.data.is_unauth" class="el-icon-unlock" style="margin-left:10px;" title="免权" />
-                <i v-else class="el-icon-unlock" style="margin-left:10px;color:#fff" />
-                <i v-if="scope.data.is_unlogin" class="el-icon-user" style="margin-left:10px;" title="免登" />
-                <i v-else class="el-icon-user" style="margin-left:10px;color:#fff" />
+                <el-checkbox v-model="apiExpandAll" @change="apiExpandAllChange">展开</el-checkbox>
               </span>
-            </span>
-          </el-tree>
-        </el-form-item>
+              <el-tree ref="apiRef" :data="model.api_tree" :props="apiProps" :default-checked-keys="model.api_ids" :expand-on-click-node="true" :default-expand-all="false" :check-strictly="true" node-key="api_id" highlight-current>
+                <span slot-scope="scope" class="custom-tree-node">
+                  <span>{{ scope.node.label }}<i v-if="scope.data.is_check" class="el-icon-check" style="color:#1890ff" title="已分配" /></span>
+                  <span>
+                    <i v-if="scope.data.api_url" class="el-icon-link" style="margin-left:10px" :title="scope.data.api_url" />
+                    <i v-else class="el-icon-link" style="margin-left:10px;color:#fff" />
+                    <i v-if="scope.data.is_group" class="el-icon-s-custom" style="margin-left:10px" title="分组" />
+                    <i v-else class="el-icon-s-custom" style="margin-left:10px;color:#fff" />
+                    <i v-if="scope.data.is_unauth" class="el-icon-unlock" style="margin-left:10px;" title="免权" />
+                    <i v-else class="el-icon-unlock" style="margin-left:10px;color:#fff" />
+                    <i v-if="scope.data.is_unlogin" class="el-icon-user" style="margin-left:10px;" title="免登" />
+                    <i v-else class="el-icon-user" style="margin-left:10px;color:#fff" />
+                  </span>
+                </span>
+              </el-tree>
+            </el-form-item>
+          </el-tab-pane>
+          <el-tab-pane label="其它信息">
+            <el-form-item v-if="model[idkey]" label="登录IP" prop="login_ip">
+              <el-input v-model="model.login_ip" disabled />
+            </el-form-item>
+            <el-form-item v-if="model[idkey]" label="登录地区" prop="login_region">
+              <el-input v-model="model.login_region" disabled />
+            </el-form-item>
+            <el-form-item v-if="model[idkey]" label="登录时间" prop="login_time">
+              <el-input v-model="model.login_time" disabled />
+            </el-form-item>
+            <el-form-item v-if="model[idkey]" label="登录次数" prop="login_num">
+              <el-input v-model="model.login_num" disabled />
+            </el-form-item>
+            <el-form-item v-if="model[idkey]" label="注册平台" prop="platform_name">
+              <el-input v-model="model.platform_name" disabled />
+            </el-form-item>
+            <el-form-item v-if="model[idkey]" label="注册应用" prop="application_name">
+              <el-input v-model="model.application_name" disabled />
+            </el-form-item>
+            <el-form-item v-if="model[idkey]" label="注册时间" prop="create_time">
+              <el-input v-model="model.create_time" disabled />
+            </el-form-item>
+            <el-form-item v-if="model[idkey]" label="修改时间" prop="update_time">
+              <el-input v-model="model.update_time" disabled />
+            </el-form-item>
+            <el-form-item v-if="model[idkey]" label="退出时间" prop="logout_time">
+              <el-input v-model="model.logout_time" disabled />
+            </el-form-item>
+            <el-form-item v-if="model.delete_time" label="删除时间" prop="delete_time">
+              <el-input v-model="model.delete_time" disabled />
+            </el-form-item>
+          </el-tab-pane>
+          <el-tab-pane label="第三方账号">
+            <el-table v-if="model[idkey]" :data="model.thirds">
+              <el-table-column prop="third_id" label="ID" width="80" />
+              <el-table-column prop="headimgurl" label="头像" min-width="50">
+                <template slot-scope="scope">
+                  <div style="height:25px">
+                    <el-image v-if="scope.row.headimgurl" style="width:25px;height:25px;border-radius:50%;" :src="scope.row.headimgurl" :preview-src-list="[scope.row.headimgurl]" fit="contain" title="点击看大图">
+                      <div slot="error" class="image-slot">
+                        <el-avatar :size="25" icon="el-icon-user-solid" />
+                      </div>
+                    </el-image>
+                  </div>
+                </template>
+              </el-table-column>
+              <el-table-column prop="nickname" label="昵称" min-width="100" show-overflow-tooltip />
+              <el-table-column prop="platform_name" label="平台" min-width="80" show-overflow-tooltip />
+              <el-table-column prop="application_name" label="应用" min-width="110" show-overflow-tooltip />
+              <el-table-column prop="is_disable" label="禁用" min-width="75">
+                <template slot-scope="scope">
+                  <el-switch v-model="scope.row.is_disable" :loading="thirdUnbindLoad" :active-value="1" :inactive-value="0" @change="thirdDisable(scope.row)" />
+                </template>
+              </el-table-column>
+              <el-table-column prop="create_time" label="添加/绑定时间" min-width="155" />
+              <el-table-column prop="login_time" label="登录时间" width="155" />
+              <el-table-column label="操作" width="75">
+                <template slot-scope="scope">
+                  <el-button size="mini" type="text" @click="thirdUnbindBtn(scope.row)">解绑</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-tab-pane>
+        </el-tabs>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button :loading="loading" @click="cancel">取消</el-button>
         <el-button :loading="loading" type="primary" @click="submit">提交</el-button>
       </div>
+    </el-dialog>
+    <!-- 第三方账号解绑 -->
+    <el-dialog title="会员第三方账号解绑" :visible.sync="thirdUnbindDialog" width="25%" top="20vh">
+      <span style="color:#ff0000">解绑后该会员无法再通过该第三方账号登录，确定要解绑吗？</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button :loading="thirdUnbindLoad" @click="thirdUnbindDialog=false">取消</el-button>
+        <el-button :loading="thirdUnbindLoad" type="primary" @click="thirdUnbindSubmit">确定</el-button>
+      </span>
     </el-dialog>
     <!-- 文件管理 -->
     <el-dialog title="上传头像" :visible.sync="fileDialog" width="80%" top="1vh" :close-on-click-modal="false" :close-on-press-escape="false">
@@ -316,7 +372,7 @@ export default {
       height: 680,
       loading: false,
       idkey: 'member_id',
-      exps: [],
+      exps: [{ exp: 'like', name: '包含' }],
       query: { page: 1, limit: 12, search_field: 'nickname', search_exp: 'like', date_field: 'create_time' },
       data: [],
       count: 0,
@@ -338,7 +394,8 @@ export default {
         region_id: '',
         remark: '',
         sort: 250,
-        api_ids: []
+        api_ids: [],
+        thirds: []
       },
       rules: {
         nickname: [{ required: true, message: '请输入昵称', trigger: 'blur' }],
@@ -346,8 +403,8 @@ export default {
         password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
       },
       genders: [],
-      reg_channels: [],
-      reg_types: [],
+      platforms: [],
+      applications: [],
       regionData: [],
       regionProps: { checkStrictly: true, value: 'region_id', label: 'region_name', emitPath: false },
       regionQueryProps: { checkStrictly: true, value: 'region_id', label: 'region_name', multiple: true, emitPath: false },
@@ -370,7 +427,10 @@ export default {
       exportAutoWidth: false,
       apiProps: { label: 'api_name', children: 'children' },
       apiCheckAll: false,
-      apiExpandAll: false
+      apiExpandAll: false,
+      thirdUnbindDialog: false,
+      thirdUnbindModel: {},
+      thirdUnbindLoad: false
     }
   },
   created() {
@@ -386,8 +446,8 @@ export default {
         this.data = res.data.list
         this.count = res.data.count
         this.genders = res.data.genders
-        this.reg_channels = res.data.reg_channels
-        this.reg_types = res.data.reg_types
+        this.platforms = res.data.platforms
+        this.applications = res.data.applications
         this.regionData = res.data.region
         this.tagData = res.data.tag
         this.groupData = res.data.group
@@ -420,6 +480,8 @@ export default {
       this.$refs['ref'].validate(valid => {
         if (valid) {
           this.loading = true
+          this.model.api_tree = []
+          this.model.thirds = []
           if (this.model[this.idkey]) {
             edit(this.model).then(res => {
               this.list()
@@ -652,7 +714,7 @@ export default {
       }
     },
     // 是否禁用
-    disable(row, select = false) {
+    disable(row, select = false, type = 'member') {
       if (!row.length) {
         this.selectAlert()
       } else {
@@ -746,6 +808,53 @@ export default {
     fileDelete() {
       this.model.avatar_id = 0
       this.model.avatar_url = ''
+    },
+    // 解绑第三方账号
+    thirdUnbindBtn(row) {
+      this.thirdUnbindDialog = true
+      this.thirdUnbindModel = row
+    },
+    thirdUnbindSubmit() {
+      const row = this.thirdUnbindModel
+      if (!row) {
+        this.$alert('请选择需要操作的' + this.name + '第三方账号', '提示', { type: 'warning', callback: action => { } })
+      } else {
+        this.thirdUnbindLoad = true
+        dele({
+          ids: [row.third_id],
+          type: 'third'
+        }).then(res => {
+          var id = {}
+          id[this.idkey] = row[this.idkey]
+          info(id).then(res => {
+            this.model.thirds = res.data.thirds
+          }).catch(() => { })
+          this.thirdUnbindLoad = false
+          this.thirdUnbindDialog = false
+          this.$message.success(res.msg)
+        }).catch(() => {
+          this.thirdUnbindLoad = false
+        })
+      }
+    },
+    // 第三方账号是否禁用
+    thirdDisable(row) {
+      var id = {}
+      id[this.idkey] = row[this.idkey]
+      disable({
+        ids: [row.third_id],
+        is_disable: row.is_disable,
+        type: 'third'
+      }).then(res => {
+        info(id).then(res => {
+          this.model.thirds = res.data.thirds
+        }).catch(() => { })
+        this.$message.success(res.msg)
+      }).catch(() => {
+        info(id).then(res => {
+          this.model.thirds = res.data.thirds
+        }).catch(() => { })
+      })
     },
     // 复制
     copy(text, event) {

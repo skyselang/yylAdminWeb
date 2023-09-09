@@ -1,29 +1,25 @@
 <template>
   <el-card class="dialog-body" :style="{height:height+'px'}">
     <el-row>
-      <el-col :span="14">
+      <el-col :span="16">
         <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
           <el-form-item label="会员接口" prop="is_member_api">
-            <el-col :span="24">
+            <el-col :span="4">
               <el-switch v-model="model.is_member_api" :active-value="1" :inactive-value="0" />
             </el-col>
-            <el-col :span="24">
-              关闭后，不再校验接口和权限，所有接口（免登除外）均需登录访问。
+            <el-col :span="20">
+              关闭后，不校验接口和权限，所有接口（免登除外）均需登录访问
             </el-col>
           </el-form-item>
           <el-form-item label="接口速率">
-            <el-col :span="8">
-              <el-input v-model="model.api_rate_num" type="number" placeholder="次数">
-                <template slot="append">次</template>
-              </el-input>
+            <el-col :span="4">
+              <el-input v-model="model.api_rate_num" type="number" placeholder="次数" />
             </el-col>
             <el-col :span="1" style="text-align:center">/</el-col>
-            <el-col :span="8">
-              <el-input v-model="model.api_rate_time" type="number" placeholder="时间">
-                <template slot="append">秒</template>
-              </el-input>
+            <el-col :span="4">
+              <el-input v-model="model.api_rate_time" type="number" placeholder="时间" />
             </el-col>
-            <el-col :span="24"> 3/1：3次1秒；次数 0 不限率。</el-col>
+            <el-col :span="15"> 次/秒，次数 0 不限率</el-col>
           </el-form-item>
           <el-form-item>
             <el-button :loading="loading" @click="refresh()">刷新</el-button>

@@ -6,9 +6,11 @@
         <el-col>
           <el-select v-model="query.search_field" class="filter-item ya-search-field" placeholder="搜索字段">
             <el-option :value="idkey" label="ID" />
+            <el-option value="unique" label="标识" />
             <el-option value="file_name" label="名称" />
-            <el-option value="file_ext" label="后缀" />
             <el-option value="domain" label="域名" />
+            <el-option value="remark" label="备注" />
+            <el-option value="file_ext" label="后缀" />
             <el-option value="file_path" label="路径" />
             <el-option value="file_md5" label="MD5" />
             <el-option value="file_hash" label="散列" />
@@ -22,7 +24,7 @@
             <el-option value="update_time" label="修改时间" />
             <el-option v-if="recycle" value="delete_time" label="删除时间" />
           </el-select>
-          <el-date-picker v-model="query.date_value" type="daterange" class="filter-item ya-date-value" value-format="yyyy-MM-dd" start-placeholder="开始日期" end-placeholder="结束日期" />
+          <el-date-picker v-model="query.date_value" type="datetimerange" class="filter-item ya-date-value" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00','23:59:59']" value-format="yyyy-MM-dd HH:mm:ss" />
           <el-button class="filter-item" type="primary" title="查询/刷新" @click="search()">查询</el-button>
           <el-button class="filter-item" icon="el-icon-refresh" title="重置" @click="refresh()" />
           <el-button v-if="checkPermission(['admin/file.File/recycle'])" style="float:right" :type="recycle?'primary':''" @click="showRecycle">回收站</el-button>
@@ -48,6 +50,7 @@
         <el-upload v-else name="file" class="ya-upload" :limit="uploadLimit" :file-list="uploadFilelist" :multiple="true" :show-file-list="false" :auto-upload="true" :action="uploadAction" :headers="uploadHeaders" :data="uploadData" :accept="uploadAccept" :before-upload="uploadBefore" :on-success="uploadSuccess" :on-error="uploadError" :on-change="uploadChange" :on-exceed="uploadExceed">
           <el-button type="primary" title="上传文件" @click="uploadClear">上传</el-button>
         </el-upload>
+        <!-- 排序 -->
         <el-select v-model="query.sort_field" class="filter-item ya-search-field ya-margin-left" filterable clearable placeholder="排序字段" @change="sort">
           <el-option :value="idkey" label="ID" />
           <el-option value="file_name" label="名称" />
@@ -55,6 +58,8 @@
           <el-option value="file_hash" label="散列" />
           <el-option value="file_ext" label="后缀" />
           <el-option value="file_size" label="大小" />
+          <el-option value="is_disable" label="禁用" />
+          <el-option value="sort" label="排序" />
           <el-option value="create_time" label="添加时间" />
           <el-option value="update_time" label="修改时间" />
           <el-option v-if="recycle" value="delete_time" label="删除时间" />
@@ -63,6 +68,7 @@
           <el-option value="asc" label="升序" />
           <el-option value="desc" label="降序" />
         </el-select>
+        <!-- 分组筛选 -->
         <el-select v-model="query.group_id" class="filter-item ya-search-field ya-margin-left" filterable clearable placeholder="分组" @change="groupSelect">
           <el-option v-for="(item, index) in groupData" :key="index" :value="item.group_id" :label="item.group_name" />
         </el-select>
@@ -71,6 +77,7 @@
           <el-button type="text" icon="el-icon-edit" :title="'修改'+groupName" @click="groupEdit()" />
           <el-button type="text" icon="el-icon-delete" :title="'删除'+groupName" @click="groupDele()" />
         </el-button-group>
+        <!-- 标签筛选 -->
         <el-select v-model="query.tag_ids" class="filter-item ya-margin-left" filterable clearable multiple collapse-tags placeholder="标签" @change="tagSelect">
           <el-option v-for="(item, index) in tagData" :key="index" :value="item.tag_id" :label="item.tag_name" />
         </el-select>
@@ -98,7 +105,7 @@
         </el-form-item>
         <el-form-item v-else-if="selectType==='edittype'" label="文件类型" prop="file_type">
           <el-select v-model="file_type">
-            <el-option v-for="(item, index) in filetype" :key="index" :value="index" :label="item" />
+            <el-option v-for="(item, index) in file_types" :key="index" :value="index" :label="item" />
           </el-select>
         </el-form-item>
         <el-form-item v-else-if="selectType==='editdomain'" label="文件域名" prop="">
@@ -129,7 +136,10 @@
           <el-input v-model="groupModel.group_name" placeholder="请输入分组名称" clearable />
         </el-form-item>
         <el-form-item label="描述" prop="group_desc">
-          <el-input v-model="groupModel.group_desc" clearable />
+          <el-input v-model="groupModel.group_desc" type="textarea" autosize clearable />
+        </el-form-item>
+        <el-form-item label="备注" prop="remark">
+          <el-input v-model="groupModel.remark" placeholder="" clearable />
         </el-form-item>
         <el-form-item label="排序" prop="sort">
           <el-input v-model="groupModel.sort" type="number" />
@@ -147,7 +157,10 @@
           <el-input v-model="tagModel.tag_name" placeholder="请输入标签名称" clearable />
         </el-form-item>
         <el-form-item label="描述" prop="tag_desc">
-          <el-input v-model="tagModel.tag_desc" clearable />
+          <el-input v-model="tagModel.tag_desc" type="textarea" autosize clearable />
+        </el-form-item>
+        <el-form-item label="备注" prop="remark">
+          <el-input v-model="tagModel.remark" placeholder="" clearable />
         </el-form-item>
         <el-form-item label="排序" prop="sort">
           <el-input v-model="tagModel.sort" type="number" />
@@ -161,7 +174,7 @@
     <!-- 列表筛选 -->
     <el-row :gutter="3">
       <!-- 筛选 -->
-      <el-col :span="3" class="dialog-body" :style="{height:height+'px'}">
+      <el-col :span="2" class="dialog-body" :style="{height:height+'px'}">
         <!-- 类型筛选 -->
         <el-row>
           <el-col>
@@ -219,13 +232,13 @@
       </el-col>
       <!-- 卡片展示 -->
       <div v-if="showMode=='card'">
-        <el-col v-if="count>0" :span="21" class="dialog-body" :style="{height:height+'px'}">
+        <el-col v-if="count>0" :span="22" class="dialog-body" :style="{height:height+'px'}">
           <el-row v-loading="loading" :gutter="3" style="margin-top:6px">
             <el-checkbox-group v-model="selection" @change="select">
               <el-col v-for="(item, index) in data" :key="index" :span="4" style="margin-bottom:6px;text-align:center">
                 <el-card class="ya-file-card" :body-style="{minWidth:'16.5%', height:(height-height*0.1)/3+'px', minHeight:'126px', padding:'0 6px'}">
                   <div style="text-align:left">
-                    <el-checkbox :key="item[idkey]" :label="item[idkey]">{{ item[idkey] }} ({{ item.file_size }}，{{ item.file_ext }})</el-checkbox>
+                    <el-checkbox :key="item[idkey]" :label="item[idkey]">{{ item[idkey] }} ({{ item.file_size }}, {{ item.file_ext }}</el-checkbox>
                   </div>
                   <div :style="{width:'100%', height:((height-height*0.1)/3)-((height-height*0.1)/3*0.5)+'px', minHeight:'62px'}">
                     <el-image v-if="item.file_type==='image'" style="height:100%" fit="contain" :src="item.file_url" :preview-src-list="fileImgPre" title="点击看大图" lazy />
@@ -249,6 +262,7 @@
                   <div :style="{paddingTop:'5px', minHeight:'50px'}">
                     <span class="ya-file-name" :title="item.file_name+'.'+item.file_ext">{{ item.file_name }}.{{ item.file_ext }}</span>
                     <div class="bottom clearfix">
+                      <el-button type="text" icon="el-icon-star-off" :title="'标识：'+item.unique+' (点击复制)'" @click="copy(item.unique, $event)" />
                       <el-button v-if="item.is_disable" type="text" icon="el-icon-warning" title="已禁用,点击修改" @click="selectOpen('disable',[item.file_id])" />
                       <el-button v-else type="text" icon="el-icon-warning-outline" title="已启用,点击修改" @click="selectOpen('disable',[item.file_id])" />
                       <el-button type="text" icon="el-icon-download" title="下载文件" @click="fileDownload(item, $event)" />
@@ -261,16 +275,17 @@
             </el-checkbox-group>
           </el-row>
         </el-col>
-        <el-col v-else :span="21">
+        <el-col v-else :span="22">
           <el-empty :description="'暂无'+name" />
         </el-col>
       </div>
       <!-- 表格展示 -->
       <div v-else>
-        <el-col :span="21" style="padding:0">
+        <el-col :span="22" style="padding:0">
           <el-table ref="table" v-loading="loading" :data="data" :height="height" @sort-change="sort" @selection-change="select" @cell-dblclick="cellDbclick">
             <el-table-column type="selection" width="42" title="全选/反选" />
             <el-table-column :prop="idkey" label="ID" min-width="80" sortable="custom" />
+            <el-table-column prop="unique" label="标识" min-width="80" show-overflow-tooltip />
             <el-table-column prop="file_url" label="文件" min-width="90">
               <template slot-scope="scope">
                 <div style="height:30px">
@@ -296,19 +311,19 @@
             </el-table-column>
             <el-table-column prop="file_type_name" label="类型" min-width="55" />
             <el-table-column prop="file_name" label="名称" min-width="120" sortable="custom" show-overflow-tooltip />
-            <el-table-column prop="file_ext" label="后缀" min-width="75" sortable="custom" />
+            <el-table-column prop="file_ext" label="后缀" min-width="75" sortable="custom" show-overflow-tooltip />
             <el-table-column prop="file_size" label="大小" min-width="85" sortable="custom" show-overflow-tooltip />
-            <el-table-column prop="group_name" label="分组" min-width="120" show-overflow-tooltip />
-            <el-table-column prop="tag_names" label="标签" min-width="120" show-overflow-tooltip />
+            <el-table-column prop="group_name" label="分组" min-width="116" show-overflow-tooltip />
+            <el-table-column prop="tag_names" label="标签" min-width="116" show-overflow-tooltip />
             <el-table-column prop="is_disable" label="禁用" min-width="73" sortable="custom">
               <template slot-scope="scope">
                 <el-switch v-model="scope.row.is_disable" :active-value="1" :inactive-value="0" @change="disable([scope.row])" />
               </template>
             </el-table-column>
             <el-table-column prop="sort" label="排序" min-width="73" sortable="custom" />
-            <el-table-column prop="create_time" label="添加时间" min-width="152" sortable="custom" />
-            <el-table-column v-if="recycle" prop="delete_time" label="删除时间" min-width="152" sortable="custom" />
-            <el-table-column v-else prop="update_time" label="修改时间" min-width="152" sortable="custom" />
+            <el-table-column prop="create_time" label="添加时间" width="152" sortable="custom" />
+            <el-table-column v-if="recycle" prop="delete_time" label="删除时间" width="152" sortable="custom" />
+            <el-table-column v-else prop="update_time" label="修改时间" width="152" sortable="custom" />
             <el-table-column label="操作" width="160">
               <template slot-scope="scope">
                 <el-button v-if="recycle" type="text" size="mini" @click="selectOpen('reco',[scope.row])">恢复</el-button>
@@ -326,6 +341,9 @@
     <!-- 修改 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" append-to-body :close-on-click-modal="false" :close-on-press-escape="false">
       <el-form ref="ref" :rules="rules" :model="model" label-width="100px" class="dialog-body" :style="{height:height+'px'}">
+        <el-form-item label="标识" prop="unique">
+          <el-input v-model="model.unique" placeholder="请输入标识（唯一）" clearable />
+        </el-form-item>
         <el-form-item v-if="model.file_id" label="文件" prop="file">
           <el-col :span="18">
             <div style="height:200px">
@@ -372,9 +390,6 @@
             <el-option v-for="(item, index) in file_types" :key="index" :value="index" :label="item" />
           </el-select>
         </el-form-item>
-        <el-form-item label="文件排序" prop="sort">
-          <el-input v-model="model.sort" type="number" placeholder="250" clearable />
-        </el-form-item>
         <el-form-item v-if="model.file_id" label="文件域名" prop="domain">
           <el-input v-model="model.domain" placeholder="请输入域名" clearable>
             <el-button slot="append" icon="el-icon-copy-document" title="复制" @click="copy(model.domain, $event)" />
@@ -394,6 +409,12 @@
           <el-select v-model="model.storage" placeholder="" :disabled="model.file_id?true:false">
             <el-option v-for="(item, index) in storages" :key="index" :value="index" :label="item" />
           </el-select>
+        </el-form-item>
+        <el-form-item label="备注" prop="remark">
+          <el-input v-model="model.remark" placeholder="请输入备注" clearable />
+        </el-form-item>
+        <el-form-item label="排序" prop="sort">
+          <el-input v-model="model.sort" type="number" placeholder="250" clearable />
         </el-form-item>
         <el-form-item v-if="model.file_id" label="是否禁用" prop="is_disable">
           <el-switch v-model="model.is_disable" :active-value="1" :inactive-value="0" disabled />
@@ -476,7 +497,9 @@ export default {
         is_disable: '',
         search_field: 'file_name',
         search_exp: 'like',
-        date_field: 'create_time'
+        date_field: 'create_time',
+        sort_field: 'file_id',
+        sort_value: ''
       },
       data: [],
       count: 0,
@@ -486,6 +509,7 @@ export default {
       model: {
         type: 'upl',
         file_id: '',
+        unique: '',
         group_id: '',
         tag_ids: [],
         storage: 'local',
@@ -498,6 +522,7 @@ export default {
         file_size: '',
         file_ext: '',
         file_url: '',
+        remark: '',
         sort: 250,
         is_front: 0,
         is_disable: 0,
@@ -540,6 +565,7 @@ export default {
         group_id: '',
         group_name: '',
         group_desc: '',
+        remark: '',
         sort: 250
       },
       groupRules: {
@@ -554,6 +580,7 @@ export default {
         tag_id: '',
         tag_name: '',
         tag_desc: '',
+        remark: '',
         sort: 250
       },
       tagRules: {
@@ -629,8 +656,8 @@ export default {
       this.groupData = data.group
       this.tagData = data.tag
       this.exps = data.exps
-      this.loading = false
       this.imagePreview(data.list)
+      this.loading = false
     },
     // 上传
     uploadBefore() {
@@ -671,7 +698,7 @@ export default {
       this.uploadNumber = this.uploadCount = 0
       this.uploadFilelist = []
     },
-    // 添加、修改
+    // 添加修改
     add() {
       this.dialog = true
       this.dialogTitle = this.name + '添加'

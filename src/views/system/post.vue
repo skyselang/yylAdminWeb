@@ -11,6 +11,7 @@
             <el-option value="post_name" label="名称" />
             <el-option value="post_abbr" label="简称" />
             <el-option value="post_desc" label="描述" />
+            <el-option value="remark" label="备注" />
             <el-option value="is_disable" label="禁用" />
           </el-select>
           <el-select v-model="query.search_exp" class="filter-item ya-search-exp">
@@ -26,7 +27,7 @@
             <el-option value="create_time" label="添加时间" />
             <el-option value="update_time" label="修改时间" />
           </el-select>
-          <el-date-picker v-model="query.date_value" type="daterange" class="filter-item ya-date-value" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd" />
+          <el-date-picker v-model="query.date_value" type="datetimerange" class="filter-item ya-date-value" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00','23:59:59']" value-format="yyyy-MM-dd HH:mm:ss" />
           <el-button class="filter-item" type="primary" title="查询/刷新" @click="search()">查询</el-button>
           <el-button class="filter-item" icon="el-icon-refresh" title="重置" @click="refresh()" />
         </el-col>
@@ -79,8 +80,8 @@
         </template>
       </el-table-column>
       <el-table-column prop="sort" label="排序" min-width="75" />
-      <el-table-column prop="create_time" label="添加时间" min-width="155" sortable="custom" />
-      <el-table-column prop="update_time" label="修改时间" min-width="155" sortable="custom" />
+      <el-table-column prop="create_time" label="添加时间" width="155" sortable="custom" />
+      <el-table-column prop="update_time" label="修改时间" width="155" sortable="custom" />
       <el-table-column label="操作" width="155">
         <template slot-scope="scope">
           <el-button size="mini" type="text" @click="userShow(scope.row)">用户</el-button>
@@ -90,6 +91,11 @@
         </template>
       </el-table-column>
     </el-table>
+    <el-row>
+      <el-descriptions title="" :column="12" :colon="false" size="medium">
+        <el-descriptions-item label="">共 {{ count }} 条</el-descriptions-item>
+      </el-descriptions>
+    </el-row>
     <!-- 添加修改 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false">
       <el-form ref="ref" :rules="rules" :model="model" label-width="100px" class="dialog-body" :style="{height:height+'px'}">
@@ -103,7 +109,10 @@
           <el-input v-model="model.post_abbr" placeholder="请输入简称" clearable />
         </el-form-item>
         <el-form-item label="描述" prop="post_desc">
-          <el-input v-model="model.post_desc" placeholder="请输入描述" clearable />
+          <el-input v-model="model.post_desc" type="textarea" autosize placeholder="请输入描述" clearable />
+        </el-form-item>
+        <el-form-item label="备注" prop="remark">
+          <el-input v-model="model.remark" placeholder="" clearable />
         </el-form-item>
         <el-form-item label="排序" prop="sort">
           <el-input v-model="model.sort" type="number" />
@@ -189,16 +198,18 @@ export default {
       height: 680,
       loading: false,
       idkey: 'post_id',
-      exps: [],
+      exps: [{ exp: 'like', name: '包含' }],
       query: { search_field: 'post_name', search_exp: 'like', date_field: 'create_time' },
       data: [],
       dialog: false,
       dialogTitle: '',
       model: {
         post_id: '',
+        post_pid: '',
         post_name: '',
         post_abbr: '',
         post_desc: '',
+        remark: '',
         sort: 250
       },
       rules: {
@@ -226,7 +237,8 @@ export default {
       userSelectIds: '',
       userSelectTitle: '选中操作',
       userSelectDialog: false,
-      userSelectType: ''
+      userSelectType: '',
+      count: ''
     }
   },
   created() {
@@ -241,6 +253,7 @@ export default {
         this.data = res.data.list
         this.trees = res.data.tree
         this.exps = res.data.exps
+        this.count = res.data.count
         this.loading = false
       }).catch(() => {
         this.loading = false

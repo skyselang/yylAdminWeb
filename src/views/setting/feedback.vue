@@ -13,6 +13,7 @@
             <el-option value="phone" label="手机" />
             <el-option value="email" label="邮箱" />
             <el-option value="receipt_no" label="回执" />
+            <el-option value="remark" label="备注" />
             <el-option value="is_disable" label="禁用" />
           </el-select>
           <el-select v-model="query.search_exp" class="filter-item ya-search-exp">
@@ -33,7 +34,7 @@
             <el-option value="create_time" label="添加时间" />
             <el-option value="update_time" label="修改时间" />
           </el-select>
-          <el-date-picker v-model="query.date_value" type="daterange" class="filter-item ya-date-value" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd" />
+          <el-date-picker v-model="query.date_value" type="datetimerange" class="filter-item ya-date-value" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00','23:59:59']" value-format="yyyy-MM-dd HH:mm:ss" />
           <el-button class="filter-item" type="primary" title="查询/刷新" @click="search()">查询</el-button>
           <el-button class="filter-item" icon="el-icon-refresh" title="重置" @click="refresh()" />
         </el-col>
@@ -91,8 +92,8 @@
         </template>
       </el-table-column>
       <el-table-column prop="receipt_no" label="回执编号" min-width="100" show-overflow-tooltip />
-      <el-table-column prop="create_time" label="添加时间" min-width="155" sortable="custom" />
-      <el-table-column prop="update_time" label="修改时间" min-width="155" sortable="custom" />
+      <el-table-column prop="create_time" label="添加时间" width="155" sortable="custom" />
+      <el-table-column prop="update_time" label="修改时间" width="155" sortable="custom" />
       <el-table-column label="操作" width="90">
         <template slot-scope="scope">
           <el-button size="mini" type="text" title="修改" @click="edit(scope.row)">修改</el-button>
@@ -106,11 +107,11 @@
     <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false">
       <el-form ref="ref" :rules="rules" :model="model" class="dialog-body" label-width="100px" :style="{ height: height + 'px' }">
         <el-form-item label="会员ID" prop="member_id">
-          <el-col :span="10">
+          <el-col :span="8">
             <el-input v-model="model.member_id" placeholder="请输入会员ID" clearable />
           </el-col>
           <el-col class="ya-center" :span="4">会员用户名</el-col>
-          <el-col :span="10">
+          <el-col :span="12">
             <el-input v-model="model.member_username" placeholder="" disabled />
           </el-col>
         </el-form-item>
@@ -123,7 +124,7 @@
           <el-input v-model="model.title" placeholder="请输入标题" clearable />
         </el-form-item>
         <el-form-item label="内容" prop="content">
-          <el-input v-model="model.content" type="textarea" placeholder="请输入内容" clearable :autosize="{ minRows: 5, maxRows: 20 }" />
+          <el-input v-model="model.content" type="textarea" :autosize="{ minRows: 5, maxRows: 20 }" placeholder="请输入内容" clearable />
         </el-form-item>
         <el-form-item label="图片" prop="images">
           <el-row>
@@ -154,7 +155,7 @@
           <el-input v-model="model.email" placeholder="" clearable />
         </el-form-item>
         <el-form-item label="回复" prop="reply">
-          <el-input v-model="model.reply" type="textarea" placeholder="请输入回复" clearable :autosize="{ minRows: 5, maxRows: 20 }" />
+          <el-input v-model="model.reply" type="textarea" :autosize="{ minRows: 5, maxRows: 20 }" placeholder="请输入回复" clearable />
         </el-form-item>
         <el-form-item label="状态" prop="status">
           <el-select v-model="model.status">
@@ -207,7 +208,7 @@ export default {
       height: 680,
       loading: false,
       idkey: 'feedback_id',
-      exps: [],
+      exps: [{ exp: 'like', name: '包含' }],
       query: { page: 1, limit: 12, search_field: 'title', search_exp: 'like', date_field: 'create_time' },
       data: [],
       count: 0,

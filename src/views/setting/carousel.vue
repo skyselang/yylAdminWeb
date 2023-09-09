@@ -7,10 +7,11 @@
         <el-col>
           <el-select v-model="query.search_field" class="filter-item ya-search-field" placeholder="查询字段">
             <el-option :value="idkey" label="ID" />
-            <el-option value="title" label="标题" />
             <el-option value="unique" label="标识" />
+            <el-option value="title" label="标题" />
             <el-option value="position" label="位置" />
             <el-option value="desc" label="描述" />
+            <el-option value="remark" label="备注" />
             <el-option value="is_disable" label="禁用" />
           </el-select>
           <el-select v-model="query.search_exp" class="filter-item ya-search-exp">
@@ -25,7 +26,7 @@
             <el-option value="create_time" label="添加时间" />
             <el-option value="update_time" label="修改时间" />
           </el-select>
-          <el-date-picker v-model="query.date_value" type="daterange" class="filter-item ya-date-value" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd" />
+          <el-date-picker v-model="query.date_value" type="datetimerange" class="filter-item ya-date-value" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00','23:59:59']" value-format="yyyy-MM-dd HH:mm:ss" />
           <el-button class="filter-item" type="primary" title="查询/刷新" @click="search()">查询</el-button>
           <el-button class="filter-item" icon="el-icon-refresh" title="重置" @click="refresh()" />
         </el-col>
@@ -64,6 +65,7 @@
     <el-table ref="table" v-loading="loading" :data="data" :height="height" @sort-change="sort" @selection-change="select" @cell-dblclick="cellDbclick">
       <el-table-column type="selection" width="42" title="全选/反选" />
       <el-table-column :prop="idkey" label="ID" width="80" sortable="custom" />
+      <el-table-column prop="unique" label="标识" min-width="100" sortable="custom" show-overflow-tooltip />
       <el-table-column prop="file_url" label="文件" min-width="130">
         <template slot-scope="scope">
           <div v-if="scope.row.file_url" style="height:30px">
@@ -95,18 +97,17 @@
       </el-table-column>
       <el-table-column prop="file_type_name" label="类型" min-width="75" />
       <el-table-column prop="title" label="标题" min-width="150" sortable="custom" show-overflow-tooltip />
-      <el-table-column prop="unique" label="标识" min-width="100" sortable="custom" show-overflow-tooltip />
-      <el-table-column prop="link" label="链接" min-width="180" sortable="custom" show-overflow-tooltip />
       <el-table-column prop="position" label="位置" min-width="120" sortable="custom" show-overflow-tooltip />
       <el-table-column prop="desc" label="描述" min-width="120" show-overflow-tooltip />
+      <el-table-column prop="remark" label="备注" min-width="150" sortable="custom" show-overflow-tooltip />
       <el-table-column prop="is_disable" label="禁用" min-width="75" sortable="custom">
         <template slot-scope="scope">
           <el-switch v-model="scope.row.is_disable" :active-value="1" :inactive-value="0" @change="disable([scope.row])" />
         </template>
       </el-table-column>
       <el-table-column prop="sort" label="排序" min-width="75" sortable="custom" />
-      <el-table-column prop="create_time" label="添加时间" min-width="155" sortable="custom" />
-      <el-table-column prop="update_time" label="修改时间" min-width="155" sortable="custom" />
+      <el-table-column prop="create_time" label="添加时间" width="155" sortable="custom" />
+      <el-table-column prop="update_time" label="修改时间" width="155" sortable="custom" />
       <el-table-column label="操作" width="90">
         <template slot-scope="scope">
           <el-button size="mini" type="text" @click="edit(scope.row)">修改</el-button>
@@ -119,6 +120,11 @@
     <!-- 添加修改 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false" destroy-on-close>
       <el-form ref="ref" :rules="rules" :model="model" label-width="100px" class="dialog-body" :style="{height:height+'px'}">
+        <el-form-item label="标识" prop="unique">
+          <el-input v-model="model.unique" placeholder="请输入标识（唯一）" clearable>
+            <el-button slot="append" icon="el-icon-document-copy" title="复制" @click="copy(model.unique, $event)" />
+          </el-input>
+        </el-form-item>
         <el-form-item label="文件" prop="file_id">
           <el-col :span="16">
             <div style="height:180px">
@@ -168,20 +174,15 @@
             <el-button slot="append" icon="el-icon-document-copy" title="复制" @click="copy(model.title, $event)" />
           </el-input>
         </el-form-item>
-        <el-form-item label="标识" prop="unique">
-          <el-input v-model="model.unique" placeholder="请输入标识（唯一）" clearable>
-            <el-button slot="append" icon="el-icon-document-copy" title="复制" @click="copy(model.unique, $event)" />
-          </el-input>
-        </el-form-item>
-        <el-form-item label="链接" prop="link">
-          <el-input v-model="model.link" placeholder="请输入链接" clearable>
-            <el-button slot="append" icon="el-icon-document-copy" title="复制" @click="copy(model.link, $event)" />
-          </el-input>
-        </el-form-item>
         <el-form-item label="描述" prop="desc">
-          <el-input v-model="model.desc" placeholder="请输入描述" clearable>
-            <el-button slot="append" icon="el-icon-document-copy" title="复制" @click="copy(model.desc, $event)" />
+          <el-input v-model="model.desc" type="textarea" autosize placeholder="请输入描述" clearable /></el-form-item>
+        <el-form-item label="链接" prop="url">
+          <el-input v-model="model.url" placeholder="请输入链接" clearable>
+            <el-button slot="append" icon="el-icon-document-copy" title="复制" @click="copy(model.url, $event)" />
           </el-input>
+        </el-form-item>
+        <el-form-item label="备注" prop="remark">
+          <el-input v-model="model.remark" placeholder="请输入备注" clearable />
         </el-form-item>
         <el-form-item label="排序" prop="sort">
           <el-input v-model="model.sort" type="number" />
@@ -271,7 +272,7 @@ export default {
       height: 680,
       loading: false,
       idkey: 'carousel_id',
-      exps: [],
+      exps: [{ exp: 'like', name: '包含' }],
       query: { page: 1, limit: 12, search_field: 'title', search_exp: 'like', date_field: 'create_time' },
       data: [],
       count: 0,
@@ -286,15 +287,14 @@ export default {
         file_name: '',
         file_ext: '',
         title: '',
-        link: '',
         position: '',
+        url: '',
         desc: '',
+        remark: '',
         sort: 250,
-        is_disable: 0,
         file_list: []
       },
       rules: {
-        file_type: [{ required: true, message: '请选择类型', trigger: 'blur' }],
         title: [{ required: true, message: '请输入标题', trigger: 'blur' }]
       },
       selection: [],

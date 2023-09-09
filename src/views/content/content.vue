@@ -7,14 +7,18 @@
         <el-col>
           <el-select v-model="query.search_field" class="filter-item ya-search-field" placeholder="查询字段">
             <el-option :value="idkey" label="ID" />
-            <el-option value="name" label="名称" />
             <el-option value="unique" label="标识" />
+            <el-option value="name" label="名称" />
             <el-option value="category_ids" label="分类" />
             <el-option value="tag_ids" label="标签" />
             <el-option value="is_top" label="置顶" />
             <el-option value="is_hot" label="热门" />
             <el-option value="is_rec" label="推荐" />
             <el-option value="is_disable" label="禁用" />
+            <el-option value="title" label="标题" />
+            <el-option value="keywords" label="关键词" />
+            <el-option value="description" label="描述" />
+            <el-option value="remark" label="备注" />
           </el-select>
           <el-select v-model="query.search_exp" class="filter-item ya-search-exp">
             <el-option v-for="exp in exps" :key="exp.exp" :value="exp.exp" :label="exp.name" />
@@ -44,8 +48,9 @@
           <el-select v-model="query.date_field" class="filter-item ya-date-field" placeholder="时间类型">
             <el-option value="create_time" label="添加时间" />
             <el-option value="update_time" label="修改时间" />
+            <el-option value="release_time" label="发布时间" />
           </el-select>
-          <el-date-picker v-model="query.date_value" type="daterange" class="filter-item ya-date-value" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd" />
+          <el-date-picker v-model="query.date_value" type="datetimerange" class="filter-item ya-date-value" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00','23:59:59']" value-format="yyyy-MM-dd HH:mm:ss" />
           <el-button class="filter-item" type="primary" title="查询/刷新" @click="search()">查询</el-button>
           <el-button class="filter-item" icon="el-icon-refresh" title="重置" @click="refresh()" />
         </el-col>
@@ -53,6 +58,7 @@
       <!-- 选中操作 -->
       <el-row>
         <el-col>
+          <el-button title="发布时间" @click="selectOpen('release')">发布时间</el-button>
           <el-button title="修改分类" @click="selectOpen('editcate')">分类</el-button>
           <el-button title="修改标签" @click="selectOpen('edittag')">标签</el-button>
           <el-button title="是否置顶" @click="selectOpen('istop')">置顶</el-button>
@@ -88,6 +94,9 @@
           <el-form-item v-else-if="selectType === 'disable'" label="是否禁用" prop="">
             <el-switch v-model="is_disable" :active-value="1" :inactive-value="0" />
           </el-form-item>
+          <el-form-item v-else-if="selectType === 'release'" label="发布时间" prop="">
+            <el-date-picker v-model="release_time" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" />
+          </el-form-item>
           <el-form-item v-else-if="selectType === 'dele'" label="" prop="">
             <span style="color:red">确定要删除选中的{{ name }}吗？</span>
           </el-form-item>
@@ -102,15 +111,16 @@
     <el-table ref="table" v-loading="loading" :data="data" :height="height" @sort-change="sort" @selection-change="select">
       <el-table-column type="selection" width="42" title="全选/反选" />
       <el-table-column :prop="idkey" label="ID" width="80" sortable="custom" />
-      <el-table-column prop="cover_url" label="封面" min-width="60">
+      <el-table-column prop="unique" label="标识" min-width="80" show-overflow-tooltip />
+      <el-table-column prop="image_url" label="图片" min-width="60" show-overflow-tooltip>
         <template slot-scope="scope">
           <div style="height:30px">
             <el-image
-              v-if="scope.row.cover_url"
+              v-if="scope.row.image_url"
               style="height:30px"
               fit="contain"
-              :src="scope.row.cover_url"
-              :preview-src-list="[scope.row.cover_url]"
+              :src="scope.row.image_url"
+              :preview-src-list="[scope.row.image_url]"
               title="点击看大图"
               lazy
               scroll-container=".el-table__body-wrapper"
@@ -123,7 +133,6 @@
         </template>
       </el-table-column>
       <el-table-column prop="name" label="名称" min-width="200" show-overflow-tooltip />
-      <el-table-column prop="unique" label="标识" min-width="80" show-overflow-tooltip />
       <el-table-column prop="category_names" label="分类" min-width="120" show-overflow-tooltip />
       <el-table-column prop="tag_names" label="标签" min-width="120" show-overflow-tooltip />
       <el-table-column prop="is_top" label="置顶" min-width="72" sortable="custom">
@@ -146,10 +155,10 @@
           <el-switch v-model="scope.row.is_disable" :active-value="1" :inactive-value="0" @change="disable([scope.row])" />
         </template>
       </el-table-column>
-      <el-table-column prop="hits" label="点击" min-width="72" sortable="custom" />
-      <el-table-column prop="sort" label="排序" min-width="72" sortable="custom" />
-      <el-table-column prop="create_time" label="添加时间" min-width="155" sortable="custom" />
-      <el-table-column prop="update_time" label="修改时间" min-width="155" sortable="custom" />
+      <el-table-column prop="hits" label="点击" min-width="72" show-overflow-tooltip sortable="custom" />
+      <el-table-column prop="create_time" label="添加时间" width="155" sortable="custom" />
+      <el-table-column prop="update_time" label="修改时间" width="155" sortable="custom" />
+      <el-table-column prop="release_time" label="发布时间" width="155" sortable="custom" />
       <el-table-column label="操作" width="90">
         <template slot-scope="scope">
           <el-button size="mini" type="text" title="信息/修改" @click="edit(scope.row)">修改</el-button>
@@ -162,25 +171,25 @@
     <!-- 添加修改 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false">
       <el-form ref="ref" :rules="rules" :model="model" label-width="100px" class="dialog-body" :style="{ height: height + 'px' }">
-        <el-form-item label="封面" prop="cover_id">
+        <el-form-item label="标识" prop="unique">
+          <el-input v-model="model.unique" placeholder="请输入标识（唯一）" clearable />
+        </el-form-item>
+        <el-form-item label="图片" prop="image_id">
           <el-col :span="12" style="height:100px">
-            <el-image v-if="model.cover_url" style="height:100px" fit="contain" :src="model.cover_url" :preview-src-list="[model.cover_url]" title="点击看大图">
+            <el-image v-if="model.image_url" style="height:100px" fit="contain" :src="model.image_url" :preview-src-list="[model.image_url]" title="点击看大图">
               <div slot="error" class="image-slot">
                 <i class="el-icon-picture-outline" />
               </div>
             </el-image>
           </el-col>
           <el-col :span="12">
-            <el-button size="mini" @click="fileUpload('image', 'cover_id', '上传封面')">上传封面</el-button>
-            <el-button size="mini" @click="fileDelete(0, 'cover_id')">删除</el-button>
+            <el-button size="mini" @click="fileUpload('image', 'image_id', '上传图片')">上传图片</el-button>
+            <el-button size="mini" @click="fileDelete(0, 'image_id')">删除</el-button>
             <p>图片小于 200 KB，jpg、png格式。</p>
           </el-col>
         </el-form-item>
         <el-form-item label="名称" prop="name">
           <el-input v-model="model.name" placeholder="请输入名称" clearable />
-        </el-form-item>
-        <el-form-item label="标识" prop="unique">
-          <el-input v-model="model.unique" placeholder="请输入标识（唯一）" clearable />
         </el-form-item>
         <el-form-item label="分类" prop="category_ids">
           <el-cascader v-model="model.category_ids" :options="categoryData" :props="categoryProps" class="ya-width-100p" clearable filterable />
@@ -197,7 +206,10 @@
           <el-input v-model="model.keywords" placeholder="keywords" clearable />
         </el-form-item>
         <el-form-item label="描述" prop="description">
-          <el-input v-model="model.description" type="textarea" placeholder="description" clearable />
+          <el-input v-model="model.description" type="textarea" autosize placeholder="description" clearable />
+        </el-form-item>
+        <el-form-item label="来源" prop="source">
+          <el-input v-model="model.source" placeholder="source" clearable />
         </el-form-item>
         <el-form-item label="作者" prop="author">
           <el-input v-model="model.author" placeholder="author" clearable />
@@ -205,10 +217,30 @@
         <el-form-item label="链接" prop="url">
           <el-input v-model="model.url" placeholder="url" clearable />
         </el-form-item>
+        <el-form-item label="备注" prop="remark">
+          <el-input v-model="model.remark" placeholder="remark" clearable />
+        </el-form-item>
         <el-form-item label="排序" prop="sort">
           <el-input v-model="model.sort" type="number" placeholder="sort" clearable />
         </el-form-item>
-        <el-form-item label="图片" prop="images">
+        <el-form-item label="初始点击" prop="hits_initial">
+          <el-col :span="6">
+            <el-input v-model="model.hits_initial" type="number" placeholder="初始点击量" clearable />
+          </el-col>
+          <el-col :span="3" class="ya-center">
+            真实点击
+          </el-col>
+          <el-col :span="6">
+            <el-input v-model="model.hits" type="number" placeholder="真实点击量" disabled />
+          </el-col>
+          <el-col :span="3" class="ya-center">
+            展示点击
+          </el-col>
+          <el-col :span="6">
+            <el-input :value="parseFloat(model.hits_initial) + parseFloat(model.hits)" type="number" placeholder="初始点击量" disabled />
+          </el-col>
+        </el-form-item>
+        <el-form-item label="图片列表" prop="images">
           <el-row>
             <el-col :span="12">
               <el-button size="mini" @click="fileUpload('image', 'images', '上传图片')">上传图片</el-button>
@@ -230,7 +262,7 @@
             </el-col>
           </el-row>
         </el-form-item>
-        <el-form-item label="视频" prop="videos">
+        <el-form-item label="视频列表" prop="videos">
           <el-row>
             <el-col :span="12">
               <el-button size="mini" @click="fileUpload('video', 'videos', '上传视频')">上传视频</el-button>
@@ -259,7 +291,7 @@
             </el-col>
           </el-row>
         </el-form-item>
-        <el-form-item label="音频" prop="audios">
+        <el-form-item label="音频列表" prop="audios">
           <el-row>
             <el-col :span="12">
               <el-button size="mini" @click="fileUpload('audio', 'audios', '上传音频')">上传音频</el-button>
@@ -285,7 +317,7 @@
             </el-col>
           </el-row>
         </el-form-item>
-        <el-form-item label="文档" prop="words">
+        <el-form-item label="文档列表" prop="words">
           <el-row>
             <el-col :span="12">
               <el-button size="mini" @click="fileUpload('word', 'words', '上传文档')">上传文档</el-button>
@@ -307,7 +339,7 @@
             </el-col>
           </el-row>
         </el-form-item>
-        <el-form-item label="其它" prop="others">
+        <el-form-item label="其它列表" prop="others">
           <el-row>
             <el-col :span="12">
               <el-button size="mini" @click="fileUpload('other', 'others', '上传其它')">上传其它</el-button>
@@ -365,7 +397,7 @@ import FileManage from '@/components/FileManage'
 import RichEditor from '@/components/RichEditor'
 import clip from '@/utils/clipboard'
 import { arrayColumn } from '@/utils/index'
-import { list, info, add, edit, dele, editcate, edittag, istop, ishot, isrec, disable } from '@/api/content/content'
+import { list, info, add, edit, dele, editcate, edittag, istop, ishot, isrec, disable, release } from '@/api/content/content'
 
 export default {
   name: 'ContentContent',
@@ -377,7 +409,7 @@ export default {
       height: 680,
       loading: false,
       idkey: 'content_id',
-      exps: [],
+      exps: [{ exp: 'like', name: '包含' }],
       query: { page: 1, limit: 12, search_field: 'name', search_exp: 'like', date_field: 'create_time' },
       data: [],
       count: 0,
@@ -385,23 +417,28 @@ export default {
       dialogTitle: '',
       model: {
         content_id: '',
+        unique: '',
         category_ids: [],
         tag_ids: [],
-        cover_id: 0,
-        cover_url: '',
+        image_id: 0,
+        image_url: '',
         name: '',
         title: '',
         keywords: '',
         description: '',
         content: '',
+        source: '',
         author: '',
         url: '',
+        remark: '',
+        sort: 250,
+        hits: 0,
+        hits_initial: 0,
         images: [],
         videos: [],
         audios: [],
         words: [],
-        others: [],
-        sort: 250
+        others: []
       },
       rules: {
         name: [{ required: true, message: '请输入名称', trigger: 'blur' }]
@@ -420,6 +457,7 @@ export default {
       is_hot: 0,
       is_rec: 0,
       is_disable: 0,
+      release_time: '',
       fileDialog: false,
       fileTitle: '文件管理',
       fileType: 'image',
@@ -555,6 +593,8 @@ export default {
           this.selectTitle = this.name + '是否推荐'
         } else if (selectType === 'disable') {
           this.selectTitle = this.name + '是否禁用'
+        } else if (selectType === 'release') {
+          this.selectTitle = this.name + '发布时间'
         } else if (selectType === 'dele') {
           this.selectTitle = this.name + '删除'
         }
@@ -582,6 +622,8 @@ export default {
           this.isrec(this.selection, true)
         } else if (selectType === 'disable') {
           this.disable(this.selection, true)
+        } else if (selectType === 'release') {
+          this.release(this.selection, true)
         } else if (selectType === 'dele') {
           this.dele(this.selection)
         }
@@ -701,6 +743,23 @@ export default {
         })
       }
     },
+    // 发布时间
+    release(row, select = false) {
+      if (!row.length) {
+        this.selectAlert()
+      } else {
+        this.loading = true
+        release({
+          ids: this.selectGetIds(row),
+          release_time: this.release_time
+        }).then(res => {
+          this.list()
+          this.$message.success(res.msg)
+        }).catch(() => {
+          this.list()
+        })
+      }
+    },
     // 删除
     dele(row) {
       if (!row.length) {
@@ -735,10 +794,10 @@ export default {
       const fileField = this.fileField
       const fileLength = fileList.length
       if (fileLength) {
-        if (fileField === 'cover_id') {
+        if (fileField === 'image_id') {
           const i = fileLength - 1
-          this.model.cover_id = fileList[i]['file_id']
-          this.model.cover_url = fileList[i]['file_url']
+          this.model.image_id = fileList[i]['file_id']
+          this.model.image_url = fileList[i]['file_url']
         } else {
           for (let i = 0; i < fileLength; i++) {
             if (fileField === 'images') {
@@ -781,9 +840,9 @@ export default {
       setTimeout(() => { window.open(file.file_url, '_blank') }, 500)
     },
     fileDelete(index, field = '') {
-      if (field === 'cover_id') {
-        this.model.cover_id = 0
-        this.model.cover_url = ''
+      if (field === 'image_id') {
+        this.model.image_id = 0
+        this.model.image_url = ''
       } else if (field === 'images') {
         if (index === 'all') {
           this.model.images = []

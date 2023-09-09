@@ -19,7 +19,7 @@
             <el-option :value="2" label="操作日志" />
           </el-select>
           <el-input v-else v-model="query.search_value" class="filter-item ya-search-value" placeholder="查询内容" clearable />
-          <el-date-picker v-model="query.date_value" type="daterange" class="filter-item ya-date-value" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd" />
+          <el-date-picker v-model="query.date_value" type="datetimerange" class="filter-item ya-date-value" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00','23:59:59']" value-format="yyyy-MM-dd HH:mm:ss" />
           <el-button class="filter-item" type="primary" title="查询/刷新" @click="search()">查询</el-button>
           <el-button class="filter-item" icon="el-icon-refresh" title="重置" @click="refresh()" />
         </el-col>
@@ -57,11 +57,12 @@ export default {
       height: 680,
       loading: true,
       idkey: 'log_id',
-      exps: [],
+      exps: [{ exp: 'like', name: '包含' }],
       query: {
         page: 1,
         limit: 12,
         search_field: 'request_region',
+        search_exp: 'like',
         date_field: 'create_time'
       },
       data: [],

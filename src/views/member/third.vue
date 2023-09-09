@@ -7,11 +7,14 @@
         <el-col>
           <el-select v-model="query.search_field" class="filter-item ya-search-field" placeholder="查询字段">
             <el-option :value="idkey" label="ID" />
-            <el-option value="unique" label="标识" />
-            <el-option value="name" label="名称" />
-            <el-option value="desc" label="描述" />
+            <el-option value="member_id" label="会员ID" />
+            <el-option value="nickname" label="昵称" />
+            <el-option value="platform" label="平台" />
+            <el-option value="application" label="应用" />
             <el-option value="remark" label="备注" />
             <el-option value="is_disable" label="禁用" />
+            <el-option value="unionid" label="unionid" />
+            <el-option value="openid" label="openid" />
           </el-select>
           <el-select v-model="query.search_exp" class="filter-item ya-search-exp">
             <el-option v-for="exp in exps" :key="exp.exp" :value="exp.exp" :label="exp.name" />
@@ -20,10 +23,17 @@
             <el-option :value="1" label="是" />
             <el-option :value="0" label="否" />
           </el-select>
+          <el-select v-else-if="query.search_field==='platform'" v-model="query.search_value" class="filter-item ya-search-value">
+            <el-option v-for="platform in platforms" :key="platform.value" :value="platform.value" :label="platform.label" />
+          </el-select>
+          <el-select v-else-if="query.search_field==='application'" v-model="query.search_value" class="filter-item ya-search-value">
+            <el-option v-for="application in applications" :key="application.value" :value="application.value" :label="application.label" />
+          </el-select>
           <el-input v-else v-model="query.search_value" class="filter-item ya-search-value" placeholder="查询内容" clearable />
           <el-select v-model="query.date_field" class="filter-item ya-date-field" placeholder="时间类型">
             <el-option value="create_time" label="添加时间" />
             <el-option value="update_time" label="修改时间" />
+            <el-option value="login_time" label="登录时间" />
           </el-select>
           <el-date-picker v-model="query.date_value" type="datetimerange" class="filter-item ya-date-value" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00','23:59:59']" value-format="yyyy-MM-dd HH:mm:ss" />
           <el-button class="filter-item" type="primary" title="查询/刷新" @click="search()">查询</el-button>
@@ -51,62 +61,107 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button :loading="loading" @click="selectCancel">取消</el-button>
-          <el-button :loading="loading" type="primary" @click="selectSubmit">提交</el-button>
+          <el-button @click="selectCancel">取消</el-button>
+          <el-button type="primary" @click="selectSubmit">提交</el-button>
         </div>
       </el-dialog>
     </div>
     <!-- 列表 -->
-    <el-table ref="table" v-loading="loading" :data="data" :height="height" @sort-change="sort" @selection-change="select" @cell-dblclick="cellDbclick">
+    <el-table ref="table" v-loading="loading" :data="data" :height="height" @sort-change="sort" @selection-change="select">
       <el-table-column type="selection" width="42" title="全选/反选" />
       <el-table-column :prop="idkey" label="ID" width="80" sortable="custom" />
-      <el-table-column prop="unique" label="标识" min-width="120" sortable="custom" show-overflow-tooltip />
-      <el-table-column prop="name" label="名称" min-width="120" sortable="custom" show-overflow-tooltip />
-      <el-table-column prop="desc" label="描述" min-width="160" show-overflow-tooltip />
-      <el-table-column prop="remark" label="备注" min-width="150" show-overflow-tooltip />
+      <el-table-column prop="member_id" label="会员ID" width="100" sortable="custom" />
+      <el-table-column prop="member_nickname" label="会员昵称" min-width="135" show-overflow-tooltip />
+      <el-table-column prop="member_username" label="会员用户名" min-width="135" show-overflow-tooltip />
+      <el-table-column prop="headimgurl" label="头像" min-width="50">
+        <template slot-scope="scope">
+          <div style="height:25px">
+            <el-image v-if="scope.row.headimgurl" style="width:25px;height:25px;border-radius:50%;" :src="scope.row.headimgurl" :preview-src-list="[scope.row.headimgurl]" fit="contain" title="点击看大图">
+              <div slot="error" class="image-slot">
+                <el-avatar :size="25" icon="el-icon-user-solid" />
+              </div>
+            </el-image>
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column prop="nickname" label="昵称" min-width="135" show-overflow-tooltip />
+      <el-table-column prop="platform_name" label="平台" min-width="80" show-overflow-tooltip />
+      <el-table-column prop="application_name" label="应用" min-width="120" show-overflow-tooltip />
       <el-table-column prop="is_disable" label="禁用" min-width="75" sortable="custom">
         <template slot-scope="scope">
           <el-switch v-model="scope.row.is_disable" :active-value="1" :inactive-value="0" @change="disable([scope.row])" />
         </template>
       </el-table-column>
-      <el-table-column prop="sort" label="排序" min-width="75" sortable="custom" />
-      <el-table-column prop="create_time" label="添加时间" width="155" sortable="custom" />
-      <el-table-column prop="update_time" label="修改时间" width="155" sortable="custom" />
+      <el-table-column prop="create_time" label="添加/绑定时间" min-width="155" />
+      <el-table-column prop="update_time" label="修改时间" min-width="155" />
+      <el-table-column prop="login_time" label="登录时间" width="155" />
       <el-table-column label="操作" width="90">
         <template slot-scope="scope">
           <el-button size="mini" type="text" @click="edit(scope.row)">修改</el-button>
-          <el-button size="mini" type="text" @click="selectOpen('dele',scope.row)">删除</el-button>
+          <el-button size="mini" type="text" title="解绑" @click="selectOpen('dele',scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
     <!-- 分页 -->
     <pagination v-show="count>0" :total="count" :page.sync="query.page" :limit.sync="query.limit" @pagination="list" />
     <!-- 添加修改 -->
-    <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false" destroy-on-close>
+    <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false">
       <el-form ref="ref" :rules="rules" :model="model" label-width="100px" class="dialog-body" :style="{height:height+'px'}">
-        <el-form-item label="标识" prop="unique">
-          <el-input v-model="model.unique" placeholder="请输入标识（唯一）" clearable>
-            <el-button slot="append" icon="el-icon-document-copy" title="复制" @click="copy(model.unique, $event)" />
-          </el-input>
+        <el-form-item label="会员ID" prop="member_id">
+          <el-input v-model="model.member_id" type="number" placeholder="请输入会员ID" clearable />
         </el-form-item>
-        <el-form-item label="名称" prop="name">
-          <el-input v-model="model.name" placeholder="请输入名称" clearable>
-            <el-button slot="append" icon="el-icon-document-copy" title="复制" @click="copy(model.name, $event)" />
-          </el-input>
+        <el-form-item label="平台" prop="platform">
+          <el-select v-model="model.platform">
+            <el-option v-for="platform in platforms" :key="platform.value" :value="platform.value" :label="platform.label" />
+          </el-select>
         </el-form-item>
-        <el-form-item label="描述" prop="desc">
-          <el-input v-model="model.desc" type="textarea" autosize placeholder="请输入描述" clearable />
+        <el-form-item label="应用" prop="application">
+          <el-select v-model="model.application">
+            <el-option v-for="application in applications" :key="application.value" :value="application.value" :label="application.label" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="unionid" prop="unionid">
+          <el-input v-model="model.unionid" placeholder="请输入unionid" clearable />
+        </el-form-item>
+        <el-form-item label="openid" prop="openid">
+          <el-input v-model="model.openid" placeholder="请输入openid" clearable />
+        </el-form-item>
+        <el-form-item label="头像" prop="headimgurl">
+          <el-input v-model="model.headimgurl" placeholder="请输入头像链接或上传头像" clearable />
+        </el-form-item>
+        <el-form-item label="" prop="headimgurl">
+          <el-col :span="12" style="height:100px">
+            <el-image style="width:100px;height:100px;border-radius:50%;" :src="model.headimgurl" :preview-src-list="[model.headimgurl]" fit="contain" title="点击看大图">
+              <div slot="error" class="image-slot">
+                <el-avatar :size="100" icon="el-icon-user-solid" />
+              </div>
+            </el-image>
+          </el-col>
+          <el-col :span="12">
+            <el-button size="mini" @click="fileUpload()">上传头像</el-button>
+            <el-button size="mini" @click="fileDelete()">删除</el-button>
+            <p>图片小于 200 KB，jpg、png格式。</p>
+          </el-col>
+        </el-form-item>
+        <el-form-item label="昵称" prop="nickname">
+          <el-input v-model="model.nickname" placeholder="请输入昵称" clearable />
         </el-form-item>
         <el-form-item label="备注" prop="remark">
           <el-input v-model="model.remark" placeholder="请输入备注" clearable />
         </el-form-item>
-        <el-form-item label="排序" prop="sort">
-          <el-input v-model="model.sort" type="number" />
+        <el-form-item v-if="model[idkey]" label="登录IP" prop="login_ip">
+          <el-input v-model="model.login_ip" disabled />
         </el-form-item>
-        <el-form-item label="内容" prop="content">
-          <rich-editor v-model="model.content" />
+        <el-form-item v-if="model[idkey]" label="登录地区" prop="login_region">
+          <el-input v-model="model.login_region" disabled />
         </el-form-item>
-        <el-form-item v-if="model[idkey]" label="添加时间" prop="create_time">
+        <el-form-item v-if="model[idkey]" label="登录时间" prop="login_time">
+          <el-input v-model="model.login_time" disabled />
+        </el-form-item>
+        <el-form-item v-if="model[idkey]" label="登录次数" prop="login_num">
+          <el-input v-model="model.login_num" disabled />
+        </el-form-item>
+        <el-form-item v-if="model[idkey]" label="添加/绑定时间" prop="create_time">
           <el-input v-model="model.create_time" disabled />
         </el-form-item>
         <el-form-item v-if="model[idkey]" label="修改时间" prop="update_time">
@@ -121,52 +176,59 @@
         <el-button :loading="loading" type="primary" @click="submit">提交</el-button>
       </div>
     </el-dialog>
+    <!-- 文件管理 -->
+    <el-dialog title="上传头像" :visible.sync="fileDialog" width="80%" top="1vh" :close-on-click-modal="false" :close-on-press-escape="false">
+      <file-manage file-type="image" @fileCancel="fileCancel" @fileSubmit="fileSubmit" />
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination'
-import RichEditor from '@/components/RichEditor'
-import clip from '@/utils/clipboard'
+import FileManage from '@/components/FileManage'
 import { arrayColumn } from '@/utils/index'
-import { list, info, add, edit, dele, disable } from '@/api/setting/accord'
+import { list, info, add, edit, dele, disable } from '@/api/member/third'
 
 export default {
-  name: 'SettingAccord',
-  components: { Pagination, RichEditor },
-  directives: {},
+  name: 'MemberThird',
+  components: { Pagination, FileManage },
   data() {
     return {
-      name: '协议',
+      name: '会员第三方账号',
       height: 680,
       loading: false,
-      idkey: 'accord_id',
+      idkey: 'third_id',
       exps: [{ exp: 'like', name: '包含' }],
-      query: { page: 1, limit: 12, search_field: 'name', search_exp: 'like', date_field: 'create_time' },
+      query: { page: 1, limit: 12, search_field: 'nickname', search_exp: 'like', date_field: 'create_time' },
       data: [],
       count: 0,
+      platforms: [],
+      applications: [],
       dialog: false,
       dialogTitle: '',
       model: {
-        accord_id: '',
-        unique: '',
-        name: '',
-        desc: '',
-        content: '',
-        remark: '',
-        sort: 250
+        third_id: '',
+        member_id: 0,
+        platform: 20,
+        application: 21,
+        unionid: '',
+        openid: '',
+        headimgurl: '',
+        nickname: '',
+        remark: ''
       },
       rules: {
-        unique: [{ required: true, message: '请输入标识', trigger: 'blur' }],
-        name: [{ required: true, message: '请输入名称', trigger: 'blur' }]
+        member_id: [{ required: true, message: '请输入openid', trigger: 'blur' }],
+        openid: [{ required: true, message: '请输入openid', trigger: 'blur' }]
       },
       selection: [],
       selectIds: '',
       selectTitle: '选中操作',
       selectDialog: false,
       selectType: '',
-      is_disable: 0
+      is_disable: 0,
+      fileDialog: false
     }
   },
   created() {
@@ -181,6 +243,8 @@ export default {
         this.data = res.data.list
         this.count = res.data.count
         this.exps = res.data.exps
+        this.platforms = res.data.platforms
+        this.applications = res.data.applications
         this.loading = false
       }).catch(() => {
         this.loading = false
@@ -307,7 +371,7 @@ export default {
         if (selectType === 'disable') {
           this.disable(this.selection, true)
         } else if (selectType === 'dele') {
-          this.dele(this.selection)
+          this.dele(this.selection, true)
         }
         this.selectDialog = false
       }
@@ -339,7 +403,6 @@ export default {
         this.selectAlert()
       } else {
         this.loading = true
-
         dele({
           ids: this.selectGetIds(row)
         }).then(res => {
@@ -350,14 +413,24 @@ export default {
         })
       }
     },
-    // 复制
-    copy(text, event) {
-      clip(text, event)
+    // 上传头像
+    fileUpload() {
+      this.fileDialog = true
     },
-    // 单元格双击复制
-    cellDbclick(row, column, cell, event) {
-      this.copy(row[column.property], event)
+    fileCancel() {
+      this.fileDialog = false
+    },
+    fileSubmit(fileList) {
+      this.fileDialog = false
+      const fileLength = fileList.length
+      if (fileLength) {
+        const i = fileLength - 1
+        this.model.headimgurl = fileList[i]['file_url']
+      }
     }
   }
 }
 </script>
+
+<style scoped>
+</style>

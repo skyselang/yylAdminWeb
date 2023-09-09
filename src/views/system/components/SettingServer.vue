@@ -2,7 +2,10 @@
   <el-card class="dialog-body" :style="{ height: height + 'px' }">
     <el-row :gutter="8">
       <el-col :span="12">
-        <el-form :model="model" label-width="150px">
+        <el-form :model="model" label-width="150px" size="small">
+          <el-form-item label="ThinkPHP">
+            <el-input v-model="model.thinkphp" />
+          </el-form-item>
           <el-form-item label="OS">
             <el-input v-model="model.system_info" />
           </el-form-item>
@@ -42,11 +45,11 @@
         </el-form>
       </el-col>
       <el-col :span="12">
-        <el-form :model="model" label-width="150px">
+        <el-form :model="model" label-width="150px" size="small">
           <el-form-item label="缓存类型" prop="type">
-            <el-input v-model="model.type" />
+            <el-input v-model="model.cache_type" />
           </el-form-item>
-          <div v-if="model.type === 'redis'">
+          <div v-if="model.cache_type === 'redis'">
             <el-form-item label="Redis" prop="">
               <el-input v-model="model.redis_version" />
             </el-form-item>
@@ -83,7 +86,7 @@
               </el-form-item>
             </template>
           </div>
-          <div v-else-if="model.type === 'memcache'">
+          <div v-else-if="model.cache_type === 'memcache'">
             <el-form-item label="memcache" prop="">
               <el-input v-model="model.version" />
             </el-form-item>
@@ -118,7 +121,7 @@
               <el-input v-model="model.time" />
             </el-form-item>
           </div>
-          <div v-else-if="model.type === 'wincache'">
+          <div v-else-if="model.cache_type === 'wincache'">
             <el-form-item label="缓存信息" prop="wincache_info">
               <pre>{{ model.wincache_info }}</pre>
             </el-form-item>
@@ -126,7 +129,7 @@
         </el-form>
       </el-col>
       <el-col :span="24">
-        <el-form :model="model" label-width="150px">
+        <el-form :model="model" label-width="150px" size="small">
           <el-form-item>
             <el-button :loading="loading" title="刷新" @click="refresh()">刷新</el-button>
           </el-form-item>
@@ -178,4 +181,7 @@ export default {
 </script>
 
 <style scoped>
+.my-label {
+    color: #303133;
+  }
 </style>

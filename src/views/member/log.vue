@@ -22,7 +22,7 @@
             <el-option v-for="(item, index) in logTypes" :key="index" :value="index" :label="item" />
           </el-select>
           <el-input v-else v-model="query.search_value" class="filter-item ya-search-value" placeholder="查询内容" clearable />
-          <el-date-picker v-model="query.date_value" type="daterange" class="filter-item ya-date-value" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd" />
+          <el-date-picker v-model="query.date_value" type="datetimerange" class="filter-item ya-date-value" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00','23:59:59']" value-format="yyyy-MM-dd HH:mm:ss" />
           <el-button class="filter-item" type="primary" title="查询/刷新" @click="search()">查询</el-button>
           <el-button class="filter-item" icon="el-icon-refresh" title="重置" @click="refresh()" />
         </el-col>
@@ -64,7 +64,7 @@
       <el-table-column prop="request_isp" label="请求ISP" min-width="105" show-overflow-tooltip />
       <el-table-column prop="response_code" label="返回码" min-width="80" show-overflow-tooltip />
       <el-table-column prop="response_msg" label="返回描述" min-width="120" show-overflow-tooltip />
-      <el-table-column prop="create_time" label="请求时间" min-width="155" sortable="custom" />
+      <el-table-column prop="create_time" label="请求时间" width="155" sortable="custom" />
       <el-table-column label="操作" width="85">
         <template slot-scope="scope">
           <el-button size="mini" type="text" @click="info(scope.row)">详情</el-button>
@@ -117,7 +117,7 @@
           <el-input v-model="model.response_msg" />
         </el-form-item>
         <el-form-item label="用户代理" prop="user_agent">
-          <el-input v-model="model.user_agent" type="textarea" />
+          <el-input v-model="model.user_agent" type="textarea" autosize />
         </el-form-item>
         <el-form-item label="请求参数" prop="request_param">
           <el-button type="text" icon="el-icon-copy-document" title="复制参数" @click="requestParamCopy($event)" />
@@ -149,7 +149,7 @@ export default {
       height: 680,
       loading: false,
       idkey: 'log_id',
-      exps: [],
+      exps: [{ exp: 'like', name: '包含' }],
       query: { page: 1, limit: 12, search_field: 'member_id', search_exp: 'like', date_field: 'create_time' },
       data: [],
       count: 0,

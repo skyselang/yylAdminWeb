@@ -93,7 +93,7 @@ export default {
       idkey: 'notice_id',
       query: { page: 1, limit: 10 },
       data: [],
-      exps: [],
+      exps: [{ exp: 'like', name: '包含' }],
       count: 0,
       dialog: false,
       dialogTitle: '公告',

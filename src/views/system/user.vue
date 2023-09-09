@@ -7,6 +7,7 @@
         <el-col>
           <el-select v-model="query.search_field" class="filter-item ya-search-field" placeholder="查询字段">
             <el-option :value="idkey" label="ID" />
+            <el-option value="number" label="编号" />
             <el-option value="nickname" label="昵称" />
             <el-option value="username" label="账号" />
             <el-option value="phone" label="手机" />
@@ -15,6 +16,7 @@
             <el-option value="post_ids" label="职位" />
             <el-option value="role_ids" label="角色" />
             <el-option value="is_super" label="超管" />
+            <el-option value="remark" label="备注" />
             <el-option value="is_disable" label="禁用" />
           </el-select>
           <el-select v-model="query.search_exp" class="filter-item ya-search-exp">
@@ -36,7 +38,7 @@
             <el-option value="login_time" label="登录时间" />
             <el-option value="logout_time" label="退出时间" />
           </el-select>
-          <el-date-picker v-model="query.date_value" type="daterange" class="filter-item ya-date-value" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd" />
+          <el-date-picker v-model="query.date_value" type="datetimerange" class="filter-item ya-date-value" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00','23:59:59']" value-format="yyyy-MM-dd HH:mm:ss" />
           <el-button class="filter-item" type="primary" title="查询/刷新" @click="search()">查询</el-button>
           <el-button class="filter-item" icon="el-icon-refresh" title="重置" @click="refresh()" />
         </el-col>
@@ -104,11 +106,12 @@
           </div>
         </template>
       </el-table-column>
+      <el-table-column prop="number" label="编号" min-width="73" sortable="custom" show-overflow-tooltip />
       <el-table-column prop="nickname" label="昵称" min-width="105" sortable="custom" show-overflow-tooltip />
       <el-table-column prop="username" label="账号" min-width="105" sortable="custom" show-overflow-tooltip />
-      <el-table-column prop="dept_names" label="部门" min-width="155" show-overflow-tooltip />
-      <el-table-column prop="post_names" label="职位" min-width="155" show-overflow-tooltip />
-      <el-table-column prop="role_names" label="角色" min-width="155" show-overflow-tooltip />
+      <el-table-column prop="dept_names" label="部门" min-width="150" show-overflow-tooltip />
+      <el-table-column prop="post_names" label="职位" min-width="150" show-overflow-tooltip />
+      <el-table-column prop="role_names" label="角色" min-width="150" show-overflow-tooltip />
       <el-table-column prop="is_super" label="超管" min-width="73" sortable="custom">
         <template slot-scope="scope">
           <el-switch v-model="scope.row.is_super" :active-value="1" :inactive-value="0" @change="issuper([scope.row])" />
@@ -120,9 +123,9 @@
         </template>
       </el-table-column>
       <el-table-column prop="sort" label="排序" min-width="73" sortable="custom" />
-      <el-table-column prop="create_time" label="添加时间" min-width="155" sortable="custom" />
-      <el-table-column prop="update_time" label="修改时间" min-width="155" sortable="custom" />
-      <el-table-column prop="login_time" label="登录时间" min-width="155" sortable="custom" />
+      <el-table-column prop="create_time" label="添加时间" width="155" sortable="custom" />
+      <el-table-column prop="update_time" label="修改时间" width="155" sortable="custom" />
+      <el-table-column prop="login_time" label="登录时间" width="155" sortable="custom" />
       <el-table-column label="操作" width="86">
         <template slot-scope="scope">
           <el-button size="mini" type="text" title="信息/修改" @click="edit(scope.row)">修改</el-button>
@@ -145,6 +148,9 @@
             <el-button size="mini" @click="fileDelete('avatar')">删除</el-button>
             <p>图片小于 200 KB，jpg、png格式。</p>
           </el-col>
+        </el-form-item>
+        <el-form-item label="编号" prop="number">
+          <el-input key="number" v-model="model.number" placeholder="请输入编号（工号）" clearable />
         </el-form-item>
         <el-form-item label="昵称" prop="nickname">
           <el-input key="nickname" v-model="model.nickname" placeholder="请输入昵称（姓名）" clearable />
@@ -247,7 +253,7 @@ export default {
       height: 680,
       loading: false,
       idkey: 'user_id',
-      exps: [],
+      exps: [{ exp: 'like', name: '包含' }],
       query: { page: 1, limit: 12, search_field: 'username', search_exp: 'like', date_field: 'create_time' },
       data: [],
       count: 0,
@@ -255,6 +261,7 @@ export default {
       dialogTitle: '',
       model: {
         user_id: '',
+        number: '',
         avatar_id: 0,
         avatar_url: '',
         nickname: '',

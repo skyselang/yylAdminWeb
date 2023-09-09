@@ -7,10 +7,14 @@
         <el-col>
           <el-select v-model="query.search_field" class="filter-item ya-search-field" placeholder="查询字段">
             <el-option :value="idkey" label="ID" />
-            <el-option value="category_name" label="名称" />
             <el-option value="category_unique" label="标识" />
+            <el-option value="category_name" label="名称" />
             <el-option value="category_pid" label="上级" />
             <el-option value="is_disable" label="禁用" />
+            <el-option value="title" label="标题" />
+            <el-option value="keywords" label="关键词" />
+            <el-option value="description" label="描述" />
+            <el-option value="remark" label="备注" />
           </el-select>
           <el-select v-model="query.search_exp" class="filter-item ya-search-exp">
             <el-option v-for="exp in exps" :key="exp.exp" :value="exp.exp" :label="exp.name" />
@@ -25,7 +29,7 @@
             <el-option value="create_time" label="添加时间" />
             <el-option value="update_time" label="修改时间" />
           </el-select>
-          <el-date-picker v-model="query.date_value" type="daterange" class="filter-item ya-date-value" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd" />
+          <el-date-picker v-model="query.date_value" type="datetimerange" class="filter-item ya-date-value" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00','23:59:59']" value-format="yyyy-MM-dd HH:mm:ss" />
           <el-button class="filter-item" type="primary" @click="search()">查询</el-button>
           <el-button class="filter-item" @click="refresh()">刷新</el-button>
         </el-col>
@@ -69,10 +73,10 @@
     <el-table ref="table" v-loading="loading" :data="data" :height="height+50" :row-key="idkey" default-expand-all @selection-change="select">
       <el-table-column type="selection" width="42" title="全选/反选" />
       <el-table-column prop="category_name" label="名称" min-width="250" show-overflow-tooltip />
-      <el-table-column prop="cover_url" label="封面" min-width="60">
+      <el-table-column prop="image_url" label="图片" min-width="60">
         <template slot-scope="scope">
           <div style="height:30px">
-            <el-image v-if="scope.row.cover_url" style="height:30px" fit="contain" :src="scope.row.cover_url" :preview-src-list="[scope.row.cover_url]" title="点击看大图">
+            <el-image v-if="scope.row.image_url" style="height:30px" fit="contain" :src="scope.row.image_url" :preview-src-list="[scope.row.image_url]" title="点击看大图">
               <div slot="error" class="image-slot">
                 <i class="el-icon-picture-outline" />
               </div>
@@ -88,8 +92,8 @@
         </template>
       </el-table-column>
       <el-table-column prop="sort" label="排序" min-width="75" />
-      <el-table-column prop="create_time" label="添加时间" min-width="155" />
-      <el-table-column prop="update_time" label="修改时间" min-width="155" />
+      <el-table-column prop="create_time" label="添加时间" width="155" />
+      <el-table-column prop="update_time" label="修改时间" width="155" />
       <el-table-column label="操作" width="155">
         <template slot-scope="scope">
           <el-button size="mini" type="text" @click="contentShow(scope.row)">内容</el-button>
@@ -99,31 +103,36 @@
         </template>
       </el-table-column>
     </el-table>
+    <el-row>
+      <el-descriptions title="" :column="12" :colon="false" size="medium">
+        <el-descriptions-item label="">共 {{ count }} 条</el-descriptions-item>
+      </el-descriptions>
+    </el-row>
     <!-- 添加修改 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false" destroy-on-close>
       <el-form ref="ref" :rules="rules" :model="model" class="dialog-body" label-width="100px" :style="{height:height+'px'}">
+        <el-form-item label="标识" prop="category_unique">
+          <el-input v-model="model.category_unique" placeholder="请输入分类标识（唯一）" clearable />
+        </el-form-item>
         <el-form-item label="上级" prop="category_pid">
           <el-cascader v-model="model.category_pid" :options="trees" :props="props" style="width:100%" placeholder="一级分类" clearable filterable />
         </el-form-item>
         <el-form-item label="名称" prop="category_name">
           <el-input v-model="model.category_name" placeholder="请输入分类名称" clearable />
         </el-form-item>
-        <el-form-item label="封面" prop="cover_id">
+        <el-form-item label="图片" prop="image_id">
           <el-col :span="12" style="height:100px">
-            <el-image v-if="model.cover_url" style="height:100px" fit="contain" :src="model.cover_url" :preview-src-list="[model.cover_url]" title="点击看大图">
+            <el-image v-if="model.image_url" style="height:100px" fit="contain" :src="model.image_url" :preview-src-list="[model.image_url]" title="点击看大图">
               <div slot="error" class="image-slot">
                 <i class="el-icon-picture-outline" />
               </div>
             </el-image>
           </el-col>
           <el-col :span="12">
-            <el-button size="mini" @click="fileUpload('image', 'cover_id', '上传封面')">上传封面</el-button>
-            <el-button size="mini" @click="fileDelete(0, 'cover_id')">删除</el-button>
+            <el-button size="mini" @click="fileUpload('image', 'image_id', '上传图片')">上传图片</el-button>
+            <el-button size="mini" @click="fileDelete(0, 'image_id')">删除</el-button>
             <p>图片小于 200 KB，jpg、png格式。</p>
           </el-col>
-        </el-form-item>
-        <el-form-item label="标识" prop="category_unique">
-          <el-input v-model="model.category_unique" placeholder="请输入分类标识（唯一）" clearable />
         </el-form-item>
         <el-form-item label="标题" prop="title">
           <el-input v-model="model.title" placeholder="title" clearable />
@@ -132,18 +141,22 @@
           <el-input v-model="model.keywords" placeholder="keywords" clearable />
         </el-form-item>
         <el-form-item label="描述" prop="description">
-          <el-input v-model="model.description" type="textarea" placeholder="description" clearable />
+          <el-input v-model="model.description" type="textarea" autosize placeholder="description" clearable />
+        </el-form-item>
+        <el-form-item label="备注" prop="remark">
+          <el-input v-model="model.remark" placeholder="remark" clearable />
         </el-form-item>
         <el-form-item label="排序" prop="sort">
           <el-input v-model="model.sort" placeholder="250" clearable />
         </el-form-item>
-        <el-form-item label="图片" prop="images">
+        <el-form-item label="图片列表" prop="images">
           <el-row>
             <el-col :span="12">
               <el-button size="mini" @click="fileUpload('image', 'images', '上传图片')">上传图片</el-button>
+              <span>图片小于 250 KB，jpg、png格式。</span>
             </el-col>
             <el-col :span="12">
-              <span><el-button size="mini" @click="fileDelete('all', 'images')">全部删除</el-button>图片小于 250 KB，jpg、png格式。</span>
+              <el-button size="mini" @click="fileDelete('all', 'images')">全部删除</el-button>
             </el-col>
           </el-row>
           <el-row>
@@ -204,10 +217,10 @@
       <el-table ref="contentRef" v-loading="contentLoad" :data="contentData" :height="height-20" @sort-change="contentSort" @selection-change="contentSelect">
         <el-table-column type="selection" width="42" title="全选/反选" />
         <el-table-column :prop="contentPk" label="内容ID" min-width="80" sortable="custom" />
-        <el-table-column prop="cover_url" label="封面" min-width="60">
+        <el-table-column prop="image_url" label="图片" min-width="60">
           <template slot-scope="scope">
             <div style="height:30px">
-              <el-image v-if="scope.row.cover_url" style="height:30px" fit="contain" :src="scope.row.cover_url" :preview-src-list="[scope.row.cover_url]" title="点击看大图">
+              <el-image v-if="scope.row.image_url" style="height:30px" fit="contain" :src="scope.row.image_url" :preview-src-list="[scope.row.image_url]" title="点击看大图">
                 <div slot="error" class="image-slot">
                   <i class="el-icon-picture-outline" />
                 </div>
@@ -269,22 +282,24 @@ export default {
       loading: false,
       idkey: 'category_id',
       query: { search_field: 'category_name', search_exp: 'like', date_field: 'create_time' },
-      exps: [],
+      exps: [{ exp: 'like', name: '包含' }],
       data: [],
+      count: '',
       dialog: false,
       dialogTitle: '',
       model: {
         category_id: '',
+        category_unique: '',
         category_pid: 0,
         category_name: '',
-        category_unique: '',
-        cover_id: 0,
-        cover_url: '',
+        image_id: 0,
+        image_url: '',
         title: '',
         keywords: '',
         description: '',
-        images: [],
-        sort: 250
+        remark: '',
+        sort: 250,
+        images: []
       },
       rules: {
         category_name: [{ required: true, message: '请输入分类名称', trigger: 'blur' }]
@@ -330,6 +345,7 @@ export default {
         this.data = res.data.list
         this.trees = res.data.tree
         this.exps = res.data.exps
+        this.count = res.data.count
         this.isExpandAll = false
         this.loading = false
       }).catch(() => {
@@ -554,10 +570,10 @@ export default {
       const fileField = this.fileField
       const fileLength = fileList.length
       if (fileLength) {
-        if (fileField === 'cover_id') {
+        if (fileField === 'image_id') {
           const i = fileLength - 1
-          this.model.cover_id = fileList[i]['file_id']
-          this.model.cover_url = fileList[i]['file_url']
+          this.model.image_id = fileList[i]['file_id']
+          this.model.image_url = fileList[i]['file_url']
         } else {
           for (let i = 0; i < fileLength; i++) {
             if (fileField === 'images') {
@@ -592,9 +608,9 @@ export default {
       setTimeout(() => { window.open(file.file_url, '_blank') }, 500)
     },
     fileDelete(index, field = '') {
-      if (field === 'cover_id') {
-        this.model.cover_id = 0
-        this.model.cover_url = ''
+      if (field === 'image_id') {
+        this.model.image_id = 0
+        this.model.image_url = ''
       } else if (field === 'images') {
         if (index === 'all') {
           this.model.images = []

@@ -1,14 +1,30 @@
 <template>
   <el-card class="dialog-body" :style="{height:height+'px'}">
     <el-row>
-      <el-col :span="12">
+      <el-col :span="14">
         <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
+          <el-form-item label="注册验证码" prop="is_captcha_register">
+            <el-col :span="8">
+              <el-switch v-model="model.is_captcha_register" :active-value="1" :inactive-value="0" />
+            </el-col>
+            <el-col :span="16">
+              开启后，会员账号密码注册需要输入验证码
+            </el-col>
+          </el-form-item>
           <el-form-item label="注册" prop="is_register">
             <el-col :span="8">
               <el-switch v-model="model.is_register" :active-value="1" :inactive-value="0" />
             </el-col>
             <el-col :span="16">
-              关闭后，不能再注册（用户名、手机、邮箱）
+              关闭后，不能使用账号密码注册
+            </el-col>
+          </el-form-item>
+          <el-form-item label="登录验证码" prop="is_captcha_login">
+            <el-col :span="8">
+              <el-switch v-model="model.is_captcha_login" :active-value="1" :inactive-value="0" />
+            </el-col>
+            <el-col :span="16">
+              开启后，会员账号密码登录需要输入验证码
             </el-col>
           </el-form-item>
           <el-form-item label="登录" prop="is_login">
@@ -16,39 +32,39 @@
               <el-switch v-model="model.is_login" :active-value="1" :inactive-value="0" />
             </el-col>
             <el-col :span="16">
-              关闭后，不能再登录（用户名、手机、邮箱）
+              关闭后，不能使用账号密码登录
             </el-col>
           </el-form-item>
-          <el-form-item label="公众号注册" prop="is_offi_register">
+          <el-form-item label="手机验证码注册" prop="is_phone_register">
             <el-col :span="8">
-              <el-switch v-model="model.is_offi_register" :active-value="1" :inactive-value="0" />
+              <el-switch v-model="model.is_phone_register" :active-value="1" :inactive-value="0" />
             </el-col>
             <el-col :span="16">
-              关闭后，不能再注册（公众号）
+              关闭后，不能使用手机+验证码注册
             </el-col>
           </el-form-item>
-          <el-form-item label="公众号登录" prop="is_offi_login">
+          <el-form-item label="手机验证码登录" prop="is_phone_login">
             <el-col :span="8">
-              <el-switch v-model="model.is_offi_login" :active-value="1" :inactive-value="0" />
+              <el-switch v-model="model.is_phone_login" :active-value="1" :inactive-value="0" />
             </el-col>
             <el-col :span="16">
-              关闭后，不能再登录（公众号）
+              关闭后，不能使用手机+验证码登录
             </el-col>
           </el-form-item>
-          <el-form-item label="小程序注册" prop="is_mini_register">
+          <el-form-item label="邮箱验证码注册" prop="is_email_register">
             <el-col :span="8">
-              <el-switch v-model="model.is_mini_register" :active-value="1" :inactive-value="0" />
+              <el-switch v-model="model.is_email_register" :active-value="1" :inactive-value="0" />
             </el-col>
             <el-col :span="16">
-              关闭后，不能再注册（小程序）
+              关闭后，不能使用邮箱+验证码注册
             </el-col>
           </el-form-item>
-          <el-form-item label="小程序登录" prop="is_mini_login">
+          <el-form-item label="邮箱验证码登录" prop="is_email_login">
             <el-col :span="8">
-              <el-switch v-model="model.is_mini_login" :active-value="1" :inactive-value="0" />
+              <el-switch v-model="model.is_email_login" :active-value="1" :inactive-value="0" />
             </el-col>
             <el-col :span="16">
-              关闭后，不能再登录（小程序）
+              关闭后，不能使用邮箱+验证码登录
             </el-col>
           </el-form-item>
           <el-form-item>
@@ -75,11 +91,13 @@ export default {
       loading: false,
       model: {
         is_register: 1,
+        is_captcha_register: 0,
         is_login: 1,
-        is_offi_register: 1,
-        is_offi_login: 1,
-        is_mini_register: 1,
-        is_mini_login: 1
+        is_captcha_login: 0,
+        is_phone_register: 1,
+        is_phone_login: 1,
+        is_email_register: 1,
+        is_email_login: 1
       },
       rules: {}
     }

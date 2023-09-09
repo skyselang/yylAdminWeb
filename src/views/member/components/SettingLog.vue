@@ -8,7 +8,7 @@
               <el-switch v-model="model.log_switch" :active-value="1" :inactive-value="0" />
             </el-col>
             <el-col :span="16">
-              开启后，会记录会员日志。
+              开启后，会记录会员日志
             </el-col>
           </el-form-item>
           <el-form-item label="日志保留时间" prop="log_save_time">
@@ -18,7 +18,7 @@
               </el-input>
             </el-col>
             <el-col :span="16">
-              会员日志保留天数，0永久保留。
+              会员日志保留天数，0永久保留
             </el-col>
           </el-form-item>
           <el-form-item>

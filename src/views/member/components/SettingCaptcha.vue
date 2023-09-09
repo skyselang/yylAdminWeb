@@ -3,20 +3,24 @@
     <el-row>
       <el-col :span="14">
         <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
-          <el-form-item label="注册验证码" prop="captcha_register">
+          <el-form-item label="验证码方式" prop="captcha_mode">
             <el-col :span="8">
-              <el-switch v-model="model.captcha_register" :active-value="1" :inactive-value="0" />
+              <el-select v-model="model.captcha_mode" placeholder="" @change="moldChange">
+                <el-option v-for="item in mold" :key="item.value" :label="item.label" :value="item.value" />
+              </el-select>
             </el-col>
             <el-col :span="16">
-              开启后，会员注册需要输入验证码。
+              字符：输入字符；行为：滑动或点选
             </el-col>
           </el-form-item>
-          <el-form-item label="登录验证码" prop="captcha_login">
+          <el-form-item label="验证码类型" prop="captcha_type">
             <el-col :span="8">
-              <el-switch v-model="model.captcha_login" :active-value="1" :inactive-value="0" />
-            </el-col>
-            <el-col :span="16">
-              开启后，会员登录需要输入验证码。
+              <el-select v-if="model.captcha_mode==1" v-model="model.captcha_type" placeholder="">
+                <el-option v-for="item in typestr" :key="item.value" :label="item.label" :value="item.value" />
+              </el-select>
+              <el-select v-else v-model="model.captcha_type" placeholder="">
+                <el-option v-for="item in typeaj" :key="item.value" :label="item.label" :value="item.value" />
+              </el-select>
             </el-col>
           </el-form-item>
           <el-form-item>
@@ -42,10 +46,25 @@ export default {
       height: 680,
       loading: false,
       model: {
-        captcha_register: 0,
-        captcha_login: 0
+        captcha_mode: 1,
+        captcha_type: 1
       },
-      rules: {}
+      rules: {},
+      mold: [
+        { value: 1, label: '字符' },
+        { value: 2, label: '行为' }
+      ],
+      typestr: [
+        { value: 1, label: '数字' },
+        { value: 2, label: '字母' },
+        { value: 3, label: '数字字母' },
+        { value: 4, label: '算术' },
+        { value: 5, label: '中文' }
+      ],
+      typeaj: [
+        { value: 1, label: '滑动拼图' },
+        { value: 2, label: '点选文字' }
+      ]
     }
   },
   created() {
@@ -62,15 +81,13 @@ export default {
     // 刷新
     refresh() {
       this.loading = true
-      captchaInfo()
-        .then((res) => {
-          this.model = res.data
-          this.loading = false
-          this.$message.success(res.msg)
-        })
-        .catch(() => {
-          this.loading = false
-        })
+      captchaInfo().then((res) => {
+        this.model = res.data
+        this.loading = false
+        this.$message.success(res.msg)
+      }).catch(() => {
+        this.loading = false
+      })
     },
     // 提交
     submit() {
@@ -78,7 +95,6 @@ export default {
         if (valid) {
           this.loading = true
           captchaEdit(this.model).then(res => {
-            this.info()
             this.loading = false
             this.$message.success(res.msg)
           }).catch(() => {
@@ -86,6 +102,9 @@ export default {
           })
         }
       })
+    },
+    moldChange(value) {
+      this.model.captcha_type = 1
     }
   }
 }

@@ -122,3 +122,14 @@ export function disable(data) {
     data
   })
 }
+/**
+ * 内容发布时间
+ * @param {array} data 请求数据
+ */
+export function release(data) {
+  return request({
+    url: url + 'release',
+    method: 'post',
+    data
+  })
+}

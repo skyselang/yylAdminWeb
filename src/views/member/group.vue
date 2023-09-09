@@ -9,6 +9,7 @@
             <el-option :value="idkey" label="ID" />
             <el-option value="group_name" label="名称" />
             <el-option value="group_desc" label="描述" />
+            <el-option value="remark" label="备注" />
             <el-option value="is_default" label="默认" />
             <el-option value="is_disable" label="禁用" />
           </el-select>
@@ -24,7 +25,7 @@
             <el-option value="create_time" label="添加时间" />
             <el-option value="update_time" label="修改时间" />
           </el-select>
-          <el-date-picker v-model="query.date_value" type="daterange" class="filter-item ya-date-value" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd" />
+          <el-date-picker v-model="query.date_value" type="datetimerange" class="filter-item ya-date-value" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00','23:59:59']" value-format="yyyy-MM-dd HH:mm:ss" />
           <el-button class="filter-item" type="primary" title="查询/刷新" @click="search()">查询</el-button>
           <el-button class="filter-item" icon="el-icon-refresh" title="重置" @click="refresh()" />
         </el-col>
@@ -91,8 +92,9 @@
     <el-table ref="table" v-loading="loading" :data="data" :height="height" @sort-change="sort" @selection-change="select">
       <el-table-column type="selection" width="42" title="全选/反选" />
       <el-table-column :prop="idkey" label="ID" width="80" sortable="custom" />
-      <el-table-column prop="group_name" label="名称" min-width="160" />
-      <el-table-column prop="group_desc" label="描述" min-width="160" />
+      <el-table-column prop="group_name" label="名称" min-width="160" show-overflow-tooltip />
+      <el-table-column prop="group_desc" label="描述" min-width="220" show-overflow-tooltip />
+      <el-table-column prop="remark" label="备注" min-width="150" show-overflow-tooltip />
       <el-table-column prop="is_default" label="默认" min-width="80" sortable="custom">
         <template slot-scope="scope">
           <el-switch v-model="scope.row.is_default" :active-value="1" :inactive-value="0" @change="defaults([scope.row])" />
@@ -104,8 +106,8 @@
         </template>
       </el-table-column>
       <el-table-column prop="sort" label="排序" min-width="80" sortable="custom" />
-      <el-table-column prop="create_time" label="添加时间" min-width="155" sortable="custom" />
-      <el-table-column prop="update_time" label="修改时间" min-width="155" sortable="custom" />
+      <el-table-column prop="create_time" label="添加时间" width="155" sortable="custom" />
+      <el-table-column prop="update_time" label="修改时间" width="155" sortable="custom" />
       <el-table-column label="操作" width="120">
         <template slot-scope="scope">
           <el-button size="mini" type="text" @click="memberShow(scope.row)">会员</el-button>
@@ -123,7 +125,10 @@
           <el-input v-model="model.group_name" placeholder="请输入名称" clearable />
         </el-form-item>
         <el-form-item label="描述" prop="group_desc">
-          <el-input v-model="model.group_desc" placeholder="请输入描述" clearable />
+          <el-input v-model="model.group_desc" type="textarea" autosize placeholder="请输入描述" clearable />
+        </el-form-item>
+        <el-form-item label="备注" prop="remark">
+          <el-input v-model="model.remark" placeholder="请输入备注" clearable />
         </el-form-item>
         <el-form-item label="排序" prop="sort" placeholder="250">
           <el-input v-model="model.sort" type="number" />
@@ -234,7 +239,7 @@ export default {
       height: 680,
       loading: false,
       idkey: 'group_id',
-      exps: [],
+      exps: [{ exp: 'like', name: '包含' }],
       query: { page: 1, limit: 12, search_field: 'group_name', search_exp: 'like', date_field: 'create_time' },
       data: [],
       count: 0,
@@ -244,6 +249,7 @@ export default {
         group_id: '',
         group_name: '',
         group_desc: '',
+        remark: '',
         sort: 250,
         api_ids: []
       },

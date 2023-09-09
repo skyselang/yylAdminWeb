@@ -21,9 +21,10 @@
             <el-option :value="0" label="否" />
           </el-select>
           <el-input v-else v-model="query.search_value" class="filter-item ya-search-value" placeholder="查询内容" clearable />
-          <el-select v-model="query.date_field" class="filter-item ya-date-field" placeholder="时间类型">
+          <el-select v-model="query.date_field" class="filter-item ya-date-field" placeholder="时间字段">
             <el-option value="create_time" label="添加时间" />
             <el-option value="update_time" label="修改时间" />
+            <el-option value="expiration_date" label="有效期" />
           </el-select>
           <el-date-picker v-model="query.date_value" type="datetimerange" class="filter-item ya-date-value" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00','23:59:59']" value-format="yyyy-MM-dd HH:mm:ss" />
           <el-button class="filter-item" type="primary" title="查询/刷新" @click="search()">查询</el-button>
@@ -33,6 +34,7 @@
       <!-- 选中操作 -->
       <el-row>
         <el-col>
+          <el-button title="修改有效期" @click="selectOpen('expiration')">有效期</el-button>
           <el-button title="是否禁用" @click="selectOpen('disable')">禁用</el-button>
           <el-button title="删除" @click="selectOpen('dele')">删除</el-button>
           <el-button type="primary" @click="add()">添加</el-button>
@@ -43,7 +45,10 @@
           <el-form-item :label="name+'ID'" prop="">
             <el-input v-model="selectIds" type="textarea" :autosize="{minRows: 5, maxRows: 12}" disabled />
           </el-form-item>
-          <el-form-item v-if="selectType==='disable'" label="是否禁用" prop="">
+          <el-form-item v-if="selectType==='expiration'" label="有效期" prop="">
+            <el-date-picker v-model="expiration_date" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" default-time="23:59:59" placeholder="有效期" />
+          </el-form-item>
+          <el-form-item v-else-if="selectType==='disable'" label="是否禁用" prop="">
             <el-switch v-model="is_disable" :active-value="1" :inactive-value="0" />
           </el-form-item>
           <el-form-item v-else-if="selectType==='dele'" label="" prop="">
@@ -57,19 +62,35 @@
       </el-dialog>
     </div>
     <!-- 列表 -->
-    <el-table ref="table" v-loading="loading" :data="data" :height="height" @sort-change="sort" @selection-change="select" @cell-dblclick="cellDbclick">
+    <el-table ref="table" v-loading="loading" :data="data" :height="height" @sort-change="sort" @selection-change="select">
       <el-table-column type="selection" width="42" title="全选/反选" />
       <el-table-column :prop="idkey" label="ID" width="80" sortable="custom" />
-      <el-table-column prop="unique" label="标识" min-width="120" sortable="custom" show-overflow-tooltip />
-      <el-table-column prop="name" label="名称" min-width="120" sortable="custom" show-overflow-tooltip />
-      <el-table-column prop="desc" label="描述" min-width="160" show-overflow-tooltip />
-      <el-table-column prop="remark" label="备注" min-width="150" show-overflow-tooltip />
+      <el-table-column prop="unique" label="标识" min-width="90" show-overflow-tooltip />
+      <el-table-column prop="image_id" label="图片" min-width="60">
+        <template slot-scope="scope">
+          <div style="height:30px">
+            <el-image v-if="scope.row.image_url" style="height:30px" fit="contain" :src="scope.row.image_url" :preview-src-list="[scope.row.image_url]" title="点击看大图" lazy scroll-container=".el-table__body-wrapper">
+              <div slot="error" class="image-slot">
+                <i class="el-icon-picture-outline" />
+              </div>
+            </el-image>
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column prop="name" label="名称" min-width="120" show-overflow-tooltip>
+        <template slot-scope="scope">
+          <span :style="{'color':scope.row.name_color}">{{ scope.row.name }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="url" label="链接" min-width="200" show-overflow-tooltip />
+      <el-table-column prop="desc" label="描述" width="180" show-overflow-tooltip />
       <el-table-column prop="is_disable" label="禁用" min-width="75" sortable="custom">
         <template slot-scope="scope">
           <el-switch v-model="scope.row.is_disable" :active-value="1" :inactive-value="0" @change="disable([scope.row])" />
         </template>
       </el-table-column>
       <el-table-column prop="sort" label="排序" min-width="75" sortable="custom" />
+      <el-table-column prop="expiration_date" label="有效期" width="155" sortable="custom" />
       <el-table-column prop="create_time" label="添加时间" width="155" sortable="custom" />
       <el-table-column prop="update_time" label="修改时间" width="155" sortable="custom" />
       <el-table-column label="操作" width="90">
@@ -82,29 +103,54 @@
     <!-- 分页 -->
     <pagination v-show="count>0" :total="count" :page.sync="query.page" :limit.sync="query.limit" @pagination="list" />
     <!-- 添加修改 -->
-    <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false" destroy-on-close>
-      <el-form ref="ref" :rules="rules" :model="model" label-width="100px" class="dialog-body" :style="{height:height+'px'}">
+    <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false">
+      <el-form ref="ref" :model="model" :rules="rules" label-width="100px" class="dialog-body" :style="{height:height+'px'}">
         <el-form-item label="标识" prop="unique">
-          <el-input v-model="model.unique" placeholder="请输入标识（唯一）" clearable>
-            <el-button slot="append" icon="el-icon-document-copy" title="复制" @click="copy(model.unique, $event)" />
-          </el-input>
+          <el-input v-model="model.unique" placeholder="请输入标识（唯一）" clearable />
+        </el-form-item>
+        <el-form-item label="图片" prop="image_url">
+          <el-col :span="12" style="height:100px">
+            <el-image v-if="model.image_url" style="height:100px" fit="contain" :src="model.image_url" :preview-src-list="[model.image_url]" title="点击看大图">
+              <div slot="error" class="image-slot">
+                <i class="el-icon-picture-outline" />
+              </div>
+            </el-image>
+          </el-col>
+          <el-col :span="12">
+            <el-button size="mini" @click="fileUpload()">上传图片</el-button>
+            <el-button size="mini" @click="fileDelete()">删除</el-button>
+            <p>图片小于 200 KB，jpg、png格式。</p>
+          </el-col>
         </el-form-item>
         <el-form-item label="名称" prop="name">
-          <el-input v-model="model.name" placeholder="请输入名称" clearable>
-            <el-button slot="append" icon="el-icon-document-copy" title="复制" @click="copy(model.name, $event)" />
-          </el-input>
+          <el-col :span="18">
+            <el-input v-model="model.name" placeholder="请输入名称" clearable />
+          </el-col>
+          <el-col :span="3" style="text-align:center">名称颜色</el-col>
+          <el-col :span="3">
+            <el-color-picker v-model="model.name_color" />
+          </el-col>
+        </el-form-item>
+        <el-form-item label="链接" prop="url">
+          <el-col :span="18">
+            <el-input v-model="model.url" placeholder="请输入链接" clearable />
+          </el-col>
+          <el-col :span="3" style="text-align:center">下划线</el-col>
+          <el-col :span="3">
+            <el-switch v-model="model.underline" :active-value="1" :inactive-value="0" />
+          </el-col>
         </el-form-item>
         <el-form-item label="描述" prop="desc">
-          <el-input v-model="model.desc" type="textarea" autosize placeholder="请输入描述" clearable />
+          <el-input v-model="model.desc" type="textarea" :autosize="{ minRows: 2, maxRows: 5}" placeholder="请输入描述" />
+        </el-form-item>
+        <el-form-item label="有效期" prop="expiration_date">
+          <el-date-picker v-model="model.expiration_date" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" default-time="23:59:59" placeholder="有效期" />
         </el-form-item>
         <el-form-item label="备注" prop="remark">
-          <el-input v-model="model.remark" placeholder="请输入备注" clearable />
+          <el-input v-model="model.remark" placeholder="" />
         </el-form-item>
         <el-form-item label="排序" prop="sort">
-          <el-input v-model="model.sort" type="number" />
-        </el-form-item>
-        <el-form-item label="内容" prop="content">
-          <rich-editor v-model="model.content" />
+          <el-input v-model="model.sort" type="number" placeholder="请输入排序" />
         </el-form-item>
         <el-form-item v-if="model[idkey]" label="添加时间" prop="create_time">
           <el-input v-model="model.create_time" disabled />
@@ -121,27 +167,29 @@
         <el-button :loading="loading" type="primary" @click="submit">提交</el-button>
       </div>
     </el-dialog>
+    <!-- 文件管理 -->
+    <el-dialog title="上传图片" :visible.sync="fileDialog" width="80%" top="1vh" :close-on-click-modal="false" :close-on-press-escape="false">
+      <file-manage file-type="image" @fileCancel="fileCancel" @fileSubmit="fileSubmit" />
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination'
-import RichEditor from '@/components/RichEditor'
-import clip from '@/utils/clipboard'
+import FileManage from '@/components/FileManage'
 import { arrayColumn } from '@/utils/index'
-import { list, info, add, edit, dele, disable } from '@/api/setting/accord'
+import { list, info, add, edit, dele, expiration, disable } from '@/api/setting/link'
 
 export default {
-  name: 'SettingAccord',
-  components: { Pagination, RichEditor },
-  directives: {},
+  name: 'SettingLink',
+  components: { Pagination, FileManage },
   data() {
     return {
-      name: '协议',
+      name: '友链',
       height: 680,
       loading: false,
-      idkey: 'accord_id',
+      idkey: 'link_id',
       exps: [{ exp: 'like', name: '包含' }],
       query: { page: 1, limit: 12, search_field: 'name', search_exp: 'like', date_field: 'create_time' },
       data: [],
@@ -149,24 +197,32 @@ export default {
       dialog: false,
       dialogTitle: '',
       model: {
-        accord_id: '',
+        link_id: '',
         unique: '',
+        image_id: 0,
+        image_url: '',
         name: '',
+        name_color: '#606266',
+        url: '',
         desc: '',
-        content: '',
+        expiration_date: '2099-12-31 23:59:59',
+        underline: 0,
         remark: '',
         sort: 250
       },
       rules: {
-        unique: [{ required: true, message: '请输入标识', trigger: 'blur' }],
-        name: [{ required: true, message: '请输入名称', trigger: 'blur' }]
+        name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
+        expiration_date: [{ required: true, message: '请输入有效期', trigger: 'blur' }]
       },
+      types: [],
       selection: [],
       selectIds: '',
       selectTitle: '选中操作',
       selectDialog: false,
       selectType: '',
-      is_disable: 0
+      expiration_date: '',
+      is_disable: 0,
+      fileDialog: false
     }
   },
   created() {
@@ -287,10 +343,12 @@ export default {
         this.selectAlert()
       } else {
         this.selectTitle = '选中操作'
-        if (selectType === 'disable') {
-          this.selectTitle = this.name + '是否禁用'
-        } else if (selectType === 'dele') {
+        if (selectType === 'dele') {
           this.selectTitle = this.name + '删除'
+        } else if (selectType === 'disable') {
+          this.selectTitle = this.name + '是否禁用'
+        } else if (selectType === 'expiration') {
+          this.selectTitle = this.name + '修改有效期'
         }
         this.selectDialog = true
         this.selectType = selectType
@@ -304,12 +362,29 @@ export default {
         this.selectAlert()
       } else {
         const selectType = this.selectType
-        if (selectType === 'disable') {
-          this.disable(this.selection, true)
-        } else if (selectType === 'dele') {
+        if (selectType === 'dele') {
           this.dele(this.selection)
+        } else if (selectType === 'disable') {
+          this.disable(this.selection, true)
+        } else if (selectType === 'expiration') {
+          this.expiration(this.selection)
         }
         this.selectDialog = false
+      }
+    },
+    // 删除
+    dele(row) {
+      if (!row.length) {
+        this.selectAlert()
+      } else {
+        dele({
+          ids: this.selectGetIds(row)
+        }).then(res => {
+          this.list()
+          this.$message.success(res.msg)
+        }).catch(() => {
+          this.loading = false
+        })
       }
     },
     // 是否禁用
@@ -333,15 +408,16 @@ export default {
         })
       }
     },
-    // 删除
-    dele(row) {
+    // 修改有效期
+    expiration(row) {
       if (!row.length) {
         this.selectAlert()
       } else {
         this.loading = true
-
-        dele({
-          ids: this.selectGetIds(row)
+        expiration({
+          ids: this.selectGetIds(row),
+          expiration_date: this.expiration_date,
+          end_time: this.end_time
         }).then(res => {
           this.list()
           this.$message.success(res.msg)
@@ -350,13 +426,25 @@ export default {
         })
       }
     },
-    // 复制
-    copy(text, event) {
-      clip(text, event)
+    // 上传图片
+    fileUpload() {
+      this.fileDialog = true
     },
-    // 单元格双击复制
-    cellDbclick(row, column, cell, event) {
-      this.copy(row[column.property], event)
+    fileCancel() {
+      this.fileDialog = false
+    },
+    fileSubmit(fileList) {
+      this.fileDialog = false
+      const fileLength = fileList.length
+      if (fileLength) {
+        const i = fileLength - 1
+        this.model.image_id = fileList[i]['file_id']
+        this.model.image_url = fileList[i]['file_url']
+      }
+    },
+    fileDelete() {
+      this.model.image_id = 0
+      this.model.image_url = ''
     }
   }
 }

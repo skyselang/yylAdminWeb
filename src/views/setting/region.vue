@@ -24,7 +24,7 @@
             <el-option value="create_time" label="添加时间" />
             <el-option value="update_time" label="修改时间" />
           </el-select>
-          <el-date-picker v-model="query.date_value" type="daterange" class="filter-item ya-date-value" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd" />
+          <el-date-picker v-model="query.date_value" type="datetimerange" class="filter-item ya-date-value" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00','23:59:59']" value-format="yyyy-MM-dd HH:mm:ss" />
           <el-button class="filter-item" type="primary" title="查询/刷新" @click="search()">查询</el-button>
           <el-button class="filter-item" icon="el-icon-refresh" title="重置" @click="refresh()" />
         </el-col>
@@ -91,6 +91,11 @@
         </template>
       </el-table-column>
     </el-table>
+    <el-row>
+      <el-descriptions title="" :column="12" :colon="false" size="medium">
+        <el-descriptions-item label="">共 {{ count }} 条</el-descriptions-item>
+      </el-descriptions>
+    </el-row>
     <!-- 添加修改 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false">
       <el-form ref="ref" :rules="rules" :model="model" label-width="100px" class="dialog-body" :style="{height:height-50+'px'}">
@@ -128,18 +133,28 @@
           </el-input>
         </el-form-item>
         <el-form-item label="经度" prop="region_longitude">
-          <el-input v-model="model.region_longitude" placeholder="请输入经度，eg：116.403263" clearable>
+          <el-input v-model="model.region_longitude" placeholder="请输入经度（高德），eg：116.403263" clearable>
             <el-button slot="append" icon="el-icon-document-copy" title="复制" @click="copy(model.region_longitude, $event)" />
           </el-input>
         </el-form-item>
         <el-form-item label="纬度" prop="region_latitude">
-          <el-input v-model="model.region_latitude" placeholder="请输入纬度，eg：39.915156" clearable>
+          <el-input v-model="model.region_latitude" placeholder="请输入纬度（高德），eg：39.915156" clearable>
             <el-button slot="append" icon="el-icon-document-copy" title="复制" @click="copy(model.region_latitude, $event)" />
           </el-input>
         </el-form-item>
         <el-form-item label="排序" prop="sort">
           <el-input v-model="model.sort" type="number" placeholder="请输入排序，eg：2250" clearable>
             <el-button slot="append" icon="el-icon-document-copy" title="复制" @click="copy(model.sort, $event)" />
+          </el-input>
+        </el-form-item>
+        <el-form-item v-if="model[idkey]" label="完整名称" prop="region_fullname">
+          <el-input v-model="model.region_fullname" placeholder="" disabled>
+            <el-button slot="append" icon="el-icon-document-copy" title="复制" @click="copy(model.region_fullname, $event)" />
+          </el-input>
+        </el-form-item>
+        <el-form-item v-if="model[idkey]" label="完整拼音" prop="region_fullname_py">
+          <el-input v-model="model.region_fullname_py" placeholder="" disabled>
+            <el-button slot="append" icon="el-icon-document-copy" title="复制" @click="copy(model.region_fullname_py, $event)" />
           </el-input>
         </el-form-item>
         <el-form-item v-if="model[idkey]" label="添加时间" prop="create_time">
@@ -176,7 +191,7 @@ export default {
       loading: false,
       idkey: 'region_id',
       tbKey: 1,
-      exps: [],
+      exps: [{ exp: 'like', name: '包含' }],
       query: { search_field: 'region_name', search_exp: 'like', date_field: 'create_time' },
       data: [],
       dialog: false,
@@ -207,7 +222,8 @@ export default {
       region_pid: 0,
       region_citycode: '',
       region_zipcode: '',
-      is_disable: 0
+      is_disable: 0,
+      count: ''
     }
   },
   created() {
@@ -222,6 +238,7 @@ export default {
         this.data = res.data.list
         this.trees = res.data.tree
         this.exps = res.data.exps
+        this.count = res.data.count
         this.loading = false
       }).catch(() => {
         this.loading = false

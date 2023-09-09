@@ -58,7 +58,7 @@
               <el-input v-model="model.email_test" type="text" clearable />
             </el-col>
             <el-col :span="16">
-              <el-button :loading="loading" type="primary" title="先提交再发送" @click="test()">发送测试邮件</el-button>
+              <el-button :loading="loading" type="text" title="先提交再发送" @click="test()">发送测试邮件</el-button>
             </el-col>
           </el-form-item>
           <el-form-item>
