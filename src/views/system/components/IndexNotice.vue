@@ -64,7 +64,7 @@
           </el-image>
         </el-form-item>
         <el-form-item label="" prop="">
-          <span>{{ oneModel.intro }}</span>
+          <span>{{ oneModel.desc }}</span>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
