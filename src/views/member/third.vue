@@ -17,27 +17,78 @@
             <el-option value="openid" label="openid" />
           </el-select>
           <el-select v-model="query.search_exp" class="filter-item ya-search-exp">
-            <el-option v-for="exp in exps" :key="exp.exp" :value="exp.exp" :label="exp.name" />
+            <el-option
+              v-for="exp in exps"
+              :key="exp.exp"
+              :value="exp.exp"
+              :label="exp.name"
+            />
           </el-select>
-          <el-select v-if="query.search_field==='is_disable'" v-model="query.search_value" class="filter-item ya-search-value">
+          <el-select
+            v-if="query.search_field === 'is_disable'"
+            v-model="query.search_value"
+            class="filter-item ya-search-value"
+          >
             <el-option :value="1" label="是" />
             <el-option :value="0" label="否" />
           </el-select>
-          <el-select v-else-if="query.search_field==='platform'" v-model="query.search_value" class="filter-item ya-search-value">
-            <el-option v-for="platform in platforms" :key="platform.value" :value="platform.value" :label="platform.label" />
+          <el-select
+            v-else-if="query.search_field === 'platform'"
+            v-model="query.search_value"
+            class="filter-item ya-search-value"
+          >
+            <el-option
+              v-for="platform in platforms"
+              :key="platform.value"
+              :value="platform.value"
+              :label="platform.label"
+            />
           </el-select>
-          <el-select v-else-if="query.search_field==='application'" v-model="query.search_value" class="filter-item ya-search-value">
-            <el-option v-for="application in applications" :key="application.value" :value="application.value" :label="application.label" />
+          <el-select
+            v-else-if="query.search_field === 'application'"
+            v-model="query.search_value"
+            class="filter-item ya-search-value"
+          >
+            <el-option
+              v-for="application in applications"
+              :key="application.value"
+              :value="application.value"
+              :label="application.label"
+            />
           </el-select>
-          <el-input v-else v-model="query.search_value" class="filter-item ya-search-value" placeholder="查询内容" clearable />
+          <el-input
+            v-else
+            v-model="query.search_value"
+            class="filter-item ya-search-value"
+            placeholder="查询内容"
+            clearable
+          />
           <el-select v-model="query.date_field" class="filter-item ya-date-field" placeholder="时间类型">
             <el-option value="create_time" label="添加时间" />
             <el-option value="update_time" label="修改时间" />
             <el-option value="login_time" label="登录时间" />
           </el-select>
-          <el-date-picker v-model="query.date_value" type="datetimerange" class="filter-item ya-date-value" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00','23:59:59']" value-format="yyyy-MM-dd HH:mm:ss" />
-          <el-button class="filter-item" type="primary" title="查询/刷新" @click="search()">查询</el-button>
-          <el-button class="filter-item" icon="el-icon-refresh" title="重置" @click="refresh()" />
+          <el-date-picker
+            v-model="query.date_value"
+            type="datetimerange"
+            class="filter-item ya-date-value"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            :default-time="['00:00:00', '23:59:59']"
+            value-format="yyyy-MM-dd HH:mm:ss"
+          />
+          <el-button
+            class="filter-item"
+            type="primary"
+            title="查询/刷新"
+            @click="search()"
+          >查询</el-button>
+          <el-button
+            class="filter-item"
+            icon="el-icon-refresh"
+            title="重置"
+            @click="refresh()"
+          />
         </el-col>
       </el-row>
       <!-- 选中操作 -->
@@ -48,16 +99,27 @@
           <el-button type="primary" @click="add()">添加</el-button>
         </el-col>
       </el-row>
-      <el-dialog :title="selectTitle" :visible.sync="selectDialog" top="20vh" :close-on-click-modal="false" :close-on-press-escape="false">
+      <el-dialog
+        :title="selectTitle"
+        :visible.sync="selectDialog"
+        top="20vh"
+        :close-on-click-modal="false"
+        :close-on-press-escape="false"
+      >
         <el-form ref="selectRef" label-width="120px">
-          <el-form-item :label="name+'ID'" prop="">
-            <el-input v-model="selectIds" type="textarea" :autosize="{minRows: 5, maxRows: 12}" disabled />
+          <el-form-item :label="name + 'ID'" prop="">
+            <el-input
+              v-model="selectIds"
+              type="textarea"
+              :autosize="{ minRows: 5, maxRows: 12 }"
+              disabled
+            />
           </el-form-item>
-          <el-form-item v-if="selectType==='disable'" label="是否禁用" prop="">
+          <el-form-item v-if="selectType === 'disable'" label="是否禁用" prop="">
             <el-switch v-model="is_disable" :active-value="1" :inactive-value="0" />
           </el-form-item>
-          <el-form-item v-else-if="selectType==='dele'" label="" prop="">
-            <span style="color:red">确定要删除选中的{{ name }}吗？</span>
+          <el-form-item v-else-if="selectType === 'dele'" label="" prop="">
+            <span class="ya-color-red">确定要删除选中的{{ name }}吗？</span>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -67,16 +129,50 @@
       </el-dialog>
     </div>
     <!-- 列表 -->
-    <el-table ref="table" v-loading="loading" :data="data" :height="height" @sort-change="sort" @selection-change="select">
+    <el-table
+      ref="table"
+      v-loading="loading"
+      :data="data"
+      :height="height"
+      @sort-change="sort"
+      @selection-change="select"
+    >
       <el-table-column type="selection" width="42" title="全选/反选" />
-      <el-table-column :prop="idkey" label="ID" width="80" sortable="custom" />
-      <el-table-column prop="member_id" label="会员ID" width="100" sortable="custom" />
-      <el-table-column prop="member_nickname" label="会员昵称" min-width="135" show-overflow-tooltip />
-      <el-table-column prop="member_username" label="会员用户名" min-width="135" show-overflow-tooltip />
+      <el-table-column
+        :prop="idkey"
+        label="ID"
+        width="80"
+        sortable="custom"
+      />
+      <el-table-column
+        prop="member_id"
+        label="会员ID"
+        width="100"
+        sortable="custom"
+      />
+      <el-table-column
+        prop="member_nickname"
+        label="会员昵称"
+        min-width="135"
+        show-overflow-tooltip
+      />
+      <el-table-column
+        prop="member_username"
+        label="会员用户名"
+        min-width="135"
+        show-overflow-tooltip
+      />
       <el-table-column prop="headimgurl" label="头像" min-width="50">
         <template slot-scope="scope">
           <div style="height:25px">
-            <el-image v-if="scope.row.headimgurl" style="width:25px;height:25px;border-radius:50%;" :src="scope.row.headimgurl" :preview-src-list="[scope.row.headimgurl]" fit="contain" title="点击看大图">
+            <el-image
+              v-if="scope.row.headimgurl"
+              style="width:25px;height:25px;border-radius:50%;"
+              :src="scope.row.headimgurl"
+              :preview-src-list="[scope.row.headimgurl]"
+              fit="contain"
+              title="点击看大图"
+            >
               <div slot="error" class="image-slot">
                 <el-avatar :size="25" icon="el-icon-user-solid" />
               </div>
@@ -84,40 +180,105 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column prop="nickname" label="昵称" min-width="135" show-overflow-tooltip />
-      <el-table-column prop="platform_name" label="平台" min-width="80" show-overflow-tooltip />
-      <el-table-column prop="application_name" label="应用" min-width="120" show-overflow-tooltip />
-      <el-table-column prop="is_disable" label="禁用" min-width="75" sortable="custom">
+      <el-table-column
+        prop="nickname"
+        label="昵称"
+        min-width="135"
+        show-overflow-tooltip
+      />
+      <el-table-column
+        prop="platform_name"
+        label="平台"
+        min-width="80"
+        show-overflow-tooltip
+      />
+      <el-table-column
+        prop="application_name"
+        label="应用"
+        min-width="120"
+        show-overflow-tooltip
+      />
+      <el-table-column
+        prop="is_disable"
+        label="禁用"
+        min-width="75"
+        sortable="custom"
+      >
         <template slot-scope="scope">
-          <el-switch v-model="scope.row.is_disable" :active-value="1" :inactive-value="0" @change="disable([scope.row])" />
+          <el-switch
+            v-model="scope.row.is_disable"
+            :active-value="1"
+            :inactive-value="0"
+            @change="disable([scope.row])"
+          />
         </template>
       </el-table-column>
       <el-table-column prop="create_time" label="添加/绑定时间" min-width="155" />
       <el-table-column prop="update_time" label="修改时间" min-width="155" />
       <el-table-column prop="login_time" label="登录时间" width="155" />
-      <el-table-column label="操作" width="90">
+      <el-table-column label="操作" width="85">
         <template slot-scope="scope">
-          <el-button size="mini" type="text" @click="edit(scope.row)">修改</el-button>
-          <el-button size="mini" type="text" title="解绑" @click="selectOpen('dele',scope.row)">删除</el-button>
+          <el-button type="text" size="small" @click="edit(scope.row)">修改</el-button>
+          <el-button
+            type="text"
+            size="small"
+            title="解绑"
+            @click="selectOpen('dele', scope.row)"
+          >删除</el-button>
         </template>
       </el-table-column>
     </el-table>
     <!-- 分页 -->
-    <pagination v-show="count>0" :total="count" :page.sync="query.page" :limit.sync="query.limit" @pagination="list" />
+    <pagination
+      v-show="count > 0"
+      :total="count"
+      :page.sync="query.page"
+      :limit.sync="query.limit"
+      @pagination="list"
+    />
     <!-- 添加修改 -->
-    <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false">
-      <el-form ref="ref" :rules="rules" :model="model" label-width="100px" class="dialog-body" :style="{height:height+'px'}">
+    <el-dialog
+      :title="dialogTitle"
+      :visible.sync="dialog"
+      top="5vh"
+      :before-close="cancel"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
+      <el-form
+        ref="ref"
+        :rules="rules"
+        :model="model"
+        label-width="100px"
+        class="dialog-body"
+        :style="{ height: height + 'px' }"
+      >
         <el-form-item label="会员ID" prop="member_id">
-          <el-input v-model="model.member_id" type="number" placeholder="请输入会员ID" clearable />
+          <el-input
+            v-model="model.member_id"
+            type="number"
+            placeholder="请输入会员ID"
+            clearable
+          />
         </el-form-item>
         <el-form-item label="平台" prop="platform">
           <el-select v-model="model.platform">
-            <el-option v-for="platform in platforms" :key="platform.value" :value="platform.value" :label="platform.label" />
+            <el-option
+              v-for="platform in platforms"
+              :key="platform.value"
+              :value="platform.value"
+              :label="platform.label"
+            />
           </el-select>
         </el-form-item>
         <el-form-item label="应用" prop="application">
           <el-select v-model="model.application">
-            <el-option v-for="application in applications" :key="application.value" :value="application.value" :label="application.label" />
+            <el-option
+              v-for="application in applications"
+              :key="application.value"
+              :value="application.value"
+              :label="application.label"
+            />
           </el-select>
         </el-form-item>
         <el-form-item label="unionid" prop="unionid">
@@ -131,15 +292,21 @@
         </el-form-item>
         <el-form-item label="" prop="headimgurl">
           <el-col :span="12" style="height:100px">
-            <el-image style="width:100px;height:100px;border-radius:50%;" :src="model.headimgurl" :preview-src-list="[model.headimgurl]" fit="contain" title="点击看大图">
+            <el-image
+              style="width:100px;height:100px;border-radius:50%;"
+              :src="model.headimgurl"
+              :preview-src-list="[model.headimgurl]"
+              fit="contain"
+              title="点击看大图"
+            >
               <div slot="error" class="image-slot">
                 <el-avatar :size="100" icon="el-icon-user-solid" />
               </div>
             </el-image>
           </el-col>
           <el-col :span="12">
-            <el-button size="mini" @click="fileUpload()">上传头像</el-button>
-            <el-button size="mini" @click="fileDelete()">删除</el-button>
+            <el-button @click="fileUpload()">上传头像</el-button>
+            <el-button @click="fileDelete()">删除</el-button>
             <p>图片小于 200 KB，jpg、png格式。</p>
           </el-col>
         </el-form-item>
@@ -177,7 +344,14 @@
       </div>
     </el-dialog>
     <!-- 文件管理 -->
-    <el-dialog title="上传头像" :visible.sync="fileDialog" width="80%" top="1vh" :close-on-click-modal="false" :close-on-press-escape="false">
+    <el-dialog
+      title="上传头像"
+      :visible.sync="fileDialog"
+      width="80%"
+      top="1vh"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
       <file-manage file-type="image" @fileCancel="fileCancel" @fileSubmit="fileSubmit" />
     </el-dialog>
   </div>
@@ -188,6 +362,7 @@ import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination'
 import FileManage from '@/components/FileManage'
 import { arrayColumn } from '@/utils/index'
+import { getPageLimit } from '@/utils/settings'
 import { list, info, add, edit, dele, disable } from '@/api/member/third'
 
 export default {
@@ -200,7 +375,7 @@ export default {
       loading: false,
       idkey: 'third_id',
       exps: [{ exp: 'like', name: '包含' }],
-      query: { page: 1, limit: 12, search_field: 'nickname', search_exp: 'like', date_field: 'create_time' },
+      query: { page: 1, limit: getPageLimit(), search_field: 'nickname', search_exp: 'like', date_field: 'create_time' },
       data: [],
       count: 0,
       platforms: [],
@@ -432,5 +607,4 @@ export default {
 }
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

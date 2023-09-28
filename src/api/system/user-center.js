@@ -45,3 +45,25 @@ export function log(params) {
     params: params
   })
 }
+/**
+ * 我的日志详情
+ * @param {array} params 请求参数
+ */
+export function logInfo(params) {
+  return request({
+    url: url + 'logInfo',
+    method: 'get',
+    params: params
+  })
+}
+/**
+ * 我的日志删除
+ * @param {array} data 请求数据
+ */
+export function logDele(data) {
+  return request({
+    url: url + 'logDele',
+    method: 'POST',
+    data
+  })
+}

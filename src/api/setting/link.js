@@ -68,12 +68,12 @@ export function disable(data) {
   })
 }
 /**
- * 友链修改有效期
+ * 友链时间范围
  * @param {array} data 请求数据
  */
-export function expiration(data) {
+export function datetime(data) {
   return request({
-    url: url + 'expiration',
+    url: url + 'datetime',
     method: 'post',
     data
   })

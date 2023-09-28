@@ -16,17 +16,54 @@
             <el-option value="region_zipcode" label="邮编" />
           </el-select>
           <el-select v-model="query.search_exp" class="filter-item ya-search-exp">
-            <el-option v-for="exp in exps" :key="exp.exp" :value="exp.exp" :label="exp.name" />
+            <el-option
+              v-for="exp in exps"
+              :key="exp.exp"
+              :value="exp.exp"
+              :label="exp.name"
+            />
           </el-select>
-          <el-cascader v-if="query.search_field==='region_pid'" v-model="query.region_pid" :options="trees" :props="props" class="filter-item ya-search-value" clearable filterable />
-          <el-input v-else v-model="query.search_value" class="filter-item ya-search-value" placeholder="查询内容" clearable />
+          <el-cascader
+            v-if="query.search_field === 'region_pid'"
+            v-model="query.region_pid"
+            :options="trees"
+            :props="props"
+            class="filter-item ya-search-value"
+            clearable
+            filterable
+          />
+          <el-input
+            v-else
+            v-model="query.search_value"
+            class="filter-item ya-search-value"
+            placeholder="查询内容"
+            clearable
+          />
           <el-select v-model="query.date_field" class="filter-item ya-date-field" placeholder="时间类型">
             <el-option value="create_time" label="添加时间" />
             <el-option value="update_time" label="修改时间" />
           </el-select>
-          <el-date-picker v-model="query.date_value" type="datetimerange" class="filter-item ya-date-value" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00','23:59:59']" value-format="yyyy-MM-dd HH:mm:ss" />
-          <el-button class="filter-item" type="primary" title="查询/刷新" @click="search()">查询</el-button>
-          <el-button class="filter-item" icon="el-icon-refresh" title="重置" @click="refresh()" />
+          <el-date-picker
+            v-model="query.date_value"
+            type="datetimerange"
+            class="filter-item ya-date-value"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            :default-time="['00:00:00', '23:59:59']"
+            value-format="yyyy-MM-dd HH:mm:ss"
+          />
+          <el-button
+            class="filter-item"
+            type="primary"
+            title="查询/刷新"
+            @click="search()"
+          >查询</el-button>
+          <el-button
+            class="filter-item"
+            icon="el-icon-refresh"
+            title="重置"
+            @click="refresh()"
+          />
         </el-col>
       </el-row>
       <!-- 选中操作 -->
@@ -40,25 +77,45 @@
           <el-button type="primary" @click="add()">添加</el-button>
         </el-col>
       </el-row>
-      <el-dialog :title="selectTitle" :visible.sync="selectDialog" top="20vh" :close-on-click-modal="false" :close-on-press-escape="false" destroy-on-close>
+      <el-dialog
+        :title="selectTitle"
+        :visible.sync="selectDialog"
+        top="20vh"
+        :close-on-click-modal="false"
+        :close-on-press-escape="false"
+        destroy-on-close
+      >
         <el-form ref="selectRef" label-width="120px">
-          <el-form-item :label="name+'ID'" prop="">
-            <el-input v-model="selectIds" type="textarea" :autosize="{minRows: 5, maxRows: 12}" disabled />
+          <el-form-item :label="name + 'ID'" prop="">
+            <el-input
+              v-model="selectIds"
+              type="textarea"
+              :autosize="{ minRows: 5, maxRows: 12 }"
+              disabled
+            />
           </el-form-item>
-          <el-form-item v-if="selectType==='editpid'" label="上级" prop="">
-            <el-cascader v-model="region_pid" :options="trees" :props="props" style="width:100%" placeholder="一级地区" clearable filterable />
+          <el-form-item v-if="selectType === 'editpid'" label="上级" prop="">
+            <el-cascader
+              v-model="region_pid"
+              :options="trees"
+              :props="props"
+              style="width:100%"
+              placeholder="一级地区"
+              clearable
+              filterable
+            />
           </el-form-item>
-          <el-form-item v-else-if="selectType==='citycode'" label="区号" prop="">
+          <el-form-item v-else-if="selectType === 'citycode'" label="区号" prop="">
             <el-input v-model="region_citycode" placeholder="请输入区号，eg：010" clearable />
           </el-form-item>
-          <el-form-item v-else-if="selectType==='zipcode'" label="邮编" prop="">
+          <el-form-item v-else-if="selectType === 'zipcode'" label="邮编" prop="">
             <el-input v-model="region_zipcode" placeholder="请输入邮编，eg：1000" clearable />
           </el-form-item>
-          <el-form-item v-else-if="selectType==='disable'" label="是否禁用" prop="">
+          <el-form-item v-else-if="selectType === 'disable'" label="是否禁用" prop="">
             <el-switch v-model="is_disable" :active-value="1" :inactive-value="0" />
           </el-form-item>
-          <el-form-item v-else-if="selectType==='dele'" label="" prop="">
-            <span style="color:red">确定要删除选中的{{ name }}吗？</span>
+          <el-form-item v-else-if="selectType === 'dele'" label="" prop="">
+            <span class="ya-color-red">确定要删除选中的{{ name }}吗？</span>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -68,93 +125,243 @@
       </el-dialog>
     </div>
     <!-- 列表 -->
-    <el-table ref="table" :key="tbKey" v-loading="loading" :data="data" :height="height" :row-key="idkey" lazy :load="load" @sort-change="sort" @selection-change="select" @cell-dblclick="cellDbclick">
+    <el-table
+      ref="table"
+      :key="tbKey"
+      v-loading="loading"
+      :data="data"
+      :height="height"
+      :row-key="idkey"
+      lazy
+      :load="load"
+      @sort-change="sort"
+      @selection-change="select"
+      @cell-dblclick="cellDbclick"
+    >
       <el-table-column type="selection" width="42" title="全选/反选" />
-      <el-table-column prop="region_name" label="名称" min-width="250" show-overflow-tooltip />
-      <el-table-column prop="region_pinyin" label="拼音" min-width="250" sortable="custom" show-overflow-tooltip />
-      <el-table-column prop="region_citycode" label="区号" min-width="80" sortable="custom" />
-      <el-table-column prop="region_zipcode" label="邮编" min-width="80" sortable="custom" />
-      <el-table-column prop="region_longitude" label="经度" min-width="110" sortable="custom" />
-      <el-table-column prop="region_latitude" label="纬度" min-width="110" sortable="custom" />
-      <el-table-column prop="is_disable" label="禁用" width="75" sortable="custom">
+      <el-table-column
+        prop="region_name"
+        label="名称"
+        min-width="250"
+        show-overflow-tooltip
+      />
+      <el-table-column
+        prop="region_pinyin"
+        label="拼音"
+        min-width="250"
+        sortable="custom"
+        show-overflow-tooltip
+      />
+      <el-table-column
+        prop="region_citycode"
+        label="区号"
+        min-width="80"
+        sortable="custom"
+      />
+      <el-table-column
+        prop="region_zipcode"
+        label="邮编"
+        min-width="80"
+        sortable="custom"
+      />
+      <el-table-column
+        prop="region_longitude"
+        label="经度"
+        min-width="110"
+        sortable="custom"
+      />
+      <el-table-column
+        prop="region_latitude"
+        label="纬度"
+        min-width="110"
+        sortable="custom"
+      />
+      <el-table-column
+        prop="is_disable"
+        label="禁用"
+        width="75"
+        sortable="custom"
+      >
         <template slot-scope="scope">
-          <el-switch v-model="scope.row.is_disable" :active-value="1" :inactive-value="0" @change="disable([scope.row])" />
+          <el-switch
+            v-model="scope.row.is_disable"
+            :active-value="1"
+            :inactive-value="0"
+            @change="disable([scope.row])"
+          />
         </template>
       </el-table-column>
-      <el-table-column :prop="idkey" label="ID" min-width="95" sortable="custom" />
-      <el-table-column prop="sort" label="排序" min-width="80" sortable="custom" />
-      <el-table-column label="操作" width="120">
+      <el-table-column
+        :prop="idkey"
+        label="ID"
+        min-width="95"
+        sortable="custom"
+      />
+      <el-table-column
+        prop="sort"
+        label="排序"
+        min-width="80"
+        sortable="custom"
+      />
+      <el-table-column label="操作" width="130">
         <template slot-scope="scope">
-          <el-button size="mini" type="text" title="添加下级" @click="add(scope.row)">添加</el-button>
-          <el-button size="mini" type="text" @click="edit(scope.row)">修改</el-button>
-          <el-button size="mini" type="text" @click="selectOpen('dele',scope.row)">删除</el-button>
+          <el-button
+            type="text"
+            size="small"
+            title="添加下级"
+            @click="add(scope.row)"
+          >添加</el-button>
+          <el-button type="text" size="small" @click="edit(scope.row)">修改</el-button>
+          <el-button type="text" size="small" @click="selectOpen('dele', scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
     <el-row>
-      <el-descriptions title="" :column="12" :colon="false" size="medium">
+      <el-descriptions title="" :column="12" :colon="false">
         <el-descriptions-item label="">共 {{ count }} 条</el-descriptions-item>
       </el-descriptions>
     </el-row>
     <!-- 添加修改 -->
-    <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false">
-      <el-form ref="ref" :rules="rules" :model="model" label-width="100px" class="dialog-body" :style="{height:height-50+'px'}">
+    <el-dialog
+      :title="dialogTitle"
+      :visible.sync="dialog"
+      top="5vh"
+      :before-close="cancel"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
+      <el-form
+        ref="ref"
+        :rules="rules"
+        :model="model"
+        label-width="100px"
+        class="dialog-body"
+        :style="{ height: height - 50 + 'px' }"
+      >
         <el-form-item label="上级" prop="region_pid">
-          <el-cascader v-model="model.region_pid" :options="trees" :props="props" style="width:100%" placeholder="一级地区" clearable filterable />
+          <el-cascader
+            v-model="model.region_pid"
+            :options="trees"
+            :props="props"
+            style="width:100%"
+            placeholder="一级地区"
+            clearable
+            filterable
+          />
         </el-form-item>
         <el-form-item label="名称" prop="region_name">
           <el-input v-model="model.region_name" placeholder="请输入名称，eg：北京市" clearable>
-            <el-button slot="append" icon="el-icon-document-copy" title="复制" @click="copy(model.region_name, $event)" />
+            <el-button
+              slot="append"
+              icon="el-icon-document-copy"
+              title="复制"
+              @click="copy(model.region_name, $event)"
+            />
           </el-input>
         </el-form-item>
         <el-form-item label="拼音" prop="region_pinyin">
           <el-input v-model="model.region_pinyin" placeholder="请输入拼音，eg：Beijing" clearable>
-            <el-button slot="append" icon="el-icon-document-copy" title="复制" @click="copy(model.region_pinyin, $event)" />
+            <el-button
+              slot="append"
+              icon="el-icon-document-copy"
+              title="复制"
+              @click="copy(model.region_pinyin, $event)"
+            />
           </el-input>
         </el-form-item>
         <el-form-item label="简拼" prop="region_jianpin">
           <el-input v-model="model.region_jianpin" placeholder="请输入简拼，eg：BJ" clearable>
-            <el-button slot="append" icon="el-icon-document-copy" title="复制" @click="copy(model.region_jianpin, $event)" />
+            <el-button
+              slot="append"
+              icon="el-icon-document-copy"
+              title="复制"
+              @click="copy(model.region_jianpin, $event)"
+            />
           </el-input>
         </el-form-item>
         <el-form-item label="首字母" prop="region_initials">
           <el-input v-model="model.region_initials" placeholder="请输入首字母，eg：B" clearable>
-            <el-button slot="append" icon="el-icon-document-copy" title="复制" @click="copy(model.region_initials, $event)" />
+            <el-button
+              slot="append"
+              icon="el-icon-document-copy"
+              title="复制"
+              @click="copy(model.region_initials, $event)"
+            />
           </el-input>
         </el-form-item>
         <el-form-item label="区号" prop="region_citycode">
           <el-input v-model="model.region_citycode" placeholder="请输入区号，eg：010" clearable>
-            <el-button slot="append" icon="el-icon-document-copy" title="复制" @click="copy(model.region_citycode, $event)" />
+            <el-button
+              slot="append"
+              icon="el-icon-document-copy"
+              title="复制"
+              @click="copy(model.region_citycode, $event)"
+            />
           </el-input>
         </el-form-item>
         <el-form-item label="邮编" prop="region_zipcode">
           <el-input v-model="model.region_zipcode" placeholder="请输入邮编，eg：1000" clearable>
-            <el-button slot="append" icon="el-icon-document-copy" title="复制" @click="copy(model.region_zipcode, $event)" />
+            <el-button
+              slot="append"
+              icon="el-icon-document-copy"
+              title="复制"
+              @click="copy(model.region_zipcode, $event)"
+            />
           </el-input>
         </el-form-item>
         <el-form-item label="经度" prop="region_longitude">
           <el-input v-model="model.region_longitude" placeholder="请输入经度（高德），eg：116.403263" clearable>
-            <el-button slot="append" icon="el-icon-document-copy" title="复制" @click="copy(model.region_longitude, $event)" />
+            <el-button
+              slot="append"
+              icon="el-icon-document-copy"
+              title="复制"
+              @click="copy(model.region_longitude, $event)"
+            />
           </el-input>
         </el-form-item>
         <el-form-item label="纬度" prop="region_latitude">
           <el-input v-model="model.region_latitude" placeholder="请输入纬度（高德），eg：39.915156" clearable>
-            <el-button slot="append" icon="el-icon-document-copy" title="复制" @click="copy(model.region_latitude, $event)" />
+            <el-button
+              slot="append"
+              icon="el-icon-document-copy"
+              title="复制"
+              @click="copy(model.region_latitude, $event)"
+            />
           </el-input>
         </el-form-item>
         <el-form-item label="排序" prop="sort">
-          <el-input v-model="model.sort" type="number" placeholder="请输入排序，eg：2250" clearable>
-            <el-button slot="append" icon="el-icon-document-copy" title="复制" @click="copy(model.sort, $event)" />
+          <el-input
+            v-model="model.sort"
+            type="number"
+            placeholder="请输入排序，eg：2250"
+            clearable
+          >
+            <el-button
+              slot="append"
+              icon="el-icon-document-copy"
+              title="复制"
+              @click="copy(model.sort, $event)"
+            />
           </el-input>
         </el-form-item>
         <el-form-item v-if="model[idkey]" label="完整名称" prop="region_fullname">
           <el-input v-model="model.region_fullname" placeholder="" disabled>
-            <el-button slot="append" icon="el-icon-document-copy" title="复制" @click="copy(model.region_fullname, $event)" />
+            <el-button
+              slot="append"
+              icon="el-icon-document-copy"
+              title="复制"
+              @click="copy(model.region_fullname, $event)"
+            />
           </el-input>
         </el-form-item>
         <el-form-item v-if="model[idkey]" label="完整拼音" prop="region_fullname_py">
           <el-input v-model="model.region_fullname_py" placeholder="" disabled>
-            <el-button slot="append" icon="el-icon-document-copy" title="复制" @click="copy(model.region_fullname_py, $event)" />
+            <el-button
+              slot="append"
+              icon="el-icon-document-copy"
+              title="复制"
+              @click="copy(model.region_fullname_py, $event)"
+            />
           </el-input>
         </el-form-item>
         <el-form-item v-if="model[idkey]" label="添加时间" prop="create_time">
@@ -227,7 +434,7 @@ export default {
     }
   },
   created() {
-    this.height = screenHeight(210)
+    this.height = screenHeight(220)
     this.list()
   },
   methods: {

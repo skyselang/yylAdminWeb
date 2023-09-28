@@ -8,11 +8,27 @@
         <span class="apidoc-item" :title="model.token">Token：{{ model.token_sub }}
           <i class="el-icon-copy-document" title="复制Token" @click="copy(model.token, $event)" />
         </span>
-        <el-button class="filter-item" size="mini" circle title="刷新" @click="refresh()"><i class="el-icon-refresh" /></el-button>
-        <el-link style="margin-left:10px" :href="model.apidoc_url" target="_blank" :underline="false" title="新标签页打开"><i class="el-icon-position" /></el-link>
+        <el-button
+          class="filter-item"
+          circle
+          title="刷新"
+          @click="refresh()"
+        ><i class="el-icon-refresh" /></el-button>
+        <el-link
+          style="margin-left:20px"
+          :href="model.apidoc_url"
+          target="_blank"
+          :underline="false"
+          title="新标签页打开"
+        ><i class="el-icon-position" /></el-link>
       </el-col>
       <el-col>
-        <iframe :src="model.apidoc_url" frameborder="0" width="100%" :height="height" />
+        <iframe
+          :src="model.apidoc_url"
+          frameborder="0"
+          width="100%"
+          :height="height"
+        />
       </el-col>
     </el-row>
   </div>

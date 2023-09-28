@@ -2,7 +2,7 @@
   <el-card class="dialog-body" :style="{ height: height + 'px' }">
     <el-row :gutter="8">
       <el-col :span="12">
-        <el-form :model="model" label-width="150px" size="small">
+        <el-form :model="model" label-width="150px">
           <el-form-item label="ThinkPHP">
             <el-input v-model="model.thinkphp" />
           </el-form-item>
@@ -45,7 +45,7 @@
         </el-form>
       </el-col>
       <el-col :span="12">
-        <el-form :model="model" label-width="150px" size="small">
+        <el-form :model="model" label-width="150px">
           <el-form-item label="缓存类型" prop="type">
             <el-input v-model="model.cache_type" />
           </el-form-item>
@@ -81,7 +81,13 @@
               <el-input v-model="model.db0" />
             </el-form-item>
             <template v-for="n in 15">
-              <el-form-item v-if="model['db' + n]" :key="n" :label="'DB' + n" prop="" class="ya-margin-bottom">
+              <el-form-item
+                v-if="model['db' + n]"
+                :key="n"
+                :label="'DB' + n"
+                prop=""
+                class="ya-margin-bottom"
+              >
                 <el-input v-model="model['db' + n]" />
               </el-form-item>
             </template>
@@ -129,7 +135,7 @@
         </el-form>
       </el-col>
       <el-col :span="24">
-        <el-form :model="model" label-width="150px" size="small">
+        <el-form :model="model" label-width="150px">
           <el-form-item>
             <el-button :loading="loading" title="刷新" @click="refresh()">刷新</el-button>
           </el-form-item>
@@ -181,7 +187,5 @@ export default {
 </script>
 
 <style scoped>
-.my-label {
-    color: #303133;
-  }
+
 </style>

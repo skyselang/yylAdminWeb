@@ -1,12 +1,18 @@
 <template>
   <el-row :gutter="10" style="padding: 15px 15px 0 15px;">
-    <el-col v-for="(item, index) in datas" :key="index" :xs="24" :sm="3" style="margin-top:5px">
-      <el-card :body-style="cardBodyStyle" style="text-align:center">
+    <el-col
+      v-for="(item, index) in datas"
+      :key="index"
+      :xs="24"
+      :sm="3"
+      style="margin-top:5px"
+    >
+      <el-card :body-style="cardBodyStyle" class="ya-center">
         <div slot="header">
-          <span>{{ item.name }}</span>
+          <span class="count-name">{{ item.name }}</span>
         </div>
         <div>
-          <el-statistic :value="item.count" />
+          <el-statistic class="count-value" group-separator="," :value="item.count" />
         </div>
       </el-card>
     </el-col>
@@ -47,3 +53,8 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped>
+.count-value{
+  color: var(--theme,#1890ff);
+}
+</style>

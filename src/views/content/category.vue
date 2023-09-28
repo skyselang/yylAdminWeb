@@ -17,19 +17,50 @@
             <el-option value="remark" label="备注" />
           </el-select>
           <el-select v-model="query.search_exp" class="filter-item ya-search-exp">
-            <el-option v-for="exp in exps" :key="exp.exp" :value="exp.exp" :label="exp.name" />
+            <el-option
+              v-for="exp in exps"
+              :key="exp.exp"
+              :value="exp.exp"
+              :label="exp.name"
+            />
           </el-select>
-          <el-cascader v-if="query.search_field==='category_pid'" v-model="query.search_value" :options="trees" :props="props" class="filter-item ya-search-value" clearable filterable />
-          <el-select v-else-if="query.search_field==='is_disable'" v-model="query.search_value" class="filter-item ya-search-value">
+          <el-cascader
+            v-if="query.search_field === 'category_pid'"
+            v-model="query.search_value"
+            :options="trees"
+            :props="props"
+            class="filter-item ya-search-value"
+            clearable
+            filterable
+          />
+          <el-select
+            v-else-if="query.search_field === 'is_disable'"
+            v-model="query.search_value"
+            class="filter-item ya-search-value"
+          >
             <el-option :value="1" label="是" />
             <el-option :value="0" label="否" />
           </el-select>
-          <el-input v-else v-model="query.search_value" class="filter-item ya-search-value" placeholder="查询内容" clearable />
+          <el-input
+            v-else
+            v-model="query.search_value"
+            class="filter-item ya-search-value"
+            placeholder="查询内容"
+            clearable
+          />
           <el-select v-model="query.date_field" class="filter-item ya-date-field" placeholder="时间类型">
             <el-option value="create_time" label="添加时间" />
             <el-option value="update_time" label="修改时间" />
           </el-select>
-          <el-date-picker v-model="query.date_value" type="datetimerange" class="filter-item ya-date-value" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00','23:59:59']" value-format="yyyy-MM-dd HH:mm:ss" />
+          <el-date-picker
+            v-model="query.date_value"
+            type="datetimerange"
+            class="filter-item ya-date-value"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            :default-time="['00:00:00', '23:59:59']"
+            value-format="yyyy-MM-dd HH:mm:ss"
+          />
           <el-button class="filter-item" type="primary" @click="search()">查询</el-button>
           <el-button class="filter-item" @click="refresh()">刷新</el-button>
         </el-col>
@@ -37,7 +68,13 @@
       <!-- 选中操作 -->
       <el-row>
         <el-col>
-          <el-checkbox v-model="isExpandAll" style="margin-right:10px;top:-2px" border title="收起/展开" @change="expandAll">收起</el-checkbox>
+          <el-checkbox
+            v-model="isExpandAll"
+            style="margin-right:10px;top:-2px"
+            border
+            title="收起/展开"
+            @change="expandAll"
+          >收起</el-checkbox>
           <el-button title="解除内容" @click="selectOpen('removec')">内容</el-button>
           <el-button title="修改上级" @click="selectOpen('editpid')">上级</el-button>
           <el-button title="是否禁用" @click="selectOpen('disable')">禁用</el-button>
@@ -45,22 +82,41 @@
           <el-button type="primary" @click="add()">添加</el-button>
         </el-col>
       </el-row>
-      <el-dialog :title="selectTitle" :visible.sync="selectDialog" top="20vh" :close-on-click-modal="false" :close-on-press-escape="false">
+      <el-dialog
+        :title="selectTitle"
+        :visible.sync="selectDialog"
+        top="20vh"
+        :close-on-click-modal="false"
+        :close-on-press-escape="false"
+      >
         <el-form ref="selectRef" label-width="120px">
-          <el-form-item :label="name+'ID'" prop="">
-            <el-input v-model="selectIds" type="textarea" :autosize="{minRows: 5, maxRows: 12}" disabled />
+          <el-form-item :label="name + 'ID'" prop="">
+            <el-input
+              v-model="selectIds"
+              type="textarea"
+              :autosize="{ minRows: 5, maxRows: 12 }"
+              disabled
+            />
           </el-form-item>
-          <el-form-item v-if="selectType==='removec'" label="" prop="">
+          <el-form-item v-if="selectType === 'removec'" label="" prop="">
             <span style="">确定要解除选中的{{ name }}的内容吗？</span>
           </el-form-item>
-          <el-form-item v-else-if="selectType==='editpid'" label="上级" prop="">
-            <el-cascader v-model="category_pid" :options="trees" :props="props" style="width:100%" placeholder="一级分类" clearable filterable />
+          <el-form-item v-else-if="selectType === 'editpid'" label="上级" prop="">
+            <el-cascader
+              v-model="category_pid"
+              :options="trees"
+              :props="props"
+              style="width:100%"
+              placeholder="一级分类"
+              clearable
+              filterable
+            />
           </el-form-item>
-          <el-form-item v-if="selectType==='disable'" label="是否禁用" prop="">
+          <el-form-item v-if="selectType === 'disable'" label="是否禁用" prop="">
             <el-switch v-model="is_disable" :active-value="1" :inactive-value="0" />
           </el-form-item>
-          <el-form-item v-else-if="selectType==='dele'" label="" prop="">
-            <span style="color:red">确定要删除选中的{{ name }}吗？</span>
+          <el-form-item v-else-if="selectType === 'dele'" label="" prop="">
+            <span class="ya-color-red">确定要删除选中的{{ name }}吗？</span>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -70,13 +126,33 @@
       </el-dialog>
     </div>
     <!-- 列表 -->
-    <el-table ref="table" v-loading="loading" :data="data" :height="height+50" :row-key="idkey" default-expand-all @selection-change="select">
+    <el-table
+      ref="table"
+      v-loading="loading"
+      :data="data"
+      :height="height + 50"
+      :row-key="idkey"
+      default-expand-all
+      @selection-change="select"
+    >
       <el-table-column type="selection" width="42" title="全选/反选" />
-      <el-table-column prop="category_name" label="名称" min-width="250" show-overflow-tooltip />
+      <el-table-column
+        prop="category_name"
+        label="名称"
+        min-width="250"
+        show-overflow-tooltip
+      />
       <el-table-column prop="image_url" label="图片" min-width="60">
         <template slot-scope="scope">
           <div style="height:30px">
-            <el-image v-if="scope.row.image_url" style="height:30px" fit="contain" :src="scope.row.image_url" :preview-src-list="[scope.row.image_url]" title="点击看大图">
+            <el-image
+              v-if="scope.row.image_url"
+              style="height:30px"
+              fit="contain"
+              :src="scope.row.image_url"
+              :preview-src-list="[scope.row.image_url]"
+              title="点击看大图"
+            >
               <div slot="error" class="image-slot">
                 <i class="el-icon-picture-outline" />
               </div>
@@ -84,53 +160,98 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column prop="category_unique" label="标识" min-width="100" show-overflow-tooltip />
+      <el-table-column
+        prop="category_unique"
+        label="标识"
+        min-width="100"
+        show-overflow-tooltip
+      />
       <el-table-column :prop="idkey" label="ID" min-width="75" />
       <el-table-column prop="is_disable" label="禁用" min-width="75">
         <template slot-scope="scope">
-          <el-switch v-model="scope.row.is_disable" :active-value="1" :inactive-value="0" @change="disable([scope.row])" />
+          <el-switch
+            v-model="scope.row.is_disable"
+            :active-value="1"
+            :inactive-value="0"
+            @change="disable([scope.row])"
+          />
         </template>
       </el-table-column>
       <el-table-column prop="sort" label="排序" min-width="75" />
       <el-table-column prop="create_time" label="添加时间" width="155" />
       <el-table-column prop="update_time" label="修改时间" width="155" />
-      <el-table-column label="操作" width="155">
+      <el-table-column label="操作" width="160">
         <template slot-scope="scope">
-          <el-button size="mini" type="text" @click="contentShow(scope.row)">内容</el-button>
-          <el-button size="mini" type="text" title="添加下级" @click="add(scope.row)">添加</el-button>
-          <el-button size="mini" type="text" @click="edit(scope.row)">修改</el-button>
-          <el-button size="mini" type="text" @click="selectOpen('dele',scope.row)">删除</el-button>
+          <el-button type="text" size="small" @click="contentShow(scope.row)">内容</el-button>
+          <el-button
+            type="text"
+            size="small"
+            title="添加下级"
+            @click="add(scope.row)"
+          >添加</el-button>
+          <el-button type="text" size="small" @click="edit(scope.row)">修改</el-button>
+          <el-button type="text" size="small" @click="selectOpen('dele', scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
     <el-row>
-      <el-descriptions title="" :column="12" :colon="false" size="medium">
+      <el-descriptions title="" :column="12" :colon="false">
         <el-descriptions-item label="">共 {{ count }} 条</el-descriptions-item>
       </el-descriptions>
     </el-row>
     <!-- 添加修改 -->
-    <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false" destroy-on-close>
-      <el-form ref="ref" :rules="rules" :model="model" class="dialog-body" label-width="100px" :style="{height:height+'px'}">
+    <el-dialog
+      :title="dialogTitle"
+      :visible.sync="dialog"
+      top="5vh"
+      :before-close="cancel"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      destroy-on-close
+    >
+      <el-form
+        ref="ref"
+        :rules="rules"
+        :model="model"
+        class="dialog-body"
+        label-width="100px"
+        :style="{ height: height + 'px' }"
+      >
         <el-form-item label="标识" prop="category_unique">
           <el-input v-model="model.category_unique" placeholder="请输入分类标识（唯一）" clearable />
         </el-form-item>
         <el-form-item label="上级" prop="category_pid">
-          <el-cascader v-model="model.category_pid" :options="trees" :props="props" style="width:100%" placeholder="一级分类" clearable filterable />
+          <el-cascader
+            v-model="model.category_pid"
+            :options="trees"
+            :props="props"
+            style="width:100%"
+            placeholder="一级分类"
+            clearable
+            filterable
+          />
         </el-form-item>
         <el-form-item label="名称" prop="category_name">
           <el-input v-model="model.category_name" placeholder="请输入分类名称" clearable />
         </el-form-item>
         <el-form-item label="图片" prop="image_id">
           <el-col :span="12" style="height:100px">
-            <el-image v-if="model.image_url" style="height:100px" fit="contain" :src="model.image_url" :preview-src-list="[model.image_url]" title="点击看大图">
+            <el-image
+              v-if="model.image_url"
+              style="height:100px"
+              fit="contain"
+              :src="model.image_url"
+              :preview-src-list="[model.image_url]"
+              title="点击看大图"
+            >
               <div slot="error" class="image-slot">
                 <i class="el-icon-picture-outline" />
               </div>
             </el-image>
           </el-col>
           <el-col :span="12">
-            <el-button size="mini" @click="fileUpload('image', 'image_id', '上传图片')">上传图片</el-button>
-            <el-button size="mini" @click="fileDelete(0, 'image_id')">删除</el-button>
+            <el-button @click="fileUpload('image', 'image_id', '上传图片')">上传图片</el-button>
+            <el-button @click="fileDelete(0, 'image_id')">删除</el-button>
             <p>图片小于 200 KB，jpg、png格式。</p>
           </el-col>
         </el-form-item>
@@ -141,7 +262,13 @@
           <el-input v-model="model.keywords" placeholder="keywords" clearable />
         </el-form-item>
         <el-form-item label="描述" prop="description">
-          <el-input v-model="model.description" type="textarea" autosize placeholder="description" clearable />
+          <el-input
+            v-model="model.description"
+            type="textarea"
+            autosize
+            placeholder="description"
+            clearable
+          />
         </el-form-item>
         <el-form-item label="备注" prop="remark">
           <el-input v-model="model.remark" placeholder="remark" clearable />
@@ -152,22 +279,54 @@
         <el-form-item label="图片列表" prop="images">
           <el-row>
             <el-col :span="12">
-              <el-button size="mini" @click="fileUpload('image', 'images', '上传图片')">上传图片</el-button>
+              <el-button @click="fileUpload('image', 'images', '上传图片')">上传图片</el-button>
               <span>图片小于 250 KB，jpg、png格式。</span>
             </el-col>
             <el-col :span="12">
-              <el-button size="mini" @click="fileDelete('all', 'images')">全部删除</el-button>
+              <el-button @click="fileDelete('all', 'images')">全部删除</el-button>
             </el-col>
           </el-row>
           <el-row>
-            <el-col v-for="(item, index) in model.images" :key="index" :span="6" class="ya-file">
-              <el-image style="height:100px" fit="contain" :src="item.file_url" :preview-src-list="[item.file_url]" title="点击看大图" />
+            <el-col
+              v-for="(item, index) in model.images"
+              :key="index"
+              :span="6"
+              class="ya-file"
+            >
+              <el-image
+                style="height:100px"
+                fit="contain"
+                :src="item.file_url"
+                :preview-src-list="[item.file_url]"
+                title="点击看大图"
+              />
               <div>
-                <span class="ya-file-name" :title="item.file_name+'.'+item.file_ext">{{ item.file_name }}.{{ item.file_ext }}</span>
-                <el-button type="text" size="medium" icon="el-icon-d-arrow-left" title="向左移动" @click="fileRemoval(index, 'images', 'left')" />
-                <el-button type="text" size="medium" icon="el-icon-d-arrow-right" title="向左移动" @click="fileRemoval(index, 'images', 'right')" />
-                <el-button type="text" size="medium" icon="el-icon-download" title="下载" @click="fileDownload(item, $event)" />
-                <el-button type="text" size="medium" icon="el-icon-delete" title="删除" @click="fileDelete(index, 'images')" />
+                <span class="ya-file-name" :title="item.file_name + '.' + item.file_ext">{{ item.file_name }}.{{ item.file_ext
+                }}</span>
+                <el-button
+                  type="text"
+                  icon="el-icon-d-arrow-left"
+                  title="向左移动"
+                  @click="fileRemoval(index, 'images', 'left')"
+                />
+                <el-button
+                  type="text"
+                  icon="el-icon-d-arrow-right"
+                  title="向左移动"
+                  @click="fileRemoval(index, 'images', 'right')"
+                />
+                <el-button
+                  type="text"
+                  icon="el-icon-download"
+                  title="下载"
+                  @click="fileDownload(item, $event)"
+                />
+                <el-button
+                  type="text"
+                  icon="el-icon-delete"
+                  title="删除"
+                  @click="fileDelete(index, 'images')"
+                />
               </div>
             </el-col>
           </el-row>
@@ -188,23 +347,61 @@
       </div>
     </el-dialog>
     <!-- 文件管理 -->
-    <el-dialog :title="fileTitle" :visible.sync="fileDialog" width="80%" top="1vh" :close-on-click-modal="false" :close-on-press-escape="false">
+    <el-dialog
+      :title="fileTitle"
+      :visible.sync="fileDialog"
+      width="80%"
+      top="1vh"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
       <file-manage :file-type="fileType" @fileCancel="fileCancel" @fileSubmit="fileSubmit" />
     </el-dialog>
     <!-- 分类内容 -->
-    <el-dialog :title="contentDialogTitle" :visible.sync="contentDialog" width="70%" top="5vh" :close-on-click-modal="false" :close-on-press-escape="false">
+    <el-dialog
+      :title="contentDialogTitle"
+      :visible.sync="contentDialog"
+      width="70%"
+      top="5vh"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
       <!-- 选中操作 -->
       <el-row>
         <el-col>
           <el-button type="primary" title="解除" @click="contentSelectOpen('contentRemove')">解除</el-button>
+          <el-input
+            v-model="contentQuery.search_value"
+            class="filter-item ya-search-value ya-margin-left"
+            placeholder="名称"
+            clearable
+          />
+          <el-button
+            class="filter-item"
+            type="primary"
+            title="查询/刷新"
+            @click="content()"
+          >查询</el-button>
         </el-col>
       </el-row>
-      <el-dialog :title="contentSelectTitle" :visible.sync="contentSelectDialog" top="20vh" :close-on-click-modal="false" :close-on-press-escape="false" append-to-body>
+      <el-dialog
+        :title="contentSelectTitle"
+        :visible.sync="contentSelectDialog"
+        top="20vh"
+        :close-on-click-modal="false"
+        :close-on-press-escape="false"
+        append-to-body
+      >
         <el-form ref="contentSelectRef" label-width="120px">
-          <el-form-item :label="contentName+'ID'" prop="">
-            <el-input v-model="contentSelectIds" type="textarea" :autosize="{minRows: 5, maxRows: 12}" disabled />
+          <el-form-item :label="contentName + 'ID'" prop="">
+            <el-input
+              v-model="contentSelectIds"
+              type="textarea"
+              :autosize="{ minRows: 5, maxRows: 12 }"
+              disabled
+            />
           </el-form-item>
-          <el-form-item v-if="contentSelectType==='contentRemove'" label="分类ID" prop="">
+          <el-form-item v-if="contentSelectType === 'contentRemove'" label="分类ID" prop="">
             <span>{{ contentQuery[idkey] }}</span>
           </el-form-item>
         </el-form>
@@ -214,13 +411,32 @@
         </div>
       </el-dialog>
       <!-- 内容列表 -->
-      <el-table ref="contentRef" v-loading="contentLoad" :data="contentData" :height="height-20" @sort-change="contentSort" @selection-change="contentSelect">
+      <el-table
+        ref="contentRef"
+        v-loading="contentLoad"
+        :data="contentData"
+        :height="height - 20"
+        @sort-change="contentSort"
+        @selection-change="contentSelect"
+      >
         <el-table-column type="selection" width="42" title="全选/反选" />
-        <el-table-column :prop="contentPk" label="内容ID" min-width="80" sortable="custom" />
+        <el-table-column
+          :prop="contentPk"
+          label="内容ID"
+          min-width="80"
+          sortable="custom"
+        />
         <el-table-column prop="image_url" label="图片" min-width="60">
           <template slot-scope="scope">
             <div style="height:30px">
-              <el-image v-if="scope.row.image_url" style="height:30px" fit="contain" :src="scope.row.image_url" :preview-src-list="[scope.row.image_url]" title="点击看大图">
+              <el-image
+                v-if="scope.row.image_url"
+                style="height:30px"
+                fit="contain"
+                :src="scope.row.image_url"
+                :preview-src-list="[scope.row.image_url]"
+                title="点击看大图"
+              >
                 <div slot="error" class="image-slot">
                   <i class="el-icon-picture-outline" />
                 </div>
@@ -228,37 +444,103 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="name" label="名称" min-width="230" show-overflow-tooltip />
-        <el-table-column prop="unique" label="标识" min-width="80" show-overflow-tooltip />
-        <el-table-column prop="category_names" label="分类" min-width="120" show-overflow-tooltip />
-        <el-table-column prop="tag_names" label="标签" min-width="120" show-overflow-tooltip />
-        <el-table-column prop="is_top" label="置顶" min-width="75" sortable="custom">
+        <el-table-column
+          prop="name"
+          label="名称"
+          min-width="230"
+          show-overflow-tooltip
+        />
+        <el-table-column
+          prop="unique"
+          label="标识"
+          min-width="80"
+          show-overflow-tooltip
+        />
+        <el-table-column
+          prop="category_names"
+          label="分类"
+          min-width="120"
+          show-overflow-tooltip
+        />
+        <el-table-column
+          prop="tag_names"
+          label="标签"
+          min-width="120"
+          show-overflow-tooltip
+        />
+        <el-table-column
+          prop="is_top"
+          label="置顶"
+          min-width="75"
+          sortable="custom"
+        >
           <template slot-scope="scope">
-            <el-switch v-model="scope.row.is_top" :active-value="1" :inactive-value="0" disabled />
+            <el-switch
+              v-model="scope.row.is_top"
+              :active-value="1"
+              :inactive-value="0"
+              disabled
+            />
           </template>
         </el-table-column>
-        <el-table-column prop="is_hot" label="热门" min-width="75" sortable="custom">
+        <el-table-column
+          prop="is_hot"
+          label="热门"
+          min-width="75"
+          sortable="custom"
+        >
           <template slot-scope="scope">
-            <el-switch v-model="scope.row.is_hot" :active-value="1" :inactive-value="0" disabled />
+            <el-switch
+              v-model="scope.row.is_hot"
+              :active-value="1"
+              :inactive-value="0"
+              disabled
+            />
           </template>
         </el-table-column>
-        <el-table-column prop="is_rec" label="推荐" min-width="75" sortable="custom">
+        <el-table-column
+          prop="is_rec"
+          label="推荐"
+          min-width="75"
+          sortable="custom"
+        >
           <template slot-scope="scope">
-            <el-switch v-model="scope.row.is_rec" :active-value="1" :inactive-value="0" disabled />
+            <el-switch
+              v-model="scope.row.is_rec"
+              :active-value="1"
+              :inactive-value="0"
+              disabled
+            />
           </template>
         </el-table-column>
-        <el-table-column prop="is_disable" label="禁用" min-width="75" sortable="custom">
+        <el-table-column
+          prop="is_disable"
+          label="禁用"
+          min-width="75"
+          sortable="custom"
+        >
           <template slot-scope="scope">
-            <el-switch v-model="scope.row.is_disable" :active-value="1" :inactive-value="0" disabled />
+            <el-switch
+              v-model="scope.row.is_disable"
+              :active-value="1"
+              :inactive-value="0"
+              disabled
+            />
           </template>
         </el-table-column>
         <el-table-column label="操作" width="75">
           <template slot-scope="scope">
-            <el-button size="mini" type="text" @click="contentSelectOpen('contentRemove',scope.row)">解除</el-button>
+            <el-button type="text" size="small" @click="contentSelectOpen('contentRemove', scope.row)">解除</el-button>
           </template>
         </el-table-column>
       </el-table>
-      <pagination v-show="contentCount>0" :total="contentCount" :page.sync="contentQuery.page" :limit.sync="contentQuery.limit" @pagination="content" />
+      <pagination
+        v-show="contentCount > 0"
+        :total="contentCount"
+        :page.sync="contentQuery.page"
+        :limit.sync="contentQuery.limit"
+        @pagination="content"
+      />
     </el-dialog>
   </div>
 </template>
@@ -269,6 +551,7 @@ import screenHeight from '@/utils/screen-height'
 import FileManage from '@/components/FileManage'
 import Pagination from '@/components/Pagination'
 import { arrayColumn } from '@/utils/index'
+import { getPageLimit } from '@/utils/settings'
 import { list, info, add, edit, dele, editpid, disable, content, contentRemove } from '@/api/content/category'
 
 export default {
@@ -325,7 +608,7 @@ export default {
       contentLoad: false,
       contentData: [],
       contentCount: 0,
-      contentQuery: { page: 1, limit: 12 },
+      contentQuery: { page: 1, limit: getPageLimit(), search_field: 'name', search_exp: 'like', search_value: '' },
       contentSelection: [],
       contentSelectIds: '',
       contentSelectTitle: '选中操作',
@@ -334,7 +617,7 @@ export default {
     }
   },
   created() {
-    this.height = screenHeight()
+    this.height = screenHeight(270)
     this.list()
   },
   methods: {
@@ -624,6 +907,7 @@ export default {
       this.contentDialog = true
       this.contentDialogTitle = this.name + '内容：' + row.category_name
       this.contentQuery.category_id = row.category_id
+      this.contentQuery.search_value = ''
       this.content()
     },
     // 分类内容列表
@@ -717,6 +1001,7 @@ export default {
   text-align: center;
   border: 1px solid #dcdfe6;
 }
+
 .ya-file-name {
   display: block;
   height: 24px;

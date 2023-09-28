@@ -1,32 +1,97 @@
 <template>
-  <div class="login-container" :style="{backgroundImage:'url('+login_bg_url+')' }">
-    <el-form ref="ref" class="login-form" :model="model" :rules="rules" label-position="left">
+  <div
+    class="login-container"
+    :style="{
+      backgroundImage: 'url(' + login_bg_url + ')',
+      backgroundColor: loginBgColor
+    }"
+  >
+    <el-form
+      ref="ref"
+      class="login-form"
+      :model="model"
+      :rules="rules"
+      label-position="left"
+    >
       <div class="login-logo">
-        <el-image v-if="logo_url" style="height:108px" fit="contain" :src="logo_url">
+        <el-image
+          v-if="logo_url"
+          style="height: 108px"
+          fit="contain"
+          :src="logo_url"
+        >
           <div slot="error" class="image-slot" />
         </el-image>
-        <div v-else style="height:108px" />
+        <div v-else style="height: 112px" />
       </div>
       <div class="login-title">
         <h3 class="login-title-name">{{ system_name }}</h3>
       </div>
       <el-form-item prop="username">
-        <el-input v-model="model.username" type="text" placeholder="账号/手机/邮箱" prefix-icon="el-icon-user" autocomplete="on" clearable />
+        <el-input
+          v-model="model.username"
+          type="text"
+          placeholder="账号/手机/邮箱"
+          prefix-icon="el-icon-user"
+          autocomplete="on"
+          clearable
+        />
       </el-form-item>
       <el-form-item prop="password">
-        <el-input v-model="model.password" type="password" placeholder="请输入密码" prefix-icon="el-icon-lock" autocomplete="on" clearable show-password />
+        <el-input
+          v-model="model.password"
+          type="password"
+          placeholder="请输入密码"
+          prefix-icon="el-icon-lock"
+          autocomplete="on"
+          clearable
+          show-password
+        />
       </el-form-item>
-      <el-form-item v-if="captcha_switch&&captcha_src" prop="captcha_code">
+      <el-form-item v-if="captcha_switch && captcha_src" prop="captcha_code">
         <el-col :span="13">
-          <el-input v-model="model.captcha_code" placeholder="请输入验证码" prefix-icon="el-icon-picture" autocomplete="off" clearable />
+          <el-input
+            v-model="model.captcha_code"
+            placeholder="请输入验证码"
+            prefix-icon="el-icon-picture"
+            autocomplete="off"
+            clearable
+          />
         </el-col>
         <el-col :span="11">
-          <el-image class="login-captcha" fit="fill" :src="captcha_src" alt="验证码" title="点击刷新验证码" @click="captcha" />
+          <el-image
+            class="login-captcha"
+            :style="{ height: captchaHeight }"
+            fit="fill"
+            :src="captcha_src"
+            alt="验证码"
+            title="点击刷新验证码"
+            @click="captcha"
+          />
         </el-col>
       </el-form-item>
-      <aj-captcha v-if="captcha_switch&&captcha_mode==2" ref="ajcaptcha" mode="pop" :captcha-type="captcha_type" :img-size="{ width: '330px', height: '155px' }" @success="ajcaptchaSuccess" />
-      <el-button v-if="captcha_switch&&captcha_mode==2" :loading="loading" type="primary" class="login-bottom" @click="ajcaptchaShow">登录</el-button>
-      <el-button v-else :loading="loading" type="primary" class="login-bottom" @click.native.prevent="handleLogin">登录</el-button>
+      <aj-captcha
+        v-if="captcha_switch && captcha_mode == 2"
+        ref="ajcaptcha"
+        mode="pop"
+        :captcha-type="captcha_type"
+        :img-size="{ width: '330px', height: '155px' }"
+        @success="ajcaptchaSuccess"
+      />
+      <el-button
+        v-if="captcha_switch && captcha_mode == 2"
+        :loading="loading"
+        type="primary"
+        class="login-bottom"
+        @click="ajcaptchaShow"
+      >登录</el-button>
+      <el-button
+        v-else
+        :loading="loading"
+        type="primary"
+        class="login-bottom"
+        @click.native.prevent="handleLogin"
+      >登录</el-button>
     </el-form>
   </div>
 </template>
@@ -34,7 +99,15 @@
 <script>
 import AjCaptcha from '@/components/AjCaptcha'
 import { captcha, setting } from '@/api/system/login'
-import { delNotice } from '@/utils/settings'
+import { elementSize } from '@/utils/element-size'
+import {
+  delNotice,
+  getElementSize,
+  getLoginBgColor,
+  getLoginBgImg,
+  getLogoUrl,
+  setLoginBgImg
+} from '@/utils/settings'
 
 export default {
   name: 'SystemLogin',
@@ -42,7 +115,6 @@ export default {
   data() {
     return {
       name: '登录',
-      system_name: 'yylAdmin',
       loading: false,
       redirect: undefined,
       otherQuery: {},
@@ -50,8 +122,11 @@ export default {
       captcha_mode: 1,
       captcha_type: 'blockPuzzle',
       captcha_src: '',
-      logo_url: '',
-      login_bg_url: '',
+      captchaHeight: '36px',
+      system_name: 'yylAdmin',
+      logo_url: getLogoUrl(),
+      login_bg_url: getLoginBgImg(),
+      loginBgColor: getLoginBgColor(),
       model: {
         username: '',
         password: '',
@@ -62,10 +137,13 @@ export default {
       rules: {
         username: [{ required: true, message: '请输入账号', trigger: 'blur' }],
         password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
-        captcha_code: [{ required: true, message: '请输入验证码', trigger: 'blur' }]
+        captcha_code: [
+          { required: true, message: '请输入验证码', trigger: 'blur' }
+        ]
       }
     }
   },
+  computed: {},
   watch: {
     $route: {
       handler(route) {
@@ -79,14 +157,14 @@ export default {
     }
   },
   created() {
+    this.setInit()
     this.setting()
   },
-  mounted() { },
-  destroyed() { },
+  destroyed() {},
   methods: {
     // 验证码
     captcha() {
-      captcha().then(res => {
+      captcha().then((res) => {
         this.captchaData(res.data)
       })
     },
@@ -112,7 +190,7 @@ export default {
       this.handleLogin()
     },
     ajcaptchaShow() {
-      this.$refs['ref'].validate(valid => {
+      this.$refs['ref'].validate((valid) => {
         if (valid) {
           this.$refs.ajcaptcha.show()
         } else {
@@ -120,45 +198,73 @@ export default {
         }
       })
     },
+    setInit() {
+      const elementValue = getElementSize()
+      this.captchaHeight = elementSize(elementValue)
+    },
     // 设置
     setting() {
       this.model.captcha_id = ''
       this.model.captcha_code = ''
-      setting().then(res => {
+      setting().then((res) => {
         delNotice()
         const data = res.data
         this.captchaData(data)
         this.login_bg_url = data.login_bg_url
         this.system_name = data.system_name
         this.logo_url = data.logo_url
-        this.$store.dispatch('settings/changeSetting', { key: 'tokenName', value: data.token_name })
-        this.$store.dispatch('settings/changeSetting', { key: 'tokenType', value: data.token_type })
-        this.$store.dispatch('settings/changeSetting', { key: 'systemName', value: data.system_name })
-        this.$store.dispatch('settings/changeSetting', { key: 'pageTitle', value: data.page_title })
-        this.$store.dispatch('settings/changeSetting', { key: 'logoUrl', value: data.logo_url })
-        this.$store.dispatch('settings/changeSetting', { key: 'faviconUrl', value: data.favicon_url })
+        setLoginBgImg(data.login_bg_url)
+        this.$store.dispatch('settings/changeSetting', {
+          key: 'tokenName',
+          value: data.token_name
+        })
+        this.$store.dispatch('settings/changeSetting', {
+          key: 'tokenType',
+          value: data.token_type
+        })
+        this.$store.dispatch('settings/changeSetting', {
+          key: 'systemName',
+          value: data.system_name
+        })
+        this.$store.dispatch('settings/changeSetting', {
+          key: 'pageTitle',
+          value: data.page_title
+        })
+        this.$store.dispatch('settings/changeSetting', {
+          key: 'logoUrl',
+          value: data.logo_url
+        })
+        this.$store.dispatch('settings/changeSetting', {
+          key: 'faviconUrl',
+          value: data.favicon_url
+        })
       })
     },
     // 登录
     handleLogin() {
-      this.$refs['ref'].validate(valid => {
+      this.$refs['ref'].validate((valid) => {
         if (valid) {
           this.loading = true
-          this.$store.dispatch('user/login', this.model).then(() => {
-            this.$router.push({
-              path: this.redirect || '/',
-              query: this.otherQuery
-            }).catch(() => {
-              this.loading = false
+          this.$store
+            .dispatch('user/login', this.model)
+            .then(() => {
+              this.$router
+                .push({
+                  path: this.redirect || '/',
+                  query: this.otherQuery
+                })
+                .catch(() => {
+                  this.loading = false
+                })
             })
-          }).catch(() => {
-            this.loading = false
-            if (this.captcha_switch && this.captcha_mode === 2) {
-              this.$refs.ajcaptcha.refresh()
-            } else {
-              this.captcha()
-            }
-          })
+            .catch(() => {
+              this.loading = false
+              if (this.captcha_switch && this.captcha_mode === 2) {
+                this.$refs.ajcaptcha.refresh()
+              } else {
+                this.captcha()
+              }
+            })
         } else {
           return false
         }
@@ -214,9 +320,9 @@ export default {
 
   .login-captcha {
     float: right;
-    width: 200px;
-    height: 36px;
+    width: 90%;
     border-radius: 4px;
+    vertical-align: middle;
   }
 
   .login-bottom {

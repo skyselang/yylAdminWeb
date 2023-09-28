@@ -1,8 +1,13 @@
 <template>
   <el-card class="dialog-body" :style="{height:height+'px'}">
     <el-row>
-      <el-col :span="14">
-        <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
+      <el-col :span="16">
+        <el-form
+          ref="ref"
+          :model="model"
+          :rules="rules"
+          label-width="120px"
+        >
           <el-form-item label="* SMTP服务器" prop="email_host">
             <el-col :span="8">
               <el-input v-model="model.email_host" type="text" clearable />
@@ -14,7 +19,12 @@
           <el-form-item label="SMTP协议" prop="email_secure">
             <el-col :span="8">
               <el-select v-model="model.email_secure" placeholder="">
-                <el-option v-for="item in secure" :key="item.value" :label="item.label" :value="item.value" />
+                <el-option
+                  v-for="item in secure"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
               </el-select>
             </el-col>
             <el-col :span="16">
@@ -47,7 +57,12 @@
           </el-form-item>
           <el-form-item label="* 授权码/密码" prop="email_password">
             <el-col :span="8">
-              <el-input v-model="model.email_password" type="password" clearable show-password />
+              <el-input
+                v-model="model.email_password"
+                type="password"
+                clearable
+                show-password
+              />
             </el-col>
             <el-col :span="16">
               发件邮箱的授权码或密码，如：y1y2l3a4d5m6i7n
@@ -58,7 +73,12 @@
               <el-input v-model="model.email_test" type="text" clearable />
             </el-col>
             <el-col :span="16">
-              <el-button :loading="loading" type="text" title="先提交再发送" @click="test()">发送测试邮件</el-button>
+              <el-button
+                :loading="loading"
+                type="text"
+                title="先提交再发送"
+                @click="test()"
+              >发送测试邮件</el-button>
             </el-col>
           </el-form-item>
           <el-form-item>

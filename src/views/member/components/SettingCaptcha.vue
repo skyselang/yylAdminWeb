@@ -2,11 +2,21 @@
   <el-card class="dialog-body" :style="{height:height+'px'}">
     <el-row>
       <el-col :span="14">
-        <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
+        <el-form
+          ref="ref"
+          :model="model"
+          :rules="rules"
+          label-width="120px"
+        >
           <el-form-item label="验证码方式" prop="captcha_mode">
             <el-col :span="8">
               <el-select v-model="model.captcha_mode" placeholder="" @change="moldChange">
-                <el-option v-for="item in mold" :key="item.value" :label="item.label" :value="item.value" />
+                <el-option
+                  v-for="item in mold"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
               </el-select>
             </el-col>
             <el-col :span="16">
@@ -16,10 +26,20 @@
           <el-form-item label="验证码类型" prop="captcha_type">
             <el-col :span="8">
               <el-select v-if="model.captcha_mode==1" v-model="model.captcha_type" placeholder="">
-                <el-option v-for="item in typestr" :key="item.value" :label="item.label" :value="item.value" />
+                <el-option
+                  v-for="item in typestr"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
               </el-select>
               <el-select v-else v-model="model.captcha_type" placeholder="">
-                <el-option v-for="item in typeaj" :key="item.value" :label="item.label" :value="item.value" />
+                <el-option
+                  v-for="item in typeaj"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
               </el-select>
             </el-col>
           </el-form-item>

@@ -3,7 +3,15 @@
     <!-- 编辑器 -->
     <div :id="editorId" />
     <!-- 文件管理 -->
-    <el-dialog :visible.sync="fileDialog" :title="fileTitle" width="80%" top="1vh" append-to-body :close-on-click-modal="false" :close-on-press-escape="false">
+    <el-dialog
+      :visible.sync="fileDialog"
+      :title="fileTitle"
+      width="80%"
+      top="1vh"
+      append-to-body
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
       <file-manage :file-type="fileType" @fileCancel="fileCancel" @fileSubmit="fileSubmit" />
     </el-dialog>
   </div>

@@ -2,15 +2,12 @@
   <el-card class="dialog-body" :style="{height:height+'px'}">
     <el-row>
       <el-col :span="14">
-        <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
-          <el-form-item label="注册验证码" prop="is_captcha_register">
-            <el-col :span="8">
-              <el-switch v-model="model.is_captcha_register" :active-value="1" :inactive-value="0" />
-            </el-col>
-            <el-col :span="16">
-              开启后，会员账号密码注册需要输入验证码
-            </el-col>
-          </el-form-item>
+        <el-form
+          ref="ref"
+          :model="model"
+          :rules="rules"
+          label-width="120px"
+        >
           <el-form-item label="注册" prop="is_register">
             <el-col :span="8">
               <el-switch v-model="model.is_register" :active-value="1" :inactive-value="0" />
@@ -19,12 +16,12 @@
               关闭后，不能使用账号密码注册
             </el-col>
           </el-form-item>
-          <el-form-item label="登录验证码" prop="is_captcha_login">
+          <el-form-item label="注册验证码" prop="is_captcha_register">
             <el-col :span="8">
-              <el-switch v-model="model.is_captcha_login" :active-value="1" :inactive-value="0" />
+              <el-switch v-model="model.is_captcha_register" :active-value="1" :inactive-value="0" />
             </el-col>
             <el-col :span="16">
-              开启后，会员账号密码登录需要输入验证码
+              开启后，会员账号密码注册需要输入验证码
             </el-col>
           </el-form-item>
           <el-form-item label="登录" prop="is_login">
@@ -33,6 +30,14 @@
             </el-col>
             <el-col :span="16">
               关闭后，不能使用账号密码登录
+            </el-col>
+          </el-form-item>
+          <el-form-item label="登录验证码" prop="is_captcha_login">
+            <el-col :span="8">
+              <el-switch v-model="model.is_captcha_login" :active-value="1" :inactive-value="0" />
+            </el-col>
+            <el-col :span="16">
+              开启后，会员账号密码登录需要输入验证码
             </el-col>
           </el-form-item>
           <el-form-item label="手机验证码注册" prop="is_phone_register">

@@ -16,6 +16,11 @@ const getters = {
   pageTitle: state => state.settings.pageTitle,
   logoUrl: state => state.settings.logoUrl,
   tokenName: state => state.settings.tokenName,
-  tokenType: state => state.settings.tokenType
+  tokenType: state => state.settings.tokenType,
+  theme: state => state.settings.theme,
+  loginBg: state => state.settings.loginBg,
+  tagsView: state => state.settings.tagsView,
+  fixedHeader: state => state.settings.fixedHeader,
+  sidebarLogo: state => state.settings.sidebarLogo
 }
 export default getters

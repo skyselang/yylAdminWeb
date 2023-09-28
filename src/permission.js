@@ -54,7 +54,10 @@ router.beforeEach(async(to, from, next) => {
           const accessRoutes = await store.dispatch('permission/generateRoutes', { roles: roles, menus: menus })
 
           // 动态添加可访问路由
-          router.addRoutes(accessRoutes)
+          for (const route of accessRoutes) {
+            router.addRoute(route)
+          }
+          // router.addRoutes(accessRoutes)
 
           // 确保addRoutes完整的hack方法
           // 设置replace:true，这样导航就不会留下历史记录

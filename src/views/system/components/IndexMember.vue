@@ -176,7 +176,7 @@ export default {
         legend: {
           top: '20px',
           data: data.legend,
-          selected: { '会员总数': false }
+          selected: { '总数': false }
         },
         grid: {
           top: '80px',

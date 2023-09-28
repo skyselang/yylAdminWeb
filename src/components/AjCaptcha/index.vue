@@ -7,8 +7,18 @@
       <div v-if="mode == 'pop'" class="verifybox-top">
         请完成安全验证
         <span class="verifybox-close">
-          <el-button size="mini" icon="el-icon-refresh" title="刷新" circle @click="refresh" />
-          <el-button size="mini" icon="el-icon-close" title="关闭" circle @click="closeBox" />
+          <el-button
+            icon="el-icon-refresh"
+            title="刷新"
+            circle
+            @click="refresh"
+          />
+          <el-button
+            icon="el-icon-close"
+            title="关闭"
+            circle
+            @click="closeBox"
+          />
         </span>
       </div>
       <div
@@ -233,8 +243,6 @@ export default {
 .verifybox-close {
   position: absolute;
   right: 9px;
-  width: 80px;
-  height: 24px;
   text-align: center;
   cursor: pointer;
 }

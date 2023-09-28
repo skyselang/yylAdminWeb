@@ -1,10 +1,15 @@
 <template>
   <el-dropdown trigger="click" @command="handleSetSize">
     <div>
-      <i class="el-icon-s-operation" title="字体大小" />
+      <i class="el-icon-s-operation" title="组件尺寸" />
     </div>
     <el-dropdown-menu slot="dropdown">
-      <el-dropdown-item v-for="item of sizeOptions" :key="item.value" :disabled="size===item.value" :command="item.value">
+      <el-dropdown-item
+        v-for="item of sizeOptions"
+        :key="item.value"
+        :disabled="size===item.value"
+        :command="item.value"
+      >
         {{ item.label }}
       </el-dropdown-item>
     </el-dropdown-menu>
@@ -12,15 +17,11 @@
 </template>
 
 <script>
+import { elementSize } from '@/utils/element-size'
 export default {
   data() {
     return {
-      sizeOptions: [
-        { label: '默认', value: 'default' },
-        { label: '中', value: 'medium' },
-        { label: '小', value: 'small' },
-        { label: '迷你', value: 'mini' }
-      ]
+      sizeOptions: elementSize()
     }
   },
   computed: {

@@ -1,7 +1,7 @@
 <template>
   <el-color-picker
     v-model="theme"
-    :predefine="['#409EFF', '#1890ff', '#304156','#212121','#11a983', '#13c2c2', '#6959CD', '#f5222d', ]"
+    :predefine="['#1890ff', '#409eff', '#304156','#212121','#11a983', '#13c2c2', '#6959cd', '#f5222d']"
     class="theme-picker"
     popper-class="theme-picker-dropdown"
   />
@@ -9,7 +9,7 @@
 
 <script>
 const version = require('element-ui/package.json').version // element-ui 版本
-const ORIGINAL_THEME = '#409EFF' // 默认颜色
+const ORIGINAL_THEME = '#409eff' // 默认颜色
 
 export default {
   data() {
@@ -36,19 +36,10 @@ export default {
       const themeCluster = this.getThemeCluster(val.replace('#', ''))
       const originalCluster = this.getThemeCluster(oldVal.replace('#', ''))
 
-      const $message = this.$message({
-        message: '  Compiling the theme',
-        customClass: 'theme-message',
-        type: 'success',
-        duration: 0,
-        iconClass: 'el-icon-loading'
-      })
-
       const getHandler = (variable, id) => {
         return () => {
           const originalCluster = this.getThemeCluster(ORIGINAL_THEME.replace('#', ''))
           const newStyle = this.updateStyle(this[variable], originalCluster, themeCluster)
-
           let styleTag = document.getElementById(id)
           if (!styleTag) {
             styleTag = document.createElement('style')
@@ -80,8 +71,6 @@ export default {
       })
 
       this.$emit('change', val)
-
-      $message.close()
     }
   },
 
@@ -160,12 +149,6 @@ export default {
 .theme-message,
 .theme-picker-dropdown {
   z-index: 99999 !important;
-}
-
-.theme-picker .el-color-picker__trigger {
-  height: 26px !important;
-  width: 26px !important;
-  padding: 2px;
 }
 
 .theme-picker-dropdown .el-color-dropdown__link-btn {

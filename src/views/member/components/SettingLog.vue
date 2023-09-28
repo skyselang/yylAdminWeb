@@ -2,7 +2,12 @@
   <el-card class="dialog-body" :style="{height:height+'px'}">
     <el-row>
       <el-col :span="14">
-        <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
+        <el-form
+          ref="ref"
+          :model="model"
+          :rules="rules"
+          label-width="120px"
+        >
           <el-form-item label="日志记录开关" prop="log_switch">
             <el-col :span="8">
               <el-switch v-model="model.log_switch" :active-value="1" :inactive-value="0" />

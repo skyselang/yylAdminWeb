@@ -1,17 +1,17 @@
 <template>
   <div class="app-container">
     <div class="dialog-body" :style="{height:height+'px'}">
-      <el-card v-loading="loading" class="box-card">
+      <el-card v-loading="loading">
         <el-row :gutter="6">
           <el-col v-for="(item, index) in count" :key="index" :span="3">
-            <el-card class="box-card" :body-style="{padding: '10px 0px 0px 0px'}">
-              <div slot="header" class="clearfix">
+            <el-card :body-style="{padding: '10px 0px 0px 0px'}">
+              <div slot="header" class="ya-center">
                 <span>{{ item.name }}</span>
               </div>
-              <div class="text">
+              <div>
                 <el-row style="padding-bottom:10px">
                   <el-col :title="item.title">
-                    {{ item.count }}
+                    <el-statistic class="count-value" group-separator="," :value="item.count" />
                   </el-col>
                 </el-row>
               </div>
@@ -19,8 +19,13 @@
           </el-col>
         </el-row>
       </el-card>
-      <el-card v-for="(item, index) in echart_num" :key="index" v-loading="loading" class="box-card ya-margin-top">
-        <el-row style="text-align:center;">
+      <el-card
+        v-for="(item, index) in echart_num"
+        :key="index"
+        v-loading="loading"
+        class="box-card ya-margin-top"
+      >
+        <el-row class="ya-center">
           <el-col>
             <el-select v-model="date_type" class="filter-item" @change="typeChange">
               <el-option label="日" value="day" />
@@ -221,7 +226,7 @@ export default {
         legend: {
           top: '20px',
           data: data.legend,
-          selected: { '会员总数': false }
+          selected: { '总数': false }
         },
         grid: {
           top: '80px',
@@ -258,15 +263,8 @@ export default {
   }
 }
 </script>
-
 <style scoped>
-.box-card {
-  text-align: center;
-}
-.box-card .text {
-  font-size: 20px;
-  line-height: 32px;
-  font-weight: 700;
-  text-align: center;
+.count-value{
+  color: var(--theme,#1890ff);
 }
 </style>

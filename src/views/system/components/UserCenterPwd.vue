@@ -3,15 +3,41 @@
     <el-card v-loading="loading" class="dialog-body" :style="{height:height+'px'}">
       <el-row>
         <el-col :span="12">
-          <el-form ref="ref" :rules="rules" :model="model" label-width="120px">
+          <el-form
+            ref="ref"
+            :rules="rules"
+            :model="model"
+            label-width="120px"
+          >
             <el-form-item label="旧密码" prop="password_old">
-              <el-input v-model="model.password_old" type="password" placeholder="请输入旧密码" autocomplete="off" clearable show-password />
+              <el-input
+                v-model="model.password_old"
+                type="password"
+                placeholder="请输入旧密码"
+                autocomplete="off"
+                clearable
+                show-password
+              />
             </el-form-item>
             <el-form-item label="新密码" prop="password_new">
-              <el-input v-model="model.password_new" type="password" placeholder="请输入新密码" autocomplete="off" clearable show-password />
+              <el-input
+                v-model="model.password_new"
+                type="password"
+                placeholder="请输入新密码"
+                autocomplete="off"
+                clearable
+                show-password
+              />
             </el-form-item>
             <el-form-item label="确认新密码" prop="password_confirm">
-              <el-input v-model="model.password_confirm" type="password" placeholder="请再次输入新密码" autocomplete="off" clearable show-password />
+              <el-input
+                v-model="model.password_confirm"
+                type="password"
+                placeholder="请再次输入新密码"
+                autocomplete="off"
+                clearable
+                show-password
+              />
             </el-form-item>
             <el-form-item>
               <el-button :loading="loading" @click="reset">重置</el-button>

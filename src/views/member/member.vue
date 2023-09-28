@@ -23,37 +23,136 @@
             <el-option value="application" label="注册应用" />
           </el-select>
           <el-select v-model="query.search_exp" class="filter-item ya-search-exp">
-            <el-option v-for="exp in exps" :key="exp.exp" :value="exp.exp" :label="exp.name" />
+            <el-option
+              v-for="exp in exps"
+              :key="exp.exp"
+              :value="exp.exp"
+              :label="exp.name"
+            />
           </el-select>
-          <el-select v-if="query.search_field==='tag_ids'" v-model="query.search_value" class="filter-item ya-search-value" clearable filterable multiple collapse-tags>
-            <el-option v-for="item in tagData" :key="item.tag_id" :label="item.tag_name" :value="item.tag_id" />
+          <el-select
+            v-if="query.search_field === 'tag_ids'"
+            v-model="query.search_value"
+            class="filter-item ya-search-value"
+            clearable
+            filterable
+            multiple
+            collapse-tags
+          >
+            <el-option
+              v-for="item in tagData"
+              :key="item.tag_id"
+              :label="item.tag_name"
+              :value="item.tag_id"
+            />
           </el-select>
-          <el-select v-else-if="query.search_field==='group_ids'" v-model="query.search_value" class="filter-item ya-search-value" clearable filterable multiple collapse-tags>
-            <el-option v-for="item in groupData" :key="item.group_id" :label="item.group_name" :value="item.group_id" />
+          <el-select
+            v-else-if="query.search_field === 'group_ids'"
+            v-model="query.search_value"
+            class="filter-item ya-search-value"
+            clearable
+            filterable
+            multiple
+            collapse-tags
+          >
+            <el-option
+              v-for="item in groupData"
+              :key="item.group_id"
+              :label="item.group_name"
+              :value="item.group_id"
+            />
           </el-select>
-          <el-select v-else-if="query.search_field==='is_super'||query.search_field==='is_disable'" v-model="query.search_value" class="filter-item ya-search-value" clearable>
+          <el-select
+            v-else-if="query.search_field === 'is_super' || query.search_field === 'is_disable'"
+            v-model="query.search_value"
+            class="filter-item ya-search-value"
+            clearable
+          >
             <el-option :value="1" label="是" />
             <el-option :value="0" label="否" />
           </el-select>
-          <el-select v-else-if="query.search_field==='application'" v-model="query.search_value" class="filter-item ya-search-value" clearable>
-            <el-option v-for="(item,index) in applications" :key="index" :label="item" :value="index" />
+          <el-select
+            v-else-if="query.search_field === 'platform'"
+            v-model="query.search_value"
+            class="filter-item ya-search-value"
+            clearable
+          >
+            <el-option
+              v-for="(item, index) in platforms"
+              :key="index"
+              :label="item"
+              :value="index"
+            />
           </el-select>
-          <el-cascader v-else-if="query.search_field==='region_id'" v-model="query.search_value" class="filter-item ya-search-value" :options="regionData" :props="regionQueryProps" clearable filterable collapse-tags />
-          <el-select v-else-if="query.search_field==='platform'" v-model="query.search_value" class="filter-item ya-search-value" clearable>
-            <el-option v-for="(item,index) in platforms" :key="index" :label="item" :value="index" />
+          <el-select
+            v-else-if="query.search_field === 'application'"
+            v-model="query.search_value"
+            class="filter-item ya-search-value"
+            clearable
+          >
+            <el-option
+              v-for="(item, index) in applications"
+              :key="index"
+              :label="item"
+              :value="index"
+            />
           </el-select>
-          <el-select v-else-if="query.search_field==='gender'" v-model="query.search_value" class="filter-item ya-search-value" clearable>
-            <el-option v-for="(item,index) in genders" :key="index" :label="item" :value="index" />
+          <el-cascader
+            v-else-if="query.search_field === 'region_id'"
+            v-model="query.search_value"
+            class="filter-item ya-search-value"
+            :options="regionData"
+            :props="regionQueryProps"
+            clearable
+            filterable
+            collapse-tags
+          />
+          <el-select
+            v-else-if="query.search_field === 'gender'"
+            v-model="query.search_value"
+            class="filter-item ya-search-value"
+            clearable
+          >
+            <el-option
+              v-for="(item, index) in genders"
+              :key="index"
+              :label="item"
+              :value="index"
+            />
           </el-select>
-          <el-input v-else v-model="query.search_value" class="filter-item ya-search-value" placeholder="查询内容" clearable />
+          <el-input
+            v-else
+            v-model="query.search_value"
+            class="filter-item ya-search-value"
+            placeholder="查询内容"
+            clearable
+          />
           <el-select v-model="query.date_field" class="filter-item ya-date-field" placeholder="时间字段">
             <el-option value="create_time" label="注册时间" />
             <el-option value="login_time" label="登录时间" />
             <el-option value="update_time" label="修改时间" />
           </el-select>
-          <el-date-picker v-model="query.date_value" type="datetimerange" class="filter-item ya-date-value" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00','23:59:59']" value-format="yyyy-MM-dd HH:mm:ss" />
-          <el-button class="filter-item" type="primary" title="查询/刷新" @click="search()">查询</el-button>
-          <el-button class="filter-item" icon="el-icon-refresh" title="重置" @click="refresh()" />
+          <el-date-picker
+            v-model="query.date_value"
+            type="datetimerange"
+            class="filter-item ya-date-value"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            :default-time="['00:00:00', '23:59:59']"
+            value-format="yyyy-MM-dd HH:mm:ss"
+          />
+          <el-button
+            class="filter-item"
+            type="primary"
+            title="查询/刷新"
+            @click="search()"
+          >查询</el-button>
+          <el-button
+            class="filter-item"
+            icon="el-icon-refresh"
+            title="重置"
+            @click="refresh()"
+          />
         </el-col>
       </el-row>
       <!-- 选中操作 -->
@@ -69,49 +168,104 @@
           <el-button type="primary" @click="add()">添加</el-button>
           <el-button title="导出" style="float:right;" @click="selectOpen('export')">导出</el-button>
           <el-tooltip effect="dark" content="表头：昵称，用户名，手机，邮箱，密码" placement="left">
-            <excel-import v-if="checkPermission(['admin/member.Member/export'])" :limit-size="1" title="导入" @on-import="imports" />
+            <excel-import
+              v-if="checkPermission(['admin/member.Member/export'])"
+              :limit-size="1"
+              title="导入"
+              @on-import="imports"
+            />
           </el-tooltip>
         </el-col>
       </el-row>
-      <el-dialog :title="selectTitle" :visible.sync="selectDialog" top="20vh" :close-on-click-modal="false" :close-on-press-escape="false">
+      <el-dialog
+        :title="selectTitle"
+        :visible.sync="selectDialog"
+        top="20vh"
+        :close-on-click-modal="false"
+        :close-on-press-escape="false"
+      >
         <el-form label-width="120px">
-          <el-form-item :label="name+'ID'" prop="">
-            <el-input v-model="selectIds" type="textarea" :autosize="{minRows: 4, maxRows: 12}" disabled />
+          <el-form-item :label="name + 'ID'" prop="">
+            <el-input
+              v-model="selectIds"
+              type="textarea"
+              :autosize="{ minRows: 4, maxRows: 12 }"
+              disabled
+            />
           </el-form-item>
-          <el-form-item v-if="selectType==='region'" label="所在地" prop="">
-            <el-cascader v-model="region_id" :options="regionData" :props="regionProps" class="ya-width-100p" clearable filterable />
+          <el-form-item v-if="selectType === 'region'" label="所在地" prop="">
+            <el-cascader
+              v-model="region_id"
+              :options="regionData"
+              :props="regionProps"
+              class="ya-width-100p"
+              clearable
+              filterable
+            />
           </el-form-item>
-          <el-form-item v-else-if="selectType==='edittag'" label="标签" prop="">
-            <el-select v-model="tag_ids" class="ya-width-100p" clearable filterable multiple>
-              <el-option v-for="item in tagData" :key="item.tag_id" :label="item.tag_name" :value="item.tag_id" />
+          <el-form-item v-else-if="selectType === 'edittag'" label="标签" prop="">
+            <el-select
+              v-model="tag_ids"
+              class="ya-width-100p"
+              clearable
+              filterable
+              multiple
+            >
+              <el-option
+                v-for="item in tagData"
+                :key="item.tag_id"
+                :label="item.tag_name"
+                :value="item.tag_id"
+              />
             </el-select>
           </el-form-item>
-          <el-form-item v-else-if="selectType==='editgroup'" label="分组" prop="">
-            <el-select v-model="group_ids" class="ya-width-100p" clearable filterable multiple>
-              <el-option v-for="item in groupData" :key="item.group_id" :label="item.group_name" :value="item.group_id" />
+          <el-form-item v-else-if="selectType === 'editgroup'" label="分组" prop="">
+            <el-select
+              v-model="group_ids"
+              class="ya-width-100p"
+              clearable
+              filterable
+              multiple
+            >
+              <el-option
+                v-for="item in groupData"
+                :key="item.group_id"
+                :label="item.group_name"
+                :value="item.group_id"
+              />
             </el-select>
           </el-form-item>
-          <el-form-item v-else-if="selectType==='super'" label="是否超会" prop="">
+          <el-form-item v-else-if="selectType === 'super'" label="是否超会" prop="">
             <el-switch v-model="is_super" :active-value="1" :inactive-value="0" />
             <span> 超级会员，拥有所有权限。</span>
           </el-form-item>
-          <el-form-item v-else-if="selectType==='disable'" label="是否禁用" prop="">
+          <el-form-item v-else-if="selectType === 'disable'" label="是否禁用" prop="">
             <el-switch v-model="is_disable" :active-value="1" :inactive-value="0" />
-            <span v-if="is_disable" style="color:red"> 禁用后无法登录！</span>
+            <span v-if="is_disable" class="ya-color-red"> 禁用后无法登录！</span>
           </el-form-item>
-          <el-form-item v-else-if="selectType==='repwd'" label="新密码" prop="">
-            <el-input v-model="password" placeholder="请输入新密码" clearable show-password />
+          <el-form-item v-else-if="selectType === 'repwd'" label="新密码" prop="">
+            <el-input
+              v-model="password"
+              placeholder="请输入新密码"
+              clearable
+              show-password
+            />
           </el-form-item>
-          <el-form-item v-else-if="selectType==='dele'" label="" prop="">
-            <span style="color:red">确定要删除选中的{{ name }}吗？</span>
+          <el-form-item v-else-if="selectType === 'dele'" label="" prop="">
+            <span class="ya-color-red">确定要删除选中的{{ name }}吗？</span>
           </el-form-item>
-          <div v-else-if="selectType==='export'">
+          <div v-else-if="selectType === 'export'">
             <el-form-item label="文件名称" prop="">
               <el-input v-model="exportFileName" placeholder="请输入文件名称" clearable />
             </el-form-item>
             <el-form-item label="文件类型" prop="">
               <el-select v-model="exportBookType">
-                <el-option v-for="item in ['xlsx','csv', 'txt']" :key="item" :label="item" :value="item" />
+                <el-option
+                  v-for="item in ['xlsx', 'csv', 'txt']"
+                  :key="item"
+                  :label="item"
+                  :value="item"
+                />
               </el-select>
             </el-form-item>
             <el-form-item label="自动宽度" prop="">
@@ -127,13 +281,34 @@
       </el-dialog>
     </div>
     <!-- 列表 -->
-    <el-table ref="table" v-loading="loading" :data="data" :height="height" @sort-change="sort" @selection-change="select" @cell-dblclick="cellDbclick">
+    <el-table
+      ref="table"
+      v-loading="loading"
+      :data="data"
+      :height="height"
+      @sort-change="sort"
+      @selection-change="select"
+      @cell-dblclick="cellDbclick"
+    >
       <el-table-column type="selection" width="42" title="全选/反选" />
-      <el-table-column :prop="idkey" label="ID" width="80" sortable="custom" />
+      <el-table-column
+        :prop="idkey"
+        label="ID"
+        width="80"
+        sortable="custom"
+      />
       <el-table-column prop="avatar_id" label="头像" min-width="50">
         <template slot-scope="scope">
           <div style="height:25px">
-            <el-image style="width:25px;height:25px;border-radius:50%;" :src="scope.row.avatar_url" :preview-src-list="[scope.row.avatar_url]" fit="contain" title="点击看大图" lazy scroll-container=".el-table__body-wrapper">
+            <el-image
+              style="width:25px;height:25px;border-radius:50%;"
+              :src="scope.row.avatar_url"
+              :preview-src-list="[scope.row.avatar_url]"
+              fit="contain"
+              title="点击看大图"
+              lazy
+              scroll-container=".el-table__body-wrapper"
+            >
               <div slot="error" class="image-slot">
                 <el-avatar :size="25" icon="el-icon-user-solid" />
               </div>
@@ -141,64 +316,168 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column prop="nickname" label="昵称" min-width="170" sortable="custom" show-overflow-tooltip />
-      <el-table-column prop="username" label="用户名" min-width="170" sortable="custom" show-overflow-tooltip />
-      <el-table-column prop="phone" label="手机" min-width="112" sortable="custom" show-overflow-tooltip />
-      <el-table-column prop="email" label="邮箱" min-width="200" sortable="custom" show-overflow-tooltip />
-      <el-table-column prop="tag_names" label="标签" min-width="130" show-overflow-tooltip />
-      <el-table-column prop="group_names" label="分组" min-width="135" show-overflow-tooltip />
-      <el-table-column prop="is_super" label="超会" min-width="75" sortable="custom">
+      <el-table-column
+        prop="nickname"
+        label="昵称"
+        min-width="170"
+        sortable="custom"
+        show-overflow-tooltip
+      />
+      <el-table-column
+        prop="username"
+        label="用户名"
+        min-width="170"
+        sortable="custom"
+        show-overflow-tooltip
+      />
+      <el-table-column
+        prop="phone"
+        label="手机"
+        min-width="112"
+        sortable="custom"
+        show-overflow-tooltip
+      />
+      <el-table-column
+        prop="email"
+        label="邮箱"
+        min-width="200"
+        sortable="custom"
+        show-overflow-tooltip
+      />
+      <el-table-column
+        prop="tag_names"
+        label="标签"
+        min-width="130"
+        show-overflow-tooltip
+      />
+      <el-table-column
+        prop="group_names"
+        label="分组"
+        min-width="135"
+        show-overflow-tooltip
+      />
+      <el-table-column
+        prop="is_super"
+        label="超会"
+        min-width="75"
+        sortable="custom"
+      >
         <template slot-scope="scope">
-          <el-switch v-model="scope.row.is_super" :active-value="1" :inactive-value="0" @change="issuper([scope.row])" />
+          <el-switch
+            v-model="scope.row.is_super"
+            :active-value="1"
+            :inactive-value="0"
+            @change="issuper([scope.row])"
+          />
         </template>
       </el-table-column>
-      <el-table-column prop="is_disable" label="禁用" min-width="75" sortable="custom">
+      <el-table-column
+        prop="is_disable"
+        label="禁用"
+        min-width="75"
+        sortable="custom"
+      >
         <template slot-scope="scope">
-          <el-switch v-model="scope.row.is_disable" :active-value="1" :inactive-value="0" @change="disable([scope.row])" />
+          <el-switch
+            v-model="scope.row.is_disable"
+            :active-value="1"
+            :inactive-value="0"
+            @change="disable([scope.row])"
+          />
         </template>
       </el-table-column>
-      <el-table-column prop="sort" label="排序" width="75" sortable="custom" />
-      <el-table-column prop="create_time" label="注册时间" width="155" sortable="custom" />
-      <el-table-column label="操作" width="90">
+      <el-table-column
+        prop="sort"
+        label="排序"
+        width="75"
+        sortable="custom"
+      />
+      <el-table-column
+        prop="create_time"
+        label="注册时间"
+        width="155"
+        sortable="custom"
+      />
+      <el-table-column label="操作" width="85">
         <template slot-scope="scope">
-          <el-button size="mini" type="text" @click="edit(scope.row)">修改</el-button>
-          <el-button size="mini" type="text" @click="selectOpen('dele',scope.row)">删除</el-button>
+          <el-button type="text" size="small" @click="edit(scope.row)">修改</el-button>
+          <el-button type="text" size="small" @click="selectOpen('dele', scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
     <!-- 分页 -->
-    <pagination v-show="count>0" :total="count" :page.sync="query.page" :limit.sync="query.limit" @pagination="list" />
+    <pagination
+      v-show="count > 0"
+      :total="count"
+      :page.sync="query.page"
+      :limit.sync="query.limit"
+      @pagination="list"
+    />
     <!-- 添加修改 -->
-    <el-dialog :title="dialogTitle" :visible.sync="dialog" top="5vh" :before-close="cancel" :close-on-click-modal="false" :close-on-press-escape="false">
-      <el-form ref="ref" :model="model" :rules="rules" label-width="100px" class="dialog-body" :style="{height:height+'px'}">
+    <el-dialog
+      :title="dialogTitle"
+      :visible.sync="dialog"
+      top="5vh"
+      :before-close="cancel"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
+      <el-form
+        ref="ref"
+        :model="model"
+        :rules="rules"
+        label-width="100px"
+      >
         <el-tabs>
-          <el-tab-pane label="基础信息">
+          <el-tab-pane label="基础信息" class="dialog-body" :style="{ height: height - 55 + 'px' }">
             <el-form-item label="头像" prop="avatar_url">
               <el-col :span="12" style="height:100px">
-                <el-image style="width:100px;height:100px;border-radius:50%;" :src="model.avatar_url" :preview-src-list="[model.avatar_url]" fit="contain" title="点击看大图">
+                <el-image
+                  style="width:100px;height:100px;border-radius:50%;"
+                  :src="model.avatar_url"
+                  :preview-src-list="[model.avatar_url]"
+                  fit="contain"
+                  title="点击看大图"
+                >
                   <div slot="error" class="image-slot">
                     <el-avatar :size="100" icon="el-icon-user-solid" />
                   </div>
                 </el-image>
               </el-col>
               <el-col :span="12">
-                <el-button size="mini" @click="fileUpload()">上传头像</el-button>
-                <el-button size="mini" @click="fileDelete()">删除</el-button>
+                <el-button @click="fileUpload()">上传头像</el-button>
+                <el-button @click="fileDelete()">删除</el-button>
                 <p>图片小于 200 KB，jpg、png格式。</p>
               </el-col>
             </el-form-item>
             <el-form-item label="昵称" prop="nickname">
-              <el-input key="nickname" v-model="model.nickname" placeholder="请输入昵称" clearable>
+              <el-input
+                key="nickname"
+                v-model="model.nickname"
+                placeholder="请输入昵称"
+                clearable
+              >
                 <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.nickname, $event)" />
               </el-input>
             </el-form-item>
             <el-form-item label="用户名" prop="username">
-              <el-input key="username" v-model="model.username" placeholder="请输入用户名" clearable>
+              <el-input
+                key="username"
+                v-model="model.username"
+                placeholder="请输入用户名"
+                clearable
+              >
                 <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.username, $event)" />
               </el-input>
             </el-form-item>
-            <el-form-item v-if="model.member_id==''" label="密码" prop="password">
-              <el-input key="password" v-model="model.password" placeholder="请输入密码" clearable show-password />
+            <el-form-item v-if="model.member_id == ''" label="密码" prop="password">
+              <el-input
+                key="password"
+                v-model="model.password"
+                placeholder="请输入密码"
+                clearable
+                show-password
+              />
             </el-form-item>
             <el-form-item label="手机" prop="phone">
               <el-input v-model="model.phone" clearable>
@@ -217,11 +496,22 @@
             </el-form-item>
             <el-form-item label="性别" prop="gender">
               <el-select v-model="model.gender">
-                <el-option v-for="(item,index) in genders" :key="index" :label="item" :value="index" />
+                <el-option
+                  v-for="(item, index) in genders"
+                  :key="index"
+                  :label="item"
+                  :value="index"
+                />
               </el-select>
             </el-form-item>
             <el-form-item label="所在地" prop="region_id">
-              <el-cascader v-model="model.region_id" class="ya-width-100p" :options="regionData" :props="regionProps" clearable />
+              <el-cascader
+                v-model="model.region_id"
+                class="ya-width-100p"
+                :options="regionData"
+                :props="regionProps"
+                clearable
+              />
             </el-form-item>
             <el-form-item label="排序" prop="sort">
               <el-input v-model="model.sort" type="number" />
@@ -230,45 +520,112 @@
               <el-input v-model="model.remark" clearable />
             </el-form-item>
           </el-tab-pane>
-          <el-tab-pane label="权限信息">
+          <el-tab-pane label="权限信息" class="dialog-body" :style="{ height: height - 55 + 'px' }">
             <el-form-item label="超会" prop="is_super">
-              <el-switch v-model="model.is_super" :active-value="1" :inactive-value="0" disabled />
+              <el-switch
+                v-model="model.is_super"
+                :active-value="1"
+                :inactive-value="0"
+                disabled
+              />
             </el-form-item>
             <el-form-item label="禁用" prop="is_disable">
-              <el-switch v-model="model.is_disable" :active-value="1" :inactive-value="0" disabled />
+              <el-switch
+                v-model="model.is_disable"
+                :active-value="1"
+                :inactive-value="0"
+                disabled
+              />
             </el-form-item>
             <el-form-item label="标签" prop="tag_ids">
-              <el-select v-model="model.tag_ids" class="ya-width-100p" multiple clearable filterable>
-                <el-option v-for="item in tagData" :key="item.tag_id" :label="item.tag_name" :value="item.tag_id" />
+              <el-select
+                v-model="model.tag_ids"
+                class="ya-width-100p"
+                multiple
+                clearable
+                filterable
+              >
+                <el-option
+                  v-for="item in tagData"
+                  :key="item.tag_id"
+                  :label="item.tag_name"
+                  :value="item.tag_id"
+                />
               </el-select>
             </el-form-item>
             <el-form-item label="分组(角色)" prop="group_ids">
-              <el-select v-model="model.group_ids" class="ya-width-100p" clearable filterable multiple>
-                <el-option v-for="item in groupData" :key="item.group_id" :label="item.group_name" :value="item.group_id" />
+              <el-select
+                v-model="model.group_ids"
+                class="ya-width-100p"
+                clearable
+                filterable
+                multiple
+              >
+                <el-option
+                  v-for="item in groupData"
+                  :key="item.group_id"
+                  :label="item.group_name"
+                  :value="item.group_id"
+                />
               </el-select>
             </el-form-item>
             <el-form-item v-if="model[idkey]" label="接口(权限)" prop="api_ids">
               <span>
                 <el-checkbox v-model="apiExpandAll" @change="apiExpandAllChange">展开</el-checkbox>
               </span>
-              <el-tree ref="apiRef" :data="model.api_tree" :props="apiProps" :default-checked-keys="model.api_ids" :expand-on-click-node="true" :default-expand-all="false" :check-strictly="true" node-key="api_id" highlight-current>
+              <el-tree
+                ref="apiRef"
+                :data="model.api_tree"
+                :props="apiProps"
+                :default-checked-keys="model.api_ids"
+                :expand-on-click-node="true"
+                :default-expand-all="false"
+                :check-strictly="true"
+                node-key="api_id"
+                highlight-current
+              >
                 <span slot-scope="scope" class="custom-tree-node">
-                  <span>{{ scope.node.label }}<i v-if="scope.data.is_check" class="el-icon-check" style="color:#1890ff" title="已分配" /></span>
+                  <span>{{ scope.node.label }}<i
+                    v-if="scope.data.is_check"
+                    class="el-icon-check"
+                    style="color:#1890ff"
+                    title="已分配"
+                  /></span>
                   <span>
-                    <i v-if="scope.data.api_url" class="el-icon-link" style="margin-left:10px" :title="scope.data.api_url" />
+                    <i
+                      v-if="scope.data.api_url"
+                      class="el-icon-link"
+                      style="margin-left:10px"
+                      :title="scope.data.api_url"
+                    />
                     <i v-else class="el-icon-link" style="margin-left:10px;color:#fff" />
-                    <i v-if="scope.data.is_group" class="el-icon-s-custom" style="margin-left:10px" title="分组" />
+                    <i
+                      v-if="scope.data.is_group"
+                      class="el-icon-s-custom"
+                      style="margin-left:10px"
+                      title="分组"
+                    />
                     <i v-else class="el-icon-s-custom" style="margin-left:10px;color:#fff" />
-                    <i v-if="scope.data.is_unauth" class="el-icon-unlock" style="margin-left:10px;" title="免权" />
+                    <i
+                      v-if="scope.data.is_unauth"
+                      class="el-icon-unlock"
+                      style="margin-left:10px;"
+                      title="免权"
+                    />
                     <i v-else class="el-icon-unlock" style="margin-left:10px;color:#fff" />
-                    <i v-if="scope.data.is_unlogin" class="el-icon-user" style="margin-left:10px;" title="免登" />
+                    <i
+                      v-if="scope.data.is_unlogin"
+                      class="el-icon-user"
+                      style="margin-left:10px;"
+                      title="免登"
+                    />
                     <i v-else class="el-icon-user" style="margin-left:10px;color:#fff" />
                   </span>
                 </span>
               </el-tree>
             </el-form-item>
           </el-tab-pane>
-          <el-tab-pane label="其它信息">
+          <el-tab-pane label="其它信息" class="dialog-body" :style="{ height: height - 55 + 'px' }">
             <el-form-item v-if="model[idkey]" label="登录IP" prop="login_ip">
               <el-input v-model="model.login_ip" disabled />
             </el-form-item>
@@ -300,13 +657,20 @@
               <el-input v-model="model.delete_time" disabled />
             </el-form-item>
           </el-tab-pane>
-          <el-tab-pane label="第三方账号">
+          <el-tab-pane label="第三方账号" class="dialog-body" :style="{ height: height - 55 + 'px' }">
             <el-table v-if="model[idkey]" :data="model.thirds">
               <el-table-column prop="third_id" label="ID" width="80" />
               <el-table-column prop="headimgurl" label="头像" min-width="50">
                 <template slot-scope="scope">
                   <div style="height:25px">
-                    <el-image v-if="scope.row.headimgurl" style="width:25px;height:25px;border-radius:50%;" :src="scope.row.headimgurl" :preview-src-list="[scope.row.headimgurl]" fit="contain" title="点击看大图">
+                    <el-image
+                      v-if="scope.row.headimgurl"
+                      style="width:25px;height:25px;border-radius:50%;"
+                      :src="scope.row.headimgurl"
+                      :preview-src-list="[scope.row.headimgurl]"
+                      fit="contain"
+                      title="点击看大图"
+                    >
                       <div slot="error" class="image-slot">
                         <el-avatar :size="25" icon="el-icon-user-solid" />
                       </div>
@@ -314,19 +678,40 @@
                   </div>
                 </template>
               </el-table-column>
-              <el-table-column prop="nickname" label="昵称" min-width="100" show-overflow-tooltip />
-              <el-table-column prop="platform_name" label="平台" min-width="80" show-overflow-tooltip />
-              <el-table-column prop="application_name" label="应用" min-width="110" show-overflow-tooltip />
+              <el-table-column
+                prop="nickname"
+                label="昵称"
+                min-width="100"
+                show-overflow-tooltip
+              />
+              <el-table-column
+                prop="platform_name"
+                label="平台"
+                min-width="80"
+                show-overflow-tooltip
+              />
+              <el-table-column
+                prop="application_name"
+                label="应用"
+                min-width="110"
+                show-overflow-tooltip
+              />
               <el-table-column prop="is_disable" label="禁用" min-width="75">
                 <template slot-scope="scope">
-                  <el-switch v-model="scope.row.is_disable" :loading="thirdUnbindLoad" :active-value="1" :inactive-value="0" @change="thirdDisable(scope.row)" />
+                  <el-switch
+                    v-model="scope.row.is_disable"
+                    :loading="thirdUnbindLoad"
+                    :active-value="1"
+                    :inactive-value="0"
+                    @change="thirdDisable(scope.row)"
+                  />
                 </template>
               </el-table-column>
               <el-table-column prop="create_time" label="添加/绑定时间" min-width="155" />
               <el-table-column prop="login_time" label="登录时间" width="155" />
               <el-table-column label="操作" width="75">
                 <template slot-scope="scope">
-                  <el-button size="mini" type="text" @click="thirdUnbindBtn(scope.row)">解绑</el-button>
+                  <el-button type="text" size="small" @click="thirdUnbindBtn(scope.row)">解绑</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -339,15 +724,27 @@
       </div>
     </el-dialog>
     <!-- 第三方账号解绑 -->
-    <el-dialog title="会员第三方账号解绑" :visible.sync="thirdUnbindDialog" width="25%" top="20vh">
+    <el-dialog
+      title="会员第三方账号解绑"
+      :visible.sync="thirdUnbindDialog"
+      width="25%"
+      top="20vh"
+    >
       <span style="color:#ff0000">解绑后该会员无法再通过该第三方账号登录，确定要解绑吗？</span>
       <span slot="footer" class="dialog-footer">
-        <el-button :loading="thirdUnbindLoad" @click="thirdUnbindDialog=false">取消</el-button>
+        <el-button :loading="thirdUnbindLoad" @click="thirdUnbindDialog = false">取消</el-button>
         <el-button :loading="thirdUnbindLoad" type="primary" @click="thirdUnbindSubmit">确定</el-button>
       </span>
     </el-dialog>
     <!-- 文件管理 -->
-    <el-dialog title="上传头像" :visible.sync="fileDialog" width="80%" top="1vh" :close-on-click-modal="false" :close-on-press-escape="false">
+    <el-dialog
+      title="上传头像"
+      :visible.sync="fileDialog"
+      width="80%"
+      top="1vh"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
       <file-manage file-type="image" @fileCancel="fileCancel" @fileSubmit="fileSubmit" />
     </el-dialog>
   </div>
@@ -361,6 +758,7 @@ import FileManage from '@/components/FileManage'
 import clip from '@/utils/clipboard'
 import ExcelImport from '@/components/ExcelImport/index.vue'
 import { arrayColumn } from '@/utils/index'
+import { getPageLimit } from '@/utils/settings'
 import { list, info, add, edit, dele, region, edittag, editgroup, repwd, issuper, disable, imports } from '@/api/member/member'
 
 export default {
@@ -373,7 +771,7 @@ export default {
       loading: false,
       idkey: 'member_id',
       exps: [{ exp: 'like', name: '包含' }],
-      query: { page: 1, limit: 12, search_field: 'nickname', search_exp: 'like', date_field: 'create_time' },
+      query: { page: 1, limit: getPageLimit(), search_field: 'nickname', search_exp: 'like', date_field: 'create_time' },
       data: [],
       count: 0,
       dialog: false,
@@ -500,7 +898,7 @@ export default {
             })
           }
         } else {
-          this.$message.error('请完善必填项*')
+          this.$message.error('请完善必填项（带红色星号*）')
         }
       })
     },

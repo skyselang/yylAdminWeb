@@ -1,12 +1,32 @@
 <template>
   <div style="display:flex;float:right">
-    <input ref="excel-upload-input" class="excel-upload-input" type="file" accept=".xlsx, .xls, .csv" @change="handleClick">
+    <input
+      ref="excel-upload-input"
+      class="excel-upload-input"
+      type="file"
+      accept=".xlsx, .xls, .csv"
+      @change="handleClick"
+    >
     <el-button :loading="loading" @click="handleUpload">{{ title }}</el-button>
-    <el-dialog :title="dialogTitle" :visible.sync="dialogSync" top="5vh" width="70%" :close-on-click-modal="false" :close-on-press-escape="false">
+    <el-dialog
+      :title="dialogTitle"
+      :visible.sync="dialogSync"
+      top="5vh"
+      width="70%"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
       <el-form label-width="0">
         <el-form-item label="" prop="">
           <el-table v-loading="loading" :data="excelData.results" :height="height">
-            <el-table-column v-for="item in excelData.header" :key="item" :prop="item" :label="item" sortable show-overflow-tooltip />
+            <el-table-column
+              v-for="item in excelData.header"
+              :key="item"
+              :prop="item"
+              :label="item"
+              sortable
+              show-overflow-tooltip
+            />
           </el-table>
         </el-form-item>
       </el-form>

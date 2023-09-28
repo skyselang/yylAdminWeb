@@ -21,8 +21,18 @@
             </el-col>
           </el-form-item>
         </el-form>
-        <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
-          <el-form-item v-for="(item, index) in apps" :key="index" :label="apps[index]" prop="">
+        <el-form
+          ref="ref"
+          :model="model"
+          :rules="rules"
+          label-width="120px"
+        >
+          <el-form-item
+            v-for="(item, index) in apps"
+            :key="index"
+            :label="apps[index]"
+            prop=""
+          >
             <el-col :span="8">
               <el-input v-model="model[index+'_appid']" />
             </el-col>
@@ -40,13 +50,23 @@
             </el-col>
           </el-form-item>
         </el-form>
-        <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
+        <el-form
+          ref="ref"
+          :model="model"
+          :rules="rules"
+          label-width="120px"
+        >
           <el-form-item>
             <el-button :loading="loading" @click="refresh()">刷新</el-button>
             <el-button :loading="loading" type="primary" @click="submit()">提交</el-button>
           </el-form-item>
         </el-form>
-        <el-dialog title="说明" :visible.sync="dialogFormVisible" label-width="0" center>
+        <el-dialog
+          title="说明"
+          :visible.sync="dialogFormVisible"
+          label-width="0"
+          center
+        >
           <el-form :model="model">
             <el-form-item label="" prod="platform_desc">
               <div v-html="model.platform_desc" />

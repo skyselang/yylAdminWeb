@@ -1,17 +1,28 @@
 <template>
   <div>
-    <el-card v-loading="loading" class="dialog-body" :style="{height:height+'px'}">
+    <el-card v-loading="loading" class="dialog-body" :style="{ height: height + 'px' }">
       <el-row>
         <el-col :span="12">
-          <el-form ref="ref" :rules="rules" :model="model" label-width="120px">
+          <el-form
+            ref="ref"
+            :rules="rules"
+            :model="model"
+            label-width="120px"
+          >
             <el-form-item label="头像" prop="avatar_url">
               <el-col :span="12">
-                <el-avatar v-if="model.avatar_url" :size="100" fit="contain" :src="model.avatar_url" shape="circle" />
+                <el-avatar
+                  v-if="model.avatar_url"
+                  :size="100"
+                  fit="contain"
+                  :src="model.avatar_url"
+                  shape="circle"
+                />
                 <el-avatar v-else icon="el-icon-user-solid" :size="100" />
               </el-col>
               <el-col :span="12">
-                <el-button size="mini" @click="fileUpload()">上传头像</el-button>
-                <el-button size="mini" @click="fileDelete()">删除</el-button>
+                <el-button @click="fileUpload()">上传头像</el-button>
+                <el-button @click="fileDelete()">删除</el-button>
                 <p>jpg、png图片，小于 100 KB，宽高1:1</p>
               </el-col>
             </el-form-item>
@@ -36,7 +47,14 @@
       </el-row>
     </el-card>
     <!-- 文件管理 -->
-    <el-dialog title="上传头像" :visible.sync="fileDialog" width="80%" top="1vh" :close-on-click-modal="false" :close-on-press-escape="false">
+    <el-dialog
+      title="上传头像"
+      :visible.sync="fileDialog"
+      width="80%"
+      top="1vh"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
       <file-manage file-type="image" @fileCancel="fileCancel" @fileSubmit="fileSubmit" />
     </el-dialog>
   </div>
@@ -78,15 +96,15 @@ export default {
   methods: {
     // 信息
     info(msg = false) {
-      info().then(res => {
-        this.reset(res.data)
-        store.commit('user/SET_AVATAR', res.data.avatar_url)
-        store.commit('user/SET_NICKNAME', res.data.nickname)
-        store.commit('user/SET_USERNAME', res.data.username)
-        if (msg) {
-          this.$message.success(res.msg)
-        }
-      }).catch(() => { })
+      info()
+        .then((res) => {
+          this.reset(res.data)
+          this.update(res.data)
+          if (msg) {
+            this.$message.success(res.msg)
+          }
+        })
+        .catch(() => { })
     },
     // 刷新
     refresh() {
@@ -96,17 +114,25 @@ export default {
     },
     // 提交
     submit() {
-      this.$refs['ref'].validate(valid => {
+      this.$refs['ref'].validate((valid) => {
         if (valid) {
           this.loading = true
-          edit(this.model).then(res => {
-            this.loading = false
-            this.$message.success(res.msg)
-          }).catch(() => {
-            this.loading = false
-          })
+          edit(this.model)
+            .then((res) => {
+              this.update(this.model)
+              this.loading = false
+              this.$message.success(res.msg)
+            })
+            .catch(() => {
+              this.loading = false
+            })
         }
       })
+    },
+    update(data) {
+      store.commit('user/SET_AVATAR', data.avatar_url)
+      store.commit('user/SET_NICKNAME', data.nickname)
+      store.commit('user/SET_USERNAME', data.username)
     },
     // 重置
     reset(row) {

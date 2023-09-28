@@ -1,12 +1,17 @@
 <template>
   <div class="navbar">
-    <hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
+    <hamburger
+      id="hamburger-container"
+      :is-active="sidebar.opened"
+      class="hamburger-container"
+      @toggleClick="toggleSideBar"
+    />
 
     <breadcrumb id="breadcrumb-container" class="breadcrumb-container" />
 
     <div class="right-menu">
       <template v-if="device !== 'mobile'">
-        <span style="display:inline-block;float:left;margin-right:10px;color:#409eff" :title="username">
+        <span class="nav-nickname" :title="username">
           {{ nickname }}
         </span>
         <search id="header-search" class="right-menu-item" />
@@ -16,8 +21,19 @@
 
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
-          <el-avatar v-if="avatar" :src="avatar" :size="48" shape="circle" fit="contain" />
-          <el-avatar v-else :size="48" shape="circle" icon="el-icon-user-solid" />
+          <el-avatar
+            v-if="avatar"
+            :src="avatar"
+            :size="48"
+            shape="circle"
+            fit="contain"
+          />
+          <el-avatar
+            v-else
+            :size="48"
+            shape="circle"
+            icon="el-icon-user-solid"
+          />
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown">
@@ -31,14 +47,20 @@
               <el-dropdown-item>个人中心</el-dropdown-item>
             </router-link>
           </el-dropdown-item>
-          <el-dropdown-item divided @click.native="logout">
+          <el-dropdown-item @click.native="logout">
             <span style="display:block;">退出登录</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
 
-      <span style="display:inline-block;float:right;margin-right:10px;color:#409eff">
-        <el-button v-loading="loading" icon="el-icon-delete" circle title="清除缓存" @click="clearCache" />
+      <span class="nav-clearcache">
+        <el-button
+          v-loading="loading"
+          icon="el-icon-delete"
+          circle
+          title="清除缓存"
+          @click="clearCache"
+        />
       </span>
     </div>
   </div>
@@ -181,5 +203,18 @@ export default {
 
 .el-dropdown-menu__item {
   padding: 0 12px;
+}
+
+.nav-nickname {
+  display:block;
+  float:left;
+  margin-right:10px;
+  color:var(--theme,#1890ff)
+}
+.nav-clearcache {
+  display:block;
+  float:right;
+  margin-right:10px;
+  color:var(--theme,#1890ff)
 }
 </style>

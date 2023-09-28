@@ -1,6 +1,11 @@
 <template>
   <transition :name="transitionName">
-    <div v-show="visible" :style="customStyle" class="back-to-ceiling" @click="backToTop">
+    <div
+      v-show="visible"
+      :style="customStyle"
+      class="back-to-ceiling"
+      @click="backToTop"
+    >
       <i class="el-icon-top" />
     </div>
   </transition>

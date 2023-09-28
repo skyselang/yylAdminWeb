@@ -34,7 +34,7 @@ export function delNickname() {
   return Cookies.remove(nicknameKey)
 }
 
-const avatarKey = keyPrefix + 'Avatar'
+const avatarKey = keyPrefix + 'AvatarUrl'
 export function setAvatar(avatar) {
   return Cookies.set(avatarKey, avatar)
 }

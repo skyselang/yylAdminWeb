@@ -1,9 +1,19 @@
 <template>
   <div class="app-container">
     <el-card>
-      <el-form ref="ref" :model="model" :rules="rules" label-width="150px">
+      <el-form
+        ref="ref"
+        :model="model"
+        :rules="rules"
+        label-width="150px"
+      >
         <el-tabs>
-          <el-tab-pane label="文件设置" class="dialog-body" :style="{height:height+'px'}" lazy>
+          <el-tab-pane
+            label="文件设置"
+            class="dialog-body"
+            :style="{height:height+'px'}"
+            lazy
+          >
             <el-form-item label="前台上传" prop="is_upload_api">
               <el-switch v-model="model.is_upload_api" :active-value="1" :inactive-value="0" />
               <span> 关闭后，前台无法上传文件</span>
@@ -14,7 +24,13 @@
             </el-form-item>
             <el-form-item label="存储方式" prop="storage">
               <el-select v-model="model.storage" placeholder="请选择">
-                <el-option v-for="(item, index) in storages" :key="index" :label="item" :value="index" @change="storageChange" />
+                <el-option
+                  v-for="(item, index) in storages"
+                  :key="index"
+                  :label="item"
+                  :value="index"
+                  @change="storageChange"
+                />
               </el-select>
             </el-form-item>
             <div v-if="model.storage=='local'">
@@ -375,7 +391,12 @@
               </el-form-item>
             </div>
           </el-tab-pane>
-          <el-tab-pane label="文件限制" class="dialog-body" :style="{height:height+'px'}" lazy>
+          <el-tab-pane
+            label="文件限制"
+            class="dialog-body"
+            :style="{height:height+'px'}"
+            lazy
+          >
             <el-form-item label="图片格式" prop="image_ext" class="ya-margin-bottom">
               <el-col :span="11">
                 <el-input v-model="model.image_ext" clearable />

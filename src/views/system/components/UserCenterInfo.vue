@@ -2,9 +2,20 @@
   <el-card v-loading="loading" class="dialog-body" :style="{height:height+'px'}">
     <el-row>
       <el-col :span="12">
-        <el-form ref="ref" :rules="rules" :model="model" label-width="120px">
+        <el-form
+          ref="ref"
+          :rules="rules"
+          :model="model"
+          label-width="120px"
+        >
           <el-form-item label="头像">
-            <el-avatar v-if="model.avatar_url" :size="100" fit="contain" :src="model.avatar_url" shape="circle" />
+            <el-avatar
+              v-if="model.avatar_url"
+              :size="100"
+              fit="contain"
+              :src="model.avatar_url"
+              shape="circle"
+            />
             <el-avatar v-else icon="el-icon-user-solid" :size="100" />
           </el-form-item>
           <el-form-item label="昵称" prop="nickname">

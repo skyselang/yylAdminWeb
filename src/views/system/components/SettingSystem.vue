@@ -1,63 +1,85 @@
 <template>
-  <el-card class="dialog-body" :style="{height:height+'px'}">
+  <el-card class="dialog-body" :style="{ height: height + 'px' }">
     <el-row>
-      <el-col :span="14">
-        <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
+      <el-col :span="16">
+        <el-form
+          ref="ref"
+          :model="model"
+          :rules="rules"
+          label-width="120px"
+        >
           <el-form-item label="* 系统简称" prop="system_name">
             <el-col :span="8">
               <el-input v-model="model.system_name" type="text" clearable />
             </el-col>
-            <el-col :span="16">
-              侧边栏、登录页显示，12字以内。
-            </el-col>
+            <el-col :span="16"> 侧边栏、登录页显示。</el-col>
           </el-form-item>
           <el-form-item label="* 页面标题" prop="page_title">
             <el-col :span="8">
               <el-input v-model="model.page_title" type="text" clearable />
             </el-col>
-            <el-col :span="16">
-              浏览器页面标题后缀，63字以内。
-            </el-col>
+            <el-col :span="16"> 浏览器页面标题后缀。 </el-col>
           </el-form-item>
           <el-form-item label="favicon" prop="favicon_id">
-            <el-col :span="8" style="height:100px">
-              <el-image v-if="model.favicon_url" style="height:50px" fit="contain" :src="model.favicon_url" :preview-src-list="[model.favicon_url]" title="点击看大图">
+            <el-col :span="8" style="height: 100px">
+              <el-image
+                v-if="model.favicon_url"
+                style="height: 50px"
+                fit="contain"
+                :src="model.favicon_url"
+                :preview-src-list="[model.favicon_url]"
+                title="点击看大图"
+              >
                 <div slot="error" class="image-slot">
                   <i class="el-icon-picture-outline" />
                 </div>
               </el-image>
             </el-col>
             <el-col :span="16">
-              <el-button size="mini" @click="fileUpload('favicon', '上传favicon')">上传favicon</el-button>
-              <el-button size="mini" @click="fileDelete('favicon')">删除</el-button>
+              <el-button @click="fileUpload('favicon', '上传favicon')">上传favicon</el-button>
+              <el-button @click="fileDelete('favicon')">删除</el-button>
               <p>图片小于 50 KB，jpg、png、ico格式，128 x 128。</p>
             </el-col>
           </el-form-item>
           <el-form-item label="logo" prop="logo_id">
-            <el-col :span="8" style="height:100px">
-              <el-image v-if="model.logo_url" style="height:100px" fit="contain" :src="model.logo_url" :preview-src-list="[model.logo_url]" title="点击看大图">
+            <el-col :span="8" style="height: 100px">
+              <el-image
+                v-if="model.logo_url"
+                style="height: 100px"
+                fit="contain"
+                :src="model.logo_url"
+                :preview-src-list="[model.logo_url]"
+                title="点击看大图"
+              >
                 <div slot="error" class="image-slot">
                   <i class="el-icon-picture-outline" />
                 </div>
               </el-image>
             </el-col>
             <el-col :span="16">
-              <el-button size="mini" @click="fileUpload('logo', '上传logo')">上传logo</el-button>
-              <el-button size="mini" @click="fileDelete('logo')">删除</el-button>
+              <el-button @click="fileUpload('logo', '上传logo')">上传logo</el-button>
+              <el-button @click="fileDelete('logo')">删除</el-button>
               <p>图片小于 100 KB，jpg、png格式，200 x 200。</p>
             </el-col>
           </el-form-item>
           <el-form-item label="登录背景图" prop="login_bg_id">
-            <el-col :span="8" style="height:100px">
-              <el-image v-if="model.login_bg_url" style="height:100px" fit="contain" :src="model.login_bg_url" :preview-src-list="[model.login_bg_url]" title="点击看大图">
+            <el-col :span="8" style="height: 100px">
+              <el-image
+                v-if="model.login_bg_url"
+                style="height: 100px"
+                fit="contain"
+                :src="model.login_bg_url"
+                :preview-src-list="[model.login_bg_url]"
+                title="点击看大图"
+              >
                 <div slot="error" class="image-slot">
                   <i class="el-icon-picture-outline" />
                 </div>
               </el-image>
             </el-col>
             <el-col :span="16">
-              <el-button size="mini" @click="fileUpload('login_bg', '上传登录背景')">上传背景图</el-button>
-              <el-button size="mini" @click="fileDelete('login_bg')">删除</el-button>
+              <el-button @click="fileUpload('login_bg', '上传登录背景')">上传背景图</el-button>
+              <el-button @click="fileDelete('login_bg')">删除</el-button>
               <p>图片小于 200 KB，jpg、png格式，1920 x 1080。</p>
             </el-col>
           </el-form-item>
@@ -69,7 +91,14 @@
       </el-col>
     </el-row>
     <!-- 文件管理 -->
-    <el-dialog :title="fileTitle" :visible.sync="fileDialog" width="80%" top="1vh" :close-on-click-modal="false" :close-on-press-escape="false">
+    <el-dialog
+      :title="fileTitle"
+      :visible.sync="fileDialog"
+      width="80%"
+      top="1vh"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
       <file-manage file-type="image" @fileCancel="fileCancel" @fileSubmit="fileSubmit" />
     </el-dialog>
   </el-card>
@@ -110,39 +139,57 @@ export default {
   methods: {
     // 信息
     info() {
-      systemInfo().then(res => {
+      systemInfo().then((res) => {
         this.model = res.data
-        this.$store.dispatch('settings/changeSetting', { key: 'systemName', value: res.data.system_name })
-        this.$store.dispatch('settings/changeSetting', { key: 'pageTitle', value: res.data.page_title })
-        this.$store.dispatch('settings/changeSetting', { key: 'faviconUrl', value: res.data.favicon_url })
-        this.$store.dispatch('settings/changeSetting', { key: 'logoUrl', value: res.data.logo_url })
-        this.$forceUpdate()
+        this.setting(this.model)
       })
     },
     // 刷新
     refresh() {
       this.loading = true
-      systemInfo().then((res) => {
-        this.model = res.data
-        this.loading = false
-        this.$forceUpdate()
-        this.$message.success(res.msg)
-      }).catch(() => {
-        this.loading = false
-      })
+      systemInfo()
+        .then((res) => {
+          this.model = res.data
+          this.loading = false
+          this.$message.success(res.msg)
+        })
+        .catch(() => {
+          this.loading = false
+        })
     },
     // 提交
     submit() {
-      this.$refs['ref'].validate(valid => {
+      this.$refs['ref'].validate((valid) => {
         if (valid) {
           this.loading = true
-          systemEdit(this.model).then(res => {
-            this.loading = false
-            this.$message.success(res.msg)
-          }).catch(() => {
-            this.loading = false
-          })
+          systemEdit(this.model)
+            .then((res) => {
+              this.setting(this.model)
+              this.loading = false
+              this.$message.success(res.msg)
+            })
+            .catch(() => {
+              this.loading = false
+            })
         }
+      })
+    },
+    setting(setting) {
+      this.$store.dispatch('settings/changeSetting', {
+        key: 'systemName',
+        value: setting.system_name
+      })
+      this.$store.dispatch('settings/changeSetting', {
+        key: 'pageTitle',
+        value: setting.page_title
+      })
+      this.$store.dispatch('settings/changeSetting', {
+        key: 'faviconUrl',
+        value: setting.favicon_url
+      })
+      this.$store.dispatch('settings/changeSetting', {
+        key: 'logoUrl',
+        value: setting.logo_url
       })
     },
     // 上传图片
@@ -188,5 +235,4 @@ export default {
 }
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

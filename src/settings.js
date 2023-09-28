@@ -33,5 +33,17 @@ module.exports = {
    * @type {string} 前后端必须一致
    * @description token名称
    */
-  tokenName: 'AdminToken'
+  tokenName: 'AdminToken',
+
+  /**
+   * @type {string} default | medium | small | mini
+   * @description element-ui 默认 size
+   */
+  elementSize: 'medium',
+
+  /**
+   * @type {number}
+   * @description 分页每页默认数量
+   */
+  pageLimit: 12
 }

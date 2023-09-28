@@ -79,11 +79,9 @@ export default {
               borderRadius: 10,
               borderColor: '#fff',
               borderWidth: 2,
-              normal: {
-                label: {
-                  show: true,
-                  formatter: '{b} : {c} ({d}%)'
-                }
+              label: {
+                show: true,
+                formatter: '{b} : {c} ({d}%)'
               }
             },
             data: data.data

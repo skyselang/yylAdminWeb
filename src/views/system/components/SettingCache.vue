@@ -1,17 +1,20 @@
 <template>
   <el-card class="dialog-body" :style="{height:height+'px'}">
     <el-row>
-      <el-col :span="14">
-        <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
+      <el-col :span="16">
+        <el-form
+          ref="ref"
+          :model="model"
+          :rules="rules"
+          label-width="120px"
+        >
           <el-form-item label="缓存类型" prop="cache_type">
             <el-col :span="8">
               <el-input v-model="model.cache_type" />
             </el-col>
           </el-form-item>
           <el-form-item label="" prop="">
-            <el-col :span="12">
-              手动清除所有缓存，后台登录状态不会清除。
-            </el-col>
+            手动清除所有缓存，后台登录状态不会清除。
           </el-form-item>
           <el-form-item label="">
             <el-button :loading="loading" @click="refresh()">刷新</el-button>

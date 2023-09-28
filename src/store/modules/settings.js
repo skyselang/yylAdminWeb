@@ -10,13 +10,17 @@ import {
   setLogoUrl,
   getLogoUrl,
   setTokenName,
-  setTokenType
+  setTokenType,
+  setThemeColor,
+  setTagsView,
+  getTagsView,
+  setFixedHeader,
+  getFixedHeader,
+  setSidebarLogo,
+  getSidebarLogo
 } from '@/utils/settings'
 
 const {
-  tagsView,
-  fixedHeader,
-  sidebarLogo,
   tokenName,
   tokenType
 } = defaultSettings
@@ -27,9 +31,9 @@ const state = {
   pageTitle: getPageTitle(),
   logoUrl: getLogoUrl(),
   theme: variables.theme,
-  tagsView: tagsView,
-  fixedHeader: fixedHeader,
-  sidebarLogo: sidebarLogo,
+  tagsView: getTagsView() !== 'false',
+  fixedHeader: getFixedHeader() !== 'false',
+  sidebarLogo: getSidebarLogo() !== 'false',
   tokenName: tokenName,
   tokenType: tokenType
 }
@@ -54,6 +58,14 @@ const mutations = {
         setTokenName(value)
       } else if (key === 'tokenType') {
         setTokenType(value)
+      } else if (key === 'theme') {
+        setThemeColor(value)
+      } else if (key === 'tagsView') {
+        setTagsView(value)
+      } else if (key === 'fixedHeader') {
+        setFixedHeader(value)
+      } else if (key === 'sidebarLogo') {
+        setSidebarLogo(value)
       }
     }
   }
