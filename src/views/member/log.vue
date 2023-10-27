@@ -158,7 +158,7 @@
       />
       <el-table-column prop="member_id" label="会员ID" min-width="68" />
       <el-table-column
-        prop="username"
+        prop="nickname"
         label="会员昵称"
         min-width="85"
         show-overflow-tooltip
