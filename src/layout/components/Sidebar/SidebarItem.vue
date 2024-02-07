@@ -1,99 +1,129 @@
 <template>
-  <div v-if="!item.hidden">
-    <template v-if="hasOneShowingChild(item.children,item) && (!onlyOneChild.children||onlyOneChild.noShowingChildren)&&!item.alwaysShow">
+  <div v-if="!item.meta || !item.meta.hidden">
+    <!-- 无子路由 || 目录只有一个子路由并配置始终显示为否(alwaysShow=false) -->
+    <template
+      v-if="
+        hasOneShowingChild(item.children, item) &&
+        (!onlyOneChild.children || onlyOneChild.noShowingChildren) &&
+        !item.meta?.alwaysShow
+      "
+    >
       <app-link v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path)">
-        <el-menu-item :index="resolvePath(onlyOneChild.path)" :class="{'submenu-title-noDropdown':!isNest}">
-          <item :icon="onlyOneChild.meta.icon||(item.meta&&item.meta.icon)" :title="onlyOneChild.meta.title" />
+        <el-menu-item
+          :index="resolvePath(onlyOneChild.path)"
+          :class="{ 'submenu-title-noDropdown': !isNest }"
+        >
+          <item
+            :icon="onlyOneChild.meta.icon || (item.meta && item.meta.icon)"
+            :title="onlyOneChild.meta.title"
+          />
         </el-menu-item>
       </app-link>
     </template>
 
-    <el-submenu
-      v-else
-      ref="subMenu"
-      :index="resolvePath(item.path)"
-      popper-append-to-body
-    >
-      <template slot="title">
+    <!-- 有子路由  -->
+    <el-sub-menu v-else :index="resolvePath(item.path)" teleported>
+      <template #title>
         <item v-if="item.meta" :icon="item.meta && item.meta.icon" :title="item.meta.title" />
       </template>
+
       <sidebar-item
         v-for="child in item.children"
         :key="child.path"
         :is-nest="true"
         :item="child"
         :base-path="resolvePath(child.path)"
-        class="nest-menu"
       />
-    </el-submenu>
+    </el-sub-menu>
   </div>
 </template>
 
-<script>
-import path from 'path'
-import { isExternal } from '@/utils/validate'
-import Item from './Item'
-import AppLink from './Link'
-import FixiOSBug from './FixiOSBug'
+<script setup>
+import path from 'path-browserify'
+import { isExternal } from '@/utils/index'
+import AppLink from './Link.vue'
+import Item from './Item.vue'
 
-export default {
-  name: 'SidebarItem',
-  components: { Item, AppLink },
-  mixins: [FixiOSBug],
-  props: {
-    // route object
-    item: {
-      type: Object,
-      required: true
-    },
-    isNest: {
-      type: Boolean,
-      default: false
-    },
-    basePath: {
-      type: String,
-      default: ''
-    }
+const props = defineProps({
+  /**
+   * 路由(eg:user)
+   */
+  item: {
+    type: Object,
+    required: true
   },
-  data() {
-    // TODO: refactor with render function
-    this.onlyOneChild = null
-    return {}
+
+  /**
+   * 父层级完整路由路径(eg:/system)
+   */
+  basePath: {
+    type: String,
+    required: true
   },
-  methods: {
-    hasOneShowingChild(children = [], parent) {
-      const showingChildren = children.filter(item => {
-        if (item.hidden) {
-          return false
-        } else {
-          // Temp set(will be used if only has one showing child)
-          this.onlyOneChild = item
-          return true
-        }
-      })
-
-      // When there is only one child router, the child router is displayed by default
-      if (showingChildren.length === 1) {
-        return true
-      }
-
-      // Show parent if there are no child router to display
-      if (showingChildren.length === 0) {
-        this.onlyOneChild = { ...parent, path: '', noShowingChildren: true }
-        return true
-      }
-
-      return false
-    },
-    resolvePath(routePath) {
-      if (isExternal(routePath)) {
-        return routePath
-      }
-      if (isExternal(this.basePath)) {
-        return this.basePath
-      }
-      return path.resolve(this.basePath, routePath)
-    }
+  isNest: {
+    type: Boolean,
+    default: false
   }
+})
+
+const onlyOneChild = ref() // 临时变量，唯一子路由
+
+/**
+ * 判断当前路由是否只有一个子路由
+ * 1：如果只有一个子路由：返回 true
+ * 2：如果无子路由：返回 true
+ *
+ * @param children 子路由数组
+ * @param parent 当前路由
+ */
+function hasOneShowingChild(children = [], parent) {
+  // 子路由集合
+  const showingChildren = children.filter((route) => {
+    if (route.meta?.hidden) {
+      // 过滤不显示的子路由
+      return false
+    } else {
+      route.meta.hidden = false
+      // 临时变量（多个子路由 onlyOneChild 变量是用不上的）
+      onlyOneChild.value = route
+      return true
+    }
+  })
+
+  // 如果只有一个子路由, 返回 true
+  if (showingChildren.length === 1) {
+    return true
+  }
+
+  // 如果没有子路由，显示父级路由
+  if (showingChildren.length === 0) {
+    onlyOneChild.value = { ...parent, path: '', noShowingChildren: true }
+    return true
+  }
+  return false
+}
+
+/**
+ *  解析路由路径(相对路径 → 绝对路径)
+ *
+ * @param routePath 路由路径
+ */
+function resolvePath(routePath) {
+  if (isExternal(routePath)) {
+    return routePath
+  }
+  if (isExternal(props.basePath)) {
+    return props.basePath
+  }
+
+  // 完整路径(/system/user) = 父级路径(/system) + 路由路径(user)
+  const fullPath = path.resolve(props.basePath, routePath)
+  return fullPath
 }
 </script>
+
+<style lang="scss" scoped>
+:deep(.el-menu-item .el-menu-tooltip__trigger) {
+  width: auto !important;
+}
+</style>

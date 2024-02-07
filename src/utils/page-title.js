@@ -1,12 +1,12 @@
-import store from '@/store'
-
+import { useSettingsStore } from '@/store/modules/settings'
 /**
  * 获取页面标题
  * @param {string} pageName 页面名称
  * @returns {string}
  */
 export default function getPageTitle(pageName) {
-  const pageTitle = store.getters.pageTitle
+  const settingsStore = useSettingsStore()
+  const pageTitle = settingsStore.pageTitle
   if (pageName) {
     if (pageTitle) {
       return `${pageName} - ${pageTitle}`

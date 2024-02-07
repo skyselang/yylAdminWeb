@@ -5,7 +5,7 @@
         <span>{{ name }}</span>
       </el-col>
       <el-col>
-        <div id="echartIndexFile" style="height:500px; width:100%" />
+        <div id="echartIndexFile" class="h-[500px] w-[100%]"></div>
       </el-col>
     </el-row>
   </el-card>
@@ -28,7 +28,6 @@ import { file } from '@/api/system/index'
 
 export default {
   name: 'SystemIndexFile',
-  components: {},
   data() {
     return {
       name: '文件统计',
@@ -39,20 +38,20 @@ export default {
       }
     }
   },
-  computed: {},
   created() {
     this.file()
   },
-  mounted() { },
   methods: {
     file() {
       this.loading = true
-      file().then(res => {
-        this.echartIndexFile(res.data)
-        this.loading = false
-      }).catch(() => {
-        this.loading = false
-      })
+      file()
+        .then((res) => {
+          this.echartIndexFile(res.data)
+          this.loading = false
+        })
+        .catch(() => {
+          this.loading = false
+        })
     },
     echartIndexFile(data) {
       var echart = echarts.init(document.getElementById('echartIndexFile'))
@@ -93,6 +92,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-</style>

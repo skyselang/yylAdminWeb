@@ -1,66 +1,78 @@
-import { asyncRoutes, constantRoutes } from '@/router'
+import { defineStore } from 'pinia'
+import { constantRoutes } from '@/router'
+import { store } from '@/store'
+
+const modules = import.meta.glob('../../views/**/**.vue')
+const Layout = () => import('@/layout/index.vue')
 
 /**
- * 使用路由meta.roles判断当前用户是否具有权限
- * @param roles
- * @param route
+ * 递归生成异步(动态)路由
+ * @param routes 接口返回的异步(动态)路由
+ * @returns 异步(动态)路由
  */
-function hasPermission(roles, route) {
-  if (route.meta && route.meta.roles) {
-    return roles.some(role => route.meta.roles.includes(role))
-  } else {
-    return true
-  }
-}
-
-/**
- * 递归过滤异步路由表
- * @param routes asyncRoutes
- * @param roles
- */
-export function filterAsyncRoutes(routes, roles) {
-  const res = []
-
-  routes.forEach(route => {
-    const tmp = { ...route }
-    if (hasPermission(roles, tmp)) {
-      if (tmp.children) {
-        tmp.children = filterAsyncRoutes(tmp.children, roles)
-      }
-      res.push(tmp)
+const filterAsyncRoutes = (routes) => {
+  const asyncRoutes = []
+  routes.forEach((route) => {
+    const tmpRoute = { ...route } // ES6扩展运算符复制新对象
+    if (!route.name) {
+      tmpRoute.name = route.path
     }
+    if (tmpRoute.component?.toString() == 'Layout') {
+      tmpRoute.component = Layout
+    } else {
+      const component = modules[`../../views/${tmpRoute.component}.vue`]
+      if (component) {
+        tmpRoute.component = component
+      } else {
+        tmpRoute.component = modules[`../../views/error-page/404.vue`]
+      }
+    }
+
+    if (tmpRoute.children) {
+      tmpRoute.children = filterAsyncRoutes(tmpRoute.children)
+    }
+
+    asyncRoutes.push(tmpRoute)
   })
 
-  return res
+  return asyncRoutes
 }
 
-const state = {
-  routes: [],
-  addRoutes: []
-}
+// setup
+export const usePermissionStore = defineStore('permission', () => {
+  // state
+  const routes = ref([])
 
-const mutations = {
-  SET_ROUTES: (state, routes) => {
-    state.addRoutes = routes
-    state.routes = constantRoutes.concat(routes)
+  // actions
+  function setRoutes(newRoutes) {
+    routes.value = constantRoutes.concat(newRoutes)
   }
-}
-
-const actions = {
-  generateRoutes({ commit }, obj) {
-    const { roles, menus } = obj // 从这里获取菜单
-    return new Promise(resolve => {
-      const accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
-      const newAccessedRoutes = accessedRoutes.concat(menus) // 将基础菜单与获取的菜单合并，左侧菜单才会渲染
-      commit('SET_ROUTES', newAccessedRoutes || [])
-      resolve(newAccessedRoutes)
+  /**
+   * 生成动态路由
+   */
+  function generateRoutes(menus) {
+    return new Promise((resolve, reject) => {
+      const asyncRoutes = menus
+      const accessedRoutes = filterAsyncRoutes(asyncRoutes)
+      setRoutes(accessedRoutes)
+      resolve(accessedRoutes)
     })
   }
-}
+  /**
+   * 混合模式左侧菜单
+   */
+  const mixLeftMenu = ref([])
+  function getMixLeftMenu(activeTop) {
+    routes.value.forEach((item) => {
+      if (item.path === activeTop) {
+        mixLeftMenu.value = item.children || []
+      }
+    })
+  }
+  return { routes, setRoutes, generateRoutes, getMixLeftMenu, mixLeftMenu }
+})
 
-export default {
-  namespaced: true,
-  state,
-  mutations,
-  actions
+// 非setup
+export function usePermissionStoreHook() {
+  return usePermissionStore(store)
 }

@@ -1,8 +1,8 @@
-import Vue from 'vue'
-import Clipboard from 'clipboard'
+import clipboard from 'clipboardy'
+import { ElMessage } from 'element-plus'
 
-function clipboardSuccess(suc_msg = '') {
-  Vue.prototype.$message({
+function clipboardSuccess(suc_msg) {
+  ElMessage({
     message: suc_msg || '复制成功',
     type: 'success',
     duration: 1500
@@ -10,23 +10,23 @@ function clipboardSuccess(suc_msg = '') {
 }
 
 function clipboardError(err_msg) {
-  Vue.prototype.$message({
+  ElMessage({
     message: err_msg || '复制失败',
     type: 'error'
   })
 }
 
-export default function handleClipboard(text, event, suc_msg = '', err_msg = '') {
-  const clipboard = new Clipboard(event.target, {
-    text: () => text
-  })
-  clipboard.on('success', () => {
+/**
+ * 复制
+ * @param {String} text
+ * @param {String} suc_msg
+ * @param {String} err_msg
+ */
+export default function handleClipboard(text, suc_msg = '', err_msg = '') {
+  try {
+    clipboard.write(text)
     clipboardSuccess(suc_msg)
-    clipboard.destroy()
-  })
-  clipboard.on('error', () => {
+  } catch (e) {
     clipboardError(err_msg)
-    clipboard.destroy()
-  })
-  clipboard.onClick(event)
+  }
 }

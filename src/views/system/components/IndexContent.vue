@@ -5,7 +5,7 @@
         <span>{{ name }}</span>
       </el-col>
       <el-col>
-        <div id="echartIndexContent" style="height:500px; width:100%" />
+        <div id="echartIndexContent" class="h-[500px] w-[100%]"></div>
       </el-col>
     </el-row>
   </el-card>
@@ -28,27 +28,26 @@ import { content } from '@/api/system/index'
 
 export default {
   name: 'SystemIndexContent',
-  components: {},
   data() {
     return {
       name: '内容统计',
       loading: false
     }
   },
-  computed: {},
   created() {
     this.content()
   },
-  mounted() { },
   methods: {
     content() {
       this.loading = true
-      content().then(res => {
-        this.echartIndexContent(res.data)
-        this.loading = false
-      }).catch(() => {
-        this.loading = false
-      })
+      content()
+        .then((res) => {
+          this.echartIndexContent(res.data)
+          this.loading = false
+        })
+        .catch(() => {
+          this.loading = false
+        })
     },
     echartIndexContent(data) {
       var echart = echarts.init(document.getElementById('echartIndexContent'))
@@ -89,6 +88,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-</style>

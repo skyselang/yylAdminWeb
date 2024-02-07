@@ -1,40 +1,46 @@
 import axios from 'axios'
-import store from '@/store'
-import { Message, MessageBox } from 'element-ui'
-import { getAdminToken } from '@/utils/auth'
+import { useSettingsStoreHook } from '@/store/modules/settings'
+import { useUserStoreHook } from '@/store/modules/user'
 
 // 创建axios实例
 const service = axios.create({
-  baseURL: process.env.VUE_APP_BASE_URL, // 接口baseURL
-  // withCredentials: true, // 跨域请求时发送 Cookie
-  timeout: 60000 // 请求超时时间
+  baseURL: import.meta.env.VITE_APP_BASE_URL, // 接口baseURL
+  timeout: 60000, // 请求超时时间
+  params: {},
+  data: {},
+  headers: {}
 })
 
 // 请求拦截器
 service.interceptors.request.use(
-  config => {
-    // 发送请求之前
-    if (store.getters.userToken) {
+  // 请求配置
+  (config) => {
+    const userStore = useUserStoreHook()
+    if (userStore.token) {
       // 设置Token，请求头部header或请求参数param
-      const tokenType = store.getters.tokenType
-      const tokenName = store.getters.tokenName
-      const tokenValue = getAdminToken()
+      const settingsStore = useSettingsStoreHook()
+      const tokenType = settingsStore.tokenType
+      const tokenName = settingsStore.tokenName
+      const tokenValue = userStore.token
       if (tokenType === 'header') {
         // 请求头部token
         config.headers[tokenName] = tokenValue
       } else {
         // 请求参数token
         if (config.method === 'get') {
-          config.params = { ...config.params, [tokenName]: tokenValue }
+          config.params = { ...config?.params, [tokenName]: tokenValue }
         } else {
-          config.data = { ...config.data, [tokenName]: tokenValue }
+          config.data = { ...config?.data, [tokenName]: tokenValue }
         }
       }
     }
     return config
   },
-  error => {
-    // 请求错误
+  // 请求错误
+  (error) => {
+    if (import.meta.env.DEV) {
+      console.log(error)
+    }
     return Promise.reject(error)
   }
 )
@@ -45,7 +51,7 @@ service.interceptors.response.use(
    * 通过接口返回码确定返回状态
    * 还可以通过HTTP状态代码来判断请求状态
    */
-  response => {
+  (response) => {
     // 响应数据
     const res = response.data
     if (response.data && response.config.responseType === 'blob') {
@@ -54,9 +60,9 @@ service.interceptors.response.use(
         const reader = new FileReader()
         reader.readAsText(response.data, 'utf-8')
         reader.onload = () => {
-          const resf = JSON.parse(reader.result)
-          responseHandle(resf)
-          return Promise.reject(new Error(resf.msg || 'Server error'))
+          const result = JSON.parse(reader.result)
+          responseHandle(result)
+          return Promise.reject(new Error(result.msg || 'Server error'))
         }
         return Promise.reject()
       } else {
@@ -72,11 +78,11 @@ service.interceptors.response.use(
       }
     }
   },
-  error => {
+  (error) => {
     // 响应错误
     const res = error.response.data
     responseHandle(res)
-    if (process.env.NODE_ENV === 'development') {
+    if (import.meta.env.DEV) {
       console.log(error.response)
     }
     return Promise.reject(error)
@@ -85,19 +91,22 @@ service.interceptors.response.use(
 
 // 响应处理
 function responseHandle(res) {
-  // 返回码401：Token 无效
+  // 返回码 401：Token 无效
   if (res.code === 401) {
-    MessageBox.confirm(res.msg, '提示', {
+    ElMessageBox.confirm(res.msg, '提示', {
       confirmButtonText: '重新登录',
       cancelButtonText: '取消',
       type: 'warning'
-    }).then(() => {
-      store.dispatch('user/resetAdminToken').then(() => {
-        location.reload()
+    })
+      .then(() => {
+        const userStore = useUserStoreHook()
+        userStore.resetToken().then(() => {
+          location.reload()
+        })
       })
-    }).catch(() => { })
+      .catch(() => {})
   } else {
-    Message({
+    ElMessage({
       showClose: true,
       message: res.msg || 'Server error',
       type: 'error',

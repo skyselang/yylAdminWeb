@@ -1,9 +1,9 @@
 <template>
-  <file-manage />
+  <FileManage />
 </template>
 
 <script>
-import FileManage from '@/components/FileManage'
+import FileManage from '@/components/FileManage/index.vue'
 
 export default {
   name: 'FileFile',
@@ -12,12 +12,6 @@ export default {
     return {
       name: '文件管理'
     }
-  },
-  watch: {
-  },
-  created() {
-  },
-  methods: {
   }
 }
 </script>

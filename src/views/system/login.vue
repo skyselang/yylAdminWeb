@@ -3,69 +3,68 @@
     class="login-container"
     :style="{
       backgroundImage: 'url(' + login_bg_url + ')',
-      backgroundColor: loginBgColor
+      backgroundColor: login_bg_color
     }"
   >
-    <el-form
-      ref="ref"
-      class="login-form"
-      :model="model"
-      :rules="rules"
-      label-position="left"
-    >
+    <el-row class="mt-4">
+      <el-col :span="1" :offset="23">
+        <lang-select class="cursor-pointer mr-4 mt-[3px]" />
+        <theme-select class="cursor-pointer" />
+      </el-col>
+    </el-row>
+    <el-form ref="ref" class="login-form" :model="model" :rules="rules">
       <div class="login-logo">
-        <el-image
-          v-if="logo_url"
-          style="height: 108px"
-          fit="contain"
-          :src="logo_url"
-        >
-          <div slot="error" class="image-slot" />
+        <el-image v-if="logo_url" :src="logo_url" style="height: 108px">
+          <template #error>
+            <svg-icon icon-class="picture" />
+          </template>
         </el-image>
-        <div v-else style="height: 112px" />
+        <div v-else style="height: 115px"></div>
       </div>
       <div class="login-title">
         <h3 class="login-title-name">{{ system_name }}</h3>
       </div>
       <el-form-item prop="username">
-        <el-input
-          v-model="model.username"
-          type="text"
-          placeholder="账号/手机/邮箱"
-          prefix-icon="el-icon-user"
-          autocomplete="on"
-          clearable
-        />
+        <el-input v-model="model.username" :placeholder="$t('login.username')" clearable>
+          <template #prefix>
+            <svg-icon icon-class="user" />
+          </template>
+        </el-input>
       </el-form-item>
       <el-form-item prop="password">
         <el-input
           v-model="model.password"
           type="password"
-          placeholder="请输入密码"
-          prefix-icon="el-icon-lock"
-          autocomplete="on"
+          :placeholder="$t('login.password')"
           clearable
           show-password
-        />
+        >
+          <template #prefix>
+            <svg-icon icon-class="lock" />
+          </template>
+        </el-input>
       </el-form-item>
       <el-form-item v-if="captcha_switch && captcha_src" prop="captcha_code">
         <el-col :span="13">
           <el-input
             v-model="model.captcha_code"
-            placeholder="请输入验证码"
-            prefix-icon="el-icon-picture"
+            :placeholder="$t('login.captchaCode')"
             autocomplete="off"
             clearable
-          />
+          >
+            <template #prefix>
+              <svg-icon icon-class="picture" />
+            </template>
+          </el-input>
         </el-col>
         <el-col :span="11">
           <el-image
             class="login-captcha"
             :style="{ height: captchaHeight }"
-            fit="fill"
             :src="captcha_src"
-            alt="验证码"
-            title="点击刷新验证码"
+            fit="fill"
+            :alt="$t('login.captchaCode')"
+            :title="$t('login.Click to refresh the captcha code')"
             @click="captcha"
           />
         </el-col>
@@ -75,7 +74,6 @@
         ref="ajcaptcha"
         mode="pop"
         :captcha-type="captcha_type"
-        :img-size="{ width: '330px', height: '155px' }"
         @success="ajcaptchaSuccess"
       />
       <el-button
@@ -84,34 +82,35 @@
         type="primary"
         class="login-bottom"
         @click="ajcaptchaShow"
-      >登录</el-button>
+      >
+        {{ $t('login.login') }}
+      </el-button>
       <el-button
         v-else
         :loading="loading"
         type="primary"
         class="login-bottom"
-        @click.native.prevent="handleLogin"
-      >登录</el-button>
+        @click.prevent="handleLogin"
+      >
+        {{ $t('login.login') }}
+      </el-button>
     </el-form>
   </div>
 </template>
 
 <script>
-import AjCaptcha from '@/components/AjCaptcha'
+import LangSelect from '@/components/LangSelect/index.vue'
+import ThemeSelect from '@/components/ThemeSelect/index.vue'
+import AjCaptcha from '@/components/AjCaptcha/index.vue'
 import { captcha, setting } from '@/api/system/login'
-import { elementSize } from '@/utils/element-size'
-import {
-  delNotice,
-  getElementSize,
-  getLoginBgColor,
-  getLoginBgImg,
-  getLogoUrl,
-  setLoginBgImg
-} from '@/utils/settings'
+import { useAppStoreHook } from '@/store/modules/app'
+import { useSettingsStoreHook } from '@/store/modules/settings'
+import { useUserStoreHook } from '@/store/modules/user'
+import { delNotice } from '@/utils/settings'
 
 export default {
   name: 'SystemLogin',
-  components: { AjCaptcha },
+  components: { LangSelect, ThemeSelect, AjCaptcha },
   data() {
     return {
       name: '登录',
@@ -122,28 +121,43 @@ export default {
       captcha_mode: 1,
       captcha_type: 'blockPuzzle',
       captcha_src: '',
-      captchaHeight: '36px',
+      login_bg_url: '',
+      login_bg_color: '',
+      logo_url: '',
       system_name: 'yylAdmin',
-      logo_url: getLogoUrl(),
-      login_bg_url: getLoginBgImg(),
-      loginBgColor: getLoginBgColor(),
       model: {
         username: '',
         password: '',
         captcha_id: '',
         captcha_code: '',
         ajcaptcha: {}
-      },
-      rules: {
-        username: [{ required: true, message: '请输入账号', trigger: 'blur' }],
-        password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
+      }
+    }
+  },
+  computed: {
+    captchaHeight() {
+      const appStore = useAppStoreHook()
+      if (appStore.size == 'large') {
+        return '40px'
+      } else if (appStore.size == 'small') {
+        return '24px'
+      }
+      return '32px'
+    },
+    rules() {
+      return {
+        username: [
+          { required: true, message: this.$t('login.Please enter username'), trigger: 'blur' }
+        ],
+        password: [
+          { required: true, message: this.$t('login.Please enter password'), trigger: 'blur' }
+        ],
         captcha_code: [
-          { required: true, message: '请输入验证码', trigger: 'blur' }
+          { required: true, message: this.$t('login.Please enter captcha code'), trigger: 'blur' }
         ]
       }
     }
   },
-  computed: {},
   watch: {
     $route: {
       handler(route) {
@@ -157,10 +171,8 @@ export default {
     }
   },
   created() {
-    this.setInit()
     this.setting()
   },
-  destroyed() {},
   methods: {
     // 验证码
     captcha() {
@@ -198,10 +210,6 @@ export default {
         }
       })
     },
-    setInit() {
-      const elementValue = getElementSize()
-      this.captchaHeight = elementSize(elementValue)
-    },
     // 设置
     setting() {
       this.model.captcha_id = ''
@@ -209,35 +217,18 @@ export default {
       setting().then((res) => {
         delNotice()
         const data = res.data
+        const settingsStore = useSettingsStoreHook()
         this.captchaData(data)
         this.login_bg_url = data.login_bg_url
-        this.system_name = data.system_name
+        this.login_bg_color = data.login_bg_color
         this.logo_url = data.logo_url
-        setLoginBgImg(data.login_bg_url)
-        this.$store.dispatch('settings/changeSetting', {
-          key: 'tokenName',
-          value: data.token_name
-        })
-        this.$store.dispatch('settings/changeSetting', {
-          key: 'tokenType',
-          value: data.token_type
-        })
-        this.$store.dispatch('settings/changeSetting', {
-          key: 'systemName',
-          value: data.system_name
-        })
-        this.$store.dispatch('settings/changeSetting', {
-          key: 'pageTitle',
-          value: data.page_title
-        })
-        this.$store.dispatch('settings/changeSetting', {
-          key: 'logoUrl',
-          value: data.logo_url
-        })
-        this.$store.dispatch('settings/changeSetting', {
-          key: 'faviconUrl',
-          value: data.favicon_url
-        })
+        this.system_name = data.system_name
+        settingsStore.changeSetting({ key: 'loginBgUrl', value: data.login_bg_url })
+        settingsStore.changeSetting({ key: 'loginBgColor', value: data.login_bg_color })
+        settingsStore.changeSetting({ key: 'logoUrl', value: data.logo_url })
+        settingsStore.changeSetting({ key: 'systemName', value: data.system_name })
+        settingsStore.changeSetting({ key: 'pageTitle', value: data.page_title })
+        settingsStore.changeSetting({ key: 'pageLimit', value: data.page_limit })
       })
     },
     // 登录
@@ -245,8 +236,9 @@ export default {
       this.$refs['ref'].validate((valid) => {
         if (valid) {
           this.loading = true
-          this.$store
-            .dispatch('user/login', this.model)
+          const userStore = useUserStoreHook()
+          userStore
+            .login(this.model)
             .then(() => {
               this.$router
                 .push({
@@ -286,10 +278,10 @@ export default {
 .login-container {
   width: 100%;
   min-height: 100%;
+  overflow: hidden;
   background-color: #2d3a4b;
   background-size: 100% 100%;
   background-position: center center;
-  overflow: hidden;
 
   .login-form {
     position: relative;
@@ -304,7 +296,8 @@ export default {
     position: relative;
 
     .login-title-name {
-      height: 29px;
+      height: 30px;
+      line-height: 30px;
       margin: 0px auto 22px auto;
       text-align: center;
       font-weight: bold;

@@ -1,18 +1,18 @@
-<script>
-export default {
-  name: 'SystemRedirect',
-  data() {
-    return {
-      name: '跳转页面'
-    }
-  },
-  created() {
-    const { params, query } = this.$route
-    const { path } = params
-    this.$router.replace({ path: '/' + path, query }).catch(() => {})
-  },
-  render: function(h) {
-    return h()
-  }
-}
+<template>
+  <div></div>
+</template>
+
+<script setup>
+defineOptions({
+  name: 'SystemRedirect'
+})
+import { useRoute, useRouter } from 'vue-router'
+
+const route = useRoute()
+const router = useRouter()
+
+const { params, query } = route
+const { path } = params
+
+router.replace({ path: '/' + path, query })
 </script>

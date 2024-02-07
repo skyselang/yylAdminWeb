@@ -1,87 +1,71 @@
 {
   "name": "yyladminweb",
-  "version": "3.0.0",
-  "description": "Minimalist background management system based on ThinkPHP6 and Vue2",
-  "author": "https://github.com/skyselang/",
-  "scripts": {
-    "dev": "vue-cli-service serve",
-    "lint": "eslint --ext .js,.vue src",
-    "build:prod": "vue-cli-service build",
-    "build:stage": "vue-cli-service build --mode staging"
-  },
-  "dependencies": {
-    "axios": "0.27.2",
-    "clipboard": "2.0.11",
-    "core-js": "^3.30.2",
-    "crypto-js": "^4.1.1",
-    "e-icon-picker": "^1.1.7",
-    "echarts": "5.4.2",
-    "element-ui": "2.15.12",
-    "fuse.js": "3.6.1",
-    "js-cookie": "3.0.1",
-    "normalize.css": "8.0.1",
-    "nprogress": "0.2.0",
-    "path-to-regexp": "6.2.1",
-    "screenfull": "5.2.0",
-    "vue": "2.7.14",
-    "vue-router": "3.6.5",
-    "vuex": "3.6.2",
-    "wangeditor": "4.7.15",
-    "xlsx": "^0.18.5"
-  },
-  "devDependencies": {
-    "@vue/cli-plugin-babel": "4.5.19",
-    "@vue/cli-plugin-eslint": "4.5.19",
-    "@vue/cli-service": "4.5.19",
-    "autoprefixer": "9.8.8",
-    "babel-eslint": "10.1.0",
-    "eslint": "6.8.0",
-    "eslint-plugin-vue": "6.2.2",
-    "eslint-webpack-plugin": "2.5.3",
-    "html-webpack-plugin": "4.5.2",
-    "husky": "4.3.8",
-    "less": "4.1.2",
-    "less-loader": "7.3.0",
-    "lint-staged": "10.5.4",
-    "node-sass": "6.0.1",
-    "sass": "1.32.13",
-    "sass-loader": "10.2.1",
-    "script-ext-html-webpack-plugin": "2.1.5",
-    "tasksfile": "5.1.1"
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions"
-  ],
-  "bugs": {
-    "url": "https://github.com/skyselang/yylAdminWeb/issues"
-  },
-  "engines": {
-    "node": ">=12.12.0",
-    "npm": ">=6.9.0"
-  },
+  "version": "4.0.0",
+  "description": "Minimalist background management system based on ThinkPHP and Vue",
   "keywords": [
     "yylAdmin",
     "yylAdminWeb",
     "php",
     "vue",
     "thinkphp",
-    "element"
+    "element-plus"
   ],
-  "license": "MIT",
-  "lint-staged": {
-    "src/**/*.{js,vue}": [
-      "eslint --fix",
-      "git add"
-    ]
+  "author": "https://github.com/skyselang/",
+  "license": "Apache-2.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite serve --mode development",
+    "build:prod": "vite build --mode production",
+    "build:stage": "vite build --mode staging",
+    "lint": "eslint --ext .js,.cjs,.vue ./src",
+    "format": "prettier --write \"**/*.{js,cjs,json,css,less,scss,vue,html,md}\""
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
+  "dependencies": {
+    "@vitejs/plugin-vue": "^4.6.2",
+    "@vueuse/core": "^10.7.2",
+    "axios": "^1.6.7",
+    "clipboardy": "^4.0.0",
+    "crypto-js": "^4.2.0",
+    "default-passive-events": "^2.0.0",
+    "echarts": "^5.4.3",
+    "element-plus": "^2.5.5",
+    "js-cookie": "^3.0.5",
+    "nprogress": "^0.2.0",
+    "path-browserify": "^1.0.1",
+    "path-to-regexp": "^6.2.1",
+    "pinia": "^2.1.7",
+    "terser": "^5.27.0",
+    "vue": "^3.4.15",
+    "vue-i18n": "^9.9.1",
+    "vue-router": "^4.2.5",
+    "wangeditor": "^4.7.15",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^8.10.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-vue": "^9.21.1",
+    "fast-glob": "^3.3.2",
+    "prettier": "^2.8.8",
+    "sass": "^1.70.0",
+    "unocss": "^0.58.5",
+    "unplugin-auto-import": "^0.15.3",
+    "unplugin-icons": "^0.16.6",
+    "unplugin-vue-components": "^0.24.1",
+    "vite": "^5.0.12",
+    "vite-plugin-svg-icons": "^2.0.1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/skyselang/yylAdminWeb.git"
+    "url": "https://gitee.com/skyselang/yylAdminWeb.git"
+  },
+  "bugs": {
+    "url": "https://gitee.com/skyselang/yylAdminWeb/issues"
+  },
+  "engines": {
+    "node": ">=18.12.0",
+    "npm": ">=8.19.0"
   }
 }

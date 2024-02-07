@@ -1,18 +1,18 @@
 <template>
   <div>
     <!-- 编辑器 -->
-    <div :id="editorId" />
+    <div :id="editorId"></div>
     <!-- 文件管理 -->
     <el-dialog
-      :visible.sync="fileDialog"
+      v-model="fileDialog"
       :title="fileTitle"
-      width="80%"
-      top="1vh"
-      append-to-body
       :close-on-click-modal="false"
       :close-on-press-escape="false"
+      top="1vh"
+      width="80%"
+      append-to-body
     >
-      <file-manage :file-type="fileType" @fileCancel="fileCancel" @fileSubmit="fileSubmit" />
+      <FileManage :file-type="fileType" @file-cancel="fileCancel" @file-submit="fileSubmit" />
     </el-dialog>
   </div>
 </template>
@@ -20,12 +20,11 @@
 <script>
 import E from 'wangeditor'
 import { randomString } from '@/utils'
-import FileManage from '@/components/FileManage'
+import FileManage from '@/components/FileManage/index.vue'
 
 export default {
   name: 'RichEditor',
   components: { FileManage },
-  directives: { },
   model: {
     prop: 'content',
     event: 'change'
@@ -33,11 +32,16 @@ export default {
   props: {
     id: { type: String, default: 'wangeditor' + randomString() },
     content: { type: String, default: '' },
-    excludeMenus: { type: Array, default() { return ['image', 'video'] } },
-    zIndex: { type: Number, default: 10000 },
+    excludeMenus: {
+      type: Array,
+      default() {
+        return ['image', 'video']
+      }
+    },
+    zIndex: { type: Number, default: 5000 },
     height: { type: Number, default: 500 },
     focus: { type: Boolean, default: false },
-    placeholder: { type: String, default: '' }
+    placeholder: { type: String, default: '请输入内容' }
   },
   data() {
     return {
@@ -58,12 +62,10 @@ export default {
       }
     }
   },
-  created() {
-  },
   mounted() {
     this.editorCreate()
   },
-  destroyed() {
+  unmounted() {
     this.editorDestroy()
   },
   methods: {
@@ -73,9 +75,11 @@ export default {
       // 扩展菜单
       const { BtnMenu } = E
 
-      class upimg extends BtnMenu {
+      class upimage extends BtnMenu {
         constructor(editor) {
-          const $elem = E.$(`<div class="w-e-menu" data-title="上传图片"><el-button>图片</el-button></div>`)
+          const $elem = E.$(
+            `<div class="w-e-menu" data-title="上传图片"><el-button>图片</el-button></div>`
+          )
           super($elem, editor)
         }
         clickHandler() {
@@ -88,7 +92,9 @@ export default {
 
       class upvideo extends BtnMenu {
         constructor(editor) {
-          const $elem = E.$(`<div class="w-e-menu" data-title="上传视频"><el-button>视频</el-button></div>`)
+          const $elem = E.$(
+            `<div class="w-e-menu" data-title="上传视频"><el-button>视频</el-button></div>`
+          )
           super($elem, editor)
         }
         clickHandler() {
@@ -101,7 +107,9 @@ export default {
 
       class upaudio extends BtnMenu {
         constructor(editor) {
-          const $elem = E.$(`<div class="w-e-menu" data-title="上传音频"><el-button>音频</el-button></div>`)
+          const $elem = E.$(
+            `<div class="w-e-menu" data-title="上传音频"><el-button>音频</el-button></div>`
+          )
           super($elem, editor)
         }
         clickHandler() {
@@ -114,7 +122,9 @@ export default {
 
       class upword extends BtnMenu {
         constructor(editor) {
-          const $elem = E.$(`<div class="w-e-menu" data-title="上传文档"><el-button>文档</el-button></div>`)
+          const $elem = E.$(
+            `<div class="w-e-menu" data-title="上传文档"><el-button>文档</el-button></div>`
+          )
           super($elem, editor)
         }
         clickHandler() {
@@ -127,7 +137,9 @@ export default {
 
       class upother extends BtnMenu {
         constructor(editor) {
-          const $elem = E.$(`<div class="w-e-menu" data-title="上传附件"><el-button>附件</el-button></div>`)
+          const $elem = E.$(
+            `<div class="w-e-menu" data-title="上传附件"><el-button>附件</el-button></div>`
+          )
           super($elem, editor)
         }
         clickHandler() {
@@ -140,7 +152,9 @@ export default {
 
       class clear extends BtnMenu {
         constructor(editor) {
-          const $elem = E.$(`<div class="w-e-menu" data-title="清空内容"><el-button>清空</el-button></div>`)
+          const $elem = E.$(
+            `<div class="w-e-menu" data-title="清空内容"><el-button>清空</el-button></div>`
+          )
           super($elem, editor)
         }
         clickHandler() {
@@ -151,8 +165,8 @@ export default {
       // 配置
       that.editor = new E('#' + that.editorId)
       that.editor.config.excludeMenus = that.excludeMenus
-      that.editor.menus.extend('upimgKey', upimg)
-      that.editor.config.menus = that.editor.config.menus.concat('upimgKey')
+      that.editor.menus.extend('upimageKey', upimage)
+      that.editor.config.menus = that.editor.config.menus.concat('upimageKey')
       that.editor.menus.extend('upvideoKey', upvideo)
       that.editor.config.menus = that.editor.config.menus.concat('upvideoKey')
       that.editor.menus.extend('upaudioKey', upaudio)
@@ -168,17 +182,25 @@ export default {
       that.editor.config.height = that.height
       that.editor.config.focus = that.focus
       that.editor.config.placeholder = that.placeholder
+
       that.editor.config.onchange = (newHtml) => {
         that.editorContentNew = newHtml
         this.$emit('change', that.editorContentNew)
       }
+
+      console.log(that.editor.textElemId)
+      console.log(that.editor.toolbarElemId)
+
       that.editor.create()
       that.editor.txt.clear()
       that.editor.txt.html(that.editorContent)
     },
     // 编辑器销毁
     editorDestroy() {
+      this.editorContent = ''
+      this.editorContentNew = ''
       if (this.editor) {
+        this.editor.txt.html('')
         this.editor.destroy()
         this.editor = null
       }
@@ -219,7 +241,7 @@ export default {
           } else {
             this.editor.cmd.do(
               'insertHTML',
-              `<a file-id="${filelist[i]['file_id']}" href="${filelist[i]['file_url']}" download="${filelist[i]['file_url']}" target="_blank">${filelist[i]['file_name']}.${filelist[i]['file_ext']}</el-link>`
+              `<a file-id="${filelist[i]['file_id']}" href="${filelist[i]['file_url']}" download="${filelist[i]['file_url']}" target="_blank">${filelist[i]['file_name']}.${filelist[i]['file_ext']}</a>`
             )
           }
         }
@@ -228,3 +250,15 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+.w-e-toolbar {
+  border: 1px solid var(--el-border-color) !important;
+  background-color: var(--el-bg-color) !important;
+  border-bottom: 0 !important;
+}
+.w-e-text-container {
+  border: 1px solid var(--el-border-color) !important;
+  background-color: var(--el-bg-color) !important;
+}
+</style>

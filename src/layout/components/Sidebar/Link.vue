@@ -1,43 +1,35 @@
 <template>
-  <component :is="type" v-bind="linkProps(to)">
-    <slot />
-  </component>
+  <a v-if="isExternal(to)" :href="to" target="_blank" rel="noopener">
+    <slot></slot>
+  </a>
+  <div v-else @click="push">
+    <slot></slot>
+  </div>
 </template>
 
-<script>
-import { isExternal } from '@/utils/validate'
+<script setup>
+import { useRouter } from 'vue-router'
+import { useAppStore } from '@/store/modules/app'
+import { isExternal } from '@/utils/index'
 
-export default {
-  props: {
-    to: {
-      type: String,
-      required: true
-    }
-  },
-  computed: {
-    isExternal() {
-      return isExternal(this.to)
-    },
-    type() {
-      if (this.isExternal) {
-        return 'a'
-      }
-      return 'router-link'
-    }
-  },
-  methods: {
-    linkProps(to) {
-      if (this.isExternal) {
-        return {
-          href: to,
-          target: '_blank',
-          rel: 'noopener'
-        }
-      }
-      return {
-        to: to
-      }
-    }
+const router = useRouter()
+const appStore = useAppStore()
+const sidebar = computed(() => appStore.sidebar)
+const device = computed(() => appStore.device)
+
+const props = defineProps({
+  to: {
+    type: String,
+    required: true
   }
+})
+
+function push() {
+  if (device.value === 'mobile' && sidebar.value.opened == true) {
+    appStore.closeSideBar(false)
+  }
+  router.push(props.to).catch((err) => {
+    console.error(err)
+  })
 }
 </script>

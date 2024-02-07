@@ -1,74 +1,48 @@
 <template>
-  <div>
-    <el-card v-loading="loading" class="dialog-body" :style="{ height: height + 'px' }">
-      <el-row>
-        <el-col :span="12">
-          <el-form
-            ref="ref"
-            :rules="rules"
-            :model="model"
-            label-width="120px"
-          >
-            <el-form-item label="头像" prop="avatar_url">
-              <el-col :span="12">
-                <el-avatar
-                  v-if="model.avatar_url"
-                  :size="100"
-                  fit="contain"
-                  :src="model.avatar_url"
-                  shape="circle"
-                />
-                <el-avatar v-else icon="el-icon-user-solid" :size="100" />
-              </el-col>
-              <el-col :span="12">
-                <el-button @click="fileUpload()">上传头像</el-button>
-                <el-button @click="fileDelete()">删除</el-button>
-                <p>jpg、png图片，小于 100 KB，宽高1:1</p>
-              </el-col>
-            </el-form-item>
-            <el-form-item label="昵称" prop="nickname">
-              <el-input v-model="model.nickname" placeholder="请输入昵称" clearable />
-            </el-form-item>
-            <el-form-item label="账号" prop="username">
-              <el-input v-model="model.username" placeholder="请输入账号" clearable />
-            </el-form-item>
-            <el-form-item label="手机" prop="phone">
-              <el-input v-model="model.phone" placeholder="请输入手机" clearable />
-            </el-form-item>
-            <el-form-item label="邮箱" prop="email">
-              <el-input v-model="model.email" placeholder="请输入邮箱" clearable />
-            </el-form-item>
-            <el-form-item>
-              <el-button :loading="loading" @click="refresh">刷新</el-button>
-              <el-button :loading="loading" type="primary" @click="submit">提交</el-button>
-            </el-form-item>
-          </el-form>
-        </el-col>
-      </el-row>
-    </el-card>
-    <!-- 文件管理 -->
-    <el-dialog
-      title="上传头像"
-      :visible.sync="fileDialog"
-      width="80%"
-      top="1vh"
-      :close-on-click-modal="false"
-      :close-on-press-escape="false"
-    >
-      <file-manage file-type="image" @fileCancel="fileCancel" @fileSubmit="fileSubmit" />
-    </el-dialog>
-  </div>
+  <el-scrollbar native :height="height">
+    <el-row>
+      <el-col :span="12">
+        <el-form ref="ref" :rules="rules" :model="model" label-width="120px">
+          <el-form-item label="头像" prop="avatar_id">
+            <FileImage
+              v-model="model.avatar_id"
+              :file-url="model.avatar_url"
+              file-title="上传头像"
+              file-tip="图片小于 100 KB，jpg、png格式，100 x 100"
+              :height="100"
+              avatar
+              upload
+            />
+          </el-form-item>
+          <el-form-item label="昵称" prop="nickname">
+            <el-input v-model="model.nickname" placeholder="请输入昵称" clearable />
+          </el-form-item>
+          <el-form-item label="账号" prop="username">
+            <el-input v-model="model.username" placeholder="请输入账号" clearable />
+          </el-form-item>
+          <el-form-item label="手机" prop="phone">
+            <el-input v-model="model.phone" placeholder="请输入手机" clearable />
+          </el-form-item>
+          <el-form-item label="邮箱" prop="email">
+            <el-input v-model="model.email" placeholder="请输入邮箱" clearable />
+          </el-form-item>
+          <el-form-item>
+            <el-button :loading="loading" @click="refresh">刷新</el-button>
+            <el-button :loading="loading" type="primary" @click="submit">提交</el-button>
+          </el-form-item>
+        </el-form>
+      </el-col>
+    </el-row>
+  </el-scrollbar>
 </template>
 
 <script>
 import screenHeight from '@/utils/screen-height'
-import store from '@/store'
-import FileManage from '@/components/FileManage'
+import { useUserStoreHook } from '@/store/modules/user'
 import { info, edit } from '@/api/system/user-center'
 
 export default {
   name: 'SystemUserCenterEdit',
-  components: { FileManage },
   data() {
     return {
       name: '修改信息',
@@ -85,12 +59,11 @@ export default {
       rules: {
         nickname: [{ required: true, message: '请输入昵称', trigger: 'blur' }],
         username: [{ required: true, message: '请输入账号', trigger: 'blur' }]
-      },
-      fileDialog: false
+      }
     }
   },
   created() {
-    this.height = screenHeight(180)
+    this.height = screenHeight(210)
     this.info()
   },
   methods: {
@@ -101,10 +74,10 @@ export default {
           this.reset(res.data)
           this.update(res.data)
           if (msg) {
-            this.$message.success(res.msg)
+            ElMessage.success(res.msg)
           }
         })
-        .catch(() => { })
+        .catch(() => {})
     },
     // 刷新
     refresh() {
@@ -121,7 +94,7 @@ export default {
             .then((res) => {
               this.update(this.model)
               this.loading = false
-              this.$message.success(res.msg)
+              ElMessage.success(res.msg)
             })
             .catch(() => {
               this.loading = false
@@ -130,9 +103,10 @@ export default {
       })
     },
     update(data) {
-      store.commit('user/SET_AVATAR', data.avatar_url)
-      store.commit('user/SET_NICKNAME', data.nickname)
-      store.commit('user/SET_USERNAME', data.username)
+      const userStore = useUserStoreHook()
+      userStore.user.avatar_url = data.avatar_url
+      userStore.user.nickname = data.nickname
+      userStore.user.username = data.username
     },
     // 重置
     reset(row) {
@@ -142,29 +116,11 @@ export default {
         this.model = this.$options.data().model
       }
       if (this.$refs['ref'] !== undefined) {
-        this.$refs['ref'].resetFields()
-        this.$refs['ref'].clearValidate()
+        try {
+          this.$refs['ref'].resetFields()
+          this.$refs['ref'].clearValidate()
+        } catch (error) {}
       }
-    },
-    // 上传头像
-    fileUpload() {
-      this.fileDialog = true
-    },
-    fileCancel() {
-      this.fileDialog = false
-    },
-    fileSubmit(fileList) {
-      this.fileDialog = false
-      const fileLength = fileList.length
-      if (fileLength) {
-        const i = fileLength - 1
-        this.model.avatar_id = fileList[i]['file_id']
-        this.model.avatar_url = fileList[i]['file_url']
-      }
-    },
-    fileDelete() {
-      this.model.avatar_id = 0
-      this.model.avatar_url = ''
     }
   }
 }

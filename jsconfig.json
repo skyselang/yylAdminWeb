@@ -1,18 +1,8 @@
-// https://code.visualstudio.com/docs/languages/javascript
 {
-  "vueCompilerOptions": {
-    "target": 2.7
-  },
   "compilerOptions": {
-    "baseUrl": "./",
     "paths": {
-      "@/*": [
-        "src/*"
-      ]
+      "@/*": ["./src/*"]
     }
   },
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
+  "exclude": ["node_modules", "dist"]
 }

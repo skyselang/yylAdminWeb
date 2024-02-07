@@ -1,16 +1,16 @@
 /**
- * Check if an element has a class
- * @param {HTMLElement} elm
+ * 检查元素是否有类
+ * @param {HTMLElement} ele
  * @param {string} cls
- * @return {boolean}
+ * @returns {boolean}
  */
 export function hasClass(ele, cls) {
   return !!ele.className.match(new RegExp('(\\s|^)' + cls + '(\\s|$)'))
 }
 
 /**
- * Add class to element
- * @param {HTMLElement} elm
+ * 将类添加到元素
+ * @param {HTMLElement} ele
  * @param {string} cls
  */
 export function addClass(ele, cls) {
@@ -18,8 +18,8 @@ export function addClass(ele, cls) {
 }
 
 /**
- * Remove class from element
- * @param {HTMLElement} elm
+ * 从元素中删除类
+ * @param {HTMLElement} ele
  * @param {string} cls
  */
 export function removeClass(ele, cls) {
@@ -30,6 +30,15 @@ export function removeClass(ele, cls) {
 }
 
 /**
+ * @param {string} path
+ * @returns {Boolean}
+ */
+export function isExternal(path) {
+  const isExternal = /^(https?:|http?:|mailto:|tel:)/.test(path)
+  return isExternal
+}
+
+/**
  * 生成UUID
  * @return {string}
  */
@@ -37,7 +46,7 @@ export function uuid() {
   var url = URL.createObjectURL(new Blob())
   var uuid = url.toString()
   URL.revokeObjectURL(url)
-  return uuid.substr(uuid.lastIndexOf('/') + 1)
+  return uuid.substring(uuid.lastIndexOf('/') + 1)
 }
 
 /**

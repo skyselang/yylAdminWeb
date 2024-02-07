@@ -1,11 +1,12 @@
-import store from '@/store'
+import { useTagsViewStore } from '@/store/modules/tagsView'
 /**
  * 获取屏幕高度
- * @param {number} height 要减去的高度 260
+ * @param {number} height 要减去的高度 300
  * @return {number}
  */
-export default function screenHeight(height = 260) {
-  const tagsView = store.getters && store.getters.tagsView
+export default function screenHeight(height = 300) {
+  const tagsViewStore = useTagsViewStore
+  const tagsView = tagsViewStore.tagsView
   if (!tagsView) {
     height -= 37
   }

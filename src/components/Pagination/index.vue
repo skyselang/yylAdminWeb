@@ -1,12 +1,13 @@
 <template>
   <div :class="{ hidden: hidden }" class="pagination-container" :style="{ 'text-align': align }">
     <el-pagination
+      v-model:current-page="currentPage"
+      v-model:page-size="pageSize"
       :background="background"
-      :current-page.sync="currentPage"
-      :page-size.sync="pageSize"
       :layout="layout"
       :page-sizes="pageSizes"
       :total="total"
+      :small="small"
       v-bind="$attrs"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
@@ -16,6 +17,7 @@
 
 <script>
 import { scrollTo } from '@/utils/scroll-to'
+import { useAppStoreHook } from '@/store/modules/app'
 
 export default {
   name: 'Pagination',
@@ -39,9 +41,7 @@ export default {
     pageSizes: {
       type: Array,
       default() {
-        return [
-          10, 12, 15, 18, 20, 30, 50, 80, 100, 150, 200, 300, 500, 800, 1000
-        ]
+        return [10, 12, 15, 18, 20, 30, 50, 80, 100, 150, 200, 300, 500, 800, 1000]
       }
     },
     layout: {
@@ -59,13 +59,16 @@ export default {
     hidden: {
       type: Boolean,
       default: false
-    },
-    small: {
-      type: Boolean,
-      default: false
     }
   },
   computed: {
+    small() {
+      const appStore = useAppStoreHook()
+      if (appStore.size == 'small') {
+        return true
+      }
+      return false
+    },
     currentPage: {
       get() {
         return this.page

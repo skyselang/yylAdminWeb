@@ -1,8 +1,4 @@
-// yyladmin styles
-
-.ya-center {
-  text-align: center;
-}
+// yyladmin css
 
 .ya-padding-left {
   padding-left: 10px;
@@ -24,35 +20,30 @@
   margin-left: 10px;
 }
 
-.ya-width-100p {
-  width: 100%;
-}
-
 .ya-search-field {
   width: 7%;
-  min-width: 86px;
-  max-width: 102px;
+  min-width: 110px;
+  max-width: 120px;
 }
 
 .ya-search-exp {
   width: 7%;
-  min-width: 86px;
-  max-width: 102px;
+  min-width: 110px;
+  max-width: 120px;
 }
 
 .ya-search-value {
-  width: 20% !important;
-  min-width: 150px;
+  width: 200px !important;
 }
 
 .ya-date-field {
-  width: 102px;
+  width: 110px !important;
 }
 
 .ya-date-value {
-  width: 230px !important;
+  width: 216px !important;
 }
 
-.ya-color-red {
-  color: red;
+.ya-select-field {
+  width: 150px !important;
 }

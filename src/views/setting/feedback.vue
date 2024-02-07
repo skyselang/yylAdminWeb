@@ -1,143 +1,107 @@
 <template>
   <div class="app-container">
-    <!-- 查询操作 -->
-    <div class="filter-container">
-      <!-- 查询 -->
-      <el-row>
-        <el-col>
-          <el-select v-model="query.search_field" class="filter-item ya-search-field" placeholder="查询字段">
-            <el-option :value="idkey" label="ID" />
-            <el-option value="type" label="类型" />
-            <el-option value="status" label="状态" />
-            <el-option value="title" label="标题" />
-            <el-option value="phone" label="手机" />
-            <el-option value="email" label="邮箱" />
-            <el-option value="receipt_no" label="回执" />
-            <el-option value="remark" label="备注" />
-            <el-option value="is_disable" label="禁用" />
+    <!-- 查询 -->
+    <el-row>
+      <el-col class="mb-2">
+        <el-select v-model="query.search_field" class="ya-search-field" placeholder="查询字段">
+          <el-option :value="idkey" label="ID" />
+          <el-option value="type" label="类型" />
+          <el-option value="status" label="状态" />
+          <el-option value="title" label="标题" />
+          <el-option value="phone" label="手机" />
+          <el-option value="email" label="邮箱" />
+          <el-option value="receipt_no" label="回执" />
+          <el-option value="remark" label="备注" />
+          <el-option value="is_disable" label="禁用" />
+        </el-select>
+        <el-select v-model="query.search_exp" class="ya-search-exp">
+          <el-option v-for="exp in exps" :key="exp.exp" :value="exp.exp" :label="exp.name" />
+        </el-select>
+        <el-select
+          v-if="query.search_field === 'status'"
+          v-model="query.search_value"
+          class="ya-search-value"
+        >
+          <el-option v-for="(item, index) in statuss" :key="index" :label="item" :value="index" />
+        </el-select>
+        <el-select
+          v-else-if="query.search_field === 'is_disable'"
+          v-model="query.search_value"
+          class="ya-search-value"
+        >
+          <el-option :value="1" label="是" />
+          <el-option :value="0" label="否" />
+        </el-select>
+        <el-select
+          v-else-if="query.search_field === 'type'"
+          v-model="query.search_value"
+          class="ya-search-value"
+        >
+          <el-option v-for="(item, index) in types" :key="index" :label="item" :value="index" />
+        </el-select>
+        <el-input
+          v-else
+          v-model="query.search_value"
+          class="ya-search-value"
+          placeholder="查询内容"
+          clearable
+        />
+        <el-select v-model="query.date_field" class="ya-date-field" placeholder="时间类型">
+          <el-option value="create_time" label="添加时间" />
+          <el-option value="update_time" label="修改时间" />
+        </el-select>
+        <el-date-picker
+          v-model="query.date_value"
+          type="datetimerange"
+          class="ya-date-value"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          value-format="YYYY-MM-DD HH:mm:ss"
+          :default-time="[new Date(2024, 1, 1, 0, 0, 0), new Date(2024, 1, 1, 23, 59, 59)]"
+        />
+        <el-button type="primary" @click="search()">查询</el-button>
+        <el-button title="重置" @click="refresh()">
+          <svg-icon icon-class="refresh" />
+        </el-button>
+        <el-button type="primary" @click="add()">添加</el-button>
+      </el-col>
+    </el-row>
+    <!-- 操作 -->
+    <el-row>
+      <el-col>
+        <el-button title="删除" @click="selectOpen('dele')">删除</el-button>
+        <el-button title="禁用" @click="selectOpen('disable')">禁用</el-button>
+        <el-button title="状态" @click="selectOpen('status')">状态</el-button>
+      </el-col>
+    </el-row>
+    <el-dialog
+      v-model="selectDialog"
+      :title="selectTitle"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      top="20vh"
+    >
+      <el-form label-width="120px">
+        <el-form-item v-if="selectType === 'status'" label="状态">
+          <el-select v-model="status" class="ya-search-value">
+            <el-option v-for="(item, index) in statuss" :key="index" :label="item" :value="index" />
           </el-select>
-          <el-select v-model="query.search_exp" class="filter-item ya-search-exp">
-            <el-option
-              v-for="exp in exps"
-              :key="exp.exp"
-              :value="exp.exp"
-              :label="exp.name"
-            />
-          </el-select>
-          <el-select
-            v-if="query.search_field === 'status'"
-            v-model="query.search_value"
-            class="filter-item ya-search-value"
-          >
-            <el-option
-              v-for="(item, index) in statuss"
-              :key="index"
-              :label="item"
-              :value="index"
-            />
-          </el-select>
-          <el-select
-            v-else-if="query.search_field === 'is_disable'"
-            v-model="query.search_value"
-            class="filter-item ya-search-value"
-          >
-            <el-option :value="1" label="是" />
-            <el-option :value="0" label="否" />
-          </el-select>
-          <el-select
-            v-else-if="query.search_field === 'type'"
-            v-model="query.search_value"
-            class="filter-item ya-search-value"
-          >
-            <el-option
-              v-for="(item, index) in types"
-              :key="index"
-              :label="item"
-              :value="index"
-            />
-          </el-select>
-          <el-input
-            v-else
-            v-model="query.search_value"
-            class="filter-item ya-search-value"
-            placeholder="查询内容"
-            clearable
-          />
-          <el-select v-model="query.date_field" class="filter-item ya-date-field" placeholder="时间类型">
-            <el-option value="create_time" label="添加时间" />
-            <el-option value="update_time" label="修改时间" />
-          </el-select>
-          <el-date-picker
-            v-model="query.date_value"
-            type="datetimerange"
-            class="filter-item ya-date-value"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            :default-time="['00:00:00', '23:59:59']"
-            value-format="yyyy-MM-dd HH:mm:ss"
-          />
-          <el-button
-            class="filter-item"
-            type="primary"
-            title="查询/刷新"
-            @click="search()"
-          >查询</el-button>
-          <el-button
-            class="filter-item"
-            icon="el-icon-refresh"
-            title="重置"
-            @click="refresh()"
-          />
-        </el-col>
-      </el-row>
-      <!-- 选中操作 -->
-      <el-row>
-        <el-col>
-          <el-button title="状态" @click="selectOpen('status')">状态</el-button>
-          <el-button title="禁用" @click="selectOpen('disable')">禁用</el-button>
-          <el-button title="删除" @click="selectOpen('dele')">删除</el-button>
-          <el-button type="primary" @click="add()">添加</el-button>
-        </el-col>
-      </el-row>
-      <el-dialog
-        :title="selectTitle"
-        :visible.sync="selectDialog"
-        top="20vh"
-        :close-on-click-modal="false"
-        :close-on-press-escape="false"
-      >
-        <el-form label-width="120px">
-          <el-form-item :label="name + 'ID'" prop="">
-            <el-input
-              v-model="selectIds"
-              type="textarea"
-              :autosize="{ minRows: 5, maxRows: 12 }"
-              disabled
-            />
-          </el-form-item>
-          <el-form-item v-if="selectType === 'status'" label="状态" prop="">
-            <el-select v-model="status" class="filter-item ya-search-value">
-              <el-option
-                v-for="(item, index) in statuss"
-                :key="index"
-                :label="item"
-                :value="index"
-              />
-            </el-select>
-          </el-form-item>
-          <el-form-item v-else-if="selectType === 'disable'" label="是否禁用" prop="">
-            <el-switch v-model="is_disable" :active-value="1" :inactive-value="0" />
-          </el-form-item>
-          <el-form-item v-else-if="selectType === 'dele'" label="" prop="">
-            <span class="ya-color-red">确定要删除选中的{{ name }}吗？</span>
-          </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button :loading="loading" @click="selectCancel">取消</el-button>
-          <el-button :loading="loading" type="primary" @click="selectSubmit">提交</el-button>
-        </div>
-      </el-dialog>
-    </div>
+        </el-form-item>
+        <el-form-item v-else-if="selectType === 'disable'" label="是否禁用">
+          <el-switch v-model="is_disable" :active-value="1" :inactive-value="0" />
+        </el-form-item>
+        <el-form-item v-else-if="selectType === 'dele'">
+          <span class="c-red">确定要删除选中的{{ name }}吗？</span>
+        </el-form-item>
+        <el-form-item :label="name + 'ID'">
+          <el-input v-model="selectIds" type="textarea" autosize disabled />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button :loading="loading" @click="selectCancel">取消</el-button>
+        <el-button :loading="loading" type="primary" @click="selectSubmit">提交</el-button>
+      </template>
+    </el-dialog>
     <!-- 列表 -->
     <el-table
       ref="table"
@@ -148,55 +112,20 @@
       @selection-change="select"
     >
       <el-table-column type="selection" width="42" title="全选/反选" />
-      <el-table-column
-        :prop="idkey"
-        label="ID"
-        width="80"
-        sortable="custom"
-      />
-      <el-table-column
-        prop="member_username"
-        label="会员"
-        min-width="80"
-        show-overflow-tooltip
-      />
-      <el-table-column prop="type_name" label="类型" min-width="80" />
-      <el-table-column
-        prop="title"
-        label="标题"
-        min-width="200"
-        show-overflow-tooltip
-      />
-      <el-table-column prop="phone" label="手机" min-width="120" />
-      <el-table-column
-        prop="email"
-        label="邮箱"
-        min-width="130"
-        show-overflow-tooltip
-      />
-      <el-table-column
-        prop="remark"
-        label="备注"
-        min-width="100"
-        show-overflow-tooltip
-      />
-      <el-table-column
-        prop="status"
-        label="状态"
-        min-width="75"
-        sortable="custom"
-      >
-        <template slot-scope="scope">
+      <el-table-column :prop="idkey" label="ID" width="80" sortable="custom" />
+      <el-table-column prop="member_username" label="会员" min-width="80" show-overflow-tooltip />
+      <el-table-column prop="type_name" label="类型" min-width="80" show-overflow-tooltip />
+      <el-table-column prop="title" label="标题" min-width="200" show-overflow-tooltip />
+      <el-table-column prop="phone" label="手机" min-width="120" show-overflow-tooltip />
+      <el-table-column prop="email" label="邮箱" min-width="130" show-overflow-tooltip />
+      <el-table-column prop="remark" label="备注" min-width="100" show-overflow-tooltip />
+      <el-table-column prop="status" label="状态" min-width="85" sortable="custom">
+        <template #default="scope">
           {{ statuss[scope.row.status] }}
         </template>
       </el-table-column>
-      <el-table-column
-        prop="is_disable"
-        label="禁用"
-        min-width="75"
-        sortable="custom"
-      >
-        <template slot-scope="scope">
+      <el-table-column prop="is_disable" label="禁用" min-width="85" sortable="custom">
+        <template #default="scope">
           <el-switch
             v-model="scope.row.is_disable"
             :active-value="1"
@@ -205,214 +134,121 @@
           />
         </template>
       </el-table-column>
-      <el-table-column
-        prop="receipt_no"
-        label="回执编号"
-        min-width="100"
-        show-overflow-tooltip
-      />
-      <el-table-column
-        prop="create_time"
-        label="添加时间"
-        width="155"
-        sortable="custom"
-      />
-      <el-table-column
-        prop="update_time"
-        label="修改时间"
-        width="155"
-        sortable="custom"
-      />
-      <el-table-column label="操作" width="85">
-        <template slot-scope="scope">
-          <el-button type="text" size="small" @click="edit(scope.row)">修改</el-button>
-          <el-button type="text" size="small" @click="selectOpen('dele', scope.row)">删除</el-button>
+      <el-table-column prop="receipt_no" label="回执编号" min-width="100" show-overflow-tooltip />
+      <el-table-column prop="create_time" label="添加时间" width="165" sortable="custom" />
+      <el-table-column prop="update_time" label="修改时间" width="165" sortable="custom" />
+      <el-table-column label="操作" width="95">
+        <template #default="scope">
+          <el-link type="primary" class="mr-1" :underline="false" @click="edit(scope.row)">
+            修改
+          </el-link>
+          <el-link type="primary" :underline="false" @click="selectOpen('dele', [scope.row])">
+            删除
+          </el-link>
         </template>
       </el-table-column>
     </el-table>
     <!-- 分页 -->
     <pagination
       v-show="count > 0"
-      :total="count"
-      :page.sync="query.page"
-      :limit.sync="query.limit"
+      v-model:total="count"
+      v-model:page="query.page"
+      v-model:limit="query.limit"
       @pagination="list"
     />
     <!-- 添加修改 -->
     <el-dialog
+      v-model="dialog"
       :title="dialogTitle"
-      :visible.sync="dialog"
-      top="5vh"
-      :before-close="cancel"
       :close-on-click-modal="false"
       :close-on-press-escape="false"
+      :before-close="cancel"
+      top="5vh"
     >
-      <el-form
-        ref="ref"
-        :rules="rules"
-        :model="model"
-        class="dialog-body"
-        label-width="100px"
-        :style="{ height: height + 'px' }"
-      >
-        <el-form-item label="会员ID" prop="member_id">
-          <el-col :span="8">
-            <el-input v-model="model.member_id" placeholder="请输入会员ID" clearable />
-          </el-col>
-          <el-col class="ya-center" :span="4">会员用户名</el-col>
-          <el-col :span="12">
-            <el-input v-model="model.member_username" placeholder="" disabled />
-          </el-col>
-        </el-form-item>
-        <el-form-item label="类型" prop="type">
-          <el-select v-model="model.type">
-            <el-option
-              v-for="(item, index) in types"
-              :key="index"
-              :label="item"
-              :value="index"
+      <el-scrollbar native :height="height - 30">
+        <el-form ref="ref" :rules="rules" :model="model" label-width="100px">
+          <el-form-item label="会员ID" prop="member_id">
+            <el-col :span="8">
+              <el-input v-model="model.member_id" placeholder="请输入会员ID" clearable />
+            </el-col>
+            <el-col class="text-center" :span="4">会员用户名</el-col>
+            <el-col :span="12">
+              <el-input v-model="model.member_username" placeholder="" disabled />
+            </el-col>
+          </el-form-item>
+          <el-form-item label="类型" prop="type">
+            <el-select v-model="model.type">
+              <el-option v-for="(item, index) in types" :key="index" :label="item" :value="index" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="标题" prop="title">
+            <el-input v-model="model.title" placeholder="请输入标题" clearable />
+          </el-form-item>
+          <el-form-item label="内容" prop="content">
+            <el-input v-model="model.content" type="textarea" autosize placeholder="请输入内容" />
+          </el-form-item>
+          <el-form-item label="图片" prop="images">
+            <FileUploads
+              v-model="model.images"
+              upload-btn="上传图片"
+              file-type="image"
+              file-tip="图片文件"
             />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="标题" prop="title">
-          <el-input v-model="model.title" placeholder="请输入标题" clearable />
-        </el-form-item>
-        <el-form-item label="内容" prop="content">
-          <el-input
-            v-model="model.content"
-            type="textarea"
-            :autosize="{ minRows: 5, maxRows: 20 }"
-            placeholder="请输入内容"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="图片" prop="images">
-          <el-row>
-            <el-col :span="12">
-              <el-button @click="fileUpload('image', 'images', '上传图片')">上传图片</el-button>
-            </el-col>
-            <el-col :span="12">
-              <span><el-button @click="fileDelete('all', 'images')">全部删除</el-button>图片小于 200 KB，jpg、png格式。</span>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col
-              v-for="(item, index) in model.images"
-              :key="index"
-              :span="6"
-              class="ya-file"
-            >
-              <el-image
-                style="height:100px"
-                fit="contain"
-                :src="item.file_url"
-                :preview-src-list="[item.file_url]"
-                title="点击看大图"
+          </el-form-item>
+          <el-form-item label="手机" prop="phone">
+            <el-input v-model="model.phone" placeholder="" clearable />
+          </el-form-item>
+          <el-form-item label="邮箱" prop="email">
+            <el-input v-model="model.email" placeholder="" clearable />
+          </el-form-item>
+          <el-form-item label="回复" prop="reply">
+            <el-input v-model="model.reply" type="textarea" autosize placeholder="请输入回复" />
+          </el-form-item>
+          <el-form-item label="状态" prop="status">
+            <el-select v-model="model.status">
+              <el-option
+                v-for="(item, index) in statuss"
+                :key="index"
+                :label="item"
+                :value="index"
               />
-              <div>
-                <span class="ya-file-name" :title="item.file_name + '.' + item.file_ext">{{ item.file_name }}.{{
-                  item.file_ext }}</span>
-                <el-button
-                  type="text"
-                  icon="el-icon-d-arrow-left"
-                  title="向左移动"
-                  @click="fileRemoval(index, 'images', 'left')"
-                />
-                <el-button
-                  type="text"
-                  icon="el-icon-d-arrow-right"
-                  title="向左移动"
-                  @click="fileRemoval(index, 'images', 'right')"
-                />
-                <el-button
-                  type="text"
-                  icon="el-icon-download"
-                  title="下载"
-                  @click="fileDownload(item, $event)"
-                />
-                <el-button
-                  type="text"
-                  icon="el-icon-delete"
-                  title="删除"
-                  @click="fileDelete(index, 'images')"
-                />
-              </div>
-            </el-col>
-          </el-row>
-        </el-form-item>
-        <el-form-item label="手机" prop="phone">
-          <el-input v-model="model.phone" placeholder="" clearable />
-        </el-form-item>
-        <el-form-item label="邮箱" prop="email">
-          <el-input v-model="model.email" placeholder="" clearable />
-        </el-form-item>
-        <el-form-item label="回复" prop="reply">
-          <el-input
-            v-model="model.reply"
-            type="textarea"
-            :autosize="{ minRows: 5, maxRows: 20 }"
-            placeholder="请输入回复"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="状态" prop="status">
-          <el-select v-model="model.status">
-            <el-option
-              v-for="(item, index) in statuss"
-              :key="index"
-              :label="item"
-              :value="index"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="备注" prop="remark">
-          <el-input v-model="model.remark" placeholder="" clearable />
-        </el-form-item>
-        <el-form-item label="回执" prop="receipt_no">
-          <el-input v-model="model.receipt_no" placeholder="回执编号（唯一）" clearable />
-        </el-form-item>
-        <el-form-item v-if="model[idkey]" label="添加时间" prop="create_time">
-          <el-input v-model="model.create_time" disabled />
-        </el-form-item>
-        <el-form-item v-if="model[idkey]" label="修改时间" prop="update_time">
-          <el-input v-model="model.update_time" disabled />
-        </el-form-item>
-        <el-form-item v-if="model.delete_time" label="删除时间" prop="delete_time">
-          <el-input v-model="model.delete_time" disabled />
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
+            </el-select>
+          </el-form-item>
+          <el-form-item label="备注" prop="remark">
+            <el-input v-model="model.remark" placeholder="" clearable />
+          </el-form-item>
+          <el-form-item label="回执" prop="receipt_no">
+            <el-input v-model="model.receipt_no" placeholder="回执编号（唯一）" clearable />
+          </el-form-item>
+          <el-form-item v-if="model[idkey]" label="添加时间" prop="create_time">
+            <el-input v-model="model.create_time" disabled />
+          </el-form-item>
+          <el-form-item v-if="model[idkey]" label="修改时间" prop="update_time">
+            <el-input v-model="model.update_time" disabled />
+          </el-form-item>
+          <el-form-item v-if="model.delete_time" label="删除时间" prop="delete_time">
+            <el-input v-model="model.delete_time" disabled />
+          </el-form-item>
+        </el-form>
+      </el-scrollbar>
+      <template #footer>
         <el-button :loading="loading" @click="cancel">取消</el-button>
         <el-button :loading="loading" type="primary" @click="submit">提交</el-button>
-      </div>
-    </el-dialog>
-    <!-- 文件管理 -->
-    <el-dialog
-      :title="fileTitle"
-      :visible.sync="fileDialog"
-      width="80%"
-      top="1vh"
-      :close-on-click-modal="false"
-      :close-on-press-escape="false"
-    >
-      <file-manage :file-type="fileType" @fileCancel="fileCancel" @fileSubmit="fileSubmit" />
+      </template>
     </el-dialog>
   </div>
 </template>
 
 <script>
 import screenHeight from '@/utils/screen-height'
-import Pagination from '@/components/Pagination'
-import FileManage from '@/components/FileManage'
-import clip from '@/utils/clipboard'
+import Pagination from '@/components/Pagination/index.vue'
 import { arrayColumn } from '@/utils/index'
 import { getPageLimit } from '@/utils/settings'
 import { list, info, add, edit, dele, status as editsta, disable } from '@/api/setting/feedback'
 
 export default {
   name: 'SettingFeedback',
-  components: { Pagination, FileManage },
-  directives: {},
+  components: { Pagination },
   data() {
     return {
       name: '反馈',
@@ -420,7 +256,13 @@ export default {
       loading: false,
       idkey: 'feedback_id',
       exps: [{ exp: 'like', name: '包含' }],
-      query: { page: 1, limit: getPageLimit(), search_field: 'title', search_exp: 'like', date_field: 'create_time' },
+      query: {
+        page: 1,
+        limit: getPageLimit(),
+        search_field: 'title',
+        search_exp: 'like',
+        date_field: 'create_time'
+      },
       data: [],
       count: 0,
       dialog: false,
@@ -448,15 +290,11 @@ export default {
       statuss: [],
       selection: [],
       selectIds: '',
-      selectTitle: '选中操作',
+      selectTitle: '操作',
       selectDialog: false,
       selectType: '',
       status: 0,
-      is_disable: 0,
-      fileDialog: false,
-      fileTitle: '文件管理',
-      fileType: 'image',
-      fileField: ''
+      is_disable: 0
     }
   },
   created() {
@@ -467,16 +305,18 @@ export default {
     // 列表
     list() {
       this.loading = true
-      list(this.query).then(res => {
-        this.data = res.data.list
-        this.count = res.data.count
-        this.types = res.data.types
-        this.statuss = res.data.statuss
-        this.exps = res.data.exps
-        this.loading = false
-      }).catch(() => {
-        this.loading = false
-      })
+      list(this.query)
+        .then((res) => {
+          this.data = res.data.list
+          this.count = res.data.count
+          this.types = res.data.types
+          this.statuss = res.data.statuss
+          this.exps = res.data.exps
+          this.loading = false
+        })
+        .catch(() => {
+          this.loading = false
+        })
     },
     // 添加修改
     add() {
@@ -489,34 +329,40 @@ export default {
       this.dialogTitle = this.name + '修改：' + row[this.idkey]
       var id = {}
       id[this.idkey] = row[this.idkey]
-      info(id).then(res => {
-        this.reset(res.data)
-      }).catch(() => { })
+      info(id)
+        .then((res) => {
+          this.reset(res.data)
+        })
+        .catch(() => {})
     },
     cancel() {
       this.dialog = false
       this.reset()
     },
     submit() {
-      this.$refs['ref'].validate(valid => {
+      this.$refs['ref'].validate((valid) => {
         if (valid) {
           this.loading = true
           if (this.model[this.idkey]) {
-            edit(this.model).then(res => {
-              this.list()
-              this.dialog = false
-              this.$message.success(res.msg)
-            }).catch(() => {
-              this.loading = false
-            })
+            edit(this.model)
+              .then((res) => {
+                this.list()
+                this.dialog = false
+                ElMessage.success(res.msg)
+              })
+              .catch(() => {
+                this.loading = false
+              })
           } else {
-            add(this.model).then(res => {
-              this.list()
-              this.dialog = false
-              this.$message.success(res.msg)
-            }).catch(() => {
-              this.loading = false
-            })
+            add(this.model)
+              .then((res) => {
+                this.list()
+                this.dialog = false
+                ElMessage.success(res.msg)
+              })
+              .catch(() => {
+                this.loading = false
+              })
           }
         }
       })
@@ -529,8 +375,10 @@ export default {
         this.model = this.$options.data().model
       }
       if (this.$refs['ref'] !== undefined) {
-        this.$refs['ref'].resetFields()
-        this.$refs['ref'].clearValidate()
+        try {
+          this.$refs['ref'].resetFields()
+          this.$refs['ref'].clearValidate()
+        } catch (error) {}
       }
     },
     // 查询
@@ -559,7 +407,7 @@ export default {
         this.list()
       }
     },
-    // 选中操作
+    // 操作
     select(selection) {
       this.selection = selection
       this.selectIds = this.selectGetIds(selection).toString()
@@ -568,17 +416,23 @@ export default {
       return arrayColumn(selection, this.idkey)
     },
     selectAlert() {
-      this.$alert('请选择需要操作的' + this.name, '提示', { type: 'warning', callback: action => { } })
+      ElMessageBox.alert('请选择需要操作的' + this.name, '提示', {
+        type: 'warning',
+        callback: () => {}
+      })
     },
     selectOpen(selectType, selectRow = '') {
       if (selectRow) {
         this.$refs['table'].clearSelection()
-        this.$refs['table'].toggleRowSelection(selectRow)
+        const selectRowLen = selectRow.length
+        for (let i = 0; i < selectRowLen; i++) {
+          this.$refs['table'].toggleRowSelection(selectRow[i], true)
+        }
       }
       if (!this.selection.length) {
         this.selectAlert()
       } else {
-        this.selectTitle = '选中操作'
+        this.selectTitle = '操作'
         if (selectType === 'status') {
           this.selectTitle = this.name + '状态'
         } else if (selectType === 'disable') {
@@ -621,12 +475,14 @@ export default {
         editsta({
           ids: this.selectGetIds(row),
           status: status
-        }).then(res => {
-          this.list()
-          this.$message.success(res.msg)
-        }).catch(() => {
-          this.list()
         })
+          .then((res) => {
+            this.list()
+            ElMessage.success(res.msg)
+          })
+          .catch(() => {
+            this.list()
+          })
       }
     },
     // 是否禁用
@@ -642,12 +498,14 @@ export default {
         disable({
           ids: this.selectGetIds(row),
           is_disable: is_disable
-        }).then(res => {
-          this.list()
-          this.$message.success(res.msg)
-        }).catch(() => {
-          this.list()
         })
+          .then((res) => {
+            this.list()
+            ElMessage.success(res.msg)
+          })
+          .catch(() => {
+            this.list()
+          })
       }
     },
     // 删除
@@ -658,89 +516,16 @@ export default {
         this.loading = true
         dele({
           ids: this.selectGetIds(row)
-        }).then(res => {
-          this.list()
-          this.$message.success(res.msg)
-        }).catch(() => {
-          this.loading = false
         })
-      }
-    },
-    // 上传图片
-    fileUpload(fileType, fileField = '', fileTitle = '文件管理') {
-      this.fileType = fileType
-      this.fileField = fileField
-      this.fileTitle = fileTitle
-      this.fileDialog = true
-    },
-    fileCancel() {
-      this.fileType = 'image'
-      this.fileField = ''
-      this.fileTitle = '文件管理'
-      this.fileDialog = false
-    },
-    fileSubmit(fileList) {
-      this.fileDialog = false
-      const fileField = this.fileField
-      const fileLength = fileList.length
-      if (fileLength) {
-        for (let i = 0; i < fileLength; i++) {
-          if (fileField === 'images') {
-            this.model.images.push(fileList[i])
-          }
-        }
-      }
-    },
-    fileRemoval(index, field, direction) {
-      const length = this.model[field].length
-      var index1 = index
-      if (direction === 'left') {
-        if (index <= 0) {
-          return false
-        }
-        --index1
-      } else {
-        if (index >= (length - 1)) {
-          return false
-        }
-        ++index1
-      }
-      const value = this.model[field][index]
-      const value1 = this.model[field][index1]
-      this.model[field][index] = value1
-      this.model[field][index1] = value
-      this.$forceUpdate()
-    },
-    fileDownload(file, event) {
-      clip(file.file_name, event, '文件名复制成功')
-      setTimeout(() => { window.open(file.file_url, '_blank') }, 500)
-    },
-    fileDelete(index, field = '') {
-      if (field === 'images') {
-        if (index === 'all') {
-          this.model.images = []
-        } else {
-          this.model.images.splice(index, 1)
-        }
+          .then((res) => {
+            this.list()
+            ElMessage.success(res.msg)
+          })
+          .catch(() => {
+            this.loading = false
+          })
       }
     }
   }
 }
 </script>
-<style scoped>
-.ya-file {
-  text-align: center;
-  border: 1px solid #dcdfe6;
-}
-
-.ya-file-name {
-  display: block;
-  height: 24px;
-  line-height: 24px;
-  padding: 0 4px;
-  font-size: 12px;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-</style>

@@ -36,7 +36,7 @@ export function add(data, type = 'upl') {
       data
     })
   } else {
-    return process.env.VUE_APP_BASE_URL + url + 'add'
+    return import.meta.env.VITE_APP_BASE_URL + url + 'add'
   }
 }
 /**

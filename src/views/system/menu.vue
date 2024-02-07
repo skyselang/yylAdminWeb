@@ -1,173 +1,160 @@
 <template>
   <div class="app-container">
-    <!-- 查询操作 -->
-    <div class="filter-container">
-      <!-- 查询 -->
-      <el-row>
-        <el-col>
-          <el-select v-model="query.search_field" class="filter-item ya-search-field" placeholder="查询字段">
-            <el-option :value="idkey" label="ID" />
-            <el-option value="menu_pid" label="上级" />
-            <el-option value="menu_name" label="名称" />
-            <el-option value="menu_url" label="链接" />
-            <el-option value="menu_type" label="类型" />
-            <el-option value="is_unlogin" label="免登" />
-            <el-option value="is_unauth" label="免权" />
-            <el-option value="is_unrate" label="免限" />
-            <el-option value="hidden" label="隐藏" />
-            <el-option value="is_disable" label="禁用" />
-          </el-select>
-          <el-select v-model="query.search_exp" class="filter-item ya-search-exp">
-            <el-option
-              v-for="exp in exps"
-              :key="exp.exp"
-              :value="exp.exp"
-              :label="exp.name"
-            />
-          </el-select>
+    <!-- 查询 -->
+    <el-row>
+      <el-col class="mb-2">
+        <el-select v-model="query.search_field" class="ya-search-field" placeholder="查询字段">
+          <el-option :value="idkey" label="ID" />
+          <el-option value="menu_pid" label="上级" />
+          <el-option value="menu_name" label="名称" />
+          <el-option value="menu_url" label="链接" />
+          <el-option value="menu_type" label="类型" />
+          <el-option value="is_unlogin" label="免登" />
+          <el-option value="is_unauth" label="免权" />
+          <el-option value="is_unrate" label="免限" />
+          <el-option value="hidden" label="隐藏" />
+          <el-option value="is_disable" label="禁用" />
+        </el-select>
+        <el-select v-model="query.search_exp" class="ya-search-exp">
+          <el-option v-for="exp in exps" :key="exp.exp" :value="exp.exp" :label="exp.name" />
+        </el-select>
+        <el-cascader
+          v-if="query.search_field === 'menu_pid'"
+          v-model="query.search_value"
+          :options="trees"
+          :props="props"
+          class="ya-search-value"
+          clearable
+          filterable
+        />
+        <el-select
+          v-else-if="query.search_field === 'menu_type'"
+          v-model="query.search_value"
+          class="ya-search-value"
+        >
+          <el-option :value="0" label="目录" />
+          <el-option :value="1" label="菜单" />
+          <el-option :value="2" label="按钮" />
+        </el-select>
+        <el-select
+          v-else-if="
+            query.search_field === 'is_unlogin' ||
+            query.search_field === 'is_unauth' ||
+            query.search_field === 'is_unrate' ||
+            query.search_field === 'hidden' ||
+            query.search_field === 'is_disable'
+          "
+          v-model="query.search_value"
+          class="ya-search-value"
+        >
+          <el-option :value="1" label="是" />
+          <el-option :value="0" label="否" />
+        </el-select>
+        <el-input
+          v-else
+          v-model="query.search_value"
+          class="ya-search-value"
+          placeholder="查询内容"
+          clearable
+        />
+        <el-select v-model="query.date_field" class="ya-date-field" placeholder="时间类型">
+          <el-option value="create_time" label="添加时间" />
+          <el-option value="update_time" label="修改时间" />
+        </el-select>
+        <el-date-picker
+          v-model="query.date_value"
+          type="datetimerange"
+          class="ya-date-value"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          value-format="YYYY-MM-DD HH:mm:ss"
+          :default-time="[new Date(2024, 1, 1, 0, 0, 0), new Date(2024, 1, 1, 23, 59, 59)]"
+        />
+        <el-button type="primary" @click="search()">查询</el-button>
+        <el-button title="重置" @click="refresh()">
+          <svg-icon icon-class="refresh" />
+        </el-button>
+        <el-button type="primary" @click="add()">添加</el-button>
+      </el-col>
+    </el-row>
+    <!-- 操作 -->
+    <el-row>
+      <el-col>
+        <el-checkbox
+          border
+          v-model="isExpandAll"
+          class="!mr-[10px] top-[3px]"
+          title="收起/展开"
+          @change="expandAll"
+        >
+          收起
+        </el-checkbox>
+        <el-button title="删除" @click="selectOpen('dele')">删除</el-button>
+        <el-button title="是否禁用" @click="selectOpen('disable')">禁用</el-button>
+        <el-button title="修改上级" @click="selectOpen('editpid')">上级</el-button>
+        <el-button title="是否免登" @click="selectOpen('unlogin')">免登</el-button>
+        <el-button title="是否免权" @click="selectOpen('unauth')">免权</el-button>
+        <el-button title="是否免限" @click="selectOpen('unrate')">免限</el-button>
+        <el-button title="是否隐藏" @click="selectOpen('hidden')">隐藏</el-button>
+        <el-button title="修改排序" @click="selectOpen('editsort')">排序</el-button>
+        <el-button title="解除角色" @click="selectOpen('remover')">解除角色</el-button>
+      </el-col>
+    </el-row>
+    <el-dialog
+      v-model="selectDialog"
+      :title="selectTitle"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      top="20vh"
+    >
+      <el-form ref="selectRef" label-width="120px">
+        <el-form-item v-if="selectType === 'remover'">
+          <span style="">确定要解除选中的{{ name }}的角色吗？</span>
+        </el-form-item>
+        <el-form-item v-else-if="selectType === 'editsort'" label="排序">
+          <el-input v-model="sort" type="number" placeholder="250" />
+          <el-input v-model="sort_incdec" type="text" placeholder="0">
+            <template #append>按{{ name }}ID顺序递增或递减排序</template>
+          </el-input>
+        </el-form-item>
+        <el-form-item v-else-if="selectType === 'editpid'" label="上级">
           <el-cascader
-            v-if="query.search_field === 'menu_pid'"
-            v-model="query.search_value"
+            v-model="menu_pid"
             :options="trees"
             :props="props"
-            class="filter-item ya-search-value"
+            class="w-full"
+            placeholder="一级菜单"
             clearable
             filterable
           />
-          <el-select
-            v-else-if="query.search_field === 'menu_type'"
-            v-model="query.search_value"
-            class="filter-item ya-search-value"
-          >
-            <el-option :value="0" label="目录" />
-            <el-option :value="1" label="菜单" />
-            <el-option :value="2" label="按钮" />
-          </el-select>
-          <el-select
-            v-else-if="query.search_field === 'is_unlogin' || query.search_field === 'is_unauth' || query.search_field === 'is_unrate' || query.search_field === 'hidden' || query.search_field === 'is_disable'"
-            v-model="query.search_value"
-            class="filter-item ya-search-value"
-          >
-            <el-option :value="1" label="是" />
-            <el-option :value="0" label="否" />
-          </el-select>
-          <el-input
-            v-else
-            v-model="query.search_value"
-            class="filter-item ya-search-value"
-            placeholder="查询内容"
-            clearable
-          />
-          <el-select v-model="query.date_field" class="filter-item ya-date-field" placeholder="时间类型">
-            <el-option value="create_time" label="添加时间" />
-            <el-option value="update_time" label="修改时间" />
-          </el-select>
-          <el-date-picker
-            v-model="query.date_value"
-            type="datetimerange"
-            class="filter-item ya-date-value"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            :default-time="['00:00:00', '23:59:59']"
-            value-format="yyyy-MM-dd HH:mm:ss"
-          />
-          <el-button
-            class="filter-item"
-            type="primary"
-            title="查询/刷新"
-            @click="search()"
-          >查询</el-button>
-          <el-button
-            class="filter-item"
-            icon="el-icon-refresh"
-            title="重置"
-            @click="refresh()"
-          />
-        </el-col>
-      </el-row>
-      <!-- 选中操作 -->
-      <el-row>
-        <el-col>
-          <el-checkbox
-            v-model="isExpandAll"
-            style="margin-right:10px;top:-2px"
-            border
-            title="收起/展开"
-            @change="expandAll"
-          >收起</el-checkbox>
-          <el-button title="解除角色" @click="selectOpen('remover')">角色</el-button>
-          <el-button title="修改排序" @click="selectOpen('editsort')">排序</el-button>
-          <el-button title="修改上级" @click="selectOpen('editpid')">上级</el-button>
-          <el-button title="是否免登" @click="selectOpen('unlogin')">免登</el-button>
-          <el-button title="是否免权" @click="selectOpen('unauth')">免权</el-button>
-          <el-button title="是否免限" @click="selectOpen('unrate')">免限</el-button>
-          <el-button title="是否隐藏" @click="selectOpen('hidden')">隐藏</el-button>
-          <el-button title="是否禁用" @click="selectOpen('disable')">禁用</el-button>
-          <el-button title="删除" @click="selectOpen('dele')">删除</el-button>
-          <el-button type="primary" @click="add()">添加</el-button>
-        </el-col>
-      </el-row>
-      <el-dialog
-        :title="selectTitle"
-        :visible.sync="selectDialog"
-        top="20vh"
-        :close-on-click-modal="false"
-        :close-on-press-escape="false"
-      >
-        <el-form ref="selectRef" label-width="120px">
-          <el-form-item :label="name + 'ID'" prop="">
-            <el-input
-              v-model="selectIds"
-              type="textarea"
-              :autosize="{ minRows: 5, maxRows: 12 }"
-              disabled
-            />
-          </el-form-item>
-          <el-form-item v-if="selectType === 'remover'" label="" prop="">
-            <span style="">确定要解除选中的{{ name }}的角色吗？</span>
-          </el-form-item>
-          <el-form-item v-else-if="selectType === 'editsort'" label="排序" prop="">
-            <el-input v-model="sort" type="number" placeholder="250" />
-            <el-input v-model="sort_incdec" type="text" placeholder="0">
-              <template slot="append">按{{ name }}ID顺序递增或递减排序</template>
-            </el-input>
-          </el-form-item>
-          <el-form-item v-else-if="selectType === 'editpid'" label="上级" prop="">
-            <el-cascader
-              v-model="menu_pid"
-              :options="trees"
-              :props="props"
-              style="width:100%"
-              placeholder="一级菜单"
-              clearable
-              filterable
-            />
-          </el-form-item>
-          <el-form-item v-else-if="selectType === 'unlogin'" label="是否免登" prop="">
-            <el-switch v-model="is_unlogin" :active-value="1" :inactive-value="0" />
-          </el-form-item>
-          <el-form-item v-else-if="selectType === 'unauth'" label="是否免权" prop="">
-            <el-switch v-model="is_unauth" :active-value="1" :inactive-value="0" />
-          </el-form-item>
-          <el-form-item v-else-if="selectType === 'unrate'" label="是否免限" prop="">
-            <el-switch v-model="is_unrate" :active-value="1" :inactive-value="0" />
-          </el-form-item>
-          <el-form-item v-else-if="selectType === 'hidden'" label="是否隐藏" prop="">
-            <el-switch v-model="hidden" :active-value="1" :inactive-value="0" />
-          </el-form-item>
-          <el-form-item v-else-if="selectType === 'disable'" label="是否禁用" prop="">
-            <el-switch v-model="is_disable" :active-value="1" :inactive-value="0" />
-          </el-form-item>
-          <el-form-item v-else-if="selectType === 'dele'" label="" prop="">
-            <span class="ya-color-red">确定要删除选中的{{ name }}吗？</span>
-          </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button :loading="loading" @click="selectCancel">取消</el-button>
-          <el-button :loading="loading" type="primary" @click="selectSubmit">提交</el-button>
-        </div>
-      </el-dialog>
-    </div>
+        </el-form-item>
+        <el-form-item v-else-if="selectType === 'unlogin'" label="是否免登">
+          <el-switch v-model="is_unlogin" :active-value="1" :inactive-value="0" />
+        </el-form-item>
+        <el-form-item v-else-if="selectType === 'unauth'" label="是否免权">
+          <el-switch v-model="is_unauth" :active-value="1" :inactive-value="0" />
+        </el-form-item>
+        <el-form-item v-else-if="selectType === 'unrate'" label="是否免限">
+          <el-switch v-model="is_unrate" :active-value="1" :inactive-value="0" />
+        </el-form-item>
+        <el-form-item v-else-if="selectType === 'hidden'" label="是否隐藏">
+          <el-switch v-model="hidden" :active-value="1" :inactive-value="0" />
+        </el-form-item>
+        <el-form-item v-else-if="selectType === 'disable'" label="是否禁用">
+          <el-switch v-model="is_disable" :active-value="1" :inactive-value="0" />
+        </el-form-item>
+        <el-form-item v-else-if="selectType === 'dele'">
+          <span class="c-red">确定要删除选中的{{ name }}吗？</span>
+        </el-form-item>
+        <el-form-item :label="name + 'ID'">
+          <el-input v-model="selectIds" type="textarea" autosize disabled />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button :loading="loading" @click="selectCancel">取消</el-button>
+        <el-button :loading="loading" type="primary" @click="selectSubmit">提交</el-button>
+      </template>
+    </el-dialog>
     <!-- 列表 -->
     <el-table
       ref="table"
@@ -181,50 +168,25 @@
       @cell-dblclick="cellDbclick"
     >
       <el-table-column type="selection" width="42" title="全选/反选" />
-      <el-table-column
-        prop="menu_name"
-        label="菜单名称"
-        min-width="210"
-        show-overflow-tooltip
-      />
-      <el-table-column prop="meta_icon" label="图标" min-width="50">
-        <template slot-scope="scope">
-          <i :class="scope.row.meta_icon" />
+      <el-table-column prop="menu_name" label="菜单名称" min-width="210" show-overflow-tooltip />
+      <el-table-column prop="meta_icon" label="图标" min-width="60">
+        <template #default="scope">
+          <svg-icon :icon-class="scope.row.meta_icon" />
         </template>
       </el-table-column>
-      <el-table-column
-        prop="menu_url"
-        label="菜单链接"
-        min-width="235"
-        show-overflow-tooltip
-      />
-      <el-table-column
-        prop="path"
-        label="路由地址"
-        min-width="150"
-        show-overflow-tooltip
-      />
-      <el-table-column
-        prop="name"
-        label="路由名称"
-        min-width="130"
-        show-overflow-tooltip
-      />
-      <el-table-column
-        prop="component"
-        label="组件路径"
-        min-width="135"
-        show-overflow-tooltip
-      />
-      <el-table-column prop="menu_type" label="类型" min-width="50">
-        <template slot-scope="scope">
-          <i v-if="scope.row.menu_type == 0" title="目录" class="el-icon-folder" />
-          <i v-else-if="scope.row.menu_type == 1" title="菜单" class="el-icon-menu" />
-          <i v-else-if="scope.row.menu_type == 2" title="按钮" class="el-icon-open" />
+      <el-table-column prop="menu_url" label="菜单链接" min-width="220" show-overflow-tooltip />
+      <el-table-column prop="path" label="路由地址" min-width="150" show-overflow-tooltip />
+      <el-table-column prop="name" label="路由名称" min-width="130" show-overflow-tooltip />
+      <el-table-column prop="component" label="组件路径" min-width="135" show-overflow-tooltip />
+      <el-table-column prop="menu_type" label="类型" min-width="60">
+        <template #default="scope">
+          <i v-if="scope.row.menu_type == 0" title="目录"><svg-icon icon-class="folder" /></i>
+          <i v-else-if="scope.row.menu_type == 1" title="菜单"><svg-icon icon-class="menu" /></i>
+          <i v-else-if="scope.row.menu_type == 2" title="按钮"><svg-icon icon-class="open" /></i>
         </template>
       </el-table-column>
       <el-table-column prop="is_unlogin" label="免登" min-width="66">
-        <template slot-scope="scope">
+        <template #default="scope">
           <el-switch
             v-if="scope.row.menu_url"
             v-model="scope.row.is_unlogin"
@@ -233,10 +195,11 @@
             :inactive-value="0"
             @change="unlogin([scope.row])"
           />
+          <span v-else></span>
         </template>
       </el-table-column>
       <el-table-column prop="is_unauth" label="免权" min-width="66">
-        <template slot-scope="scope">
+        <template #default="scope">
           <el-switch
             v-if="scope.row.menu_url"
             v-model="scope.row.is_unauth"
@@ -245,10 +208,11 @@
             :inactive-value="0"
             @change="unauth([scope.row])"
           />
+          <span v-else></span>
         </template>
       </el-table-column>
       <el-table-column prop="is_unrate" label="免限" min-width="66">
-        <template slot-scope="scope">
+        <template #default="scope">
           <el-switch
             v-if="scope.row.menu_url"
             v-model="scope.row.is_unrate"
@@ -257,10 +221,11 @@
             :inactive-value="0"
             @change="unrate([scope.row])"
           />
+          <span v-else></span>
         </template>
       </el-table-column>
       <el-table-column prop="is_disable" label="禁用" min-width="66">
-        <template slot-scope="scope">
+        <template #default="scope">
           <el-switch
             v-if="scope.row.menu_url"
             v-model="scope.row.is_disable"
@@ -269,10 +234,11 @@
             :inactive-value="0"
             @change="disable([scope.row])"
           />
+          <span v-else></span>
         </template>
       </el-table-column>
       <el-table-column prop="hidden" label="隐藏" min-width="66">
-        <template slot-scope="scope">
+        <template #default="scope">
           <el-switch
             v-model="scope.row.hidden"
             :width="35"
@@ -282,201 +248,277 @@
           />
         </template>
       </el-table-column>
-      <el-table-column :prop="idkey" label="ID" min-width="55" />
-      <el-table-column prop="sort" label="排序" min-width="50" />
+      <el-table-column :prop="idkey" label="ID" min-width="80" />
+      <el-table-column prop="sort" label="排序" min-width="80" />
       <el-table-column label="操作" width="170">
-        <template slot-scope="scope">
-          <el-button type="text" size="small" @click="roleShow(scope.row)">角色</el-button>
-          <el-button
-            type="text"
-            size="small"
+        <template #default="scope">
+          <el-link type="primary" class="mr-1" :underline="false" @click="roleShow(scope.row)">
+            角色
+          </el-link>
+          <el-link
+            type="primary"
+            class="mr-1"
+            :underline="false"
             title="添加下级"
             @click="add(scope.row)"
-          >添加</el-button>
-          <el-button type="text" size="small" @click="edit(scope.row)">修改</el-button>
-          <el-button type="text" size="small" @click="selectOpen('dele', scope.row)">删除</el-button>
+          >
+            添加
+          </el-link>
+          <el-link type="primary" class="mr-1" :underline="false" @click="edit(scope.row)">
+            修改
+          </el-link>
+          <el-link type="primary" :underline="false" @click="selectOpen('dele', scope.row)">
+            删除
+          </el-link>
         </template>
       </el-table-column>
     </el-table>
     <el-row>
       <el-descriptions title="" :column="12" :colon="false">
-        <el-descriptions-item label="">共 {{ count }} 条</el-descriptions-item>
+        <el-descriptions-item>共 {{ count }} 条</el-descriptions-item>
       </el-descriptions>
     </el-row>
     <!-- 添加修改 -->
     <el-dialog
+      v-model="dialog"
       :title="dialogTitle"
-      :visible.sync="dialog"
-      top="5vh"
-      :before-close="cancel"
       :close-on-click-modal="false"
       :close-on-press-escape="false"
+      :before-close="cancel"
+      top="5vh"
     >
-      <el-form
-        ref="ref"
-        :rules="rules"
-        :model="model"
-        label-width="100px"
-        class="dialog-body"
-        :style="{ height: height - 50 + 'px' }"
-      >
-        <el-form-item label="菜单上级" prop="menu_pid">
-          <el-cascader
-            v-model="model.menu_pid"
-            :options="trees"
-            :props="props"
-            style="width:100%"
-            placeholder="一级菜单"
-            clearable
-            filterable
-          />
-        </el-form-item>
-        <el-form-item label="菜单类型" prop="menu_type">
-          <el-radio-group v-model="model.menu_type">
-            <el-radio :label="0">目录<i class="el-icon-folder" /></el-radio>
-            <el-radio :label="1">菜单<i class="el-icon-menu" /></el-radio>
-            <el-radio :label="2">按钮<i class="el-icon-open" /></el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item v-if="model.menu_type !== 2" label="菜单图标" prop="meta_icon">
-          <e-icon-picker v-model="model.meta_icon" :options="{ ElementUI: true }" :z-index="3500" />
-        </el-form-item>
-        <el-form-item label="菜单名称" prop="menu_name">
-          <el-input v-model="model.menu_name" clearable placeholder="meta.title；侧边栏菜单名称">
-            <template slot="prepend">
-              <el-button icon="el-icon-question" title="meta.title；侧边栏菜单名称" />
-            </template>
-            <template slot="append">
-              <el-button icon="el-icon-document-copy" title="复制" @click="copy(model.menu_name, $event)" />
-            </template>
-          </el-input>
-        </el-form-item>
-        <el-form-item label="菜单链接" prop="menu_url">
-          <el-input v-model="model.menu_url" clearable placeholder="roles；权限标识：应用/控制器/操作；区分大小写">
-            <template slot="prepend">
-              <el-button icon="el-icon-question" title="roles；权限标识：应用/控制器/操作，区分大小写" />
-            </template>
-            <template slot="append">
-              <el-button icon="el-icon-document-copy" title="复制" @click="copy(model.menu_url, $event)" />
-            </template>
-          </el-input>
-        </el-form-item>
-        <el-form-item v-if="model.menu_type !== 2" label="路由地址" prop="path">
-          <el-input v-model="model.path" clearable placeholder="path；路由地址，如：member，一级菜单需在前面加斜杠/；外链为 http 地址">
-            <template slot="prepend">
-              <el-button icon="el-icon-question" title="path；路由地址，如：member，一级菜单需在前面加斜杠/；外链为 http 地址" />
-            </template>
-            <template slot="append">
-              <el-button icon="el-icon-document-copy" title="复制" @click="copy(model.path, $event)" />
-            </template>
-          </el-input>
-        </el-form-item>
-        <el-form-item v-if="model.menu_type === 1" label="路由名称" prop="name">
-          <el-input v-model="model.name" clearable placeholder="name；组件name属性，如：Member，<keep-alive> 用到；外链可随意填写">
-            <template slot="prepend">
-              <el-button icon="el-icon-question" title="name；组件的name属性，如：Member，<keep-alive> 用到；外链可随意填写" />
-            </template>
-            <template slot="append">
-              <el-button icon="el-icon-document-copy" title="复制" @click="copy(model.name, $event)" />
-            </template>
-          </el-input>
-        </el-form-item>
-        <el-form-item v-if="model.menu_type === 0 || model.menu_type === 1" label="组件地址" prop="component">
-          <el-input v-model="model.component" clearable placeholder="component；组件路径，如：member/member，默认在 views 目录下">
-            <template slot="prepend">
-              <el-button icon="el-icon-question" title="component；组件路径，如：member/member，默认在 views 目录下" />
-            </template>
-            <template slot="append">
-              <el-button icon="el-icon-document-copy" title="复制" @click="copy(model.component, $event)" />
-            </template>
-          </el-input>
-        </el-form-item>
-        <el-form-item v-if="model.menu_type === 1" label="路由参数" prop="meta_query">
-          <el-input v-model="model.meta_query" clearable placeholder="meta.query；路由的默认传递参数，如：{ &quot;recycle&quot;: 0 }">
-            <template slot="prepend">
-              <el-button icon="el-icon-question" title="meta.query；路由的默认传递参数，如：{ &quot;recycle&quot;: 0 }" />
-            </template>
-            <template slot="append">
-              <el-button icon="el-icon-document-copy" title="复制" @click="copy(model.meta_query, $event)" />
-            </template>
-          </el-input>
-        </el-form-item>
-        <el-form-item v-if="model.menu_type !== 2" label="是否隐藏" prop="hidden">
-          <el-button icon="el-icon-question" title="hidden；隐藏后侧边栏不显示，但仍然可以访问" />
-          <el-radio-group v-model="model.hidden" style="margin-left:10px">
-            <el-radio :label="0">否</el-radio>
-            <el-radio :label="1">是</el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="菜单排序" prop="sort">
-          <el-input v-model="model.sort" type="number" placeholder="250">
-            <template slot="prepend">
-              <el-button icon="el-icon-question" title="降序，数值越大越排在前面" />
-            </template>
-          </el-input>
-        </el-form-item>
-        <el-form-item v-if="model.menu_type === 1" label="快速添加" prop="add">
-          <el-button icon="el-icon-question" class="ya-margin-right" title="快速添加，需要输入菜单链接：应用/控制器/操作；区分大小写" />
-          <el-checkbox v-model="model.add_info">信息</el-checkbox>
-          <el-checkbox v-model="model.add_add">添加</el-checkbox>
-          <el-checkbox v-model="model.add_edit">修改</el-checkbox>
-          <el-checkbox v-model="model.add_dele">删除</el-checkbox>
-          <el-checkbox v-model="model.add_disable">禁用</el-checkbox>
-        </el-form-item>
-        <el-form-item
-          v-if="model.menu_type === 1"
-          v-show="model[idkey]"
-          label="快速修改"
-          prop="edit"
-        >
-          <el-button icon="el-icon-question" class="ya-margin-right" title="快速修改，需要输入菜单链接：应用/控制器/操作；区分大小写" />
-          <el-checkbox v-model="model.edit_info">信息</el-checkbox>
-          <el-checkbox v-model="model.edit_add">添加</el-checkbox>
-          <el-checkbox v-model="model.edit_edit">修改</el-checkbox>
-          <el-checkbox v-model="model.edit_dele">删除</el-checkbox>
-          <el-checkbox v-model="model.edit_disable">禁用</el-checkbox>
-        </el-form-item>
-        <el-form-item v-if="model[idkey]" label="添加时间" prop="create_time">
-          <el-input v-model="model.create_time" disabled />
-        </el-form-item>
-        <el-form-item v-if="model[idkey]" label="修改时间" prop="update_time">
-          <el-input v-model="model.update_time" disabled />
-        </el-form-item>
-        <el-form-item v-if="model.delete_time" label="删除时间" prop="delete_time">
-          <el-input v-model="model.delete_time" disabled />
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
+      <el-scrollbar native :height="height - 50">
+        <el-form ref="ref" :rules="rules" :model="model" label-width="100px">
+          <el-form-item label="菜单上级" prop="menu_pid">
+            <el-cascader
+              v-model="model.menu_pid"
+              :options="trees"
+              :props="props"
+              class="w-full"
+              placeholder="一级菜单"
+              clearable
+              filterable
+            />
+          </el-form-item>
+          <el-form-item label="菜单类型" prop="menu_type">
+            <el-radio-group v-model="model.menu_type">
+              <el-radio :label="0">目录<svg-icon icon-class="folder" /></el-radio>
+              <el-radio :label="1">菜单<svg-icon icon-class="menu" /></el-radio>
+              <el-radio :label="2">按钮<svg-icon icon-class="open" /></el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item v-if="model.menu_type !== 2" label="菜单图标" prop="meta_icon">
+            <icon-select v-model="model.meta_icon" />
+          </el-form-item>
+          <el-form-item label="菜单名称" prop="menu_name">
+            <el-input v-model="model.menu_name" clearable placeholder="meta.title；侧边栏菜单名称">
+              <template #prepend>
+                <el-button title="meta.title；侧边栏菜单名称">
+                  <svg-icon icon-class="question-filled" />
+                </el-button>
+              </template>
+              <template #append>
+                <el-button title="复制" @click="copy(model.menu_name)">
+                  <svg-icon icon-class="copy-document" />
+                </el-button>
+              </template>
+            </el-input>
+          </el-form-item>
+          <el-form-item label="菜单链接" prop="menu_url">
+            <el-input
+              v-model="model.menu_url"
+              clearable
+              placeholder="roles；权限标识：应用/控制器/操作；区分大小写"
+            >
+              <template #prepend>
+                <el-button title="roles；权限标识：应用/控制器/操作，区分大小写">
+                  <svg-icon icon-class="question-filled" />
+                </el-button>
+              </template>
+              <template #append>
+                <el-button title="复制" @click="copy(model.menu_url)">
+                  <svg-icon icon-class="copy-document" />
+                </el-button>
+              </template>
+            </el-input>
+          </el-form-item>
+          <el-form-item v-if="model.menu_type !== 2" label="路由地址" prop="path">
+            <el-input
+              v-model="model.path"
+              clearable
+              placeholder="path；路由地址，如：member，一级菜单需在前面加斜杠/；外链为 http 地址"
+            >
+              <template #prepend>
+                <el-button
+                  title="path；路由地址，如：member，一级菜单需在前面加斜杠/；外链为 http 地址"
+                >
+                  <svg-icon icon-class="question-filled" />
+                </el-button>
+              </template>
+              <template #append>
+                <el-button title="复制" @click="copy(model.path)">
+                  <svg-icon icon-class="copy-document" />
+                </el-button>
+              </template>
+            </el-input>
+          </el-form-item>
+          <el-form-item v-if="model.menu_type === 1" label="路由名称" prop="name">
+            <el-input
+              v-model="model.name"
+              clearable
+              placeholder="name；组件name属性，如：Member，<keep-alive> 用到；外链可随意填写"
+            >
+              <template #prepend>
+                <el-button
+                  title="name；组件的name属性，如：Member，<keep-alive> 用到；外链可随意填写"
+                >
+                  <svg-icon icon-class="question-filled" />
+                </el-button>
+              </template>
+              <template #append>
+                <el-button title="复制" @click="copy(model.name)">
+                  <svg-icon icon-class="copy-document" />
+                </el-button>
+              </template>
+            </el-input>
+          </el-form-item>
+          <el-form-item
+            v-if="model.menu_type === 0 || model.menu_type === 1"
+            label="组件地址"
+            prop="component"
+          >
+            <el-input
+              v-model="model.component"
+              clearable
+              placeholder="component；组件路径，如：member/member，默认在 views 目录下"
+            >
+              <template #prepend>
+                <el-button title="component；组件路径，如：member/member，默认在 views 目录下">
+                  <svg-icon icon-class="question-filled" />
+                </el-button>
+              </template>
+              <template #append>
+                <el-button title="复制" @click="copy(model.component)">
+                  <svg-icon icon-class="copy-document" />
+                </el-button>
+              </template>
+            </el-input>
+          </el-form-item>
+          <el-form-item v-if="model.menu_type === 1" label="路由参数" prop="meta_query">
+            <el-input
+              v-model="model.meta_query"
+              clearable
+              placeholder='meta.query；路由的默认传递参数，如：{ "recycle": 0 }'
+            >
+              <template #prepend>
+                <el-button title='meta.query；路由的默认传递参数，如：{ "recycle": 0 }'>
+                  <svg-icon icon-class="question-filled" />
+                </el-button>
+              </template>
+              <template #append>
+                <el-button title="复制" @click="copy(model.meta_query)">
+                  <svg-icon icon-class="copy-document" />
+                </el-button>
+              </template>
+            </el-input>
+          </el-form-item>
+          <el-form-item v-if="model.menu_type !== 2" label="是否隐藏" prop="hidden">
+            <el-button title="hidden；隐藏后侧边栏不显示，但仍然可以访问">
+              <svg-icon icon-class="question-filled" />
+            </el-button>
+            <el-radio-group v-model="model.hidden" style="margin-left: 10px">
+              <el-radio :label="0">否</el-radio>
+              <el-radio :label="1">是</el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item v-if="model.menu_type !== 2" label="是否缓存" prop="keep_alive">
+            <el-button title="keepAlive；是否缓存组件">
+              <svg-icon icon-class="question-filled" />
+            </el-button>
+            <el-radio-group v-model="model.keep_alive" style="margin-left: 10px">
+              <el-radio :label="0">否</el-radio>
+              <el-radio :label="1">是</el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item label="菜单排序" prop="sort">
+            <el-input v-model="model.sort" type="number" placeholder="250">
+              <template #prepend>
+                <el-button title="降序，数值越大越排在前面">
+                  <svg-icon icon-class="question-filled" />
+                </el-button>
+              </template>
+            </el-input>
+          </el-form-item>
+          <el-form-item v-if="model.menu_type === 1" label="快速添加" prop="add">
+            <el-button
+              class="ya-margin-right"
+              title="快速添加，需要输入菜单链接：应用/控制器/操作；区分大小写"
+            >
+              <svg-icon icon-class="question-filled" />
+            </el-button>
+            <el-checkbox v-model="model.add_info">信息</el-checkbox>
+            <el-checkbox v-model="model.add_add">添加</el-checkbox>
+            <el-checkbox v-model="model.add_edit">修改</el-checkbox>
+            <el-checkbox v-model="model.add_dele">删除</el-checkbox>
+            <el-checkbox v-model="model.add_disable">禁用</el-checkbox>
+          </el-form-item>
+          <el-form-item
+            v-if="model.menu_type === 1"
+            v-show="model[idkey]"
+            label="快速修改"
+            prop="edit"
+          >
+            <el-button
+              class="ya-margin-right"
+              title="快速修改，需要输入菜单链接：应用/控制器/操作；区分大小写"
+            >
+              <svg-icon icon-class="question-filled" />
+            </el-button>
+            <el-checkbox v-model="model.edit_info">信息</el-checkbox>
+            <el-checkbox v-model="model.edit_add">添加</el-checkbox>
+            <el-checkbox v-model="model.edit_edit">修改</el-checkbox>
+            <el-checkbox v-model="model.edit_dele">删除</el-checkbox>
+            <el-checkbox v-model="model.edit_disable">禁用</el-checkbox>
+          </el-form-item>
+          <el-form-item v-if="model[idkey]" label="添加时间" prop="create_time">
+            <el-input v-model="model.create_time" disabled />
+          </el-form-item>
+          <el-form-item v-if="model[idkey]" label="修改时间" prop="update_time">
+            <el-input v-model="model.update_time" disabled />
+          </el-form-item>
+          <el-form-item v-if="model.delete_time" label="删除时间" prop="delete_time">
+            <el-input v-model="model.delete_time" disabled />
+          </el-form-item>
+        </el-form>
+      </el-scrollbar>
+      <template #footer>
         <el-button :loading="loading" @click="reset('')">重置</el-button>
         <el-button :loading="loading" @click="cancel">取消</el-button>
         <el-button :loading="loading" type="primary" @click="submit">提交</el-button>
-      </div>
+      </template>
     </el-dialog>
     <!-- 角色 -->
     <el-dialog
+      v-model="roleDialog"
       :title="roleDialogTitle"
-      :visible.sync="roleDialog"
-      width="65%"
-      top="5vh"
       :close-on-click-modal="false"
       :close-on-press-escape="false"
+      top="5vh"
+      width="65%"
     >
-      <!-- 选中操作 -->
+      <!-- 角色操作 -->
       <el-row>
         <el-col>
-          <el-button type="primary" title="解除" @click="roleSelectOpen('roleRemove')">解除</el-button>
+          <el-button type="primary" title="解除" @click="roleSelectOpen('roleRemove')">
+            解除
+          </el-button>
           <el-input
             v-model="roleQuery.search_value"
-            class="filter-item ya-search-value ya-margin-left"
+            class="ya-search-value"
             placeholder="名称"
             clearable
           />
-          <el-button
-            class="filter-item"
-            type="primary"
-            title="查询/刷新"
-            @click="roleList()"
-          >查询</el-button>
+          <el-button type="primary" @click="roleList()">查询</el-button>
         </el-col>
       </el-row>
       <!-- 角色列表 -->
@@ -489,32 +531,17 @@
         @selection-change="roleSelect"
       >
         <el-table-column type="selection" width="42" title="全选/反选" />
-        <el-table-column
-          :prop="rolePk"
-          label="角色ID"
-          width="100"
-          sortable="custom"
-        />
+        <el-table-column :prop="rolePk" label="角色ID" width="100" sortable="custom" />
         <el-table-column
           prop="role_name"
-          label="名称"
+          label="角色名称"
           min-width="120"
           sortable="custom"
           show-overflow-tooltip
         />
-        <el-table-column
-          prop="role_desc"
-          label="描述"
-          min-width="130"
-          show-overflow-tooltip
-        />
-        <el-table-column
-          prop="is_disable"
-          label="禁用"
-          min-width="75"
-          sortable="custom"
-        >
-          <template slot-scope="scope">
+        <el-table-column prop="role_desc" label="描述" min-width="130" show-overflow-tooltip />
+        <el-table-column prop="is_disable" label="禁用" min-width="85" sortable="custom">
+          <template #default="scope">
             <el-switch
               v-model="scope.row.is_disable"
               :active-value="1"
@@ -523,67 +550,77 @@
             />
           </template>
         </el-table-column>
-        <el-table-column
-          prop="sort"
-          label="排序"
-          min-width="75"
-          sortable="custom"
-        />
-        <el-table-column label="操作" width="75">
-          <template slot-scope="scope">
-            <el-button type="text" size="small" @click="roleSelectOpen('roleRemove', scope.row)">解除</el-button>
+        <el-table-column prop="sort" label="排序" min-width="85" sortable="custom" />
+        <el-table-column label="操作" width="70">
+          <template #default="scope">
+            <el-link
+              type="primary"
+              :underline="false"
+              @click="roleSelectOpen('roleRemove', scope.row)"
+            >
+              解除
+            </el-link>
           </template>
         </el-table-column>
       </el-table>
+      <!-- 角色分页 -->
       <pagination
         v-show="roleCount > 0"
-        :total="roleCount"
-        :page.sync="roleQuery.page"
-        :limit.sync="roleQuery.limit"
+        v-model:total="roleCount"
+        v-model:page="roleQuery.page"
+        v-model:limit="roleQuery.limit"
         @pagination="roleList"
       />
     </el-dialog>
     <el-dialog
+      v-model="roleSelectDialog"
       :title="roleSelectTitle"
-      :visible.sync="roleSelectDialog"
-      top="20vh"
       :close-on-click-modal="false"
       :close-on-press-escape="false"
+      top="20vh"
     >
       <el-form ref="roleSelectRef" label-width="120px">
-        <el-form-item :label="roleName + 'ID'" prop="">
-          <el-input
-            v-model="roleSelectIds"
-            type="textarea"
-            :autosize="{ minRows: 5, maxRows: 12 }"
-            disabled
-          />
-        </el-form-item>
-        <el-form-item v-if="roleSelectType === 'roleRemove'" :label="name + 'ID'" prop="">
+        <el-form-item v-if="roleSelectType === 'roleRemove'" :label="name + 'ID'">
           <span>{{ roleQuery[idkey] }}</span>
         </el-form-item>
+        <el-form-item :label="roleName + 'ID'">
+          <el-input v-model="roleSelectIds" type="textarea" autosize disabled />
+        </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
+      <template #footer>
         <el-button @click="roleSelectCancel">取消</el-button>
         <el-button type="primary" @click="roleSelectSubmit">提交</el-button>
-      </div>
+      </template>
     </el-dialog>
   </div>
 </template>
 
 <script>
 import screenHeight from '@/utils/screen-height'
-import Pagination from '@/components/Pagination'
+import Pagination from '@/components/Pagination/index.vue'
 import clip from '@/utils/clipboard'
-import { EIconPicker } from 'e-icon-picker'
 import { arrayColumn } from '@/utils/index'
 import { getPageLimit } from '@/utils/settings'
-import { list, info, add, edit, dele, editsort, editpid, unlogin, unauth, unrate, ishidden, disable, role, roleRemove } from '@/api/system/menu'
+import {
+  list,
+  info,
+  add,
+  edit,
+  dele,
+  editsort,
+  editpid,
+  unlogin,
+  unauth,
+  unrate,
+  ishidden,
+  disable,
+  role,
+  roleRemove
+} from '@/api/system/menu'
 
 export default {
   name: 'SystemMenu',
-  components: { Pagination, EIconPicker },
-  directives: {},
+  components: { Pagination },
   data() {
     return {
       name: '菜单',
@@ -607,6 +644,7 @@ export default {
         component: '',
         meta_query: '',
         hidden: 0,
+        keep_alive: 1,
         sort: 250,
         add_info: false,
         add_add: false,
@@ -629,7 +667,7 @@ export default {
       isExpandAll: false,
       selection: [],
       selectIds: '',
-      selectTitle: '选中操作',
+      selectTitle: '操作',
       selectDialog: false,
       selectType: '',
       sort: 250,
@@ -647,33 +685,41 @@ export default {
       roleLoad: false,
       roleData: [],
       roleCount: 0,
-      roleQuery: { page: 1, limit: getPageLimit(), search_field: 'role_name', search_exp: 'like', search_value: '' },
+      roleQuery: {
+        page: 1,
+        limit: getPageLimit(),
+        search_field: 'role_name',
+        search_exp: 'like',
+        search_value: ''
+      },
       roleSelection: [],
       roleSelectIds: '',
-      roleSelectTitle: '选中操作',
+      roleSelectTitle: '操作',
       roleSelectDialog: false,
       roleSelectType: '',
       count: ''
     }
   },
   created() {
-    this.height = screenHeight(210)
+    this.height = screenHeight(290)
     this.list()
   },
   methods: {
     // 列表
     list() {
       this.loading = true
-      list(this.query).then(res => {
-        this.data = res.data.list
-        this.trees = res.data.tree
-        this.exps = res.data.exps
-        this.count = res.data.count
-        this.isExpandAll = false
-        this.loading = false
-      }).catch(() => {
-        this.loading = false
-      })
+      list(this.query)
+        .then((res) => {
+          this.data = res.data.list
+          this.trees = res.data.tree
+          this.exps = res.data.exps
+          this.count = res.data.count
+          this.isExpandAll = false
+          this.loading = false
+        })
+        .catch(() => {
+          this.loading = false
+        })
     },
     // 添加修改
     add(row) {
@@ -689,34 +735,40 @@ export default {
       this.dialogTitle = this.name + '修改：' + row[this.idkey]
       const id = {}
       id[this.idkey] = row[this.idkey]
-      info(id).then(res => {
-        this.reset(res.data)
-      }).catch(() => { })
+      info(id)
+        .then((res) => {
+          this.reset(res.data)
+        })
+        .catch(() => {})
     },
     cancel() {
       this.dialog = false
       this.reset()
     },
     submit() {
-      this.$refs['ref'].validate(valid => {
+      this.$refs['ref'].validate((valid) => {
         if (valid) {
           this.loading = true
           if (this.model[this.idkey]) {
-            edit(this.model).then(res => {
-              this.list()
-              this.dialog = false
-              this.$message.success(res.msg)
-            }).catch(() => {
-              this.loading = false
-            })
+            edit(this.model)
+              .then((res) => {
+                this.list()
+                this.dialog = false
+                ElMessage.success(res.msg)
+              })
+              .catch(() => {
+                this.loading = false
+              })
           } else {
-            add(this.model).then(res => {
-              this.list()
-              this.dialog = false
-              this.$message.success(res.msg)
-            }).catch(() => {
-              this.loading = false
-            })
+            add(this.model)
+              .then((res) => {
+                this.list()
+                this.dialog = false
+                ElMessage.success(res.msg)
+              })
+              .catch(() => {
+                this.loading = false
+              })
           }
         }
       })
@@ -729,11 +781,23 @@ export default {
         this.model = this.$options.data().model
       }
       if (this.$refs['ref'] !== undefined) {
-        this.$refs['ref'].resetFields()
-        this.$refs['ref'].clearValidate()
+        try {
+          this.$refs['ref'].resetFields()
+          this.$refs['ref'].clearValidate()
+        } catch (error) {}
       }
-      this.model.add_info = this.model.add_add = this.model.add_edit = this.model.add_dele = this.model.add_disable = false
-      this.model.edit_info = this.model.edit_add = this.model.edit_edit = this.model.edit_dele = this.model.edit_disable = false
+      this.model.add_info =
+        this.model.add_add =
+        this.model.add_edit =
+        this.model.add_dele =
+        this.model.add_disable =
+          false
+      this.model.edit_info =
+        this.model.edit_add =
+        this.model.edit_edit =
+        this.model.edit_dele =
+        this.model.edit_disable =
+          false
     },
     // 查询
     search() {
@@ -749,14 +813,14 @@ export default {
       this.expandFor(this.data, !e)
     },
     expandFor(data, isExpand) {
-      data.forEach(i => {
+      data.forEach((i) => {
         this.$refs.table.toggleRowExpansion(i, isExpand)
         if (i.children) {
           this.expandFor(i.children, isExpand)
         }
       })
     },
-    // 选中操作
+    // 操作
     select(selection) {
       this.selection = selection
       this.selectIds = this.selectGetIds(selection).toString()
@@ -781,17 +845,23 @@ export default {
       return arrayColumn(selection, this.idkey)
     },
     selectAlert() {
-      this.$alert('请选择需要操作的' + this.name, '提示', { type: 'warning', callback: action => { } })
+      ElMessageBox.alert('请选择需要操作的' + this.name, '提示', {
+        type: 'warning',
+        callback: () => {}
+      })
     },
     selectOpen(selectType, selectRow = '') {
       if (selectRow) {
         this.$refs['table'].clearSelection()
-        this.$refs['table'].toggleRowSelection(selectRow)
+        const selectRowLen = selectRow.length
+        for (let i = 0; i < selectRowLen; i++) {
+          this.$refs['table'].toggleRowSelection(selectRow[i], true)
+        }
       }
       if (!this.selection.length) {
         this.selectAlert()
       } else {
-        this.selectTitle = '选中操作'
+        this.selectTitle = '操作'
         if (selectType === 'remover') {
           this.selectTitle = this.name + '解除角色'
         } else if (selectType === 'editsort') {
@@ -854,12 +924,14 @@ export default {
         roleRemove({
           menu_id: this.selectGetIds(row),
           role_ids: []
-        }).then(res => {
-          this.list()
-          this.$message.success(res.msg)
-        }).catch(() => {
-          this.loading = false
         })
+          .then((res) => {
+            this.list()
+            ElMessage.success(res.msg)
+          })
+          .catch(() => {
+            this.loading = false
+          })
       }
     },
     // 修改排序
@@ -869,13 +941,15 @@ export default {
         ids: this.selectGetIds(row),
         sort: this.sort,
         sort_incdec: this.sort_incdec
-      }).then(res => {
-        this.list()
-        this.sort_incdec = '0'
-        this.$message.success(res.msg)
-      }).catch(() => {
-        this.loading = false
       })
+        .then((res) => {
+          this.list()
+          this.sort_incdec = '0'
+          ElMessage.success(res.msg)
+        })
+        .catch(() => {
+          this.loading = false
+        })
     },
     // 修改上级
     editpid(row) {
@@ -883,12 +957,14 @@ export default {
       editpid({
         ids: this.selectGetIds(row),
         menu_pid: this.menu_pid
-      }).then(res => {
-        this.list()
-        this.$message.success(res.msg)
-      }).catch(() => {
-        this.loading = false
       })
+        .then((res) => {
+          this.list()
+          ElMessage.success(res.msg)
+        })
+        .catch(() => {
+          this.loading = false
+        })
     },
     // 是否免登
     unlogin(row, select = false) {
@@ -903,12 +979,14 @@ export default {
         unlogin({
           ids: this.selectGetIds(row),
           is_unlogin: is_unlogin
-        }).then(res => {
-          this.list()
-          this.$message.success(res.msg)
-        }).catch(() => {
-          this.list()
         })
+          .then((res) => {
+            this.list()
+            ElMessage.success(res.msg)
+          })
+          .catch(() => {
+            this.list()
+          })
       }
     },
     // 是否免权
@@ -924,12 +1002,14 @@ export default {
         unauth({
           ids: this.selectGetIds(row),
           is_unauth: is_unauth
-        }).then(res => {
-          this.list()
-          this.$message.success(res.msg)
-        }).catch(() => {
-          this.list()
         })
+          .then((res) => {
+            this.list()
+            ElMessage.success(res.msg)
+          })
+          .catch(() => {
+            this.list()
+          })
       }
     },
     // 是否免限
@@ -945,12 +1025,14 @@ export default {
         unrate({
           ids: this.selectGetIds(row),
           is_unrate: is_unrate
-        }).then(res => {
-          this.list()
-          this.$message.success(res.msg)
-        }).catch(() => {
-          this.list()
         })
+          .then((res) => {
+            this.list()
+            ElMessage.success(res.msg)
+          })
+          .catch(() => {
+            this.list()
+          })
       }
     },
     // 是否隐藏
@@ -966,12 +1048,14 @@ export default {
         ishidden({
           ids: this.selectGetIds(row),
           hidden: hidden
-        }).then(res => {
-          this.list()
-          this.$message.success(res.msg)
-        }).catch(() => {
-          this.list()
         })
+          .then((res) => {
+            this.list()
+            ElMessage.success(res.msg)
+          })
+          .catch(() => {
+            this.list()
+          })
       }
     },
     // 是否禁用
@@ -987,12 +1071,14 @@ export default {
         disable({
           ids: this.selectGetIds(row),
           is_disable: is_disable
-        }).then(res => {
-          this.list()
-          this.$message.success(res.msg)
-        }).catch(() => {
-          this.list()
         })
+          .then((res) => {
+            this.list()
+            ElMessage.success(res.msg)
+          })
+          .catch(() => {
+            this.list()
+          })
       }
     },
     // 删除
@@ -1003,12 +1089,14 @@ export default {
         this.loading = true
         dele({
           ids: this.selectGetIds(row)
-        }).then(res => {
-          this.list()
-          this.$message.success(res.msg)
-        }).catch(() => {
-          this.loading = false
         })
+          .then((res) => {
+            this.list()
+            ElMessage.success(res.msg)
+          })
+          .catch(() => {
+            this.loading = false
+          })
       }
     },
     // 角色显示
@@ -1022,13 +1110,15 @@ export default {
     // 角色列表
     roleList() {
       this.roleLoad = true
-      role(this.roleQuery).then(res => {
-        this.roleData = res.data.list
-        this.roleCount = res.data.count
-        this.roleLoad = false
-      }).catch(() => {
-        this.roleLoad = false
-      })
+      role(this.roleQuery)
+        .then((res) => {
+          this.roleData = res.data.list
+          this.roleCount = res.data.count
+          this.roleLoad = false
+        })
+        .catch(() => {
+          this.roleLoad = false
+        })
     },
     // 角色排序
     roleSort(sort) {
@@ -1043,7 +1133,7 @@ export default {
         this.roleList()
       }
     },
-    // 角色选中操作
+    // 角色操作
     roleSelect(selection) {
       this.roleSelection = selection
       this.roleSelectIds = this.roleSelectGetIds(selection).toString()
@@ -1052,7 +1142,10 @@ export default {
       return arrayColumn(selection, this.rolePk)
     },
     roleSelectAlert() {
-      this.$alert('请选择需要操作的' + this.roleName, '提示', { type: 'warning', callback: action => { } })
+      ElMessageBox.alert('请选择需要操作的' + this.roleName, '提示', {
+        type: 'warning',
+        callback: () => {}
+      })
     },
     roleSelectOpen(selectType, selectRow = '') {
       if (selectRow) {
@@ -1062,7 +1155,7 @@ export default {
       if (!this.roleSelection.length) {
         this.roleSelectAlert()
       } else {
-        this.roleSelectTitle = '选中操作'
+        this.roleSelectTitle = '操作'
         if (selectType === 'roleRemove') {
           this.roleSelectTitle = this.name + '解除' + this.roleName
         }
@@ -1093,27 +1186,24 @@ export default {
         roleRemove({
           menu_id: this.roleQuery.menu_id,
           role_ids: this.roleSelectGetIds(row)
-        }).then(res => {
-          this.roleList()
-          this.$message.success(res.msg)
-        }).catch(() => {
-          this.roleLoad = false
         })
+          .then((res) => {
+            this.roleList()
+            ElMessage.success(res.msg)
+          })
+          .catch(() => {
+            this.roleLoad = false
+          })
       }
     },
     // 复制
-    copy(text, event) {
-      clip(text, event)
+    copy(text) {
+      clip(text)
     },
     // 单元格双击复制
-    cellDbclick(row, column, cell, event) {
-      this.copy(row[column.property], event)
+    cellDbclick(row, column) {
+      this.copy(row[column.property])
     }
   }
 }
 </script>
-
-<style lang="css" scoped>
-@import '~e-icon-picker/lib/index.css';
-@import '~element-ui/lib/theme-chalk/icon.css';
-</style>

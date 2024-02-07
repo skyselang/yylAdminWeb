@@ -2,33 +2,31 @@
   <div class="app-container">
     <el-row>
       <el-col>
-        <span class="apidoc-item">密码：{{ model.apidoc_pwd }}
-          <i class="el-icon-copy-document" title="复制密码" @click="copy(model.apidoc_pwd, $event)" />
-        </span>
-        <span class="apidoc-item" :title="model.token">Token：{{ model.token_sub }}
-          <i class="el-icon-copy-document" title="复制Token" @click="copy(model.token, $event)" />
-        </span>
-        <el-button
-          class="filter-item"
-          circle
-          title="刷新"
-          @click="refresh()"
-        ><i class="el-icon-refresh" /></el-button>
+        <el-text size="default">密码：{{ model.apidoc_pwd }}</el-text>
+        <el-button text type="primary" title="复制密码" @click="copy(model.apidoc_pwd)">
+          <svg-icon icon-class="copy-document" />
+        </el-button>
+
+        <el-text size="default">Token：{{ model.token_sub }}</el-text>
+        <el-button text type="primary" title="复制Token" @click="copy(model.token)">
+          <svg-icon icon-class="copy-document" />
+        </el-button>
+
+        <el-button text type="primary" title="刷新" @click="refresh()">
+          <svg-icon icon-class="refresh" size="18px" />
+        </el-button>
         <el-link
-          style="margin-left:20px"
+          type="primary"
           :href="model.apidoc_url"
-          target="_blank"
           :underline="false"
+          target="_blank"
           title="新标签页打开"
-        ><i class="el-icon-position" /></el-link>
+        >
+          <svg-icon icon-class="position" size="18px" />
+        </el-link>
       </el-col>
       <el-col>
-        <iframe
-          :src="model.apidoc_url"
-          frameborder="0"
-          width="100%"
-          :height="height"
-        />
+        <iframe :src="model.apidoc_url" frameborder="0" width="100%" :height="height"></iframe>
       </el-col>
     </el-row>
   </div>
@@ -41,7 +39,6 @@ import { apidoc } from '@/api/system/apidoc'
 
 export default {
   name: 'SystemApidoc',
-  components: {},
   data() {
     return {
       name: '接口文档',
@@ -57,7 +54,7 @@ export default {
     }
   },
   created() {
-    this.height = screenHeight(150)
+    this.height = screenHeight(200)
     if (!this.isload) {
       this.apidoc()
     }
@@ -65,7 +62,7 @@ export default {
   methods: {
     // 文档
     apidoc() {
-      apidoc().then(res => {
+      apidoc().then((res) => {
         this.isload = true
         this.model = res.data
       })
@@ -75,24 +72,9 @@ export default {
       this.apidoc()
     },
     // 复制
-    copy(text, event) {
-      if (text) {
-        clip(text, event)
-      } else {
-        this.$message.error('复制失败')
-      }
+    copy(text) {
+      clip(text)
     }
   }
 }
 </script>
-
-<style scoped>
-.apidoc-item {
-  color: #303133;
-  font-size: 14px;
-  padding-right: 30px;
-}
-.el-icon-copy-document {
-  color: #1890ff;
-}
-</style>

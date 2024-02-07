@@ -1,64 +1,118 @@
 <template>
   <div :class="classObj" class="app-wrapper">
-    <div v-if="device === 'mobile' && sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
-    <sidebar class="sidebar-container" />
-    <div :class="{ hasTagsView: needTagsView }" class="main-container">
-      <div :class="{ 'fixed-header': fixedHeader }">
-        <navbar />
-        <tags-view v-if="needTagsView" />
+    <!-- 手机端侧边栏打开遮罩层 -->
+    <div
+      v-if="classObj.mobile && classObj.openSidebar"
+      class="drawer__background"
+      @click="handleOutsideClick"
+    ></div>
+
+    <Sidebar class="sidebar-container" />
+
+    <div v-if="layout === 'mix'" class="mix-wrapper">
+      <div class="mix-wrapper__left">
+        <LeftMenu :menu-list="mixLeftMenu" :base-path="activeTopMenu" />
+        <!-- 展开/收缩侧边栏菜单 -->
+        <div class="toggle-sidebar">
+          <hamburger :is-active="appStore.sidebar.opened" @toggle-click="toggleSideBar" />
+        </div>
       </div>
-      <app-main />
+      <Main />
     </div>
+
+    <Main v-else />
   </div>
 </template>
 
-<script>
-import { AppMain, Navbar, Sidebar, TagsView } from './components'
-import ResizeMixin from './mixin/ResizeHandler'
-import { mapState } from 'vuex'
+<script setup>
+import Main from './main.vue'
+import Sidebar from './components/Sidebar/index.vue'
+import LeftMenu from './components/Sidebar/LeftMenu.vue'
+import { computed, watchEffect } from 'vue'
+import { useWindowSize } from '@vueuse/core'
+import { useAppStore } from '@/store/modules/app'
+import { useSettingsStore } from '@/store/modules/settings'
+import { usePermissionStore } from '@/store/modules/permission'
 
-export default {
-  name: 'Layout',
-  components: {
-    AppMain,
-    Navbar,
-    Sidebar,
-    TagsView
+const permissionStore = usePermissionStore()
+const { width } = useWindowSize()
+/**
+ * 响应式布局宽度
+ *
+ * 大屏（>=1200px）
+ * 中屏（>=992px）
+ * 小屏（>=768px）
+ */
+const WIDTH = 992
+
+const appStore = useAppStore()
+const settingsStore = useSettingsStore()
+
+const activeTopMenu = computed(() => {
+  return appStore.activeTopMenu
+})
+// 混合模式左侧菜单
+const mixLeftMenu = computed(() => {
+  return permissionStore.mixLeftMenu
+})
+const layout = computed(() => settingsStore.layout)
+
+watch(
+  () => activeTopMenu.value,
+  (newVal) => {
+    if (layout.value !== 'mix') return
+    permissionStore.getMixLeftMenu(newVal)
   },
-  mixins: [ResizeMixin],
-  computed: {
-    ...mapState({
-      sidebar: state => state.app.sidebar,
-      device: state => state.app.device,
-      needTagsView: state => state.settings.tagsView,
-      fixedHeader: state => state.settings.fixedHeader
-    }),
-    classObj() {
-      return {
-        hideSidebar: !this.sidebar.opened,
-        openSidebar: this.sidebar.opened,
-        withoutAnimation: this.sidebar.withoutAnimation,
-        mobile: this.device === 'mobile'
-      }
-    }
-  },
-  methods: {
-    handleClickOutside() {
-      this.$store.dispatch('app/closeSideBar', { withoutAnimation: false })
+  {
+    deep: true,
+    immediate: true
+  }
+)
+
+const classObj = computed(() => ({
+  hideSidebar: !appStore.sidebar.opened,
+  openSidebar: appStore.sidebar.opened,
+  withoutAnimation: appStore.sidebar.withoutAnimation,
+  mobile: appStore.device === 'mobile',
+  isTop: layout.value === 'top',
+  isMix: layout.value === 'mix'
+}))
+
+watchEffect(() => {
+  if (width.value < WIDTH) {
+    appStore.toggleDevice('mobile')
+    appStore.closeSideBar(true)
+  } else {
+    appStore.toggleDevice('desktop')
+
+    if (width.value >= 1200) {
+      appStore.openSideBar(true)
+    } else {
+      appStore.closeSideBar(true)
     }
   }
+})
+
+function handleOutsideClick() {
+  appStore.closeSideBar(false)
+}
+
+function toggleSideBar() {
+  appStore.toggleSidebar()
 }
 </script>
 
 <style lang="scss" scoped>
-@import '~@/styles/mixin.scss';
-@import '~@/styles/variables.scss';
-
 .app-wrapper {
-  @include clearfix;
+  &::after {
+    display: table;
+    clear: both;
+    content: '';
+  }
+
   position: relative;
-  height: 100%;
   width: 100%;
+  height: 100%;
 
   &.mobile.openSidebar {
     position: fixed;
@@ -66,31 +120,112 @@ export default {
   }
 }
 
-.drawer-bg {
+.drawer__background {
+  position: absolute;
+  top: 0;
+  z-index: 999;
+  width: 100%;
+  height: 100%;
   background: #000;
   opacity: 0.3;
-  width: 100%;
-  top: 0;
-  height: 100%;
-  position: absolute;
-  z-index: 999;
+}
+// 导航栏顶部显示
+.isTop {
+  .sidebar-container {
+    z-index: 800;
+    display: flex;
+    width: 100% !important;
+    height: 50px;
+
+    :deep(.logo-wrap) {
+      width: $sideBarWidth;
+    }
+
+    :deep(.el-scrollbar) {
+      flex: 1;
+      min-width: 0;
+      height: 50px;
+    }
+  }
+
+  .main-container {
+    padding-top: 50px;
+    margin-left: 0;
+    overflow: hidden;
+  }
+
+  // 顶部模式全局变量修改
+  --el-menu-item-height: 50px;
 }
 
-.fixed-header {
-  position: fixed;
-  top: 0;
-  right: 0;
-  z-index: 9;
-  width: calc(100% - #{$sideBarWidth});
-  transition: width 0.28s;
-  padding-right: 15px;
+.mobile.isTop {
+  :deep(.logo-wrap) {
+    width: 63px;
+  }
 }
 
-.hideSidebar .fixed-header {
-  width: calc(100% - 54px);
+.isMix {
+  :deep(.main-container) {
+    display: inline-block;
+    width: calc(100% - #{$sideBarWidth});
+    margin-left: 0;
+  }
+
+  .mix-wrapper {
+    display: flex;
+    height: 100%;
+    padding-top: 50px;
+
+    .mix-wrapper__left {
+      position: relative;
+      height: 100%;
+
+      .el-menu {
+        height: 100%;
+      }
+
+      .toggle-sidebar {
+        position: absolute;
+        bottom: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 50px;
+        line-height: 50px;
+        box-shadow: 0 0 6px -2px var(--el-color-primary);
+
+        div:hover {
+          background-color: var(--menuBg);
+        }
+
+        :deep(svg) {
+          color: #409eff !important;
+        }
+      }
+    }
+
+    .main-container {
+      flex: 1;
+      min-width: 0;
+    }
+  }
 }
 
-.mobile .fixed-header {
-  width: 100%;
+.openSidebar {
+  .mix-wrapper {
+    .mix-wrapper__left {
+      width: $sideBarWidth;
+    }
+
+    :deep(.svg-icon) {
+      margin-top: -1px;
+      margin-right: 5px;
+    }
+
+    .el-menu {
+      border: none;
+    }
+  }
 }
 </style>

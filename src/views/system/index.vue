@@ -1,12 +1,8 @@
 <template>
-  <div class="dialog-body" :style="{height:height+'px'}">
-    <el-row>
-      <el-col>
-        <index-count v-if="checkPermission(['admin/system.Index/count'])" />
-      </el-col>
-    </el-row>
+  <el-scrollbar native :height="height">
     <div class="app-container">
-      <el-row style="margin-bottom:15px">
+      <index-count v-if="checkPermission(['admin/system.Index/count'])" class="mb-[15px]" />
+      <el-row class="mb-[15px]">
         <el-col>
           <index-member v-if="checkPermission(['admin/system.Index/member'])" />
         </el-col>
@@ -21,17 +17,17 @@
       </el-row>
     </div>
     <index-notice />
-  </div>
+  </el-scrollbar>
 </template>
 
 <script>
 import screenHeight from '@/utils/screen-height'
-import checkPermission from '@/utils/permission' // 权限判断函数
-import IndexNotice from './components/IndexNotice'
-import IndexCount from './components/IndexCount'
-import IndexMember from './components/IndexMember'
-import IndexContent from './components/IndexContent'
-import IndexFile from './components/IndexFile'
+import checkPermission from '@/utils/permission'
+import IndexNotice from './components/IndexNotice.vue'
+import IndexCount from './components/IndexCount.vue'
+import IndexMember from './components/IndexMember.vue'
+import IndexContent from './components/IndexContent.vue'
+import IndexFile from './components/IndexFile.vue'
 
 export default {
   name: 'Dashboard',
@@ -43,7 +39,7 @@ export default {
     }
   },
   created() {
-    this.height = screenHeight(100)
+    this.height = screenHeight(130)
   },
   methods: {
     checkPermission

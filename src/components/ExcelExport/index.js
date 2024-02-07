@@ -1,14 +1,20 @@
 import * as XLSX from 'xlsx'
 
 /**
- * 导出
+ * 表格导出
  * @param {array}  data      数据
  * @param {array}  header    表头，eg:[{ member_id: '会员id' }, { username: '会员名' }]
  * @param {string} fileName  文件名
  * @param {string} bookType  文件类型：xlsx, csv, txt
  * @param {bool}   autoWidth 宽度是否自适应
  */
-export function excelExport(data, header = [], fileName = 'export-excel', bookType = 'xlsx', autoWidth = false) {
+export function excelExport(
+  data,
+  header = [],
+  fileName = 'export-excel',
+  bookType = 'xlsx',
+  autoWidth = false
+) {
   if (!header.length) {
     header = Object.keys(data[0])
   }
@@ -50,21 +56,23 @@ export function excelExport(data, header = [], fileName = 'export-excel', bookTy
 
   // 设置列宽
   if (autoWidth) {
-    const colWidth = xlsxData.map(row => row.map(val => {
-      if (val == null) {
-        return {
-          'wch': 10
+    const colWidth = xlsxData.map((row) =>
+      row.map((val) => {
+        if (val == null) {
+          return {
+            wch: 10
+          }
+        } else if (val.toString().charCodeAt(0) > 255) {
+          return {
+            wch: val.toString().length * 2 + 2
+          }
+        } else {
+          return {
+            wch: val.toString().length + 3
+          }
         }
-      } else if (val.toString().charCodeAt(0) > 255) {
-        return {
-          'wch': val.toString().length * 2 + 2
-        }
-      } else {
-        return {
-          'wch': val.toString().length + 3
-        }
-      }
-    }))
+      })
+    )
     const cols = colWidth[0]
     for (let i = 1; i < colWidth.length; i++) {
       for (let j = 0; j < colWidth[i].length; j++) {

@@ -1,29 +1,39 @@
-Math.easeInOutQuad = function(t, b, c, d) {
+const easeInOutQuad = (t, b, c, d) => {
   t /= d / 2
   if (t < 1) {
-    return c / 2 * t * t + b
+    return (c / 2) * t * t + b
   }
   t--
-  return -c / 2 * (t * (t - 2) - 1) + b
+  return (-c / 2) * (t * (t - 2) - 1) + b
 }
 
-// requestAnimationFrame for Smart Animating
-var requestAnimFrame = (function() {
-  return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || function(callback) { window.setTimeout(callback, 1000 / 60) }
+const requestAnimFrame = (function () {
+  return (
+    window.requestAnimationFrame ||
+    window.webkitRequestAnimationFrame ||
+    window.mozRequestAnimationFrame ||
+    function (callback) {
+      window.setTimeout(callback, 1000 / 60)
+    }
+  )
 })()
 
 /**
- * Because it's so fucking difficult to detect the scrolling element, just move them all
+ * 因为很难检测到滚动元素，只需将它们全部移动即可
  * @param {number} amount
  */
-function move(amount) {
+const move = (amount) => {
   document.documentElement.scrollTop = amount
   document.body.parentNode.scrollTop = amount
   document.body.scrollTop = amount
 }
 
-function position() {
-  return document.documentElement.scrollTop || document.body.parentNode.scrollTop || document.body.scrollTop
+const position = () => {
+  return (
+    document.documentElement.scrollTop ||
+    document.body.parentNode.scrollTop ||
+    document.body.scrollTop
+  )
 }
 
 /**
@@ -31,25 +41,25 @@ function position() {
  * @param {number} duration
  * @param {Function} callback
  */
-export function scrollTo(to, duration, callback) {
+export const scrollTo = (to, duration, callback) => {
   const start = position()
   const change = to - start
   const increment = 20
   let currentTime = 0
-  duration = (typeof (duration) === 'undefined') ? 500 : duration
-  var animateScroll = function() {
-    // increment the time
+  duration = typeof duration === 'undefined' ? 500 : duration
+  const animateScroll = function () {
+    // 增加时间
     currentTime += increment
-    // find the value with the quadratic in-out easing function
-    var val = Math.easeInOutQuad(currentTime, start, change, duration)
-    // move the document.body
+    // 用二次型出入缓和函数求值
+    const val = easeInOutQuad(currentTime, start, change, duration)
+    // 移动 document.body
     move(val)
-    // do the animation unless its over
+    // 做动画，除非它结束
     if (currentTime < duration) {
       requestAnimFrame(animateScroll)
     } else {
-      if (callback && typeof (callback) === 'function') {
-        // the animation is done so lets callback
+      if (callback && typeof callback === 'function') {
+        // 动画已经完成，所以让回调
         callback()
       }
     }

@@ -1,19 +1,9 @@
 <template>
   <div class="app-container">
-    <el-card>
-      <el-form
-        ref="ref"
-        :model="model"
-        :rules="rules"
-        label-width="150px"
-      >
-        <el-tabs>
-          <el-tab-pane
-            label="文件设置"
-            class="dialog-body"
-            :style="{height:height+'px'}"
-            lazy
-          >
+    <el-form ref="ref" :model="model" :rules="rules" label-width="150px">
+      <el-tabs>
+        <el-tab-pane label="文件设置" lazy>
+          <el-scrollbar native :height="height">
             <el-form-item label="前台上传" prop="is_upload_api">
               <el-switch v-model="model.is_upload_api" :active-value="1" :inactive-value="0" />
               <span> 关闭后，前台无法上传文件</span>
@@ -23,7 +13,7 @@
               <span> 关闭后，后台无法上传文件</span>
             </el-form-item>
             <el-form-item label="存储方式" prop="storage">
-              <el-select v-model="model.storage" placeholder="请选择">
+              <el-select v-model="model.storage" placeholder="请选择" class="!w-xs">
                 <el-option
                   v-for="(item, index) in storages"
                   :key="index"
@@ -33,31 +23,37 @@
                 />
               </el-select>
             </el-form-item>
-            <div v-if="model.storage=='local'">
-              <el-form-item label="">
+            <div v-if="model.storage == 'local'">
+              <el-form-item>
                 <el-card>
                   <div>
                     文件将存储在本地服务器，默认保存在 public/storage 目录，文件以散列 hash 命名。
-                    <br>
+                    <br />
                     文件存储的目录需要有读写权限（777），有足够的存储空间。
                   </div>
                 </el-card>
               </el-form-item>
             </div>
-            <div v-else-if="model.storage=='qiniu'">
-              <el-form-item label="">
+            <div v-else-if="model.storage == 'qiniu'">
+              <el-form-item>
                 <el-card>
                   <div>
-                    文件将上传到七牛云 Kodo 存储，对象存储 > 空间管理 > 空间设置 > 访问控制, 设置为 公开空间。
-                    <br>
-                    需要配置跨域访问 CORS 规则，设置：来源 Origin 为 *，允许 Methods 为 GET,POST，允许 Headers 为 *。
+                    文件将上传到七牛云 Kodo 存储，对象存储 > 空间管理 > 空间设置 > 访问控制, 设置为
+                    公开空间。
+                    <br />
+                    需要配置跨域访问 CORS 规则，设置：来源 Origin 为 *，允许 Methods 为
+                    GET,POST，允许 Headers 为 *。
                   </div>
                 </el-card>
               </el-form-item>
               <el-form-item label="AccessKey" prop="qiniu_access_key">
                 <el-col :span="11">
                   <el-input v-model="model.qiniu_access_key" clearable>
-                    <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.qiniu_access_key, $event)" />
+                    <template #append>
+                      <el-button title="复制" @click="copy(model.qiniu_access_key)">
+                        <svg-icon icon-class="copy-document" />
+                      </el-button>
+                    </template>
                   </el-input>
                 </el-col>
                 <el-col class="line" :span="13">
@@ -67,7 +63,11 @@
               <el-form-item label="SecretKey" prop="qiniu_secret_key">
                 <el-col :span="11">
                   <el-input v-model="model.qiniu_secret_key" clearable>
-                    <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.qiniu_secret_key, $event)" />
+                    <template #append>
+                      <el-button title="复制" @click="copy(model.qiniu_secret_key)">
+                        <svg-icon icon-class="copy-document" />
+                      </el-button>
+                    </template>
                   </el-input>
                 </el-col>
                 <el-col class="line" :span="13">
@@ -77,7 +77,11 @@
               <el-form-item label="空间名称" prop="qiniu_bucket">
                 <el-col :span="11">
                   <el-input v-model="model.qiniu_bucket" clearable>
-                    <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.qiniu_bucket, $event)" />
+                    <template #append>
+                      <el-button title="复制" @click="copy(model.qiniu_bucket)">
+                        <svg-icon icon-class="copy-document" />
+                      </el-button>
+                    </template>
                   </el-input>
                 </el-col>
                 <el-col class="line" :span="13">
@@ -87,7 +91,11 @@
               <el-form-item label="外链域名" prop="qiniu_domain">
                 <el-col :span="11">
                   <el-input v-model="model.qiniu_domain" clearable>
-                    <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.qiniu_domain, $event)" />
+                    <template #append>
+                      <el-button title="复制" @click="copy(model.qiniu_domain)">
+                        <svg-icon icon-class="copy-document" />
+                      </el-button>
+                    </template>
                   </el-input>
                 </el-col>
                 <el-col class="line" :span="13">
@@ -95,20 +103,25 @@
                 </el-col>
               </el-form-item>
             </div>
-            <div v-else-if="model.storage=='aliyun'">
-              <el-form-item label="">
+            <div v-else-if="model.storage == 'aliyun'">
+              <el-form-item>
                 <el-card>
                   <div>
                     文件将上传到阿里云 OSS 存储，需要配置 OSS 公开访问及跨域策略。
-                    <br>
-                    需要配置跨域访问 CORS 规则，设置：来源 Origin 为 *，允许 Methods 为 GET,POST，允许 Headers 为 *。
+                    <br />
+                    需要配置跨域访问 CORS 规则，设置：来源 Origin 为 *，允许 Methods 为
+                    GET,POST，允许 Headers 为 *。
                   </div>
                 </el-card>
               </el-form-item>
               <el-form-item label="AccessKey ID" prop="aliyun_access_key_id">
                 <el-col :span="11">
                   <el-input v-model="model.aliyun_access_key_id" clearable>
-                    <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.aliyun_access_key_id, $event)" />
+                    <template #append>
+                      <el-button title="复制" @click="copy(model.aliyun_access_key_id)">
+                        <svg-icon icon-class="copy-document" />
+                      </el-button>
+                    </template>
                   </el-input>
                 </el-col>
                 <el-col class="line" :span="13">
@@ -118,7 +131,11 @@
               <el-form-item label="AccessKey Secret" prop="aliyun_access_key_secret">
                 <el-col :span="11">
                   <el-input v-model="model.aliyun_access_key_secret" clearable>
-                    <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.aliyun_access_key_secret, $event)" />
+                    <template #append>
+                      <el-button title="复制" @click="copy(model.aliyun_access_key_secret)">
+                        <svg-icon icon-class="copy-document" />
+                      </el-button>
+                    </template>
                   </el-input>
                 </el-col>
                 <el-col class="line" :span="13">
@@ -128,7 +145,11 @@
               <el-form-item label="Bucket名称" prop="aliyun_bucket">
                 <el-col :span="11">
                   <el-input v-model="model.aliyun_bucket" clearable>
-                    <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.aliyun_bucket, $event)" />
+                    <template #append>
+                      <el-button title="复制" @click="copy(model.aliyun_bucket)">
+                        <svg-icon icon-class="copy-document" />
+                      </el-button>
+                    </template>
                   </el-input>
                 </el-col>
                 <el-col class="line" :span="13">
@@ -138,7 +159,11 @@
               <el-form-item label="Bucket域名" prop="aliyun_bucket_domain">
                 <el-col :span="11">
                   <el-input v-model="model.aliyun_bucket_domain" clearable>
-                    <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.aliyun_bucket_domain, $event)" />
+                    <template #append>
+                      <el-button title="复制" @click="copy(model.aliyun_bucket_domain)">
+                        <svg-icon icon-class="copy-document" />
+                      </el-button>
+                    </template>
                   </el-input>
                 </el-col>
                 <el-col class="line" :span="13">
@@ -148,7 +173,11 @@
               <el-form-item label="Endpoint地域节点" prop="aliyun_endpoint">
                 <el-col :span="11">
                   <el-input v-model="model.aliyun_endpoint" clearable>
-                    <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.aliyun_endpoint, $event)" />
+                    <template #append>
+                      <el-button title="复制" @click="copy(model.aliyun_endpoint)">
+                        <svg-icon icon-class="copy-document" />
+                      </el-button>
+                    </template>
                   </el-input>
                 </el-col>
                 <el-col class="line" :span="13">
@@ -156,20 +185,25 @@
                 </el-col>
               </el-form-item>
             </div>
-            <div v-else-if="model.storage=='tencent'">
-              <el-form-item label="">
+            <div v-else-if="model.storage == 'tencent'">
+              <el-form-item>
                 <el-card>
                   <div>
                     文件将上传到腾讯云 COS 存储，需要配置 COS 公有读私有写访问权限及跨域策略。
-                    <br>
-                    需要配置跨域访问 CORS 规则，设置：来源 Origin 为 *，允许 Methods 为 GET,POST，允许 Headers 为 *。
+                    <br />
+                    需要配置跨域访问 CORS 规则，设置：来源 Origin 为 *，允许 Methods 为
+                    GET,POST，允许 Headers 为 *。
                   </div>
                 </el-card>
               </el-form-item>
               <el-form-item label="SecretId" prop="tencent_secret_id">
                 <el-col :span="11">
                   <el-input v-model="model.tencent_secret_id" clearable>
-                    <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.tencent_secret_id, $event)" />
+                    <template #append>
+                      <el-button title="复制" @click="copy(model.tencent_secret_id)">
+                        <svg-icon icon-class="copy-document" />
+                      </el-button>
+                    </template>
                   </el-input>
                 </el-col>
                 <el-col class="line" :span="13">
@@ -179,7 +213,11 @@
               <el-form-item label="SecretKey" prop="tencent_secret_key">
                 <el-col :span="11">
                   <el-input v-model="model.tencent_secret_key" clearable>
-                    <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.tencent_secret_key, $event)" />
+                    <template #append>
+                      <el-button title="复制" @click="copy(model.tencent_secret_key)">
+                        <svg-icon icon-class="copy-document" />
+                      </el-button>
+                    </template>
                   </el-input>
                 </el-col>
                 <el-col class="line" :span="13">
@@ -189,7 +227,11 @@
               <el-form-item label="存储桶名称" prop="tencent_bucket">
                 <el-col :span="11">
                   <el-input v-model="model.tencent_bucket" clearable>
-                    <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.tencent_bucket, $event)" />
+                    <template #append>
+                      <el-button title="复制" @click="copy(model.tencent_bucket)">
+                        <svg-icon icon-class="copy-document" />
+                      </el-button>
+                    </template>
                   </el-input>
                 </el-col>
                 <el-col class="line" :span="13">
@@ -199,7 +241,11 @@
               <el-form-item label="所属地域" prop="tencent_region">
                 <el-col :span="11">
                   <el-input v-model="model.tencent_region" clearable>
-                    <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.tencent_region, $event)" />
+                    <template #append>
+                      <el-button title="复制" @click="copy(model.tencent_region)">
+                        <svg-icon icon-class="copy-document" />
+                      </el-button>
+                    </template>
                   </el-input>
                 </el-col>
                 <el-col class="line" :span="13">
@@ -209,7 +255,11 @@
               <el-form-item label="访问域名" prop="tencent_domain">
                 <el-col :span="11">
                   <el-input v-model="model.tencent_domain" clearable>
-                    <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.tencent_domain, $event)" />
+                    <template #append>
+                      <el-button title="复制" @click="copy(model.tencent_domain)">
+                        <svg-icon icon-class="copy-document" />
+                      </el-button>
+                    </template>
                   </el-input>
                 </el-col>
                 <el-col class="line" :span="13">
@@ -217,20 +267,26 @@
                 </el-col>
               </el-form-item>
             </div>
-            <div v-else-if="model.storage=='baidu'">
-              <el-form-item label="">
+            <div v-else-if="model.storage == 'baidu'">
+              <el-form-item>
                 <el-card>
                   <div>
-                    文件将上传到百度云 BOS 存储，对象存储 > Bucket列表 > 配置设置 > Bucket权限配置, 设置为 公共 *。
-                    <br>
-                    需要配置跨域访问 CORS 规则，设置：来源 Origin 为 *，允许 Methods 为 GET,POST，允许 Headers 为 *。
+                    文件将上传到百度云 BOS 存储，对象存储 > Bucket列表 > 配置设置 > Bucket权限配置,
+                    设置为 公共 *。
+                    <br />
+                    需要配置跨域访问 CORS 规则，设置：来源 Origin 为 *，允许 Methods 为
+                    GET,POST，允许 Headers 为 *。
                   </div>
                 </el-card>
               </el-form-item>
               <el-form-item label="Access Key" prop="baidu_access_key">
                 <el-col :span="11">
                   <el-input v-model="model.baidu_access_key" clearable>
-                    <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.baidu_access_key, $event)" />
+                    <template #append>
+                      <el-button title="复制" @click="copy(model.baidu_access_key)">
+                        <svg-icon icon-class="copy-document" />
+                      </el-button>
+                    </template>
                   </el-input>
                 </el-col>
                 <el-col class="line" :span="13">
@@ -240,7 +296,11 @@
               <el-form-item label="Secret Key" prop="baidu_secret_key">
                 <el-col :span="11">
                   <el-input v-model="model.baidu_secret_key" clearable>
-                    <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.baidu_secret_key, $event)" />
+                    <template #append>
+                      <el-button title="复制" @click="copy(model.baidu_secret_key)">
+                        <svg-icon icon-class="copy-document" />
+                      </el-button>
+                    </template>
                   </el-input>
                 </el-col>
                 <el-col class="line" :span="13">
@@ -250,7 +310,11 @@
               <el-form-item label="Bucket名称" prop="baidu_bucket">
                 <el-col :span="11">
                   <el-input v-model="model.baidu_bucket" clearable>
-                    <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.baidu_bucket, $event)" />
+                    <template #append>
+                      <el-button title="复制" @click="copy(model.baidu_bucket)">
+                        <svg-icon icon-class="copy-document" />
+                      </el-button>
+                    </template>
                   </el-input>
                 </el-col>
                 <el-col class="line" :span="13">
@@ -260,7 +324,11 @@
               <el-form-item label="官方域名" prop="baidu_domain">
                 <el-col :span="11">
                   <el-input v-model="model.baidu_domain" clearable>
-                    <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.baidu_domain, $event)" />
+                    <template #append>
+                      <el-button title="复制" @click="copy(model.baidu_domain)">
+                        <svg-icon icon-class="copy-document" />
+                      </el-button>
+                    </template>
                   </el-input>
                 </el-col>
                 <el-col class="line" :span="13">
@@ -270,7 +338,11 @@
               <el-form-item label="所属地域" prop="baidu_endpoint">
                 <el-col :span="11">
                   <el-input v-model="model.baidu_endpoint" clearable>
-                    <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.baidu_endpoint, $event)" />
+                    <template #append>
+                      <el-button title="复制" @click="copy(model.baidu_endpoint)">
+                        <svg-icon icon-class="copy-document" />
+                      </el-button>
+                    </template>
                   </el-input>
                 </el-col>
                 <el-col class="line" :span="13">
@@ -278,12 +350,13 @@
                 </el-col>
               </el-form-item>
             </div>
-            <div v-else-if="model.storage=='upyun'">
-              <el-form-item label="">
+            <div v-else-if="model.storage == 'upyun'">
+              <el-form-item>
                 <el-card>
                   <div>
-                    文件将上传到又拍云 USS 存储，云存储 > 服务管理 > 配置 > CORS 跨域共享, 设置为 已开启。
-                    <br>
+                    文件将上传到又拍云 USS 存储，云存储 > 服务管理 > 配置 > CORS 跨域共享, 设置为
+                    已开启。
+                    <br />
                     请根据业务域名和需求，配置 CORS 跨域共享 规则，CORS 配置。
                   </div>
                 </el-card>
@@ -291,7 +364,11 @@
               <el-form-item label="服务名称" prop="upyun_service_name">
                 <el-col :span="11">
                   <el-input v-model="model.upyun_service_name" clearable>
-                    <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.upyun_service_name, $event)" />
+                    <template #append>
+                      <el-button title="复制" @click="copy(model.upyun_service_name)">
+                        <svg-icon icon-class="copy-document" />
+                      </el-button>
+                    </template>
                   </el-input>
                 </el-col>
                 <el-col class="line" :span="13">
@@ -301,7 +378,11 @@
               <el-form-item label="操作员" prop="upyun_operator_name">
                 <el-col :span="11">
                   <el-input v-model="model.upyun_operator_name" clearable>
-                    <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.upyun_operator_name, $event)" />
+                    <template #append>
+                      <el-button title="复制" @click="copy(model.upyun_operator_name)">
+                        <svg-icon icon-class="copy-document" />
+                      </el-button>
+                    </template>
                   </el-input>
                 </el-col>
                 <el-col class="line" :span="13">
@@ -311,17 +392,26 @@
               <el-form-item label="操作员密码" prop="upyun_operator_pwd">
                 <el-col :span="11">
                   <el-input v-model="model.upyun_operator_pwd" clearable>
-                    <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.upyun_operator_pwd, $event)" />
+                    <template #append>
+                      <el-button title="复制" @click="copy(model.upyun_operator_pwd)">
+                        <svg-icon icon-class="copy-document" />
+                      </el-button>
+                    </template>
                   </el-input>
                 </el-col>
                 <el-col class="line" :span="13">
-                  操作员密码 在 [ 又拍云 > 云存储 > 服务管理 > 配置 > 存储管理-操作员授权 ] 设置和获取
+                  操作员密码 在 [ 又拍云 > 云存储 > 服务管理 > 配置 > 存储管理-操作员授权 ]
+                  设置和获取
                 </el-col>
               </el-form-item>
               <el-form-item label="加速域名" prop="upyun_domain">
                 <el-col :span="11">
                   <el-input v-model="model.upyun_domain" clearable>
-                    <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.upyun_domain, $event)" />
+                    <template #append>
+                      <el-button title="复制" @click="copy(model.upyun_domain)">
+                        <svg-icon icon-class="copy-document" />
+                      </el-button>
+                    </template>
                   </el-input>
                 </el-col>
                 <el-col class="line" :span="13">
@@ -329,12 +419,12 @@
                 </el-col>
               </el-form-item>
             </div>
-            <div v-else-if="model.storage=='aws'">
-              <el-form-item label="">
+            <div v-else-if="model.storage == 'aws'">
+              <el-form-item>
                 <el-card>
                   <div>
                     文件将上传到 AWS S3。
-                    <br>
+                    <br />
                     请根据业务域名和需求，配置 AWS S3 访问控制。
                   </div>
                 </el-card>
@@ -342,7 +432,11 @@
               <el-form-item label="Access Key ID" prop="aws_access_key_id">
                 <el-col :span="11">
                   <el-input v-model="model.aws_access_key_id" clearable>
-                    <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.aws_access_key_id, $event)" />
+                    <template #append>
+                      <el-button title="复制" @click="copy(model.aws_access_key_id)">
+                        <svg-icon icon-class="copy-document" />
+                      </el-button>
+                    </template>
                   </el-input>
                 </el-col>
                 <el-col class="line" :span="13">
@@ -352,7 +446,11 @@
               <el-form-item label="Secret Access KEY" prop="aws_secret_access_key">
                 <el-col :span="11">
                   <el-input v-model="model.aws_secret_access_key" clearable>
-                    <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.aws_secret_access_key, $event)" />
+                    <template #append>
+                      <el-button title="复制" @click="copy(model.aws_secret_access_key)">
+                        <svg-icon icon-class="copy-document" />
+                      </el-button>
+                    </template>
                   </el-input>
                 </el-col>
                 <el-col class="line" :span="13">
@@ -362,166 +460,147 @@
               <el-form-item label="区域终端节点" prop="aws_region">
                 <el-col :span="11">
                   <el-input v-model="model.aws_region" clearable>
-                    <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.aws_region, $event)" />
+                    <template #append>
+                      <el-button title="复制" @click="copy(model.aws_region)">
+                        <svg-icon icon-class="copy-document" />
+                      </el-button>
+                    </template>
                   </el-input>
                 </el-col>
-                <el-col class="line" :span="13">
-                  区域终端节点 在 [ AWS > S3 ] 设置和获取
-                </el-col>
+                <el-col class="line" :span="13"> 区域终端节点 在 [ AWS > S3 ] 设置和获取 </el-col>
               </el-form-item>
               <el-form-item label="存储桶名称" prop="aws_bucket">
                 <el-col :span="11">
                   <el-input v-model="model.aws_bucket" clearable>
-                    <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.aws_bucket, $event)" />
+                    <template #append>
+                      <el-button title="复制" @click="copy(model.aws_bucket)">
+                        <svg-icon icon-class="copy-document" />
+                      </el-button>
+                    </template>
                   </el-input>
                 </el-col>
-                <el-col class="line" :span="13">
-                  存储桶名称 在 [ AWS > S3 ] 设置和获取
-                </el-col>
+                <el-col class="line" :span="13"> 存储桶名称 在 [ AWS > S3 ] 设置和获取 </el-col>
               </el-form-item>
               <el-form-item label="访问域名" prop="aws_domain">
                 <el-col :span="11">
                   <el-input v-model="model.aws_domain" clearable>
-                    <el-button slot="append" icon="el-icon-document-copy" @click="copy(model.aws_domain, $event)" />
+                    <template #append>
+                      <el-button title="复制" @click="copy(model.aws_domain)">
+                        <svg-icon icon-class="copy-document" />
+                      </el-button>
+                    </template>
                   </el-input>
                 </el-col>
-                <el-col class="line" :span="13">
-                  访问域名 在 [ AWS > S3 ] 设置和获取
-                </el-col>
+                <el-col class="line" :span="13"> 访问域名 在 [ AWS > S3 ] 设置和获取 </el-col>
               </el-form-item>
             </div>
-          </el-tab-pane>
-          <el-tab-pane
-            label="文件限制"
-            class="dialog-body"
-            :style="{height:height+'px'}"
-            lazy
-          >
-            <el-form-item label="图片格式" prop="image_ext" class="ya-margin-bottom">
+          </el-scrollbar>
+        </el-tab-pane>
+        <el-tab-pane label="文件限制" lazy>
+          <el-scrollbar native :height="height">
+            <el-form-item label="图片格式" prop="image_ext" class="!mb-[5px]">
               <el-col :span="11">
                 <el-input v-model="model.image_ext" clearable />
               </el-col>
-              <el-col class="line" :span="13">
-                允许上传的图片后缀，逗号,隔开
-              </el-col>
+              <el-col class="line" :span="13"> 允许上传的图片后缀，逗号,隔开 </el-col>
             </el-form-item>
             <el-form-item label="图片大小" prop="image_size">
               <el-col :span="11">
                 <el-input v-model="model.image_size" type="number" clearable>
-                  <template slot="append">MB</template>
+                  <template #append>MB</template>
                 </el-input>
               </el-col>
-              <el-col class="line" :span="13">
-                允许上传的图片大小，单位 MB
-              </el-col>
+              <el-col class="line" :span="13"> 允许上传的图片大小，单位 MB </el-col>
             </el-form-item>
 
-            <el-form-item label="视频格式" prop="video_ext" class="ya-margin-bottom">
+            <el-form-item label="视频格式" prop="video_ext" class="!mb-[5px]">
               <el-col :span="11">
                 <el-input v-model="model.video_ext" clearable />
               </el-col>
-              <el-col class="line" :span="13">
-                允许上传的视频后缀，逗号,隔开
-              </el-col>
+              <el-col class="line" :span="13"> 允许上传的视频后缀，逗号,隔开 </el-col>
             </el-form-item>
             <el-form-item label="视频大小" prop="video_size">
               <el-col :span="11">
                 <el-input v-model="model.video_size" type="number" clearable>
-                  <template slot="append">MB</template>
+                  <template #append>MB</template>
                 </el-input>
               </el-col>
-              <el-col class="line" :span="13">
-                允许上传的视频大小，单位 MB
-              </el-col>
+              <el-col class="line" :span="13"> 允许上传的视频大小，单位 MB </el-col>
             </el-form-item>
 
-            <el-form-item label="音频格式" prop="audio_ext" class="ya-margin-bottom">
+            <el-form-item label="音频格式" prop="audio_ext" class="!mb-[5px]">
               <el-col :span="11">
                 <el-input v-model="model.audio_ext" clearable />
               </el-col>
-              <el-col class="line" :span="13">
-                允许上传的音频后缀，逗号,隔开
-              </el-col>
+              <el-col class="line" :span="13"> 允许上传的音频后缀，逗号,隔开 </el-col>
             </el-form-item>
             <el-form-item label="音频大小" prop="audio_size">
               <el-col :span="11">
                 <el-input v-model="model.audio_size" type="number" clearable>
-                  <template slot="append">MB</template>
+                  <template #append>MB</template>
                 </el-input>
               </el-col>
-              <el-col class="line" :span="13">
-                允许上传的音频大小，单位 MB
-              </el-col>
+              <el-col class="line" :span="13"> 允许上传的音频大小，单位 MB </el-col>
             </el-form-item>
 
-            <el-form-item label="文档格式" prop="word_ext" class="ya-margin-bottom">
+            <el-form-item label="文档格式" prop="word_ext" class="!mb-[5px]">
               <el-col :span="11">
                 <el-input v-model="model.word_ext" clearable />
               </el-col>
-              <el-col class="line" :span="13">
-                允许上传的文档后缀，逗号,隔开
-              </el-col>
+              <el-col class="line" :span="13"> 允许上传的文档后缀，逗号,隔开 </el-col>
             </el-form-item>
             <el-form-item label="文档大小" prop="word_size">
               <el-col :span="11">
                 <el-input v-model="model.word_size" type="number" clearable>
-                  <template slot="append">MB</template>
+                  <template #append>MB</template>
                 </el-input>
               </el-col>
-              <el-col class="line" :span="13">
-                允许上传的文档大小，单位 MB
-              </el-col>
+              <el-col class="line" :span="13"> 允许上传的文档大小，单位 MB </el-col>
             </el-form-item>
 
-            <el-form-item label="其它格式" prop="other_ext" class="ya-margin-bottom">
+            <el-form-item label="其它格式" prop="other_ext" class="!mb-[5px]">
               <el-col :span="11">
                 <el-input v-model="model.other_ext" clearable />
               </el-col>
-              <el-col class="line" :span="13">
-                允许上传的其它文件后缀，逗号,隔开
-              </el-col>
+              <el-col class="line" :span="13"> 允许上传的其它文件后缀，逗号,隔开 </el-col>
             </el-form-item>
             <el-form-item label="其它大小" prop="other_size">
               <el-col :span="11">
                 <el-input v-model="model.other_size" type="number" clearable>
-                  <template slot="append">MB</template>
+                  <template #append>MB</template>
                 </el-input>
               </el-col>
-              <el-col class="line" :span="13">
-                允许上传的其它文件大小，单位 MB
-              </el-col>
+              <el-col class="line" :span="13"> 允许上传的其它文件大小，单位 MB </el-col>
             </el-form-item>
 
-            <el-form-item label="最大上传个数" prop="limit_max" class="ya-margin-bottom">
+            <el-form-item label="最大上传个数" prop="limit_max" class="!mb-[5px]">
               <el-col :span="11">
                 <el-input v-model="model.limit_max" type="number" clearable />
               </el-col>
-              <el-col class="line" :span="13">
-                允许上传最大文件个数（每次最多选择）
-              </el-col>
+              <el-col class="line" :span="13"> 允许上传最大文件个数（每次最多选择） </el-col>
             </el-form-item>
-          </el-tab-pane>
-        </el-tabs>
-      </el-form>
-      <el-form label-width="150px">
-        <el-form-item>
-          <el-button :loading="loading" @click="refresh()">刷新</el-button>
-          <el-button :loading="loading" type="primary" @click="submit()">提交</el-button>
-        </el-form-item>
-      </el-form>
-    </el-card>
+          </el-scrollbar>
+        </el-tab-pane>
+      </el-tabs>
+    </el-form>
+    <el-form label-width="150px">
+      <el-form-item>
+        <el-button :loading="loading" @click="refresh()">刷新</el-button>
+        <el-button :loading="loading" type="primary" @click="submit()">提交</el-button>
+      </el-form-item>
+    </el-form>
   </div>
 </template>
 
 <script>
 import screenHeight from '@/utils/screen-height'
-import checkPermission from '@/utils/permission' // 权限判断函数
+import checkPermission from '@/utils/permission'
 import clip from '@/utils/clipboard'
 import { info, edit } from '@/api/file/setting'
 
 export default {
   name: 'FileSetting',
-  components: {},
+
   data() {
     return {
       name: '文件设置',
@@ -578,7 +657,9 @@ export default {
         qiniu_bucket: [{ required: true, message: '请输入空间名称', trigger: 'blur' }],
         qiniu_domain: [{ required: true, message: '请输入外链域名', trigger: 'blur' }],
         aliyun_access_key_id: [{ required: true, message: '请输入 AccessKey ID', trigger: 'blur' }],
-        aliyun_access_key_secret: [{ required: true, message: '请输入 AccessKey Secret', trigger: 'blur' }],
+        aliyun_access_key_secret: [
+          { required: true, message: '请输入 AccessKey Secret', trigger: 'blur' }
+        ],
         aliyun_bucket: [{ required: true, message: '请输入 Bucket 名称', trigger: 'blur' }],
         aliyun_bucket_domain: [{ required: true, message: '请输入 Bucket 域名', trigger: 'blur' }],
         aliyun_endpoint: [{ required: true, message: '请输入 Endpoint 地域节点', trigger: 'blur' }],
@@ -597,7 +678,9 @@ export default {
         upyun_operator_pwd: [{ required: true, message: '请输入操作员密码', trigger: 'blur' }],
         upyun_domain: [{ required: true, message: '请输入加速域名', trigger: 'blur' }],
         aws_access_key_id: [{ required: true, message: '请输入 Access Key ID', trigger: 'blur' }],
-        aws_secret_access_key: [{ required: true, message: '请输入 Secret Access Key', trigger: 'blur' }],
+        aws_secret_access_key: [
+          { required: true, message: '请输入 Secret Access Key', trigger: 'blur' }
+        ],
         aws_bucket: [{ required: true, message: '请输入存储桶名称', trigger: 'blur' }],
         aws_region: [{ required: true, message: '请输入区域终端节点', trigger: 'blur' }],
         aws_domain: [{ required: true, message: '请输入访问域名', trigger: 'blur' }]
@@ -620,26 +703,30 @@ export default {
     // 刷新
     refresh() {
       this.loading = true
-      info().then((res) => {
-        this.model = res.data
-        this.storages = res.data.storages
-        this.loading = false
-        this.$message.success(res.msg)
-      }).catch(() => {
-        this.loading = false
-      })
+      info()
+        .then((res) => {
+          this.model = res.data
+          this.storages = res.data.storages
+          this.loading = false
+          ElMessage.success(res.msg)
+        })
+        .catch(() => {
+          this.loading = false
+        })
     },
     // 提交
     submit() {
       this.$refs['ref'].validate((valid) => {
         if (valid) {
           this.loading = true
-          edit(this.model).then((res) => {
-            this.loading = false
-            this.$message.success(res.msg)
-          }).catch(() => {
-            this.loading = false
-          })
+          edit(this.model)
+            .then((res) => {
+              this.loading = false
+              ElMessage.success(res.msg)
+            })
+            .catch(() => {
+              this.loading = false
+            })
         }
       })
     },
@@ -656,9 +743,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-.ya-margin-bottom {
-  margin-bottom: 5px;
-}
-</style>

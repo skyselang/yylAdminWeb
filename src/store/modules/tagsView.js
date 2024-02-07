@@ -1,160 +1,209 @@
-const state = {
-  visitedViews: [],
-  cachedViews: []
-}
+import { defineStore } from 'pinia'
 
-const mutations = {
-  ADD_VISITED_VIEW: (state, view) => {
-    if (state.visitedViews.some(v => v.path === view.path)) return
-    state.visitedViews.push(
-      Object.assign({}, view, {
-        title: view.meta.title || 'no-name'
-      })
-    )
-  },
-  ADD_CACHED_VIEW: (state, view) => {
-    if (state.cachedViews.includes(view.name)) return
-    if (!view.meta.noCache) {
-      state.cachedViews.push(view.name)
+export const useTagsViewStore = defineStore('tagsView', () => {
+  const visitedViews = ref([])
+  const cachedViews = ref([])
+
+  /**
+   * 添加已访问视图到已访问视图列表中
+   */
+  function addVisitedView(view) {
+    // 如果已经存在于已访问的视图列表中，则不再添加
+    if (visitedViews.value.some((v) => v.fullPath === view.fullPath)) {
+      return
     }
-  },
-
-  DEL_VISITED_VIEW: (state, view) => {
-    for (const [i, v] of state.visitedViews.entries()) {
-      if (v.path === view.path) {
-        state.visitedViews.splice(i, 1)
-        break
-      }
-    }
-  },
-  DEL_CACHED_VIEW: (state, view) => {
-    const index = state.cachedViews.indexOf(view.name)
-    index > -1 && state.cachedViews.splice(index, 1)
-  },
-
-  DEL_OTHERS_VISITED_VIEWS: (state, view) => {
-    state.visitedViews = state.visitedViews.filter(v => {
-      return v.meta.affix || v.path === view.path
-    })
-  },
-  DEL_OTHERS_CACHED_VIEWS: (state, view) => {
-    const index = state.cachedViews.indexOf(view.name)
-    if (index > -1) {
-      state.cachedViews = state.cachedViews.slice(index, index + 1)
+    // 如果视图是固定的（affix），则在已访问的视图列表的开头添加
+    if (view.affix) {
+      visitedViews.value.unshift(view)
     } else {
-      // if index = -1, there is no cached tags
-      state.cachedViews = []
+      // 如果视图不是固定的，则在已访问的视图列表的末尾添加
+      visitedViews.value.push(view)
     }
-  },
+  }
 
-  DEL_ALL_VISITED_VIEWS: state => {
-    // keep affix tags
-    const affixTags = state.visitedViews.filter(tag => tag.meta.affix)
-    state.visitedViews = affixTags
-  },
-  DEL_ALL_CACHED_VIEWS: state => {
-    state.cachedViews = []
-  },
+  /**
+   * 添加缓存视图到缓存视图列表中
+   */
+  function addCachedView(view) {
+    const viewName = view.name
+    // 如果缓存视图名称已经存在于缓存视图列表中，则不再添加
+    if (cachedViews.value.includes(viewName)) {
+      return
+    }
 
-  UPDATE_VISITED_VIEW: (state, view) => {
-    for (let v of state.visitedViews) {
+    // 如果视图需要缓存（keepAlive），则将其路由名称添加到缓存视图列表中
+    if (view.keepAlive) {
+      cachedViews.value.push(viewName)
+    }
+  }
+
+  /**
+   * 从已访问视图列表中删除指定的视图
+   */
+  function delVisitedView(view) {
+    return new Promise((resolve) => {
+      for (const [i, v] of visitedViews.value.entries()) {
+        // 找到与指定视图路径匹配的视图，在已访问视图列表中删除该视图
+        if (v.path === view.path) {
+          visitedViews.value.splice(i, 1)
+          break
+        }
+      }
+      resolve([...visitedViews.value])
+    })
+  }
+
+  function delCachedView(view) {
+    const viewName = view.name
+    return new Promise((resolve) => {
+      const index = cachedViews.value.indexOf(viewName)
+      index > -1 && cachedViews.value.splice(index, 1)
+      resolve([...cachedViews.value])
+    })
+  }
+
+  function delOtherVisitedViews(view) {
+    return new Promise((resolve) => {
+      visitedViews.value = visitedViews.value.filter((v) => {
+        return v?.affix || v.path === view.path
+      })
+      resolve([...visitedViews.value])
+    })
+  }
+
+  function delOtherCachedViews(view) {
+    const viewName = view.name
+    return new Promise((resolve) => {
+      const index = cachedViews.value.indexOf(viewName)
+      if (index > -1) {
+        cachedViews.value = cachedViews.value.slice(index, index + 1)
+      } else {
+        // 如果index=-1，则没有缓存的标签
+        cachedViews.value = []
+      }
+      resolve([...cachedViews.value])
+    })
+  }
+
+  function updateVisitedView(view) {
+    for (let v of visitedViews.value) {
       if (v.path === view.path) {
         v = Object.assign(v, view)
         break
       }
     }
   }
-}
 
-const actions = {
-  addView({ dispatch }, view) {
-    dispatch('addVisitedView', view)
-    dispatch('addCachedView', view)
-  },
-  addVisitedView({ commit }, view) {
-    commit('ADD_VISITED_VIEW', view)
-  },
-  addCachedView({ commit }, view) {
-    commit('ADD_CACHED_VIEW', view)
-  },
-
-  delView({ dispatch, state }, view) {
-    return new Promise(resolve => {
-      dispatch('delVisitedView', view)
-      dispatch('delCachedView', view)
-      resolve({
-        visitedViews: [...state.visitedViews],
-        cachedViews: [...state.cachedViews]
-      })
-    })
-  },
-  delVisitedView({ commit, state }, view) {
-    return new Promise(resolve => {
-      commit('DEL_VISITED_VIEW', view)
-      resolve([...state.visitedViews])
-    })
-  },
-  delCachedView({ commit, state }, view) {
-    return new Promise(resolve => {
-      commit('DEL_CACHED_VIEW', view)
-      resolve([...state.cachedViews])
-    })
-  },
-
-  delOthersViews({ dispatch, state }, view) {
-    return new Promise(resolve => {
-      dispatch('delOthersVisitedViews', view)
-      dispatch('delOthersCachedViews', view)
-      resolve({
-        visitedViews: [...state.visitedViews],
-        cachedViews: [...state.cachedViews]
-      })
-    })
-  },
-  delOthersVisitedViews({ commit, state }, view) {
-    return new Promise(resolve => {
-      commit('DEL_OTHERS_VISITED_VIEWS', view)
-      resolve([...state.visitedViews])
-    })
-  },
-  delOthersCachedViews({ commit, state }, view) {
-    return new Promise(resolve => {
-      commit('DEL_OTHERS_CACHED_VIEWS', view)
-      resolve([...state.cachedViews])
-    })
-  },
-
-  delAllViews({ dispatch, state }, view) {
-    return new Promise(resolve => {
-      dispatch('delAllVisitedViews', view)
-      dispatch('delAllCachedViews', view)
-      resolve({
-        visitedViews: [...state.visitedViews],
-        cachedViews: [...state.cachedViews]
-      })
-    })
-  },
-  delAllVisitedViews({ commit, state }) {
-    return new Promise(resolve => {
-      commit('DEL_ALL_VISITED_VIEWS')
-      resolve([...state.visitedViews])
-    })
-  },
-  delAllCachedViews({ commit, state }) {
-    return new Promise(resolve => {
-      commit('DEL_ALL_CACHED_VIEWS')
-      resolve([...state.cachedViews])
-    })
-  },
-
-  updateVisitedView({ commit }, view) {
-    commit('UPDATE_VISITED_VIEW', view)
+  function addView(view) {
+    addVisitedView(view)
+    addCachedView(view)
   }
-}
 
-export default {
-  namespaced: true,
-  state,
-  mutations,
-  actions
-}
+  function delView(view) {
+    return new Promise((resolve) => {
+      delVisitedView(view)
+      delCachedView(view)
+      resolve({
+        visitedViews: [...visitedViews.value],
+        cachedViews: [...cachedViews.value]
+      })
+    })
+  }
+
+  function delOtherViews(view) {
+    return new Promise((resolve) => {
+      delOtherVisitedViews(view)
+      delOtherCachedViews(view)
+      resolve({
+        visitedViews: [...visitedViews.value],
+        cachedViews: [...cachedViews.value]
+      })
+    })
+  }
+
+  function delLeftViews(view) {
+    return new Promise((resolve) => {
+      const currIndex = visitedViews.value.findIndex((v) => v.path === view.path)
+      if (currIndex === -1) {
+        return
+      }
+      visitedViews.value = visitedViews.value.filter((item, index) => {
+        if (index >= currIndex || item?.affix) {
+          return true
+        }
+
+        const cacheIndex = cachedViews.value.indexOf(item.name)
+        if (cacheIndex > -1) {
+          cachedViews.value.splice(cacheIndex, 1)
+        }
+        return false
+      })
+      resolve({
+        visitedViews: [...visitedViews.value]
+      })
+    })
+  }
+  function delRightViews(view) {
+    return new Promise((resolve) => {
+      const currIndex = visitedViews.value.findIndex((v) => v.path === view.path)
+      if (currIndex === -1) {
+        return
+      }
+      visitedViews.value = visitedViews.value.filter((item, index) => {
+        if (index <= currIndex || item?.affix) {
+          return true
+        }
+      })
+      resolve({
+        visitedViews: [...visitedViews.value]
+      })
+    })
+  }
+
+  function delAllViews() {
+    return new Promise((resolve) => {
+      const affixTags = visitedViews.value.filter((tag) => tag?.affix)
+      visitedViews.value = affixTags
+      cachedViews.value = []
+      resolve({
+        visitedViews: [...visitedViews.value],
+        cachedViews: [...cachedViews.value]
+      })
+    })
+  }
+
+  function delAllVisitedViews() {
+    return new Promise((resolve) => {
+      const affixTags = visitedViews.value.filter((tag) => tag?.affix)
+      visitedViews.value = affixTags
+      resolve([...visitedViews.value])
+    })
+  }
+
+  function delAllCachedViews() {
+    return new Promise((resolve) => {
+      cachedViews.value = []
+      resolve([...cachedViews.value])
+    })
+  }
+
+  return {
+    visitedViews,
+    cachedViews,
+    addVisitedView,
+    addCachedView,
+    delVisitedView,
+    delCachedView,
+    delOtherVisitedViews,
+    delOtherCachedViews,
+    updateVisitedView,
+    addView,
+    delView,
+    delOtherViews,
+    delLeftViews,
+    delRightViews,
+    delAllViews,
+    delAllVisitedViews,
+    delAllCachedViews
+  }
+})

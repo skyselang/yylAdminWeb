@@ -1,53 +1,46 @@
 <template>
-  <div>
-    <el-card v-loading="loading" class="dialog-body" :style="{height:height+'px'}">
-      <el-row>
-        <el-col :span="12">
-          <el-form
-            ref="ref"
-            :rules="rules"
-            :model="model"
-            label-width="120px"
-          >
-            <el-form-item label="旧密码" prop="password_old">
-              <el-input
-                v-model="model.password_old"
-                type="password"
-                placeholder="请输入旧密码"
-                autocomplete="off"
-                clearable
-                show-password
-              />
-            </el-form-item>
-            <el-form-item label="新密码" prop="password_new">
-              <el-input
-                v-model="model.password_new"
-                type="password"
-                placeholder="请输入新密码"
-                autocomplete="off"
-                clearable
-                show-password
-              />
-            </el-form-item>
-            <el-form-item label="确认新密码" prop="password_confirm">
-              <el-input
-                v-model="model.password_confirm"
-                type="password"
-                placeholder="请再次输入新密码"
-                autocomplete="off"
-                clearable
-                show-password
-              />
-            </el-form-item>
-            <el-form-item>
-              <el-button :loading="loading" @click="reset">重置</el-button>
-              <el-button :loading="loading" type="primary" @click="submit">提交</el-button>
-            </el-form-item>
-          </el-form>
-        </el-col>
-      </el-row>
-    </el-card>
-  </div>
+  <el-scrollbar native :height="height">
+    <el-row>
+      <el-col :span="12">
+        <el-form ref="ref" :rules="rules" :model="model" label-width="120px">
+          <el-form-item label="旧密码" prop="password_old">
+            <el-input
+              v-model="model.password_old"
+              type="password"
+              placeholder="请输入旧密码"
+              autocomplete="off"
+              clearable
+              show-password
+            />
+          </el-form-item>
+          <el-form-item label="新密码" prop="password_new">
+            <el-input
+              v-model="model.password_new"
+              type="password"
+              placeholder="请输入新密码"
+              autocomplete="off"
+              clearable
+              show-password
+            />
+          </el-form-item>
+          <el-form-item label="确认新密码" prop="password_confirm">
+            <el-input
+              v-model="model.password_confirm"
+              type="password"
+              placeholder="请再次输入新密码"
+              autocomplete="off"
+              clearable
+              show-password
+            />
+          </el-form-item>
+          <el-form-item>
+            <el-button :loading="loading" @click="reset">重置</el-button>
+            <el-button :loading="loading" type="primary" @click="submit">提交</el-button>
+          </el-form-item>
+        </el-form>
+      </el-col>
+    </el-row>
+  </el-scrollbar>
 </template>
 
 <script>
@@ -56,7 +49,6 @@ import { pwd } from '@/api/system/user-center'
 
 export default {
   name: 'SystemUserCenterPwd',
-  components: {},
   data() {
     var validatePasswordConfirm = (rule, value, callback) => {
       if (value !== this.model.password_new) {
@@ -77,12 +69,15 @@ export default {
       rules: {
         password_old: [{ required: true, message: '请输入旧密码', trigger: 'blur' }],
         password_new: [{ required: true, message: '请输入新密码', trigger: 'blur' }],
-        password_confirm: [{ required: true, message: '请再次输入新密码', trigger: 'blur' }, { validator: validatePasswordConfirm, trigger: 'blur' }]
+        password_confirm: [
+          { required: true, message: '请再次输入新密码', trigger: 'blur' },
+          { validator: validatePasswordConfirm, trigger: 'blur' }
+        ]
       }
     }
   },
   created() {
-    this.height = screenHeight(180)
+    this.height = screenHeight(210)
   },
   methods: {
     // 重置
@@ -92,15 +87,17 @@ export default {
     },
     // 提交
     submit() {
-      this.$refs['ref'].validate(valid => {
+      this.$refs['ref'].validate((valid) => {
         if (valid) {
           this.loading = true
-          pwd(this.model).then(res => {
-            this.loading = false
-            this.$message.success(res.msg)
-          }).catch(() => {
-            this.loading = false
-          })
+          pwd(this.model)
+            .then((res) => {
+              this.loading = false
+              ElMessage.success(res.msg)
+            })
+            .catch(() => {
+              this.loading = false
+            })
         }
       })
     }

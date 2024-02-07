@@ -1,29 +1,19 @@
 <template>
-  <div id="app">
-    <theme-picker v-show="false" @change="themeChange" />
+  <el-config-provider :locale="appStore.locale" :size="appStore.size">
     <router-view />
-  </div>
+  </el-config-provider>
 </template>
 
-<script>
-import ThemePicker from '@/components/ThemePicker'
-import { getThemeColor } from '@/utils/settings'
+<script setup>
+import { useAppStore } from '@/store/modules/app'
+import { useSettingsStore } from '@/store/modules/settings'
+const appStore = useAppStore()
+const settingsStore = useSettingsStore()
 
-export default {
-  name: 'App',
-  components: { ThemePicker },
-  mounted() {
-    if (getThemeColor()) {
-      this.themeChange(getThemeColor())
-    }
-  },
-  methods: {
-    themeChange(val) {
-      this.$store.dispatch('settings/changeSetting', {
-        key: 'theme',
-        value: val
-      })
-    }
-  }
-}
+onMounted(() => {
+  settingsStore.changeSetting({ key: 'layout', value: settingsStore.layout })
+  settingsStore.changeSetting({ key: 'theme', value: settingsStore.theme })
+  settingsStore.changeSetting({ key: 'themeColor', value: settingsStore.themeColor })
+  settingsStore.changeSetting({ key: 'faviconUrl', value: settingsStore.faviconUrl })
+})
 </script>

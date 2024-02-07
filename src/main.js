@@ -1,29 +1,21 @@
-import Vue from 'vue'
+import { createApp } from 'vue'
+import App from './App.vue'
+import router from '@/router'
+import { setupStore } from '@/store'
+import 'default-passive-events'
 
-import { getElementSize } from '@/utils/settings'
+import '@/permission'
 
-import 'normalize.css/normalize.css' // 重置css
+import 'virtual:svg-icons-register'
 
-import Element from 'element-ui'
-import './styles/element-variables.scss'
+import i18n from '@/lang/index'
 
-import '@/styles/index.scss' // 全局css
+import 'element-plus/theme-chalk/dark/css-vars.css'
+import '@/styles/index.scss'
+import 'uno.css'
 
-import App from './App'
-import store from './store'
-import router from './router'
-
-import './permission' // 权限控制
-
-Vue.use(Element, {
-  size: getElementSize() // 设置 element-ui 默认 size
-})
-
-Vue.config.productionTip = false
-
-new Vue({
-  el: '#app',
-  router,
-  store,
-  render: h => h(App)
-})
+const app = createApp(App)
+setupStore(app)
+app.use(router)
+app.use(i18n)
+app.mount('#app')

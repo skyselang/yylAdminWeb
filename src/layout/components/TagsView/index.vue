@@ -1,322 +1,423 @@
 <template>
-  <div id="tags-view-container" class="tags-view-container">
-    <scroll-pane
-      ref="scrollPane"
-      class="tags-view-wrapper"
-      @scroll="handleScroll"
-    >
+  <div class="tags-container">
+    <scroll-pane ref="scrollPaneRef" @scroll="handleScroll">
       <router-link
+        ref="tagRef"
         v-for="tag in visitedViews"
-        ref="tag"
-        :key="tag.path"
-        :class="isActive(tag) ? 'active' : ''"
-        :to="{ path: tag.path, query: tag.query, fullPath: tag.fullPath }"
-        class="tags-view-item"
-        @click.middle.native="!isAffix(tag) ? closeSelectedTag(tag) : ''"
-        @contextmenu.prevent.native="openMenu(tag, $event)"
+        :key="tag.fullPath"
+        :class="'tags-item ' + (isActive(tag) ? 'active' : '')"
+        :to="{ path: tag.fullPath, query: tag.query }"
+        @click.middle="!isAffix(tag) ? closeSelectedTag(tag) : ''"
+        @contextmenu.prevent="openTagMenu(tag, $event)"
       >
-        {{ tag.title }}
-        <a
+        {{ translateRouteTitle(tag.title) }}
+        <span
           v-if="!isAffix(tag)"
-          class="el-icon-close"
+          class="tags-item-close"
           @click.prevent.stop="closeSelectedTag(tag)"
-        />
+        >
+          <svg-icon icon-class="close" />
+        </span>
       </router-link>
     </scroll-pane>
-    <ul
-      v-show="visible"
-      :style="{ left: left + 'px', top: top + 'px' }"
-      class="contextmenu"
-    >
-      <li @click="refreshSelectedTag(selectedTag)">刷新</li>
-      <li v-if="!isAffix(selectedTag)" @click="closeSelectedTag(selectedTag)">
-        关闭
+
+    <!-- tag标签操作菜单 -->
+    <ul v-show="tagMenuVisible" class="tag-menu" :style="{ left: left + 'px', top: top + 'px' }">
+      <li @click="refreshSelectedTag(selectedTag)">
+        <svg-icon icon-class="refresh" />
+        {{ $t('TagsView.Refresh') }}
       </li>
-      <li @click="closeOthersTags">关闭其它</li>
-      <li @click="closeAllTags(selectedTag)">关闭所有</li>
+      <li v-if="!isAffix(selectedTag)" @click="closeSelectedTag(selectedTag)">
+        <svg-icon icon-class="close" />
+        {{ $t('TagsView.Close') }}
+      </li>
+      <li @click="closeOtherTags">
+        <svg-icon icon-class="sort" />
+        {{ $t('TagsView.Close Other') }}
+      </li>
+      <li v-if="!isFirstView()" @click="closeLeftTags">
+        <svg-icon icon-class="back" />
+        {{ $t('TagsView.Close left side') }}
+      </li>
+      <li v-if="!isLastView()" @click="closeRightTags">
+        <svg-icon icon-class="right" />
+        {{ $t('TagsView.Close right side') }}
+      </li>
+      <li @click="closeAllTags(selectedTag)">
+        <svg-icon icon-class="rank" />
+        {{ $t('TagsView.Close all') }}
+      </li>
     </ul>
   </div>
 </template>
 
-<script>
-import ScrollPane from './ScrollPane'
-import path from 'path'
+<script setup>
+import { getCurrentInstance } from 'vue'
+import { resolve } from 'path-browserify'
+import { storeToRefs } from 'pinia'
+import { useRoute, useRouter } from 'vue-router'
+import { translateRouteTitle } from '@/utils/i18n'
+import { useAppStore } from '@/store/modules/app'
+import { useSettingsStore } from '@/store/modules/settings'
+import { usePermissionStore } from '@/store/modules/permission'
+import { useTagsViewStore } from '@/store/modules/tagsView'
+import ScrollPane from './ScrollPane.vue'
 
-export default {
-  components: { ScrollPane },
-  data() {
-    return {
-      visible: false,
-      top: 0,
-      left: 0,
-      selectedTag: {},
-      affixTags: []
-    }
-  },
-  computed: {
-    visitedViews() {
-      return this.$store.state.tagsView.visitedViews
-    },
-    routes() {
-      return this.$store.state.permission.routes
-    },
-    theme() {
-      this.setTheme(this.$store.state.settings.theme)
-      return this.$store.state.settings.theme
-    }
-  },
-  watch: {
-    $route() {
-      this.addTags()
-      this.moveToCurrentTag()
-    },
-    visible(value) {
-      if (value) {
-        document.body.addEventListener('click', this.closeMenu)
-      } else {
-        document.body.removeEventListener('click', this.closeMenu)
-      }
-    },
-    theme(value) {
-      this.setTheme(value)
-    }
-  },
-  mounted() {
-    this.initTags()
-    this.addTags()
-  },
-  methods: {
-    setTheme(theme) {
-      if (theme) {
-        document
-          .getElementsByTagName('body')[0]
-          .style.setProperty('--theme', theme)
-      }
-    },
-    isActive(route) {
-      return route.path === this.$route.path
-    },
-    isAffix(tag) {
-      return tag.meta && tag.meta.affix
-    },
-    filterAffixTags(routes, basePath = '/') {
-      let tags = []
-      routes.forEach((route) => {
-        if (route.meta && route.meta.affix) {
-          const tagPath = path.resolve(basePath, route.path)
-          tags.push({
-            fullPath: tagPath,
-            path: tagPath,
-            name: route.name,
-            meta: { ...route.meta }
-          })
-        }
-        if (route.children) {
-          const tempTags = this.filterAffixTags(route.children, route.path)
-          if (tempTags.length >= 1) {
-            tags = [...tags, ...tempTags]
-          }
-        }
-      })
-      return tags
-    },
-    initTags() {
-      const affixTags = (this.affixTags = this.filterAffixTags(this.routes))
-      for (const tag of affixTags) {
-        // Must have tag name
-        if (tag.name) {
-          this.$store.dispatch('tagsView/addVisitedView', tag)
-        }
-      }
-    },
-    addTags() {
-      const { name } = this.$route
-      if (name) {
-        this.$store.dispatch('tagsView/addView', this.$route)
-      }
-      return false
-    },
-    moveToCurrentTag() {
-      const tags = this.$refs.tag
-      this.$nextTick(() => {
-        for (const tag of tags) {
-          if (tag.to.path === this.$route.path) {
-            this.$refs.scrollPane.moveToTarget(tag)
-            // when query is different then update
-            if (tag.to.fullPath !== this.$route.fullPath) {
-              this.$store.dispatch('tagsView/updateVisitedView', this.$route)
-            }
-            break
-          }
-        }
-      })
-    },
-    refreshSelectedTag(view) {
-      this.$store.dispatch('tagsView/delCachedView', view).then(() => {
-        const { fullPath } = view
-        this.$nextTick(() => {
-          this.$router.replace({
-            path: '/redirect' + fullPath
-          })
-        })
-      })
-    },
-    closeSelectedTag(view) {
-      this.$store
-        .dispatch('tagsView/delView', view)
-        .then(({ visitedViews }) => {
-          if (this.isActive(view)) {
-            this.toLastView(visitedViews, view)
-          }
-        })
-    },
-    closeOthersTags() {
-      this.$router.push(this.selectedTag)
-      this.$store
-        .dispatch('tagsView/delOthersViews', this.selectedTag)
-        .then(() => {
-          this.moveToCurrentTag()
-        })
-    },
-    closeAllTags(view) {
-      this.$store.dispatch('tagsView/delAllViews').then(({ visitedViews }) => {
-        if (this.affixTags.some((tag) => tag.path === view.path)) {
-          return
-        }
-        this.toLastView(visitedViews, view)
-      })
-    },
-    toLastView(visitedViews, view) {
-      const latestView = visitedViews.slice(-1)[0]
-      if (latestView) {
-        this.$router.push(latestView.fullPath)
-      } else {
-        // now the default is to redirect to the home page if there is no tags-view,
-        // you can adjust it according to your needs.
-        if (view.name === 'Dashboard') {
-          // to reload home page
-          this.$router.replace({ path: '/redirect' + view.fullPath })
-        } else {
-          this.$router.push('/')
-        }
-      }
-    },
-    openMenu(tag, e) {
-      const menuMinWidth = 105
-      const offsetLeft = this.$el.getBoundingClientRect().left // container margin left
-      const offsetWidth = this.$el.offsetWidth // container width
-      const maxLeft = offsetWidth - menuMinWidth // left boundary
-      const left = e.clientX - offsetLeft + 15 // 15: margin right
+const { proxy } = getCurrentInstance()
+const router = useRouter()
+const route = useRoute()
 
-      if (left > maxLeft) {
-        this.left = maxLeft
-      } else {
-        this.left = left
-      }
+const permissionStore = usePermissionStore()
+const tagsViewStore = useTagsViewStore()
+const appStore = useAppStore()
 
-      this.top = e.clientY
-      this.visible = true
-      this.selectedTag = tag
-    },
-    closeMenu() {
-      this.visible = false
-    },
-    handleScroll() {
-      this.closeMenu()
+const { visitedViews } = storeToRefs(tagsViewStore)
+const settingsStore = useSettingsStore()
+const layout = computed(() => settingsStore.layout)
+
+const selectedTag = ref({
+  path: '',
+  fullPath: '',
+  name: '',
+  title: '',
+  affix: false,
+  keepAlive: false
+})
+
+const affixTags = ref([])
+const scrollPaneRef = ref()
+const left = ref(0)
+const top = ref(0)
+
+watch(
+  route,
+  () => {
+    addTags()
+    moveToCurrentTag()
+  },
+  {
+    immediate: true //初始化立即执行
+  }
+)
+
+const tagMenuVisible = ref(false) // 标签操作菜单显示状态
+watch(tagMenuVisible, (value) => {
+  if (value) {
+    document.body.addEventListener('click', closeTagMenu)
+  } else {
+    document.body.removeEventListener('click', closeTagMenu)
+  }
+})
+
+function filterAffixTags(routes, basePath = '/') {
+  const processRoute = (route) => {
+    const fullPath = resolve(basePath, route.path)
+
+    const tag = {
+      path: route.path,
+      fullPath,
+      name: String(route.name),
+      title: route.meta?.title || 'no-name',
+      affix: route.meta?.affix,
+      keepAlive: route.meta?.keepAlive
+    }
+
+    if (tag.affix) {
+      tags.push(tag)
+    }
+
+    if (route.children) {
+      route.children.forEach(processRoute)
+    }
+  }
+
+  let tags = []
+  routes.forEach(processRoute)
+
+  return tags
+}
+
+function initTags() {
+  const tags = filterAffixTags(permissionStore.routes)
+  affixTags.value = tags
+  for (const tag of tags) {
+    // 必须有标签名称
+    if (tag.name) {
+      tagsViewStore.addVisitedView(tag)
     }
   }
 }
+
+function addTags() {
+  if (route.meta.title) {
+    tagsViewStore.addView({
+      name: route.name,
+      title: route.meta.title,
+      path: route.path,
+      fullPath: route.fullPath,
+      affix: route.meta?.affix,
+      keepAlive: route.meta?.keepAlive
+    })
+  }
+}
+
+function moveToCurrentTag() {
+  // 使用 nextTick() 的目的是确保在更新 tagsView 组件之前，scrollPaneRef 对象已经滚动到了正确的位置。
+  nextTick(() => {
+    for (const tag of visitedViews.value) {
+      if (tag.path === route.path) {
+        scrollPaneRef.value.moveToTarget(tag)
+        // 当 query 不同时，update
+        // route.query = { ...route.query, ...tag.query };
+        if (tag.fullPath !== route.fullPath) {
+          tagsViewStore.updateVisitedView({
+            name: route.name,
+            title: route.meta.title || '',
+            path: route.path,
+            fullPath: route.fullPath,
+            affix: route.meta?.affix,
+            keepAlive: route.meta?.keepAlive
+          })
+        }
+      }
+    }
+  })
+}
+
+function isActive(tag) {
+  return tag.fullPath === route.fullPath
+}
+
+function isAffix(tag) {
+  return tag?.affix
+}
+
+function isFirstView() {
+  try {
+    return (
+      selectedTag.value.fullPath === '/dashboard' ||
+      selectedTag.value.fullPath === tagsViewStore.visitedViews[1].fullPath
+    )
+  } catch (err) {
+    return false
+  }
+}
+
+function isLastView() {
+  try {
+    return (
+      selectedTag.value.fullPath ===
+      tagsViewStore.visitedViews[tagsViewStore.visitedViews.length - 1].fullPath
+    )
+  } catch (err) {
+    return false
+  }
+}
+
+function refreshSelectedTag(view) {
+  tagsViewStore.delCachedView(view)
+  const { fullPath } = view
+  nextTick(() => {
+    router.replace({ path: '/redirect' + fullPath })
+  })
+}
+
+function toLastView(visitedViews, view) {
+  const latestView = visitedViews.slice(-1)[0]
+  if (latestView && latestView.fullPath) {
+    router.push(latestView.fullPath)
+  } else {
+    // 现在默认情况是如果没有标签视图则重定向到主页，
+    // 你可以根据自己的需要进行调整。
+    if (view?.name === 'Dashboard') {
+      // 要重新加载主页
+      router.replace({ path: '/redirect' + view.fullPath })
+    } else {
+      router.push('/')
+    }
+  }
+}
+
+function closeSelectedTag(view) {
+  tagsViewStore.delView(view).then((res) => {
+    if (isActive(view)) {
+      toLastView(res.visitedViews, view)
+    }
+  })
+}
+
+function closeLeftTags() {
+  tagsViewStore.delLeftViews(selectedTag.value).then((res) => {
+    if (!res.visitedViews.find((item) => item.fullPath === route.fullPath)) {
+      toLastView(res.visitedViews)
+    }
+  })
+}
+function closeRightTags() {
+  tagsViewStore.delRightViews(selectedTag.value).then((res) => {
+    if (!res.visitedViews.find((item) => item.fullPath === route.fullPath)) {
+      toLastView(res.visitedViews)
+    }
+  })
+}
+
+function closeOtherTags() {
+  router.push(selectedTag.value)
+  tagsViewStore.delOtherViews(selectedTag.value).then(() => {
+    moveToCurrentTag()
+  })
+}
+
+function closeAllTags(view) {
+  tagsViewStore.delAllViews().then((res) => {
+    toLastView(res.visitedViews, view)
+  })
+}
+
+function openTagMenu(tag, e) {
+  const menuMinWidth = 105
+
+  const offsetLeft = proxy?.$el.getBoundingClientRect().left // container 左外边距
+  const offsetWidth = proxy?.$el.offsetWidth // container 宽度
+  const maxLeft = offsetWidth - menuMinWidth // 左边界
+  const l = e.clientX - offsetLeft + 15 // 15: 右外边距
+
+  if (l > maxLeft) {
+    left.value = maxLeft
+  } else {
+    left.value = l
+  }
+
+  // 混合模式下，需要减去顶部菜单(fixed)的高度
+  if (layout.value === 'mix') {
+    top.value = e.clientY - 50
+  } else {
+    top.value = e.clientY
+  }
+
+  tagMenuVisible.value = true
+  selectedTag.value = tag
+}
+
+function closeTagMenu() {
+  tagMenuVisible.value = false
+}
+
+function handleScroll() {
+  closeTagMenu()
+}
+function findOutermostParent(tree, findName) {
+  let parentMap = {}
+
+  function buildParentMap(node, parent) {
+    parentMap[node.name] = parent
+
+    if (node.children) {
+      for (let i = 0; i < node.children.length; i++) {
+        buildParentMap(node.children[i], node)
+      }
+    }
+  }
+
+  for (let i = 0; i < tree.length; i++) {
+    buildParentMap(tree[i], null)
+  }
+
+  let currentNode = parentMap[findName]
+  while (currentNode) {
+    if (!parentMap[currentNode.name]) {
+      return currentNode
+    }
+    currentNode = parentMap[currentNode.name]
+  }
+
+  return null
+}
+const againActiveTop = (newVal) => {
+  if (layout.value !== 'mix') return
+  const parent = findOutermostParent(permissionStore.routes, newVal)
+  if (appStore.activeTopMenu !== parent.path) {
+    appStore.changeTopActive(parent.path)
+  }
+}
+// 如果是混合模式，更改selectedTag，需要对应高亮的activeTop
+watch(
+  () => route.name,
+  (newVal) => {
+    if (newVal) {
+      againActiveTop(newVal)
+    }
+  },
+  {
+    deep: true
+  }
+)
+onMounted(() => {
+  initTags()
+})
 </script>
 
 <style lang="scss" scoped>
-.tags-view-container {
-  height: 40px;
+.tags-container {
   width: 100%;
-  background: #fff;
-  border-bottom: 1px solid #d8dce5;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.12), 0 0 3px 0 rgba(0, 0, 0, 0.04);
-  .tags-view-wrapper {
-    .tags-view-item {
-      display: inline-block;
-      position: relative;
-      cursor: pointer;
-      height: 33px;
-      line-height: 33px;
-      border: 1px solid #d8dce5;
-      color: #495060;
-      background: #fff;
-      padding: 0 8px;
-      font-size: 12px;
-      margin-left: 5px;
-      margin-top: 4px;
-      &:first-of-type {
-        margin-left: 15px;
-      }
-      &:last-of-type {
-        margin-right: 15px;
-      }
-      &.active {
-        background-color: var(--theme, #1890ff);
-        color: #fff;
-        border-color: var(--theme, #1890ff);
-        &::before {
-          content: '';
-          background: #fff;
-          display: inline-block;
-          width: 8px;
-          height: 8px;
-          border-radius: 50%;
-          position: relative;
-          margin-right: 2px;
-        }
-      }
-    }
-  }
-  .contextmenu {
-    margin: 0;
-    background: #fff;
-    z-index: 3000;
-    position: absolute;
-    list-style-type: none;
-    padding: 5px 0;
-    border-radius: 4px;
+  height: 34px;
+  background-color: var(--el-bg-color);
+  border: 1px solid var(--el-border-color-light);
+  box-shadow: 0 1px 1px var(--el-box-shadow-light);
+
+  .tags-item {
+    display: inline-block;
+    padding: 7px 8px;
+    margin: 0 3px;
     font-size: 12px;
-    font-weight: 400;
-    color: #333;
-    box-shadow: 2px 2px 3px 0 rgba(0, 0, 0, 0.3);
-    li {
-      margin: 0;
-      padding: 7px 16px;
-      cursor: pointer;
-      &:hover {
-        background: #eee;
+    cursor: pointer;
+    border-left: 1px solid var(--el-border-color-light);
+    border-right: 1px solid var(--el-border-color-light);
+
+    &:first-of-type {
+      margin-left: 15px;
+    }
+
+    &:last-of-type {
+      margin-right: 15px;
+    }
+
+    &:hover {
+      color: var(--el-color-primary);
+    }
+
+    &.active {
+      color: #fff;
+      background-color: var(--el-color-primary);
+      border-color: var(--el-color-primary);
+
+      &::before {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        margin-right: 5px;
+        content: '';
+        background: #fff;
+        border-radius: 50%;
       }
     }
   }
 }
-</style>
 
-<style lang="scss">
-//reset element css of el-icon-close
-.tags-view-wrapper {
-  .tags-view-item {
-    .el-icon-close {
-      width: 16px;
-      height: 16px;
-      vertical-align: 2px;
-      border-radius: 50%;
-      text-align: center;
-      transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
-      transform-origin: 100% 50%;
-      &:before {
-        transform: scale(0.6);
-        display: inline-block;
-        vertical-align: -3px;
-      }
-      &:hover {
-        background-color: #b4bccc;
-        color: #fff;
-      }
+.tag-menu {
+  position: absolute;
+  z-index: 99;
+  font-size: 12px;
+  background: var(--el-bg-color-overlay);
+  border-radius: 4px;
+  box-shadow: var(--el-box-shadow-light);
+
+  li {
+    padding: 8px 16px;
+    cursor: pointer;
+
+    &:hover {
+      background: var(--el-fill-color-light);
     }
   }
 }

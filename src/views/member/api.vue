@@ -1,158 +1,144 @@
 <template>
   <div class="app-container">
-    <!-- 查询操作 -->
-    <div class="filter-container">
-      <!-- 查询 -->
-      <el-row>
-        <el-col>
-          <el-select v-model="query.search_field" class="filter-item ya-search-field" placeholder="查询字段">
-            <el-option :value="idkey" label="ID" />
-            <el-option value="api_pid" label="上级" />
-            <el-option value="api_name" label="名称" />
-            <el-option value="api_url" label="链接" />
-            <el-option value="is_unlogin" label="免登" />
-            <el-option value="is_unauth" label="免权" />
-            <el-option value="is_unrate" label="免限" />
-            <el-option value="is_disable" label="禁用" />
-          </el-select>
-          <el-select v-model="query.search_exp" class="filter-item ya-search-exp">
-            <el-option
-              v-for="exp in exps"
-              :key="exp.exp"
-              :value="exp.exp"
-              :label="exp.name"
-            />
-          </el-select>
+    <!-- 查询 -->
+    <el-row>
+      <el-col class="mb-2">
+        <el-select v-model="query.search_field" class="ya-search-field" placeholder="查询字段">
+          <el-option :value="idkey" label="ID" />
+          <el-option value="api_pid" label="上级" />
+          <el-option value="api_name" label="名称" />
+          <el-option value="api_url" label="链接" />
+          <el-option value="is_unlogin" label="免登" />
+          <el-option value="is_unauth" label="免权" />
+          <el-option value="is_unrate" label="免限" />
+          <el-option value="is_disable" label="禁用" />
+        </el-select>
+        <el-select v-model="query.search_exp" class="ya-search-exp">
+          <el-option v-for="exp in exps" :key="exp.exp" :value="exp.exp" :label="exp.name" />
+        </el-select>
+        <el-cascader
+          v-if="query.search_field === 'api_pid'"
+          v-model="query.search_value"
+          :options="trees"
+          :props="props"
+          class="ya-search-value"
+          clearable
+          filterable
+        />
+        <el-select
+          v-else-if="
+            query.search_field === 'is_unlogin' ||
+            query.search_field === 'is_unauth' ||
+            query.search_field === 'is_unrate' ||
+            query.search_field === 'is_disable'
+          "
+          v-model="query.search_value"
+          class="ya-search-value"
+        >
+          <el-option :value="1" label="是" />
+          <el-option :value="0" label="否" />
+        </el-select>
+        <el-input
+          v-else
+          v-model="query.search_value"
+          class="ya-search-value"
+          placeholder="查询内容"
+          clearable
+        />
+        <el-select v-model="query.date_field" class="ya-date-field" placeholder="时间类型">
+          <el-option value="create_time" label="添加时间" />
+          <el-option value="update_time" label="修改时间" />
+        </el-select>
+        <el-date-picker
+          v-model="query.date_value"
+          type="datetimerange"
+          class="ya-date-value"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          value-format="YYYY-MM-DD HH:mm:ss"
+          :default-time="[new Date(2024, 1, 1, 0, 0, 0), new Date(2024, 1, 1, 23, 59, 59)]"
+        />
+        <el-button type="primary" @click="search()">查询</el-button>
+        <el-button title="重置" @click="refresh()">
+          <svg-icon icon-class="refresh" />
+        </el-button>
+        <el-button type="primary" @click="add()">添加</el-button>
+      </el-col>
+    </el-row>
+    <!-- 操作 -->
+    <el-row>
+      <el-col>
+        <el-checkbox
+          border
+          v-model="isExpandAll"
+          class="!mr-[10px] top-[3px]"
+          title="收起/展开"
+          @change="expandAll"
+        >
+          收起
+        </el-checkbox>
+        <el-button title="删除" @click="selectOpen('dele')">删除</el-button>
+        <el-button title="是否禁用" @click="selectOpen('disable')">禁用</el-button>
+        <el-button title="修改排序" @click="selectOpen('editsort')">排序</el-button>
+        <el-button title="是否免登" @click="selectOpen('unlogin')">免登</el-button>
+        <el-button title="是否免权" @click="selectOpen('unauth')">免权</el-button>
+        <el-button title="是否免限" @click="selectOpen('unrate')">免限</el-button>
+        <el-button title="修改上级" @click="selectOpen('editpid')">上级</el-button>
+        <el-button title="解除分组" @click="selectOpen('removeg')">解除分组</el-button>
+      </el-col>
+    </el-row>
+    <el-dialog
+      v-model="selectDialog"
+      :title="selectTitle"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      top="20vh"
+    >
+      <el-form ref="selectRef" label-width="120px">
+        <el-form-item v-if="selectType === 'removeg'">
+          <span style="">确定要解除选中的{{ name }}的分组吗？</span>
+        </el-form-item>
+        <el-form-item v-else-if="selectType === 'editsort'" label="排序">
+          <el-input v-model="sort" type="number" placeholder="排序" />
+          <el-input v-model="sort_incdec" type="text" placeholder="0">
+            <template #append>按{{ name }}ID顺序递增或递减排序</template>
+          </el-input>
+        </el-form-item>
+        <el-form-item v-else-if="selectType === 'editpid'" label="上级">
           <el-cascader
-            v-if="query.search_field === 'api_pid'"
-            v-model="query.search_value"
+            v-model="api_pid"
             :options="trees"
             :props="props"
-            class="filter-item ya-search-value"
+            class="w-full"
+            placeholder="一级接口"
             clearable
             filterable
           />
-          <el-select
-            v-else-if="query.search_field === 'is_unlogin' || query.search_field === 'is_unauth' || query.search_field === 'is_unrate' || query.search_field === 'is_disable'"
-            v-model="query.search_value"
-            class="filter-item ya-search-value"
-          >
-            <el-option :value="1" label="是" />
-            <el-option :value="0" label="否" />
-          </el-select>
-          <el-input
-            v-else
-            v-model="query.search_value"
-            class="filter-item ya-search-value"
-            placeholder="查询内容"
-            clearable
-          />
-          <el-select v-model="query.date_field" class="filter-item ya-date-field" placeholder="时间类型">
-            <el-option value="create_time" label="添加时间" />
-            <el-option value="update_time" label="修改时间" />
-          </el-select>
-          <el-date-picker
-            v-model="query.date_value"
-            type="datetimerange"
-            class="filter-item ya-date-value"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            :default-time="['00:00:00', '23:59:59']"
-            value-format="yyyy-MM-dd HH:mm:ss"
-          />
-          <el-button
-            class="filter-item"
-            type="primary"
-            title="查询/刷新"
-            @click="search()"
-          >查询</el-button>
-          <el-button
-            class="filter-item"
-            icon="el-icon-refresh"
-            title="重置"
-            @click="refresh()"
-          />
-        </el-col>
-      </el-row>
-      <!-- 选中操作 -->
-      <el-row>
-        <el-col>
-          <el-checkbox
-            v-model="isExpandAll"
-            style="margin-right:10px;top:-2px"
-            border
-            title="收起/展开"
-            @change="expandAll"
-          >收起</el-checkbox>
-          <el-button title="解除分组" @click="selectOpen('removeg')">分组</el-button>
-          <el-button title="修改排序" @click="selectOpen('editsort')">排序</el-button>
-          <el-button title="修改上级" @click="selectOpen('editpid')">上级</el-button>
-          <el-button title="是否免登" @click="selectOpen('unlogin')">免登</el-button>
-          <el-button title="是否免权" @click="selectOpen('unauth')">免权</el-button>
-          <el-button title="是否免限" @click="selectOpen('unrate')">免限</el-button>
-          <el-button title="是否禁用" @click="selectOpen('disable')">禁用</el-button>
-          <el-button title="删除" @click="selectOpen('dele')">删除</el-button>
-          <el-button type="primary" @click="add()">添加</el-button>
-        </el-col>
-      </el-row>
-      <el-dialog
-        :title="selectTitle"
-        :visible.sync="selectDialog"
-        top="20vh"
-        :close-on-click-modal="false"
-        :close-on-press-escape="false"
-      >
-        <el-form ref="selectRef" label-width="120px">
-          <el-form-item :label="name + 'ID'" prop="">
-            <el-input
-              v-model="selectIds"
-              type="textarea"
-              :autosize="{ minRows: 5, maxRows: 12 }"
-              disabled
-            />
-          </el-form-item>
-          <el-form-item v-if="selectType === 'removeg'" label="" prop="">
-            <span style="">确定要解除选中的{{ name }}的分组吗？</span>
-          </el-form-item>
-          <el-form-item v-else-if="selectType === 'editsort'" label="排序" prop="">
-            <el-input v-model="sort" type="number" placeholder="排序" />
-            <el-input v-model="sort_incdec" type="text" placeholder="0">
-              <template slot="append">按{{ name }}ID顺序递增或递减排序</template>
-            </el-input>
-          </el-form-item>
-          <el-form-item v-else-if="selectType === 'editpid'" label="上级" prop="">
-            <el-cascader
-              v-model="api_pid"
-              :options="trees"
-              :props="props"
-              style="width:100%"
-              placeholder="一级接口"
-              clearable
-              filterable
-            />
-          </el-form-item>
-          <el-form-item v-else-if="selectType === 'unlogin'" label="是否免登" prop="">
-            <el-switch v-model="is_unlogin" :active-value="1" :inactive-value="0" />
-          </el-form-item>
-          <el-form-item v-else-if="selectType === 'unauth'" label="是否免权" prop="">
-            <el-switch v-model="is_unauth" :active-value="1" :inactive-value="0" />
-          </el-form-item>
-          <el-form-item v-else-if="selectType === 'unrate'" label="是否免限" prop="">
-            <el-switch v-model="is_unrate" :active-value="1" :inactive-value="0" />
-          </el-form-item>
-          <el-form-item v-else-if="selectType === 'disable'" label="是否禁用" prop="">
-            <el-switch v-model="is_disable" :active-value="1" :inactive-value="0" />
-          </el-form-item>
-          <el-form-item v-else-if="selectType === 'dele'" label="" prop="">
-            <span class="ya-color-red">确定要删除选中的{{ name }}吗？</span>
-          </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button :loading="loading" @click="selectCancel">取消</el-button>
-          <el-button :loading="loading" type="primary" @click="selectSubmit">提交</el-button>
-        </div>
-      </el-dialog>
-    </div>
+        </el-form-item>
+        <el-form-item v-else-if="selectType === 'unlogin'" label="是否免登">
+          <el-switch v-model="is_unlogin" :active-value="1" :inactive-value="0" />
+        </el-form-item>
+        <el-form-item v-else-if="selectType === 'unauth'" label="是否免权">
+          <el-switch v-model="is_unauth" :active-value="1" :inactive-value="0" />
+        </el-form-item>
+        <el-form-item v-else-if="selectType === 'unrate'" label="是否免限">
+          <el-switch v-model="is_unrate" :active-value="1" :inactive-value="0" />
+        </el-form-item>
+        <el-form-item v-else-if="selectType === 'disable'" label="是否禁用">
+          <el-switch v-model="is_disable" :active-value="1" :inactive-value="0" />
+        </el-form-item>
+        <el-form-item v-else-if="selectType === 'dele'">
+          <span class="c-red">确定要删除选中的{{ name }}吗？</span>
+        </el-form-item>
+        <el-form-item :label="name + 'ID'">
+          <el-input v-model="selectIds" type="textarea" autosize disabled />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button :loading="loading" @click="selectCancel">取消</el-button>
+        <el-button :loading="loading" type="primary" @click="selectSubmit">提交</el-button>
+      </template>
+    </el-dialog>
     <!-- 列表 -->
     <el-table
       ref="table"
@@ -166,21 +152,11 @@
       @cell-dblclick="cellDbclick"
     >
       <el-table-column type="selection" width="42" title="全选/反选" />
-      <el-table-column
-        prop="api_name"
-        label="接口名称"
-        min-width="210"
-        show-overflow-tooltip
-      />
-      <el-table-column
-        prop="api_url"
-        label="接口链接"
-        min-width="300"
-        show-overflow-tooltip
-      />
+      <el-table-column prop="api_name" label="接口名称" min-width="210" show-overflow-tooltip />
+      <el-table-column prop="api_url" label="接口链接" min-width="300" show-overflow-tooltip />
       <el-table-column :prop="idkey" label="ID" width="80" />
-      <el-table-column prop="is_unlogin" label="免登" min-width="70">
-        <template slot-scope="scope">
+      <el-table-column prop="is_unlogin" label="免登" min-width="85">
+        <template #default="scope">
           <el-switch
             v-if="scope.row.api_url"
             v-model="scope.row.is_unlogin"
@@ -188,10 +164,11 @@
             :inactive-value="0"
             @change="unlogin([scope.row])"
           />
+          <span v-else></span>
         </template>
       </el-table-column>
-      <el-table-column prop="is_unauth" label="免权" min-width="70">
-        <template slot-scope="scope">
+      <el-table-column prop="is_unauth" label="免权" min-width="85">
+        <template #default="scope">
           <el-switch
             v-if="scope.row.api_url"
             v-model="scope.row.is_unauth"
@@ -199,10 +176,11 @@
             :inactive-value="0"
             @change="unauth([scope.row])"
           />
+          <span v-else></span>
         </template>
       </el-table-column>
-      <el-table-column prop="is_unrate" label="免限" min-width="70">
-        <template slot-scope="scope">
+      <el-table-column prop="is_unrate" label="免限" min-width="85">
+        <template #default="scope">
           <el-switch
             v-if="scope.row.api_url"
             v-model="scope.row.is_unrate"
@@ -210,10 +188,11 @@
             :inactive-value="0"
             @change="unrate([scope.row])"
           />
+          <span v-else></span>
         </template>
       </el-table-column>
-      <el-table-column prop="is_disable" label="禁用" min-width="70">
-        <template slot-scope="scope">
+      <el-table-column prop="is_disable" label="禁用" min-width="85">
+        <template #default="scope">
           <el-switch
             v-if="scope.row.api_url"
             v-model="scope.row.is_disable"
@@ -221,123 +200,123 @@
             :inactive-value="0"
             @change="disable([scope.row])"
           />
+          <span v-else></span>
         </template>
       </el-table-column>
-      <el-table-column prop="sort" label="排序" min-width="80" />
+      <el-table-column prop="sort" label="排序" min-width="85" />
       <el-table-column label="操作" width="170">
-        <template slot-scope="scope">
-          <el-button type="text" size="small" @click="groupShow(scope.row)">分组</el-button>
-          <el-button
-            type="text"
-            size="small"
+        <template #default="scope">
+          <el-link type="primary" class="mr-1" :underline="false" @click="groupShow(scope.row)">
+            分组
+          </el-link>
+          <el-link
+            type="primary"
+            class="mr-1"
+            :underline="false"
             title="添加下级"
             @click="add(scope.row)"
-          >添加</el-button>
-          <el-button type="text" size="small" @click="edit(scope.row)">修改</el-button>
-          <el-button type="text" size="small" @click="selectOpen('dele', scope.row)">删除</el-button>
+          >
+            添加
+          </el-link>
+          <el-link type="primary" class="mr-1" :underline="false" @click="edit(scope.row)">
+            修改
+          </el-link>
+          <el-link type="primary" :underline="false" @click="selectOpen('dele', [scope.row])">
+            删除
+          </el-link>
         </template>
       </el-table-column>
     </el-table>
     <el-row>
       <el-descriptions title="" :column="12" :colon="false">
-        <el-descriptions-item label="">共 {{ count }} 条</el-descriptions-item>
+        <el-descriptions-item>共 {{ count }} 条</el-descriptions-item>
       </el-descriptions>
     </el-row>
     <!-- 添加修改 -->
     <el-dialog
+      v-model="dialog"
       :title="dialogTitle"
-      :visible.sync="dialog"
-      top="5vh"
-      :before-close="cancel"
       :close-on-click-modal="false"
       :close-on-press-escape="false"
+      :before-close="cancel"
+      top="5vh"
       destroy-on-close
     >
-      <el-form
-        ref="ref"
-        :rules="rules"
-        :model="model"
-        label-width="100px"
-        class="dialog-body"
-        :style="{ height: height - 50 + 'px' }"
-      >
-        <el-form-item label="接口上级" prop="api_pid">
-          <el-cascader
-            v-model="model.api_pid"
-            :options="trees"
-            :props="props"
-            style="width:100%"
-            placeholder="一级接口"
-            clearable
-            filterable
-          />
-        </el-form-item>
-        <el-form-item label="接口名称" prop="api_name">
-          <el-input v-model="model.api_name" placeholder="请输入接口名称" clearable>
-            <el-button
-              slot="append"
-              icon="el-icon-document-copy"
-              title="复制"
-              @click="copy(model.api_name, $event)"
+      <el-scrollbar native :height="height - 50">
+        <el-form ref="ref" :rules="rules" :model="model" label-width="100px">
+          <el-form-item label="接口上级" prop="api_pid">
+            <el-cascader
+              v-model="model.api_pid"
+              :options="trees"
+              :props="props"
+              class="w-full"
+              placeholder="一级接口"
+              clearable
+              filterable
             />
-          </el-input>
-        </el-form-item>
-        <el-form-item label="接口链接" prop="api_url">
-          <el-input v-model="model.api_url" placeholder="应用/控制器/操作，区分大小写" clearable>
-            <el-button
-              slot="append"
-              icon="el-icon-document-copy"
-              title="复制"
-              @click="copy(model.api_url, $event)"
-            />
-          </el-input>
-        </el-form-item>
-        <el-form-item label="排序" prop="sort">
-          <el-input v-model="model.sort" type="number" placeholder="250" />
-        </el-form-item>
-        <el-form-item v-if="model[idkey]" label="添加时间" prop="create_time">
-          <el-input v-model="model.create_time" disabled />
-        </el-form-item>
-        <el-form-item v-if="model[idkey]" label="修改时间" prop="update_time">
-          <el-input v-model="model.update_time" disabled />
-        </el-form-item>
-        <el-form-item v-if="model.delete_time" label="删除时间" prop="delete_time">
-          <el-input v-model="model.delete_time" disabled />
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
+          </el-form-item>
+          <el-form-item label="接口名称" prop="api_name">
+            <el-input v-model="model.api_name" placeholder="请输入接口名称" clearable>
+              <template #append>
+                <el-link :underline="false" title="复制" @click="copy(model.api_name)">
+                  <svg-icon icon-class="copy-document" />
+                </el-link>
+              </template>
+            </el-input>
+          </el-form-item>
+          <el-form-item label="接口链接" prop="api_url">
+            <el-input v-model="model.api_url" placeholder="应用/控制器/操作，区分大小写" clearable>
+              <template #append>
+                <el-link :underline="false" title="复制" @click="copy(model.api_url)">
+                  <svg-icon icon-class="copy-document" />
+                </el-link>
+              </template>
+            </el-input>
+          </el-form-item>
+          <el-form-item label="排序" prop="sort">
+            <el-input v-model="model.sort" type="number" placeholder="250" />
+          </el-form-item>
+          <el-form-item v-if="model[idkey]" label="添加时间" prop="create_time">
+            <el-input v-model="model.create_time" disabled />
+          </el-form-item>
+          <el-form-item v-if="model[idkey]" label="修改时间" prop="update_time">
+            <el-input v-model="model.update_time" disabled />
+          </el-form-item>
+          <el-form-item v-if="model.delete_time" label="删除时间" prop="delete_time">
+            <el-input v-model="model.delete_time" disabled />
+          </el-form-item>
+        </el-form>
+      </el-scrollbar>
+      <template #footer>
         <el-button :loading="loading" @click="cancel">取消</el-button>
         <el-button :loading="loading" type="primary" @click="submit">提交</el-button>
-      </div>
+      </template>
     </el-dialog>
-    <!-- 分组 -->
+    <!-- 接口分组 -->
     <el-dialog
+      v-model="groupDialog"
       :title="groupDialogTitle"
-      :visible.sync="groupDialog"
-      width="70%"
-      top="5vh"
       :close-on-click-modal="false"
       :close-on-press-escape="false"
+      top="5vh"
+      width="70%"
     >
-      <!-- 选中操作 -->
+      <!-- 接口分组操作 -->
       <el-row>
         <el-col>
-          <el-button type="primary" title="解除" @click="groupSelectOpen('groupRemove')">解除</el-button>
+          <el-button type="primary" title="解除" @click="groupSelectOpen('groupRemove')">
+            解除
+          </el-button>
           <el-input
             v-model="groupQuery.search_value"
-            class="filter-item ya-search-value ya-margin-left"
+            class="ya-search-value"
             placeholder="分组名称"
             clearable
           />
-          <el-button
-            class="filter-item"
-            type="primary"
-            title="查询/刷新"
-            @click="groupList()"
-          >查询</el-button>
+          <el-button type="primary" @click="groupList()">查询</el-button>
         </el-col>
       </el-row>
-      <!-- 分组列表 -->
+      <!-- 接口分组列表 -->
       <el-table
         ref="groupRef"
         v-loading="groupLoad"
@@ -347,12 +326,7 @@
         @selection-change="groupSelect"
       >
         <el-table-column type="selection" width="42" title="全选/反选" />
-        <el-table-column
-          :prop="groupPk"
-          label="分组ID"
-          min-width="100"
-          sortable="custom"
-        />
+        <el-table-column :prop="groupPk" label="分组ID" min-width="100" sortable="custom" />
         <el-table-column
           prop="group_name"
           label="分组名称"
@@ -360,19 +334,9 @@
           sortable="custom"
           show-overflow-tooltip
         />
-        <el-table-column
-          prop="group_desc"
-          label="分组描述"
-          min-width="130"
-          show-overflow-tooltip
-        />
-        <el-table-column
-          prop="is_disable"
-          label="禁用"
-          min-width="75"
-          sortable="custom"
-        >
-          <template slot-scope="scope">
+        <el-table-column prop="group_desc" label="分组描述" min-width="130" show-overflow-tooltip />
+        <el-table-column prop="is_disable" label="禁用" min-width="85" sortable="custom">
+          <template #default="scope">
             <el-switch
               v-model="scope.row.is_disable"
               :active-value="1"
@@ -381,60 +345,74 @@
             />
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="80">
-          <template slot-scope="scope">
-            <el-button type="text" size="small" @click="groupSelectOpen('groupRemove', scope.row)">解除</el-button>
+        <el-table-column label="操作" width="70">
+          <template #default="scope">
+            <el-link
+              type="primary"
+              :underline="false"
+              @click="groupSelectOpen('groupRemove', scope.row)"
+            >
+              解除
+            </el-link>
           </template>
         </el-table-column>
       </el-table>
       <pagination
         v-show="groupCount > 0"
-        :total="groupCount"
-        :page.sync="groupQuery.page"
-        :limit.sync="groupQuery.limit"
+        v-model:total="groupCount"
+        v-model:page="groupQuery.page"
+        v-model:limit="groupQuery.limit"
         @pagination="groupList"
       />
     </el-dialog>
     <el-dialog
+      v-model="groupSelectDialog"
       :title="groupSelectTitle"
-      :visible.sync="groupSelectDialog"
-      top="20vh"
       :close-on-click-modal="false"
       :close-on-press-escape="false"
+      top="20vh"
     >
       <el-form ref="groupSelectRef" label-width="120px">
-        <el-form-item :label="groupName + 'ID'" prop="">
-          <el-input
-            v-model="groupSelectIds"
-            type="textarea"
-            :autosize="{ minRows: 5, maxRows: 12 }"
-            disabled
-          />
-        </el-form-item>
-        <el-form-item v-if="groupSelectType === 'groupRemove'" :label="name + 'ID'" prop="">
+        <el-form-item v-if="groupSelectType === 'groupRemove'" :label="name + 'ID'">
           <span>{{ groupQuery[idkey] }}</span>
         </el-form-item>
+        <el-form-item :label="groupName + 'ID'">
+          <el-input v-model="groupSelectIds" type="textarea" autosize disabled />
+        </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
+      <template #footer>
         <el-button @click="groupSelectCancel">取消</el-button>
         <el-button type="primary" @click="groupSelectSubmit">提交</el-button>
-      </div>
+      </template>
     </el-dialog>
   </div>
 </template>
 
 <script>
 import screenHeight from '@/utils/screen-height'
-import Pagination from '@/components/Pagination'
+import Pagination from '@/components/Pagination/index.vue'
 import clip from '@/utils/clipboard'
 import { arrayColumn } from '@/utils/index'
 import { getPageLimit } from '@/utils/settings'
-import { list, info, add, edit, dele, editsort, editpid, unlogin, unauth, unrate, disable, group, groupRemove } from '@/api/member/api'
+import {
+  list,
+  info,
+  add,
+  edit,
+  dele,
+  editsort,
+  editpid,
+  unlogin,
+  unauth,
+  unrate,
+  disable,
+  group,
+  groupRemove
+} from '@/api/member/api'
 
 export default {
   name: 'MemberApi',
   components: { Pagination },
-  directives: {},
   data() {
     return {
       name: '会员接口',
@@ -461,7 +439,7 @@ export default {
       isExpandAll: false,
       selection: [],
       selectIds: '',
-      selectTitle: '选中操作',
+      selectTitle: '操作',
       selectDialog: false,
       selectType: '',
       sort: 250,
@@ -478,33 +456,41 @@ export default {
       groupLoad: false,
       groupData: [],
       groupCount: 0,
-      groupQuery: { page: 1, limit: getPageLimit(), search_field: 'group_name', search_exp: 'like', search_value: '' },
+      groupQuery: {
+        page: 1,
+        limit: getPageLimit(),
+        search_field: 'group_name',
+        search_exp: 'like',
+        search_value: ''
+      },
       groupSelection: [],
       groupSelectIds: '',
-      groupSelectTitle: '选中操作',
+      groupSelectTitle: '操作',
       groupSelectDialog: false,
       groupSelectType: '',
       count: {}
     }
   },
   created() {
-    this.height = screenHeight(220)
+    this.height = screenHeight(290)
     this.list()
   },
   methods: {
     // 列表
     list() {
       this.loading = true
-      list(this.query).then(res => {
-        this.data = res.data.list
-        this.trees = res.data.tree
-        this.exps = res.data.exps
-        this.count = res.data.count
-        this.isExpandAll = false
-        this.loading = false
-      }).catch(() => {
-        this.loading = false
-      })
+      list(this.query)
+        .then((res) => {
+          this.data = res.data.list
+          this.trees = res.data.tree
+          this.exps = res.data.exps
+          this.count = res.data.count
+          this.isExpandAll = false
+          this.loading = false
+        })
+        .catch(() => {
+          this.loading = false
+        })
     },
     // 添加修改
     add(row) {
@@ -520,34 +506,40 @@ export default {
       this.dialogTitle = this.name + '修改：' + row[this.idkey]
       var id = {}
       id[this.idkey] = row[this.idkey]
-      info(id).then(res => {
-        this.reset(res.data)
-      }).catch(() => { })
+      info(id)
+        .then((res) => {
+          this.reset(res.data)
+        })
+        .catch(() => {})
     },
     cancel() {
       this.dialog = false
       this.reset()
     },
     submit() {
-      this.$refs['ref'].validate(valid => {
+      this.$refs['ref'].validate((valid) => {
         if (valid) {
           this.loading = true
           if (this.model[this.idkey]) {
-            edit(this.model).then(res => {
-              this.list()
-              this.dialog = false
-              this.$message.success(res.msg)
-            }).catch(() => {
-              this.loading = false
-            })
+            edit(this.model)
+              .then((res) => {
+                this.list()
+                this.dialog = false
+                ElMessage.success(res.msg)
+              })
+              .catch(() => {
+                this.loading = false
+              })
           } else {
-            add(this.model).then(res => {
-              this.list()
-              this.dialog = false
-              this.$message.success(res.msg)
-            }).catch(() => {
-              this.loading = false
-            })
+            add(this.model)
+              .then((res) => {
+                this.list()
+                this.dialog = false
+                ElMessage.success(res.msg)
+              })
+              .catch(() => {
+                this.loading = false
+              })
           }
         }
       })
@@ -560,8 +552,10 @@ export default {
         this.model = this.$options.data().model
       }
       if (this.$refs['ref'] !== undefined) {
-        this.$refs['ref'].resetFields()
-        this.$refs['ref'].clearValidate()
+        try {
+          this.$refs['ref'].resetFields()
+          this.$refs['ref'].clearValidate()
+        } catch (error) {}
       }
     },
     // 查询
@@ -581,14 +575,14 @@ export default {
       this.expandFor(this.data, !e)
     },
     expandFor(data, isExpand) {
-      data.forEach(i => {
+      data.forEach((i) => {
         this.$refs.table.toggleRowExpansion(i, isExpand)
         if (i.children) {
           this.expandFor(i.children, isExpand)
         }
       })
     },
-    // 选中操作
+    // 操作
     select(selection) {
       this.selection = selection
       this.selectIds = this.selectGetIds(selection).toString()
@@ -613,17 +607,23 @@ export default {
       return arrayColumn(selection, this.idkey)
     },
     selectAlert() {
-      this.$alert('请选择需要操作的' + this.name, '提示', { type: 'warning', callback: action => { } })
+      ElMessageBox.alert('请选择需要操作的' + this.name, '提示', {
+        type: 'warning',
+        callback: () => {}
+      })
     },
     selectOpen(selectType, selectRow = '') {
       if (selectRow) {
         this.$refs['table'].clearSelection()
-        this.$refs['table'].toggleRowSelection(selectRow)
+        const selectRowLen = selectRow.length
+        for (let i = 0; i < selectRowLen; i++) {
+          this.$refs['table'].toggleRowSelection(selectRow[i], true)
+        }
       }
       if (!this.selection.length) {
         this.selectAlert()
       } else {
-        this.selectTitle = '选中操作'
+        this.selectTitle = '操作'
         if (selectType === 'removeg') {
           this.selectTitle = this.name + '解除分组'
         } else if (selectType === 'editsort') {
@@ -682,12 +682,14 @@ export default {
         groupRemove({
           api_id: this.selectGetIds(row),
           group_ids: []
-        }).then(res => {
-          this.list()
-          this.$message.success(res.msg)
-        }).catch(() => {
-          this.loading = false
         })
+          .then((res) => {
+            this.list()
+            ElMessage.success(res.msg)
+          })
+          .catch(() => {
+            this.loading = false
+          })
       }
     },
     // 修改排序
@@ -697,13 +699,15 @@ export default {
         ids: this.selectGetIds(row),
         sort: this.sort,
         sort_incdec: this.sort_incdec
-      }).then(res => {
-        this.list()
-        this.sort_incdec = '0'
-        this.$message.success(res.msg)
-      }).catch(() => {
-        this.loading = false
       })
+        .then((res) => {
+          this.list()
+          this.sort_incdec = '0'
+          ElMessage.success(res.msg)
+        })
+        .catch(() => {
+          this.loading = false
+        })
     },
     // 修改上级
     editpid(row) {
@@ -711,12 +715,14 @@ export default {
       editpid({
         ids: this.selectGetIds(row),
         api_pid: this.api_pid
-      }).then(res => {
-        this.list()
-        this.$message.success(res.msg)
-      }).catch(() => {
-        this.loading = false
       })
+        .then((res) => {
+          this.list()
+          ElMessage.success(res.msg)
+        })
+        .catch(() => {
+          this.loading = false
+        })
     },
     // 是否免登
     unlogin(row, select = false) {
@@ -731,12 +737,14 @@ export default {
         unlogin({
           ids: this.selectGetIds(row),
           is_unlogin: is_unlogin
-        }).then(res => {
-          this.list()
-          this.$message.success(res.msg)
-        }).catch(() => {
-          this.list()
         })
+          .then((res) => {
+            this.list()
+            ElMessage.success(res.msg)
+          })
+          .catch(() => {
+            this.list()
+          })
       }
     },
     // 是否免限
@@ -752,12 +760,14 @@ export default {
         unrate({
           ids: this.selectGetIds(row),
           is_unrate: is_unrate
-        }).then(res => {
-          this.list()
-          this.$message.success(res.msg)
-        }).catch(() => {
-          this.list()
         })
+          .then((res) => {
+            this.list()
+            ElMessage.success(res.msg)
+          })
+          .catch(() => {
+            this.list()
+          })
       }
     },
     // 是否免权
@@ -773,12 +783,14 @@ export default {
         unauth({
           ids: this.selectGetIds(row),
           is_unauth: is_unauth
-        }).then(res => {
-          this.list()
-          this.$message.success(res.msg)
-        }).catch(() => {
-          this.list()
         })
+          .then((res) => {
+            this.list()
+            ElMessage.success(res.msg)
+          })
+          .catch(() => {
+            this.list()
+          })
       }
     },
     // 是否禁用
@@ -794,12 +806,14 @@ export default {
         disable({
           ids: this.selectGetIds(row),
           is_disable: is_disable
-        }).then(res => {
-          this.list()
-          this.$message.success(res.msg)
-        }).catch(() => {
-          this.list()
         })
+          .then((res) => {
+            this.list()
+            ElMessage.success(res.msg)
+          })
+          .catch(() => {
+            this.list()
+          })
       }
     },
     // 删除
@@ -810,12 +824,14 @@ export default {
         this.loading = true
         dele({
           ids: this.selectGetIds(row)
-        }).then(res => {
-          this.list()
-          this.$message.success(res.msg)
-        }).catch(() => {
-          this.loading = false
         })
+          .then((res) => {
+            this.list()
+            ElMessage.success(res.msg)
+          })
+          .catch(() => {
+            this.loading = false
+          })
       }
     },
     // 分组显示
@@ -829,13 +845,15 @@ export default {
     // 分组列表
     groupList() {
       this.groupLoad = true
-      group(this.groupQuery).then(res => {
-        this.groupData = res.data.list
-        this.groupCount = res.data.count
-        this.groupLoad = false
-      }).catch(() => {
-        this.groupLoad = false
-      })
+      group(this.groupQuery)
+        .then((res) => {
+          this.groupData = res.data.list
+          this.groupCount = res.data.count
+          this.groupLoad = false
+        })
+        .catch(() => {
+          this.groupLoad = false
+        })
     },
     // 分组排序
     groupSort(sort) {
@@ -850,7 +868,7 @@ export default {
         this.groupList()
       }
     },
-    // 分组选中操作
+    // 分组操作
     groupSelect(selection) {
       this.groupSelection = selection
       this.groupSelectIds = this.groupSelectGetIds(selection).toString()
@@ -859,7 +877,10 @@ export default {
       return arrayColumn(selection, this.groupPk)
     },
     groupSelectAlert() {
-      this.$alert('请选择需要操作的' + this.groupName, '提示', { type: 'warning', callback: action => { } })
+      ElMessageBox.alert('请选择需要操作的' + this.groupName, '提示', {
+        type: 'warning',
+        callback: () => {}
+      })
     },
     groupSelectOpen(selectType, selectRow = '') {
       if (selectRow) {
@@ -869,7 +890,7 @@ export default {
       if (!this.groupSelection.length) {
         this.groupSelectAlert()
       } else {
-        this.groupSelectTitle = '选中操作'
+        this.groupSelectTitle = '操作'
         if (selectType === 'groupRemove') {
           this.groupSelectTitle = this.name + '解除' + this.groupName
         }
@@ -900,21 +921,23 @@ export default {
         groupRemove({
           api_id: this.groupQuery.api_id,
           group_ids: this.groupSelectGetIds(row)
-        }).then(res => {
-          this.groupList()
-          this.$message.success(res.msg)
-        }).catch(() => {
-          this.groupLoad = false
         })
+          .then((res) => {
+            this.groupList()
+            ElMessage.success(res.msg)
+          })
+          .catch(() => {
+            this.groupLoad = false
+          })
       }
     },
     // 复制
-    copy(text, event) {
-      clip(text, event)
+    copy(text) {
+      clip(text)
     },
     // 单元格双击复制
-    cellDbclick(row, column, cell, event) {
-      this.copy(row[column.property], event)
+    cellDbclick(row, column) {
+      this.copy(row[column.property])
     }
   }
 }

@@ -1,175 +1,136 @@
 <template>
   <div class="app-container">
-    <!-- 查询操作 -->
-    <div class="filter-container">
-      <!-- 查询 -->
-      <el-row>
-        <el-col>
-          <el-select v-model="query.search_field" class="filter-item ya-search-field" placeholder="查询字段">
-            <el-option :value="idkey" label="ID" />
-            <el-option value="post_pid" label="上级" />
-            <el-option value="post_name" label="名称" />
-            <el-option value="post_abbr" label="简称" />
-            <el-option value="post_desc" label="描述" />
-            <el-option value="remark" label="备注" />
-            <el-option value="is_disable" label="禁用" />
-          </el-select>
-          <el-select v-model="query.search_exp" class="filter-item ya-search-exp">
-            <el-option
-              v-for="exp in exps"
-              :key="exp.exp"
-              :value="exp.exp"
-              :label="exp.name"
-            />
-          </el-select>
+    <!-- 查询 -->
+    <el-row>
+      <el-col class="mb-2">
+        <el-select v-model="query.search_field" class="ya-search-field" placeholder="查询字段">
+          <el-option :value="idkey" label="ID" />
+          <el-option value="post_pid" label="上级" />
+          <el-option value="post_name" label="名称" />
+          <el-option value="post_abbr" label="简称" />
+          <el-option value="post_desc" label="描述" />
+          <el-option value="remark" label="备注" />
+          <el-option value="is_disable" label="禁用" />
+        </el-select>
+        <el-select v-model="query.search_exp" class="ya-search-exp">
+          <el-option v-for="exp in exps" :key="exp.exp" :value="exp.exp" :label="exp.name" />
+        </el-select>
+        <el-cascader
+          v-if="query.search_field === 'post_pid'"
+          v-model="query.search_value"
+          :options="trees"
+          :props="props"
+          class="ya-search-value"
+          clearable
+          filterable
+        />
+        <el-select
+          v-else-if="query.search_field === 'is_disable'"
+          v-model="query.search_value"
+          class="ya-search-value"
+        >
+          <el-option :value="1" label="是" />
+          <el-option :value="0" label="否" />
+        </el-select>
+        <el-input
+          v-else
+          v-model="query.search_value"
+          class="ya-search-value"
+          placeholder="查询内容"
+          clearable
+        />
+        <el-select v-model="query.date_field" class="ya-date-field" placeholder="时间类型">
+          <el-option value="create_time" label="添加时间" />
+          <el-option value="update_time" label="修改时间" />
+        </el-select>
+        <el-date-picker
+          v-model="query.date_value"
+          type="datetimerange"
+          class="ya-date-value"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          value-format="YYYY-MM-DD HH:mm:ss"
+          :default-time="[new Date(2024, 1, 1, 0, 0, 0), new Date(2024, 1, 1, 23, 59, 59)]"
+        />
+        <el-button type="primary" @click="search()">查询</el-button>
+        <el-button title="重置" @click="refresh()">
+          <svg-icon icon-class="refresh" />
+        </el-button>
+        <el-button type="primary" @click="add()">添加</el-button>
+      </el-col>
+    </el-row>
+    <!-- 操作 -->
+    <el-row>
+      <el-col>
+        <el-checkbox
+          border
+          v-model="isExpandAll"
+          class="!mr-[10px] top-[3px]"
+          title="收起/展开"
+          @change="expandAll"
+        >
+          收起
+        </el-checkbox>
+        <el-button title="删除" @click="selectOpen('dele')">删除</el-button>
+        <el-button title="是否禁用" @click="selectOpen('disable')">禁用</el-button>
+        <el-button title="解除用户" @click="selectOpen('removeu')">用户</el-button>
+        <el-button title="修改上级" @click="selectOpen('editpid')">上级</el-button>
+      </el-col>
+    </el-row>
+    <el-dialog
+      v-model="selectDialog"
+      :title="selectTitle"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      top="20vh"
+    >
+      <el-form ref="selectRef" label-width="120px">
+        <el-form-item v-if="selectType === 'removeu'">
+          <span style="">确定要解除选中的{{ name }}的用户吗？</span>
+        </el-form-item>
+        <el-form-item v-else-if="selectType === 'editpid'" label="上级">
           <el-cascader
-            v-if="query.search_field === 'post_pid'"
-            v-model="query.search_value"
+            v-model="post_pid"
             :options="trees"
             :props="props"
-            class="filter-item ya-search-value"
+            class="w-full"
+            placeholder="一级职位"
             clearable
             filterable
           />
-          <el-select
-            v-else-if="query.search_field === 'is_disable'"
-            v-model="query.search_value"
-            class="filter-item ya-search-value"
-          >
-            <el-option :value="1" label="是" />
-            <el-option :value="0" label="否" />
-          </el-select>
-          <el-input
-            v-else
-            v-model="query.search_value"
-            class="filter-item ya-search-value"
-            placeholder="查询内容"
-            clearable
-          />
-          <el-select v-model="query.date_field" class="filter-item ya-date-field" placeholder="时间类型">
-            <el-option value="create_time" label="添加时间" />
-            <el-option value="update_time" label="修改时间" />
-          </el-select>
-          <el-date-picker
-            v-model="query.date_value"
-            type="datetimerange"
-            class="filter-item ya-date-value"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            :default-time="['00:00:00', '23:59:59']"
-            value-format="yyyy-MM-dd HH:mm:ss"
-          />
-          <el-button
-            class="filter-item"
-            type="primary"
-            title="查询/刷新"
-            @click="search()"
-          >查询</el-button>
-          <el-button
-            class="filter-item"
-            icon="el-icon-refresh"
-            title="重置"
-            @click="refresh()"
-          />
-        </el-col>
-      </el-row>
-      <!-- 选中操作 -->
-      <el-row>
-        <el-col>
-          <el-checkbox
-            v-model="isExpandAll"
-            style="margin-right:10px;top:-2px"
-            border
-            title="收起/展开"
-            @change="expandAll"
-          >收起</el-checkbox>
-          <el-button title="解除用户" @click="selectOpen('removeu')">用户</el-button>
-          <el-button title="修改上级" @click="selectOpen('editpid')">上级</el-button>
-          <el-button title="是否禁用" @click="selectOpen('disable')">禁用</el-button>
-          <el-button title="删除" @click="selectOpen('dele')">删除</el-button>
-          <el-button type="primary" @click="add()">添加</el-button>
-        </el-col>
-      </el-row>
-      <el-dialog
-        :title="selectTitle"
-        :visible.sync="selectDialog"
-        top="20vh"
-        :close-on-click-modal="false"
-        :close-on-press-escape="false"
-      >
-        <el-form ref="selectRef" label-width="120px">
-          <el-form-item :label="name + 'ID'" prop="">
-            <el-input
-              v-model="selectIds"
-              type="textarea"
-              :autosize="{ minRows: 5, maxRows: 12 }"
-              disabled
-            />
-          </el-form-item>
-          <el-form-item v-if="selectType === 'removeu'" label="" prop="">
-            <span style="">确定要解除选中的{{ name }}的用户吗？</span>
-          </el-form-item>
-          <el-form-item v-else-if="selectType === 'editpid'" label="上级" prop="">
-            <el-cascader
-              v-model="post_pid"
-              :options="trees"
-              :props="props"
-              style="width:100%"
-              placeholder="一级职位"
-              clearable
-              filterable
-            />
-          </el-form-item>
-          <el-form-item v-else-if="selectType === 'disable'" label="是否禁用" prop="">
-            <el-switch v-model="is_disable" :active-value="1" :inactive-value="0" />
-          </el-form-item>
-          <el-form-item v-else-if="selectType === 'dele'" label="" prop="">
-            <span class="ya-color-red">确定要删除选中的{{ name }}吗？</span>
-          </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="selectCancel">取消</el-button>
-          <el-button type="primary" @click="selectSubmit">提交</el-button>
-        </div>
-      </el-dialog>
-    </div>
+        </el-form-item>
+        <el-form-item v-else-if="selectType === 'disable'" label="是否禁用">
+          <el-switch v-model="is_disable" :active-value="1" :inactive-value="0" />
+        </el-form-item>
+        <el-form-item v-else-if="selectType === 'dele'">
+          <span class="c-red">确定要删除选中的{{ name }}吗？</span>
+        </el-form-item>
+        <el-form-item :label="name + 'ID'">
+          <el-input v-model="selectIds" type="textarea" autosize disabled />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="selectCancel">取消</el-button>
+        <el-button type="primary" @click="selectSubmit">提交</el-button>
+      </template>
+    </el-dialog>
     <!-- 列表 -->
     <el-table
       ref="table"
       v-loading="loading"
       :data="data"
-      :height="height + 50"
+      :height="height"
       :row-key="idkey"
       default-expand-all
       @selection-change="select"
     >
       <el-table-column type="selection" width="42" title="全选/反选" />
-      <el-table-column
-        prop="post_name"
-        label="名称"
-        min-width="200"
-        show-overflow-tooltip
-      />
+      <el-table-column prop="post_name" label="名称" min-width="200" show-overflow-tooltip />
       <el-table-column prop="post_abbr" label="简称" min-width="100" />
-      <el-table-column
-        prop="post_desc"
-        label="描述"
-        min-width="150"
-        show-overflow-tooltip
-      />
-      <el-table-column
-        :prop="idkey"
-        label="ID"
-        width="80"
-        sortable="custom"
-      />
-      <el-table-column
-        prop="is_disable"
-        label="禁用"
-        min-width="75"
-        sortable="custom"
-      >
-        <template slot-scope="scope">
+      <el-table-column prop="post_desc" label="描述" min-width="150" show-overflow-tooltip />
+      <el-table-column :prop="idkey" label="ID" width="80" sortable="custom" />
+      <el-table-column prop="is_disable" label="禁用" min-width="85" sortable="custom">
+        <template #default="scope">
           <el-switch
             v-model="scope.row.is_disable"
             :active-value="1"
@@ -178,196 +139,130 @@
           />
         </template>
       </el-table-column>
-      <el-table-column prop="sort" label="排序" min-width="75" />
-      <el-table-column
-        prop="create_time"
-        label="添加时间"
-        width="155"
-        sortable="custom"
-      />
-      <el-table-column
-        prop="update_time"
-        label="修改时间"
-        width="155"
-        sortable="custom"
-      />
+      <el-table-column prop="sort" label="排序" min-width="85" />
+      <el-table-column prop="create_time" label="添加时间" width="165" sortable="custom" />
+      <el-table-column prop="update_time" label="修改时间" width="165" sortable="custom" />
       <el-table-column label="操作" width="170">
-        <template slot-scope="scope">
-          <el-button type="text" size="small" @click="userShow(scope.row)">用户</el-button>
-          <el-button
-            type="text"
-            size="small"
+        <template #default="scope">
+          <el-link type="primary" class="mr-1" :underline="false" @click="userShow(scope.row)">
+            用户
+          </el-link>
+          <el-link
+            type="primary"
+            class="mr-1"
+            :underline="false"
             title="添加下级"
             @click="add(scope.row)"
-          >添加</el-button>
-          <el-button type="text" size="small" @click="edit(scope.row)">修改</el-button>
-          <el-button type="text" size="small" @click="selectOpen('dele', scope.row)">删除</el-button>
+          >
+            添加
+          </el-link>
+          <el-link type="primary" class="mr-1" :underline="false" @click="edit(scope.row)">
+            修改
+          </el-link>
+          <el-link type="primary" :underline="false" @click="selectOpen('dele', [scope.row])">
+            删除
+          </el-link>
         </template>
       </el-table-column>
     </el-table>
     <el-row>
       <el-descriptions title="" :column="12" :colon="false">
-        <el-descriptions-item label="">共 {{ count }} 条</el-descriptions-item>
+        <el-descriptions-item>共 {{ count }} 条</el-descriptions-item>
       </el-descriptions>
     </el-row>
     <!-- 添加修改 -->
     <el-dialog
+      v-model="dialog"
       :title="dialogTitle"
-      :visible.sync="dialog"
-      top="5vh"
-      :before-close="cancel"
       :close-on-click-modal="false"
       :close-on-press-escape="false"
+      :before-close="cancel"
+      top="5vh"
     >
-      <el-form
-        ref="ref"
-        :rules="rules"
-        :model="model"
-        label-width="100px"
-        class="dialog-body"
-        :style="{ height: height + 'px' }"
-      >
-        <el-form-item label="上级" prop="post_pid">
-          <el-cascader
-            v-model="model.post_pid"
-            :options="trees"
-            :props="props"
-            style="width:100%"
-            placeholder="一级职位"
-            clearable
-            filterable
-          />
-        </el-form-item>
-        <el-form-item label="名称" prop="post_name">
-          <el-input v-model="model.post_name" placeholder="请输入名称" clearable />
-        </el-form-item>
-        <el-form-item label="简称" prop="post_abbr">
-          <el-input v-model="model.post_abbr" placeholder="请输入简称" clearable />
-        </el-form-item>
-        <el-form-item label="描述" prop="post_desc">
-          <el-input
-            v-model="model.post_desc"
-            type="textarea"
-            autosize
-            placeholder="请输入描述"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="备注" prop="remark">
-          <el-input v-model="model.remark" placeholder="" clearable />
-        </el-form-item>
-        <el-form-item label="排序" prop="sort">
-          <el-input v-model="model.sort" type="number" />
-        </el-form-item>
-        <el-form-item v-if="model[idkey]" label="添加时间" prop="create_time">
-          <el-input v-model="model.create_time" disabled />
-        </el-form-item>
-        <el-form-item v-if="model[idkey]" label="修改时间" prop="update_time">
-          <el-input v-model="model.update_time" disabled />
-        </el-form-item>
-        <el-form-item v-if="model.delete_time" label="删除时间" prop="delete_time">
-          <el-input v-model="model.delete_time" disabled />
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
+      <el-scrollbar native :height="height - 50">
+        <el-form ref="ref" :rules="rules" :model="model" label-width="100px">
+          <el-form-item label="上级" prop="post_pid">
+            <el-cascader
+              v-model="model.post_pid"
+              :options="trees"
+              :props="props"
+              class="w-full"
+              placeholder="一级职位"
+              clearable
+              filterable
+            />
+          </el-form-item>
+          <el-form-item label="名称" prop="post_name">
+            <el-input v-model="model.post_name" placeholder="请输入名称" clearable />
+          </el-form-item>
+          <el-form-item label="简称" prop="post_abbr">
+            <el-input v-model="model.post_abbr" placeholder="请输入简称" clearable />
+          </el-form-item>
+          <el-form-item label="描述" prop="post_desc">
+            <el-input v-model="model.post_desc" type="textarea" autosize placeholder="请输入描述" />
+          </el-form-item>
+          <el-form-item label="备注" prop="remark">
+            <el-input v-model="model.remark" placeholder="" clearable />
+          </el-form-item>
+          <el-form-item label="排序" prop="sort">
+            <el-input v-model="model.sort" type="number" />
+          </el-form-item>
+          <el-form-item v-if="model[idkey]" label="添加时间" prop="create_time">
+            <el-input v-model="model.create_time" disabled />
+          </el-form-item>
+          <el-form-item v-if="model[idkey]" label="修改时间" prop="update_time">
+            <el-input v-model="model.update_time" disabled />
+          </el-form-item>
+          <el-form-item v-if="model.delete_time" label="删除时间" prop="delete_time">
+            <el-input v-model="model.delete_time" disabled />
+          </el-form-item>
+        </el-form>
+      </el-scrollbar>
+      <template #footer>
         <el-button :loading="loading" @click="cancel">取消</el-button>
         <el-button :loading="loading" type="primary" @click="submit">提交</el-button>
-      </div>
+      </template>
     </el-dialog>
     <!-- 职位用户 -->
     <el-dialog
+      v-model="userDialog"
       :title="userDialogTitle"
-      :visible.sync="userDialog"
-      width="70%"
-      top="5vh"
       :close-on-click-modal="false"
       :close-on-press-escape="false"
+      top="5vh"
+      width="70%"
     >
-      <!-- 选中操作 -->
+      <!-- 职位用户操作 -->
       <el-row>
         <el-col>
-          <el-button type="primary" title="解除" @click="userSelectOpen('userRemove')">解除</el-button>
+          <el-button type="primary" title="解除" @click="userSelectOpen('userRemove')">
+            解除
+          </el-button>
           <el-input
             v-model="userQuery.search_value"
-            class="filter-item ya-search-value ya-margin-left"
+            class="ya-search-value ya-margin-left"
             placeholder="昵称"
             clearable
           />
-          <el-button
-            class="filter-item"
-            type="primary"
-            title="查询/刷新"
-            @click="user()"
-          >查询</el-button>
+          <el-button type="primary" @click="user()">查询</el-button>
         </el-col>
       </el-row>
-      <el-dialog
-        :title="userSelectTitle"
-        :visible.sync="userSelectDialog"
-        top="20vh"
-        :close-on-click-modal="false"
-        :close-on-press-escape="false"
-        append-to-body
-      >
-        <el-form ref="userSelectRef" label-width="120px">
-          <el-form-item :label="userName + 'ID'" prop="">
-            <el-input
-              v-model="userSelectIds"
-              type="textarea"
-              :autosize="{ minRows: 5, maxRows: 12 }"
-              disabled
-            />
-          </el-form-item>
-          <el-form-item v-if="userSelectType === 'userRemove'" label="标签ID" prop="">
-            <span>{{ userQuery[idkey] }}</span>
-          </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="userSelectCancel">取消</el-button>
-          <el-button type="primary" @click="userSelectSubmit">提交</el-button>
-        </div>
-      </el-dialog>
-      <!-- 用户列表 -->
+      <!-- 职位用户列表 -->
       <el-table
         ref="userRef"
         v-loading="userLoad"
         :data="userData"
-        :height="height - 20"
+        :height="height - 50"
         @sort-change="userSort"
         @selection-change="userSelect"
       >
         <el-table-column type="selection" width="42" title="全选/反选" />
-        <el-table-column
-          prop="user_id"
-          label="用户ID"
-          min-width="100"
-          sortable="custom"
-        />
-        <el-table-column
-          prop="nickname"
-          label="昵称"
-          min-width="120"
-          show-overflow-tooltip
-        />
-        <el-table-column
-          prop="username"
-          label="账号"
-          min-width="120"
-          show-overflow-tooltip
-        />
-        <el-table-column
-          prop="post_names"
-          label="职位"
-          min-width="120"
-          show-overflow-tooltip
-        />
-        <el-table-column
-          prop="is_super"
-          label="超管"
-          width="75"
-          sortable="custom"
-        >
-          <template slot-scope="scope">
+        <el-table-column prop="user_id" label="用户ID" min-width="100" sortable="custom" />
+        <el-table-column prop="nickname" label="昵称" min-width="120" show-overflow-tooltip />
+        <el-table-column prop="username" label="账号" min-width="120" show-overflow-tooltip />
+        <el-table-column prop="post_names" label="职位" min-width="120" show-overflow-tooltip />
+        <el-table-column prop="is_super" label="超管" width="85" sortable="custom">
+          <template #default="scope">
             <el-switch
               v-model="scope.row.is_super"
               :active-value="1"
@@ -376,13 +271,8 @@
             />
           </template>
         </el-table-column>
-        <el-table-column
-          prop="is_disable"
-          label="禁用"
-          width="75"
-          sortable="custom"
-        >
-          <template slot-scope="scope">
+        <el-table-column prop="is_disable" label="禁用" width="85" sortable="custom">
+          <template #default="scope">
             <el-switch
               v-model="scope.row.is_disable"
               :active-value="1"
@@ -391,32 +281,54 @@
             />
           </template>
         </el-table-column>
-        <el-table-column
-          prop="remark"
-          label="备注"
-          width="100"
-          show-overflow-tooltip
-        />
-        <el-table-column label="操作" width="75">
-          <template slot-scope="scope">
-            <el-button type="text" size="small" @click="userSelectOpen('userRemove', scope.row)">解除</el-button>
+        <el-table-column prop="remark" label="备注" width="100" show-overflow-tooltip />
+        <el-table-column label="操作" width="70">
+          <template #default="scope">
+            <el-link
+              type="primary"
+              :underline="false"
+              @click="userSelectOpen('userRemove', [scope.row])"
+            >
+              解除
+            </el-link>
           </template>
         </el-table-column>
       </el-table>
+      <!-- 职位用户分页 -->
       <pagination
         v-show="userCount > 0"
-        :total="userCount"
-        :page.sync="userQuery.page"
-        :limit.sync="userQuery.limit"
+        v-model:total="userCount"
+        v-model:page="userQuery.page"
+        v-model:limit="userQuery.limit"
         @pagination="user"
       />
+    </el-dialog>
+    <el-dialog
+      v-model="userSelectDialog"
+      :title="userSelectTitle"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      top="20vh"
+    >
+      <el-form ref="userSelectRef" label-width="120px">
+        <el-form-item v-if="userSelectType === 'userRemove'" label="标签ID">
+          <span>{{ userQuery[idkey] }}</span>
+        </el-form-item>
+        <el-form-item :label="userName + 'ID'">
+          <el-input v-model="userSelectIds" type="textarea" autosize disabled />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="userSelectCancel">取消</el-button>
+        <el-button type="primary" @click="userSelectSubmit">提交</el-button>
+      </template>
     </el-dialog>
   </div>
 </template>
 
 <script>
 import screenHeight from '@/utils/screen-height'
-import Pagination from '@/components/Pagination'
+import Pagination from '@/components/Pagination/index.vue'
 import { arrayColumn } from '@/utils/index'
 import { getPageLimit } from '@/utils/settings'
 import { list, info, add, edit, dele, editpid, disable, user, userRemove } from '@/api/system/post'
@@ -452,7 +364,7 @@ export default {
       isExpandAll: false,
       selection: [],
       selectIds: '',
-      selectTitle: '选中操作',
+      selectTitle: '操作',
       selectDialog: false,
       selectType: '',
       post_pid: '',
@@ -464,32 +376,40 @@ export default {
       userLoad: false,
       userData: [],
       userCount: 0,
-      userQuery: { page: 1, limit: getPageLimit(), search_field: 'nickname', search_exp: 'like', search_value: '' },
+      userQuery: {
+        page: 1,
+        limit: getPageLimit(),
+        search_field: 'nickname',
+        search_exp: 'like',
+        search_value: ''
+      },
       userSelection: [],
       userSelectIds: '',
-      userSelectTitle: '选中操作',
+      userSelectTitle: '操作',
       userSelectDialog: false,
       userSelectType: '',
       count: ''
     }
   },
   created() {
-    this.height = screenHeight(270)
+    this.height = screenHeight()
     this.list()
   },
   methods: {
     // 列表
     list() {
       this.loading = true
-      list(this.query).then(res => {
-        this.data = res.data.list
-        this.trees = res.data.tree
-        this.exps = res.data.exps
-        this.count = res.data.count
-        this.loading = false
-      }).catch(() => {
-        this.loading = false
-      })
+      list(this.query)
+        .then((res) => {
+          this.data = res.data.list
+          this.trees = res.data.tree
+          this.exps = res.data.exps
+          this.count = res.data.count
+          this.loading = false
+        })
+        .catch(() => {
+          this.loading = false
+        })
     },
     // 添加修改
     add(row) {
@@ -505,34 +425,40 @@ export default {
       this.dialogTitle = this.name + '修改：' + row[this.idkey]
       var id = {}
       id[this.idkey] = row[this.idkey]
-      info(id).then(res => {
-        this.reset(res.data)
-      }).catch(() => { })
+      info(id)
+        .then((res) => {
+          this.reset(res.data)
+        })
+        .catch(() => {})
     },
     cancel() {
       this.dialog = false
       this.reset()
     },
     submit() {
-      this.$refs['ref'].validate(valid => {
+      this.$refs['ref'].validate((valid) => {
         if (valid) {
           this.loading = true
           if (this.model[this.idkey]) {
-            edit(this.model).then(res => {
-              this.list()
-              this.dialog = false
-              this.$message.success(res.msg)
-            }).catch(() => {
-              this.loading = false
-            })
+            edit(this.model)
+              .then((res) => {
+                this.list()
+                this.dialog = false
+                ElMessage.success(res.msg)
+              })
+              .catch(() => {
+                this.loading = false
+              })
           } else {
-            add(this.model).then(res => {
-              this.list()
-              this.dialog = false
-              this.$message.success(res.msg)
-            }).catch(() => {
-              this.loading = false
-            })
+            add(this.model)
+              .then((res) => {
+                this.list()
+                this.dialog = false
+                ElMessage.success(res.msg)
+              })
+              .catch(() => {
+                this.loading = false
+              })
           }
         }
       })
@@ -545,8 +471,10 @@ export default {
         this.model = this.$options.data().model
       }
       if (this.$refs['ref'] !== undefined) {
-        this.$refs['ref'].resetFields()
-        this.$refs['ref'].clearValidate()
+        try {
+          this.$refs['ref'].resetFields()
+          this.$refs['ref'].clearValidate()
+        } catch (error) {}
       }
     },
     // 查询
@@ -564,14 +492,14 @@ export default {
       this.expandFor(this.data, !e)
     },
     expandFor(data, isExpand) {
-      data.forEach(i => {
+      data.forEach((i) => {
         this.$refs.table.toggleRowExpansion(i, isExpand)
         if (i.children) {
           this.expandFor(i.children, isExpand)
         }
       })
     },
-    // 选中操作
+    // 操作
     select(selection) {
       this.selection = selection
       this.selectIds = this.selectGetIds(selection).toString()
@@ -580,17 +508,23 @@ export default {
       return arrayColumn(selection, this.idkey)
     },
     selectAlert() {
-      this.$alert('请选择需要操作的' + this.name, '提示', { type: 'warning', callback: action => { } })
+      ElMessageBox.alert('请选择需要操作的' + this.name, '提示', {
+        type: 'warning',
+        callback: () => {}
+      })
     },
     selectOpen(selectType, selectRow = '') {
       if (selectRow) {
         this.$refs['table'].clearSelection()
-        this.$refs['table'].toggleRowSelection(selectRow)
+        const selectRowLen = selectRow.length
+        for (let i = 0; i < selectRowLen; i++) {
+          this.$refs['table'].toggleRowSelection(selectRow[i], true)
+        }
       }
       if (!this.selection.length) {
         this.selectAlert()
       } else {
-        this.selectTitle = '选中操作'
+        this.selectTitle = '操作'
         if (selectType === 'removeu') {
           this.selectTitle = this.name + '解除用户'
         } else if (selectType === 'editpid') {
@@ -633,12 +567,14 @@ export default {
         userRemove({
           post_id: this.selectGetIds(row),
           user_ids: []
-        }).then(res => {
-          this.list()
-          this.$message.success(res.msg)
-        }).catch(() => {
-          this.loading = false
         })
+          .then((res) => {
+            this.list()
+            ElMessage.success(res.msg)
+          })
+          .catch(() => {
+            this.loading = false
+          })
       }
     },
     // 修改上级
@@ -646,13 +582,15 @@ export default {
       editpid({
         ids: this.selectGetIds(row),
         post_pid: this.post_pid
-      }).then(res => {
-        this.list()
-        this.selectDialog = false
-        this.$message.success(res.msg)
-      }).catch(() => {
-        this.loading = false
       })
+        .then((res) => {
+          this.list()
+          this.selectDialog = false
+          ElMessage.success(res.msg)
+        })
+        .catch(() => {
+          this.loading = false
+        })
     },
     // 是否禁用
     disable(row, select = false) {
@@ -667,12 +605,14 @@ export default {
         disable({
           ids: this.selectGetIds(row),
           is_disable: is_disable
-        }).then(res => {
-          this.list()
-          this.$message.success(res.msg)
-        }).catch(() => {
-          this.list()
         })
+          .then((res) => {
+            this.list()
+            ElMessage.success(res.msg)
+          })
+          .catch(() => {
+            this.list()
+          })
       }
     },
     // 删除
@@ -683,12 +623,14 @@ export default {
         this.loading = true
         dele({
           ids: this.selectGetIds(row)
-        }).then(res => {
-          this.list()
-          this.$message.success(res.msg)
-        }).catch(() => {
-          this.loading = false
         })
+          .then((res) => {
+            this.list()
+            ElMessage.success(res.msg)
+          })
+          .catch(() => {
+            this.loading = false
+          })
       }
     },
     // 职位用户显示
@@ -702,13 +644,15 @@ export default {
     // 职位用户列表
     user() {
       this.userLoad = true
-      user(this.userQuery).then(res => {
-        this.userData = res.data.list
-        this.userCount = res.data.count
-        this.userLoad = false
-      }).catch(() => {
-        this.userLoad = false
-      })
+      user(this.userQuery)
+        .then((res) => {
+          this.userData = res.data.list
+          this.userCount = res.data.count
+          this.userLoad = false
+        })
+        .catch(() => {
+          this.userLoad = false
+        })
     },
     // 职位用户排序
     userSort(sort) {
@@ -723,7 +667,7 @@ export default {
         this.user()
       }
     },
-    // 职位用户选中操作
+    // 职位用户操作
     userSelect(selection) {
       this.userSelection = selection
       this.userSelectIds = this.userSelectGetIds(selection).toString()
@@ -732,7 +676,10 @@ export default {
       return arrayColumn(selection, this.userPk)
     },
     userSelectAlert() {
-      this.$alert('请选择需要操作的' + this.userName, '提示', { type: 'warning', callback: action => { } })
+      ElMessageBox.alert('请选择需要操作的' + this.userName, '提示', {
+        type: 'warning',
+        callback: () => {}
+      })
     },
     userSelectOpen(selectType, selectRow = '') {
       if (selectRow) {
@@ -742,7 +689,7 @@ export default {
       if (!this.userSelection.length) {
         this.userSelectAlert()
       } else {
-        this.userSelectTitle = '选中操作'
+        this.userSelectTitle = '操作'
         if (selectType === 'userRemove') {
           this.userSelectTitle = '解除用户'
         }
@@ -773,16 +720,16 @@ export default {
         userRemove({
           post_id: this.userQuery.post_id,
           user_ids: this.userSelectGetIds(row)
-        }).then(res => {
-          this.user()
-          this.$message.success(res.msg)
-        }).catch(() => {
-          this.userLoad = false
         })
+          .then((res) => {
+            this.user()
+            ElMessage.success(res.msg)
+          })
+          .catch(() => {
+            this.userLoad = false
+          })
       }
     }
   }
 }
 </script>
-
-<style scoped></style>

@@ -1,57 +1,87 @@
-import Cookies from 'js-cookie'
-import { setElementSize, getElementSize } from '@/utils/settings'
+import { defineStore } from 'pinia'
+import { store } from '@/store'
+import { useStorage } from '@vueuse/core'
+import defaultSettings from '@/settings'
+import zhCn from 'element-plus/es/locale/lang/zh-cn'
+import en from 'element-plus/es/locale/lang/en'
 
-const state = {
-  sidebar: {
-    opened: Cookies.get('sidebarStatus') ? !!+Cookies.get('sidebarStatus') : true,
+// setup
+export const useAppStore = defineStore('app', () => {
+  // state
+  const device = useStorage('device', 'desktop')
+  const size = useStorage('size', defaultSettings.size)
+  const language = useStorage('language', defaultSettings.language)
+  const sidebarStatus = useStorage('sidebarStatus', 'closed')
+  const sidebar = reactive({
+    opened: sidebarStatus.value != 'closed',
     withoutAnimation: false
-  },
-  device: 'desktop',
-  size: getElementSize()
-}
-
-const mutations = {
-  TOGGLE_SIDEBAR: state => {
-    state.sidebar.opened = !state.sidebar.opened
-    state.sidebar.withoutAnimation = false
-    if (state.sidebar.opened) {
-      Cookies.set('sidebarStatus', 1)
+  })
+  const activeTopMenu = useStorage('activeTop', '')
+  // 语言包
+  const locale = computed(() => {
+    if (language?.value == 'en') {
+      return en
     } else {
-      Cookies.set('sidebarStatus', 0)
+      return zhCn
     }
-  },
-  CLOSE_SIDEBAR: (state, withoutAnimation) => {
-    Cookies.set('sidebarStatus', 0)
-    state.sidebar.opened = false
-    state.sidebar.withoutAnimation = withoutAnimation
-  },
-  TOGGLE_DEVICE: (state, device) => {
-    state.device = device
-  },
-  SET_SIZE: (state, size) => {
-    state.size = size
-    setElementSize(size)
-  }
-}
+  })
 
-const actions = {
-  toggleSideBar({ commit }) {
-    commit('TOGGLE_SIDEBAR')
-  },
-  closeSideBar({ commit }, { withoutAnimation }) {
-    commit('CLOSE_SIDEBAR', withoutAnimation)
-  },
-  toggleDevice({ commit }, device) {
-    commit('TOGGLE_DEVICE', device)
-  },
-  setSize({ commit }, size) {
-    commit('SET_SIZE', size)
+  // actions
+  function toggleSidebar() {
+    sidebar.opened = !sidebar.opened
+    sidebar.withoutAnimation = false
+    if (sidebar.opened) {
+      sidebarStatus.value = 'opened'
+    } else {
+      sidebarStatus.value = 'closed'
+    }
   }
-}
 
-export default {
-  namespaced: true,
-  state,
-  mutations,
-  actions
+  function closeSideBar(withoutAnimation) {
+    sidebar.opened = false
+    sidebar.withoutAnimation = withoutAnimation
+    sidebarStatus.value = 'closed'
+  }
+
+  function openSideBar(withoutAnimation) {
+    sidebar.opened = true
+    sidebar.withoutAnimation = withoutAnimation
+    sidebarStatus.value = 'opened'
+  }
+
+  function toggleDevice(val) {
+    device.value = val
+  }
+
+  function changeSize(val) {
+    size.value = val
+  }
+  // 切换语言
+  function changeLanguage(val) {
+    language.value = val
+  }
+  // 切换混合模式
+  function changeTopActive(val) {
+    activeTopMenu.value = val
+  }
+  return {
+    device,
+    sidebar,
+    language,
+    locale,
+    size,
+    activeTopMenu,
+    toggleDevice,
+    changeSize,
+    changeLanguage,
+    toggleSidebar,
+    closeSideBar,
+    openSideBar,
+    changeTopActive
+  }
+})
+
+// 非setup
+export function useAppStoreHook() {
+  return useAppStore(store)
 }

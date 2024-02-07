@@ -1,23 +1,23 @@
 <template>
-  <div style="display:flex;float:right">
+  <div style="display: flex; float: right">
     <input
       ref="excel-upload-input"
       class="excel-upload-input"
       type="file"
       accept=".xlsx, .xls, .csv"
       @change="handleClick"
-    >
+    />
     <el-button :loading="loading" @click="handleUpload">{{ title }}</el-button>
     <el-dialog
+      v-model="dialogShow"
       :title="dialogTitle"
-      :visible.sync="dialogSync"
-      top="5vh"
-      width="70%"
       :close-on-click-modal="false"
       :close-on-press-escape="false"
+      top="5vh"
+      width="70%"
     >
       <el-form label-width="0">
-        <el-form-item label="" prop="">
+        <el-form-item>
           <el-table v-loading="loading" :data="excelData.results" :height="height">
             <el-table-column
               v-for="item in excelData.header"
@@ -30,10 +30,10 @@
           </el-table>
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
+      <template #footer>
         <el-button :loading="loading" @click="cancel">取消</el-button>
         <el-button :loading="loading" type="primary" @click="submit">导入</el-button>
-      </div>
+      </template>
     </el-dialog>
   </div>
 </template>
@@ -41,7 +41,7 @@
 <script>
 import * as XLSX from 'xlsx'
 import screenHeight from '@/utils/screen-height'
-
+// 表格导入
 export default {
   props: {
     limitSize: { type: Number, default: 1 },
@@ -52,7 +52,7 @@ export default {
       loading: false,
       height: 580,
       dialogTitle: '导入预览',
-      dialogSync: false,
+      dialogShow: false,
       excelData: {
         header: null,
         results: null
@@ -60,20 +60,20 @@ export default {
     }
   },
   created() {
-    this.height = screenHeight()
+    this.height = screenHeight(340)
   },
   methods: {
     cancel() {
-      this.dialogSync = false
+      this.dialogShow = false
     },
     submit() {
-      this.dialogSync = false
+      this.dialogShow = false
       this.$emit('on-import', this.excelData)
     },
     generateData({ header, results }) {
       this.excelData.header = header
       this.excelData.results = results
-      this.dialogSync = true
+      this.dialogShow = true
     },
     handleDrop(e) {
       e.stopPropagation()
@@ -81,13 +81,13 @@ export default {
       if (this.loading) return
       const files = e.dataTransfer.files
       if (files.length !== 1) {
-        this.$message.error('只能上传一个文件')
+        ElMessage.error('只能上传一个文件')
         return
       }
       const rawFile = files[0]
 
       if (!this.isExcel(rawFile)) {
-        this.$message.error('文件类型仅支持 xlsx、xls、csv')
+        ElMessage.error('文件类型仅支持 xlsx、xls、csv')
         return false
       }
       this.upload(rawFile)
@@ -120,7 +120,7 @@ export default {
       const fileSize = file.size / 1024 / 1024
 
       if (fileSize > limitSize) {
-        this.$message.error(`文件大小不能大于 ${limitSize} m`)
+        ElMessage.error(`文件大小不能大于 ${limitSize} m`)
         return false
       }
 
@@ -130,7 +130,7 @@ export default {
       this.loading = true
       return new Promise((resolve, reject) => {
         const reader = new FileReader()
-        reader.onload = e => {
+        reader.onload = (e) => {
           const data = e.target.result
           const workbook = XLSX.read(data, { type: 'array' })
           const firstSheetName = workbook.SheetNames[0]
@@ -165,7 +165,7 @@ export default {
 </script>
 
 <style scoped>
-.excel-upload-input{
+.excel-upload-input {
   display: none;
   z-index: -9999;
 }

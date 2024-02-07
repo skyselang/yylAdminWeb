@@ -1,145 +1,119 @@
 <template>
   <div>
+    <!-- 公告列表 -->
     <el-dialog
+      v-model="dialog"
       :title="dialogTitle"
-      :visible.sync="dialog"
-      top="10vh"
-      center
-      :before-close="cancel"
       :close-on-click-modal="false"
       :close-on-press-escape="false"
+      :before-close="cancel"
+      top="10vh"
+      center
     >
-      <!-- 列表 -->
       <el-table
         ref="table"
         v-loading="loading"
         :data="data"
-        :height="height-200"
+        :height="height - 200"
         :show-header="false"
       >
-        <el-table-column prop="image_id" label="" min-width="60">
-          <template slot-scope="scope">
-            <div style="height:30px">
-              <el-image
-                v-if="scope.row.image_url"
-                style="height:30px"
-                fit="contain"
-                :src="scope.row.image_url"
-                :preview-src-list="[scope.row.image_url]"
-                title="点击看大图"
-              >
-                <div slot="error" class="image-slot">
-                  <i class="el-icon-picture-outline" />
-                </div>
-              </el-image>
-            </div>
+        <el-table-column prop="image_id" min-width="90">
+          <template #default="scope">
+            <FileImage :file-url="scope.row.image_url" lazy />
           </template>
         </el-table-column>
-        <el-table-column prop="title" min-width="300" show-overflow-tooltip>
-          <template slot-scope="scope">
-            <span :style="{'color':scope.row.title_color}">{{ scope.row.title }}</span>
+        <el-table-column prop="title" min-width="250" show-overflow-tooltip>
+          <template #default="scope">
+            <span :style="{ color: scope.row.title_color }">{{ scope.row.title }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="start_time" width="155" />
-        <el-table-column width="50" align="right" fixed="right">
-          <template slot-scope="scope">
-            <el-button type="text" @click="info(scope.row)">查看</el-button>
+        <el-table-column prop="start_time" width="165" />
+        <el-table-column width="100">
+          <template #default="scope">
+            <el-button text type="primary" @click="info(scope.row)">
+              {{ $t('common.view') }}
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
-      <!-- 分页 -->
       <pagination
-        v-show="count>0"
-        :total="count"
-        :page.sync="query.page"
-        :limit.sync="query.limit"
-        align="center"
+        v-show="count > 0"
+        v-model:total="count"
+        v-model:page="query.page"
+        v-model:limit="query.limit"
         :background="false"
-        :small="true"
         layout="prev, pager, next"
         @pagination="list"
       />
-      <div slot="footer" class="dialog-footer">
-        <el-button type="text" @click="nohint(count)">不再提示</el-button>
-        <el-button type="text" @click="submit">关闭</el-button>
-      </div>
+      <template #footer>
+        <el-button text @click="nohint(count)">{{ $t('common.Don not prompt again') }}</el-button>
+        <el-button text @click="submit">{{ $t('common.close') }}</el-button>
+      </template>
     </el-dialog>
+    <!-- 一条公告 -->
     <el-dialog
-      :visible.sync="infoDialog"
+      v-model="oneDialog"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      top="18vh"
+      width="33%"
+      center
+    >
+      <template #header>
+        <span :style="{ color: oneModel.title_color }">{{ oneModel.title }}</span>
+      </template>
+      <el-scrollbar native :height="430">
+        <el-form ref="ref" :model="oneModel" label-width="0" class="text-center">
+          <el-form-item prop="start_time">
+            <el-col class="text-center">{{ oneModel.start_time }}</el-col>
+          </el-form-item>
+          <el-form-item v-if="oneModel.image_url" prop="image_url">
+            <FileImage :file-url="oneModel.image_url" :height="150" />
+          </el-form-item>
+          <el-form-item prop="desc">
+            <el-col class="text-center">{{ oneModel.desc }}</el-col>
+          </el-form-item>
+        </el-form>
+      </el-scrollbar>
+      <template #footer>
+        <el-button @click="oneNohint(count)">{{ $t('common.Don not prompt again') }}</el-button>
+        <el-button @click="oneSubmit">{{ $t('common.close') }}</el-button>
+        <el-button type="primary" @click="info(oneModel)">{{ $t('common.view') }}</el-button>
+      </template>
+    </el-dialog>
+    <!-- 公告详情 -->
+    <el-dialog
+      v-model="infoDialog"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
       top="9vh"
       center
-      :close-on-click-modal="false"
-      :close-on-press-escape="false"
     >
-      <!-- 详情 -->
-      <span slot="title">
-        <span :style="{'color':infoModel.title_color}">{{ infoModel.title }}</span>
-      </span>
-      <el-form
-        ref="ref"
-        :model="infoModel"
-        label-width="0"
-        class="dialog-body"
-        :style="{height:height+'px'}"
-      >
-        <el-form-item label="" prop="" style="text-align:center; margin-bottom:0">
-          <span>{{ infoModel.start_time }}</span>
-        </el-form-item>
-        <el-form-item label="" prop="content">
-          <div v-html="infoModel.content" />
-        </el-form-item>
-      </el-form>
-    </el-dialog>
-    <el-dialog
-      :visible.sync="oneDialog"
-      width="33%"
-      top="18vh"
-      center
-      :close-on-click-modal="false"
-      :close-on-press-escape="false"
-    >
-      <!-- 一条 -->
-      <span slot="title">
-        <span :style="{'color':oneModel.title_color}">{{ oneModel.title }}</span>
-      </span>
-      <el-form
-        ref="ref"
-        :model="oneModel"
-        label-width="0"
-        class="dialog-body"
-        style="height: 430px; text-align:center; margin-bottom:0"
-      >
-        <el-form-item label="" prop="">
-          <span>{{ oneModel.start_time }}</span>
-        </el-form-item>
-        <el-form-item v-if="oneModel.image_url" label="" prop="">
-          <el-image
-            style="height:220px;"
-            fit="contain"
-            :src="oneModel.image_url"
-            :preview-src-list="[oneModel.image_url]"
-            title="点击看大图"
-          >
-            <div slot="error" class="image-slot">
-              <i class="el-icon-picture-outline" />
-            </div>
-          </el-image>
-        </el-form-item>
-        <el-form-item label="" prop="">
-          <span>{{ oneModel.desc }}</span>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="" @click="oneNohint(count)">不再提示</el-button>
-        <el-button type="" @click="oneSubmit">关闭</el-button>
-        <el-button type="primary" @click="info(oneModel)">查看</el-button>
-      </span>
+      <template #header>
+        <span :style="{ color: infoModel.title_color }">{{ infoModel.title }}</span>
+      </template>
+      <el-scrollbar native :height="height">
+        <el-form ref="ref" :model="infoModel" label-width="0" class="text-center">
+          <el-form-item prop="start_time">
+            <el-col class="text-center">{{ infoModel.start_time }}</el-col>
+          </el-form-item>
+          <el-form-item v-if="infoModel.image_url" prop="image_url">
+            <FileImage :file-url="infoModel.image_url" :height="150" />
+          </el-form-item>
+          <el-form-item prop="desc">
+            <el-col class="text-center">{{ infoModel.desc }}</el-col>
+          </el-form-item>
+          <el-form-item prop="content">
+            <el-col class="text-center"><div v-html="infoModel.content"></div></el-col>
+          </el-form-item>
+        </el-form>
+      </el-scrollbar>
     </el-dialog>
   </div>
 </template>
 <script>
 import screenHeight from '@/utils/screen-height'
-import Pagination from '@/components/Pagination'
+import Pagination from '@/components/Pagination/index.vue'
 import { setNotice, getNotice, getPageLimit } from '@/utils/settings'
 import { notice } from '@/api/system/index'
 import { info } from '@/api/system/notice'
@@ -158,7 +132,7 @@ export default {
       exps: [{ exp: 'like', name: '包含' }],
       count: 0,
       dialog: false,
-      dialogTitle: '公告',
+      dialogTitle: this.$t('common.Notice'),
       infoDialog: false,
       infoModel: {},
       oneDialog: false,
@@ -173,28 +147,30 @@ export default {
     list() {
       if (!getNotice()) {
         this.loading = true
-        notice(this.query).then(res => {
-          this.data = res.data.list
-          this.count = res.data.count
-          this.loading = false
-          if (this.count > 0) {
-            if (this.count === 1) {
-              const row = this.data[0]
-              this.oneInfo(row)
-            } else {
-              this.dialog = true
+        notice(this.query)
+          .then((res) => {
+            this.data = res.data.list
+            this.count = res.data.count
+            this.loading = false
+            if (this.count > 0) {
+              if (this.count === 1) {
+                const row = this.data[0]
+                this.oneInfo(row)
+              } else {
+                this.dialog = true
+              }
             }
-          }
-        }).catch(() => {
-          this.loading = false
-        })
+          })
+          .catch(() => {
+            this.loading = false
+          })
       }
     },
     info(row) {
       this.infoDialog = true
       var id = {}
       id[this.idkey] = row[this.idkey]
-      info(id).then(res => {
+      info(id).then((res) => {
         this.infoModel = res.data
       })
     },
@@ -212,7 +188,7 @@ export default {
       this.oneDialog = true
       var id = {}
       id[this.idkey] = row[this.idkey]
-      info(id).then(res => {
+      info(id).then((res) => {
         this.oneModel = res.data
       })
     },
@@ -229,6 +205,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-</style>

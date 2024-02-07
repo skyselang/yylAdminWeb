@@ -1,11 +1,10 @@
 <template>
-  <div v-loading.fullscreen.lock="loading" element-loading-text="正在退出" />
+  <div v-loading.fullscreen.lock="loading" element-loading-text="正在退出"></div>
 </template>
 
 <script>
 export default {
   name: 'SystemLogout',
-  components: {},
   data() {
     return {
       name: '退出',

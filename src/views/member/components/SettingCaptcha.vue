@@ -1,56 +1,47 @@
 <template>
-  <el-card class="dialog-body" :style="{height:height+'px'}">
-    <el-row>
-      <el-col :span="14">
-        <el-form
-          ref="ref"
-          :model="model"
-          :rules="rules"
-          label-width="120px"
-        >
-          <el-form-item label="验证码方式" prop="captcha_mode">
-            <el-col :span="8">
-              <el-select v-model="model.captcha_mode" placeholder="" @change="moldChange">
-                <el-option
-                  v-for="item in mold"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </el-select>
-            </el-col>
-            <el-col :span="16">
-              字符：输入字符；行为：滑动或点选
-            </el-col>
-          </el-form-item>
-          <el-form-item label="验证码类型" prop="captcha_type">
-            <el-col :span="8">
-              <el-select v-if="model.captcha_mode==1" v-model="model.captcha_type" placeholder="">
-                <el-option
-                  v-for="item in typestr"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </el-select>
-              <el-select v-else v-model="model.captcha_type" placeholder="">
-                <el-option
-                  v-for="item in typeaj"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </el-select>
-            </el-col>
-          </el-form-item>
-          <el-form-item>
-            <el-button :loading="loading" @click="refresh()">刷新</el-button>
-            <el-button :loading="loading" type="primary" @click="submit()">提交</el-button>
-          </el-form-item>
-        </el-form>
-      </el-col>
-    </el-row>
-  </el-card>
+  <el-row>
+    <el-col :span="14">
+      <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
+        <el-form-item label="验证码方式" prop="captcha_mode">
+          <el-col :span="8">
+            <el-select v-model="model.captcha_mode" placeholder="" @change="modeChange">
+              <el-option
+                v-for="item in modes"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-col>
+          <el-col :span="16"> 字符：输入字符；行为：滑动或点选 </el-col>
+        </el-form-item>
+        <el-form-item label="验证码类型" prop="captcha_type">
+          <el-col :span="8">
+            <el-select v-if="model.captcha_mode == 1" v-model="model.captcha_type" placeholder="">
+              <el-option
+                v-for="item in typestr"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+            <el-select v-else v-model="model.captcha_type" placeholder="">
+              <el-option
+                v-for="item in typeaj"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-col>
+        </el-form-item>
+        <el-form-item>
+          <el-button :loading="loading" @click="refresh()">刷新</el-button>
+          <el-button :loading="loading" type="primary" @click="submit()">提交</el-button>
+        </el-form-item>
+      </el-form>
+    </el-col>
+  </el-row>
 </template>
 
 <script>
@@ -59,7 +50,6 @@ import { captchaInfo, captchaEdit } from '@/api/member/setting'
 
 export default {
   name: 'MemberSettingCaptcha',
-  components: {},
   data() {
     return {
       name: '验证码设置',
@@ -70,7 +60,7 @@ export default {
         captcha_type: 1
       },
       rules: {},
-      mold: [
+      modes: [
         { value: 1, label: '字符' },
         { value: 2, label: '行为' }
       ],
@@ -88,43 +78,47 @@ export default {
     }
   },
   created() {
-    this.height = screenHeight(170)
+    this.height = screenHeight(210)
     this.info()
   },
   methods: {
     // 信息
     info() {
-      captchaInfo().then(res => {
+      captchaInfo().then((res) => {
         this.model = res.data
       })
     },
     // 刷新
     refresh() {
       this.loading = true
-      captchaInfo().then((res) => {
-        this.model = res.data
-        this.loading = false
-        this.$message.success(res.msg)
-      }).catch(() => {
-        this.loading = false
-      })
+      captchaInfo()
+        .then((res) => {
+          this.model = res.data
+          this.loading = false
+          ElMessage.success(res.msg)
+        })
+        .catch(() => {
+          this.loading = false
+        })
     },
     // 提交
     submit() {
-      this.$refs['ref'].validate(valid => {
+      this.$refs['ref'].validate((valid) => {
         if (valid) {
           this.loading = true
-          captchaEdit(this.model).then(res => {
-            this.loading = false
-            this.$message.success(res.msg)
-          }).catch(() => {
-            this.loading = false
-          })
+          captchaEdit(this.model)
+            .then((res) => {
+              this.loading = false
+              ElMessage.success(res.msg)
+            })
+            .catch(() => {
+              this.loading = false
+            })
         }
       })
     },
-    moldChange(value) {
-      this.model.captcha_type = 1
+    modeChange(value) {
+      this.model.captcha_type = value
     }
   }
 }
