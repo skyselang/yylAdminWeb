@@ -40,7 +40,7 @@ export default defineConfig(({ mode }) => {
       UnoCSS(),
       AutoImport({
         // 自动导入 Vue 相关函数，如：ref, reactive, toRef 等
-        imports: ['vue', 'vue-router', 'pinia', '@vueuse/core'],
+        imports: ['vue', 'vue-router', 'vue-i18n', 'pinia', '@vueuse/core'],
         // 自动导入 Element Plus 相关函数，如：ElMessage, ElMessageBox... (带样式)
         resolvers: [ElementPlusResolver(), IconsResolver({})],
         vueTemplate: true,

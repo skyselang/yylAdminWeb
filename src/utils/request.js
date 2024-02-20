@@ -6,9 +6,9 @@ import { useUserStoreHook } from '@/store/modules/user'
 const service = axios.create({
   baseURL: import.meta.env.VITE_APP_BASE_URL, // 接口baseURL
   timeout: 60000, // 请求超时时间
+  headers: {},
   params: {},
-  data: {},
-  headers: {}
+  data: {}
 })
 
 // 请求拦截器

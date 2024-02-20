@@ -10,9 +10,9 @@
 <script setup>
 defineProps({
   isActive: {
-    required: true,
     type: Boolean,
-    default: false
+    default: false,
+    required: true
   }
 })
 
