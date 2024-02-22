@@ -41,13 +41,11 @@
         <el-button title="重置" @click="refresh()">
           <svg-icon icon-class="refresh" />
         </el-button>
-        <el-button v-if="recycle" type="primary" @click="selectOpen('reco')">恢复</el-button>
         <el-upload
-          v-else
           name="file"
-          class="inline-block ml-[10px]"
+          class="inline-block ml-[12px]"
+          v-model:file-list="uploadFilelist"
           :limit="uploadLimit"
-          :file-list="uploadFilelist"
           :multiple="true"
           :show-file-list="false"
           :auto-upload="true"
@@ -63,7 +61,7 @@
         >
           <el-button type="primary" title="上传文件" @click="uploadClear">上传</el-button>
         </el-upload>
-        <el-button class="ya-margin-left" title="添加文件" @click="add()">添加</el-button>
+        <el-button class="ml-[12px]" title="添加文件" @click="add()">添加</el-button>
         <el-button
           v-if="checkPermission(['admin/file.File/recycle'])"
           class="float-right"
@@ -180,6 +178,9 @@
         <el-tooltip :content="'删除' + tagName" effect="light">
           <svg-icon icon-class="delete" @click="tagDele()" />
         </el-tooltip>
+        <el-button v-if="recycle" type="primary" class="float-right" @click="selectOpen('reco')">
+          恢复
+        </el-button>
       </el-col>
     </el-row>
     <el-dialog
