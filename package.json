@@ -23,6 +23,9 @@
   "dependencies": {
     "@vitejs/plugin-vue": "^4.6.2",
     "@vueuse/core": "^10.7.2",
+    "@wangeditor/editor": "^5.1.23",
+    "@wangeditor/editor-for-vue": "5.1.10",
+    "@wangeditor/plugin-upload-attachment": "^1.1.0",
     "axios": "^1.6.7",
     "clipboardy": "^4.0.0",
     "crypto-js": "^4.2.0",
@@ -38,7 +41,6 @@
     "vue": "^3.4.19",
     "vue-i18n": "^9.9.1",
     "vue-router": "^4.2.5",
-    "wangeditor": "^4.7.15",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {

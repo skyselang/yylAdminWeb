@@ -149,49 +149,57 @@
       top="5vh"
       destroy-on-close
     >
-      <el-scrollbar native :height="height - 30">
-        <el-form ref="ref" :rules="rules" :model="model" label-width="100px">
-          <el-form-item label="标识" prop="unique">
-            <el-input v-model="model.unique" placeholder="请输入标识（唯一）" clearable>
-              <template #append>
-                <el-button title="复制" @click="copy(model.unique)">
-                  <svg-icon icon-class="copy-document" />
-                </el-button>
-              </template>
-            </el-input>
-          </el-form-item>
-          <el-form-item label="名称" prop="name">
-            <el-input v-model="model.name" placeholder="请输入名称" clearable>
-              <template #append>
-                <el-button title="复制" @click="copy(model.name)">
-                  <svg-icon icon-class="copy-document" />
-                </el-button>
-              </template>
-            </el-input>
-          </el-form-item>
-          <el-form-item label="描述" prop="desc">
-            <el-input v-model="model.desc" type="textarea" autosize placeholder="请输入描述" />
-          </el-form-item>
-          <el-form-item label="备注" prop="remark">
-            <el-input v-model="model.remark" placeholder="请输入备注" clearable />
-          </el-form-item>
-          <el-form-item label="排序" prop="sort">
-            <el-input v-model="model.sort" type="number" />
-          </el-form-item>
-          <el-form-item label="内容" prop="content">
-            <RichEditor :content="model.content" />
-          </el-form-item>
-          <el-form-item v-if="model[idkey]" label="添加时间" prop="create_time">
-            <el-input v-model="model.create_time" disabled />
-          </el-form-item>
-          <el-form-item v-if="model[idkey]" label="修改时间" prop="update_time">
-            <el-input v-model="model.update_time" disabled />
-          </el-form-item>
-          <el-form-item v-if="model.delete_time" label="删除时间" prop="delete_time">
-            <el-input v-model="model.delete_time" disabled />
-          </el-form-item>
-        </el-form>
-      </el-scrollbar>
+      <el-form ref="ref" :rules="rules" :model="model" label-width="100px">
+        <el-tabs>
+          <el-tab-pane label="信息">
+            <el-scrollbar native :height="height - 80">
+              <el-form-item label="标识" prop="unique">
+                <el-input v-model="model.unique" placeholder="请输入标识（唯一）" clearable>
+                  <template #append>
+                    <el-button title="复制" @click="copy(model.unique)">
+                      <svg-icon icon-class="copy-document" />
+                    </el-button>
+                  </template>
+                </el-input>
+              </el-form-item>
+              <el-form-item label="名称" prop="name">
+                <el-input v-model="model.name" placeholder="请输入名称" clearable>
+                  <template #append>
+                    <el-button title="复制" @click="copy(model.name)">
+                      <svg-icon icon-class="copy-document" />
+                    </el-button>
+                  </template>
+                </el-input>
+              </el-form-item>
+              <el-form-item label="描述" prop="desc">
+                <el-input v-model="model.desc" type="textarea" autosize placeholder="请输入描述" />
+              </el-form-item>
+              <el-form-item label="备注" prop="remark">
+                <el-input v-model="model.remark" placeholder="请输入备注" clearable />
+              </el-form-item>
+              <el-form-item label="排序" prop="sort">
+                <el-input v-model="model.sort" type="number" />
+              </el-form-item>
+              <el-form-item v-if="model[idkey]" label="添加时间" prop="create_time">
+                <el-input v-model="model.create_time" disabled />
+              </el-form-item>
+              <el-form-item v-if="model[idkey]" label="修改时间" prop="update_time">
+                <el-input v-model="model.update_time" disabled />
+              </el-form-item>
+              <el-form-item v-if="model.delete_time" label="删除时间" prop="delete_time">
+                <el-input v-model="model.delete_time" disabled />
+              </el-form-item>
+            </el-scrollbar>
+          </el-tab-pane>
+          <el-tab-pane label="内容">
+            <el-scrollbar native :height="height - 80">
+              <el-form-item label="内容" prop="content">
+                <RichEditor v-model="model.content" />
+              </el-form-item>
+            </el-scrollbar>
+          </el-tab-pane>
+        </el-tabs>
+      </el-form>
       <template #footer>
         <el-button :loading="loading" @click="cancel">取消</el-button>
         <el-button :loading="loading" type="primary" @click="submit">提交</el-button>
@@ -316,6 +324,8 @@ export default {
                 this.loading = false
               })
           }
+        } else {
+          ElMessage.error('请完善必填项（带红色星号*）')
         }
       })
     },

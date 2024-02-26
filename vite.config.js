@@ -84,6 +84,7 @@ export default defineConfig(({ mode }) => {
         'echarts/charts',
         'echarts/components',
         'echarts/renderers',
+        'element-plus/es/components/affix/style/css',
         'element-plus/es/components/alert/style/css',
         'element-plus/es/components/avatar/style/css',
         'element-plus/es/components/breadcrumb-item/style/css',

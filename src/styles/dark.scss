@@ -9,6 +9,12 @@ html.dark {
   --subMenuHover: rgb(0 0 0 / 20%);
   --subMenuActiveText: var(--el-menu-active-color);
 
+  // wangEditor
+  --w-e-textarea-bg-color: var(--el-bg-color-overlay);
+  --w-e-toolbar-bg-color: var(--el-bg-color-overlay);
+  --w-e-modal-button-bg-color: var(--el-bg-color-overlay);
+  --w-e-toolbar-border-color: var(--el-button-border-color);
+
   .navbar {
     background-color: var(--el-bg-color);
     .setting-container .setting-item:hover {

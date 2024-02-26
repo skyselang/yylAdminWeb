@@ -359,7 +359,7 @@
           <el-tab-pane label="内容">
             <el-scrollbar native :height="height - 80">
               <el-form-item label="内容" prop="content">
-                <RichEditor :content="model.content" />
+                <RichEditor v-model="model.content" />
               </el-form-item>
             </el-scrollbar>
           </el-tab-pane>

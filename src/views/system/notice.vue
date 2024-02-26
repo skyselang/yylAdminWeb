@@ -162,61 +162,74 @@
       :before-close="cancel"
       top="5vh"
     >
-      <el-scrollbar native :height="height - 30">
-        <el-form ref="ref" :model="model" :rules="rules" label-width="100px">
-          <el-form-item label="图片" prop="image_id">
-            <FileImage v-model="model.image_id" :file-url="model.image_url" :height="100" upload />
-          </el-form-item>
-          <el-form-item label="标题" prop="title">
-            <el-col :span="18">
-              <el-input v-model="model.title" placeholder="请输入标题" clearable />
-            </el-col>
-            <el-col :span="3" style="text-align: center">标题颜色</el-col>
-            <el-col :span="3">
-              <el-color-picker v-model="model.title_color" />
-            </el-col>
-          </el-form-item>
-          <el-form-item label="简介" prop="desc">
-            <el-input v-model="model.desc" type="textarea" autosize placeholder="请输入简介" />
-          </el-form-item>
-          <el-form-item label="开始时间" prop="start_time">
-            <el-date-picker
-              v-model="model.start_time"
-              type="datetime"
-              value-format="YYYY-MM-DD HH:mm:ss"
-              :default-time="new Date(2024, 1, 1, 0, 0, 0)"
-              placeholder="开始时间"
-            />
-          </el-form-item>
-          <el-form-item label="结束时间" prop="end_time">
-            <el-date-picker
-              v-model="model.end_time"
-              type="datetime"
-              value-format="YYYY-MM-DD HH:mm:ss"
-              :default-time="new Date(2024, 1, 1, 23, 59, 59)"
-              placeholder="结束时间"
-            />
-          </el-form-item>
-          <el-form-item label="备注" prop="remark">
-            <el-input v-model="model.remark" placeholder="请输入备注" clearable />
-          </el-form-item>
-          <el-form-item label="排序" prop="sort">
-            <el-input v-model="model.sort" type="number" />
-          </el-form-item>
-          <el-form-item label="内容" prop="content">
-            <RichEditor :content="model.content" />
-          </el-form-item>
-          <el-form-item v-if="model[idkey]" label="添加时间" prop="create_time">
-            <el-input v-model="model.create_time" disabled />
-          </el-form-item>
-          <el-form-item v-if="model[idkey]" label="修改时间" prop="update_time">
-            <el-input v-model="model.update_time" disabled />
-          </el-form-item>
-          <el-form-item v-if="model.delete_time" label="删除时间" prop="delete_time">
-            <el-input v-model="model.delete_time" disabled />
-          </el-form-item>
-        </el-form>
-      </el-scrollbar>
+      <el-form ref="ref" :model="model" :rules="rules" label-width="100px">
+        <el-tabs>
+          <el-tab-pane label="信息">
+            <el-scrollbar native :height="height - 80">
+              <el-form-item label="图片" prop="image_id">
+                <FileImage
+                  v-model="model.image_id"
+                  :file-url="model.image_url"
+                  :height="100"
+                  upload
+                />
+              </el-form-item>
+              <el-form-item label="标题" prop="title">
+                <el-col :span="18">
+                  <el-input v-model="model.title" placeholder="请输入标题" clearable />
+                </el-col>
+                <el-col :span="3" style="text-align: center">标题颜色</el-col>
+                <el-col :span="3">
+                  <el-color-picker v-model="model.title_color" />
+                </el-col>
+              </el-form-item>
+              <el-form-item label="简介" prop="desc">
+                <el-input v-model="model.desc" type="textarea" autosize placeholder="请输入简介" />
+              </el-form-item>
+              <el-form-item label="开始时间" prop="start_time">
+                <el-date-picker
+                  v-model="model.start_time"
+                  type="datetime"
+                  value-format="YYYY-MM-DD HH:mm:ss"
+                  :default-time="new Date(2024, 1, 1, 0, 0, 0)"
+                  placeholder="开始时间"
+                />
+              </el-form-item>
+              <el-form-item label="结束时间" prop="end_time">
+                <el-date-picker
+                  v-model="model.end_time"
+                  type="datetime"
+                  value-format="YYYY-MM-DD HH:mm:ss"
+                  :default-time="new Date(2024, 1, 1, 23, 59, 59)"
+                  placeholder="结束时间"
+                />
+              </el-form-item>
+              <el-form-item label="备注" prop="remark">
+                <el-input v-model="model.remark" placeholder="请输入备注" clearable />
+              </el-form-item>
+              <el-form-item label="排序" prop="sort">
+                <el-input v-model="model.sort" type="number" />
+              </el-form-item>
+              <el-form-item v-if="model[idkey]" label="添加时间" prop="create_time">
+                <el-input v-model="model.create_time" disabled />
+              </el-form-item>
+              <el-form-item v-if="model[idkey]" label="修改时间" prop="update_time">
+                <el-input v-model="model.update_time" disabled />
+              </el-form-item>
+              <el-form-item v-if="model.delete_time" label="删除时间" prop="delete_time">
+                <el-input v-model="model.delete_time" disabled />
+              </el-form-item>
+            </el-scrollbar>
+          </el-tab-pane>
+          <el-tab-pane label="内容">
+            <el-scrollbar native :height="height - 80">
+              <el-form-item label="内容" prop="content">
+                <RichEditor v-model="model.content" />
+              </el-form-item>
+            </el-scrollbar>
+          </el-tab-pane>
+        </el-tabs>
+      </el-form>
       <template #footer>
         <el-button :loading="loading" @click="cancel">取消</el-button>
         <el-button :loading="loading" type="primary" @click="submit">提交</el-button>
@@ -348,6 +361,8 @@ export default {
                 this.loading = false
               })
           }
+        } else {
+          ElMessage.error('请完善必填项（带红色星号*）')
         }
       })
     },

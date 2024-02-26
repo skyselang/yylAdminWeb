@@ -1,7 +1,23 @@
 <template>
-  <div>
+  <div class="editor-wrapper">
+    <!-- 工具栏 -->
+    <el-affix target=".editor-wrapper" :offset="150">
+      <Toolbar
+        id="toolbar-container"
+        :editor="editorRef"
+        :default-config="toolbarConfig"
+        :mode="mode"
+      />
+    </el-affix>
     <!-- 编辑器 -->
-    <div :id="editorId"></div>
+    <Editor
+      id="editor-container"
+      v-model="modelValue"
+      :default-config="editorConfig"
+      :mode="mode"
+      @on-change="handleChange"
+      @on-created="handleCreated"
+    />
     <!-- 文件管理 -->
     <el-dialog
       v-model="fileDialog"
@@ -17,248 +33,116 @@
   </div>
 </template>
 
-<script>
-import E from 'wangeditor'
-import { randomString } from '@/utils'
+<script setup>
+import { useAppStore } from '@/store/modules/app'
+import { i18nChangeLanguage } from '@wangeditor/editor'
+import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
 import FileManage from '@/components/FileManage/index.vue'
 
-export default {
-  name: 'RichEditor',
-  components: { FileManage },
-  model: {
-    prop: 'content',
-    event: 'change'
-  },
-  props: {
-    id: { type: String, default: 'wangeditor' + randomString() },
-    content: { type: String, default: '' },
-    excludeMenus: {
-      type: Array,
-      default() {
-        return ['image', 'video']
+const props = defineProps({
+  modelValue: {
+    type: [String],
+    default: ''
+  }
+})
+const appStore = useAppStore()
+const emit = defineEmits(['update:modelValue'])
+// 切换语言 - 'en' 或者 'zh-CN'
+i18nChangeLanguage(appStore.language == 'zh-cn' ? 'zh-CN' : 'en')
+const modelValue = useVModel(props, 'modelValue', emit)
+// 编辑器实例，必须用 shallowRef
+const editorRef = shallowRef()
+// 编辑器模式
+const mode = ref('default')
+// 工具条配置
+const toolbarConfig = ref({
+  insertKeys: {
+    index: 24, // 自定义插入的位置
+    keys: ['uploadAttachment'] // “上传附件”菜单
+  }
+})
+// 编辑器配置
+const editorConfig = ref({
+  placeholder: '请输入内容...',
+  MENU_CONF: {
+    uploadImage: {
+      // 自定义选择图片
+      customBrowseAndUpload() {
+        fileDialog.value = true
+        fileType.value = 'image'
       }
     },
-    zIndex: { type: Number, default: 5000 },
-    height: { type: Number, default: 500 },
-    focus: { type: Boolean, default: false },
-    placeholder: { type: String, default: '请输入内容' }
-  },
-  data() {
-    return {
-      name: '富文本编辑器',
-      editor: null,
-      editorId: this.id,
-      editorContent: this.content,
-      editorContentNew: '',
-      fileDialog: false,
-      fileTitle: '文件管理',
-      fileType: 'image'
-    }
-  },
-  watch: {
-    content(value) {
-      if (value !== this.editor.txt.html()) {
-        this.editor.txt.html(this.content)
-      }
-    }
-  },
-  mounted() {
-    this.editorCreate()
-  },
-  unmounted() {
-    this.editorDestroy()
-  },
-  methods: {
-    // 编辑器创建
-    editorCreate() {
-      const that = this
-      // 扩展菜单
-      const { BtnMenu } = E
-
-      class upimage extends BtnMenu {
-        constructor(editor) {
-          const $elem = E.$(
-            `<div class="w-e-menu" data-title="上传图片"><el-button>图片</el-button></div>`
-          )
-          super($elem, editor)
-        }
-        clickHandler() {
-          that.fileType = 'image'
-          that.fileTitle = '上传图片'
-          that.fileDialog = true
-        }
-        tryChangeActive() {}
-      }
-
-      class upvideo extends BtnMenu {
-        constructor(editor) {
-          const $elem = E.$(
-            `<div class="w-e-menu" data-title="上传视频"><el-button>视频</el-button></div>`
-          )
-          super($elem, editor)
-        }
-        clickHandler() {
-          that.fileType = 'video'
-          that.fileTitle = '上传视频'
-          that.fileDialog = true
-        }
-        tryChangeActive() {}
-      }
-
-      class upaudio extends BtnMenu {
-        constructor(editor) {
-          const $elem = E.$(
-            `<div class="w-e-menu" data-title="上传音频"><el-button>音频</el-button></div>`
-          )
-          super($elem, editor)
-        }
-        clickHandler() {
-          that.fileType = 'audio'
-          that.fileTitle = '上传音频'
-          that.fileDialog = true
-        }
-        tryChangeActive() {}
-      }
-
-      class upword extends BtnMenu {
-        constructor(editor) {
-          const $elem = E.$(
-            `<div class="w-e-menu" data-title="上传文档"><el-button>文档</el-button></div>`
-          )
-          super($elem, editor)
-        }
-        clickHandler() {
-          that.fileType = 'word'
-          that.fileTitle = '上传文档'
-          that.fileDialog = true
-        }
-        tryChangeActive() {}
-      }
-
-      class upother extends BtnMenu {
-        constructor(editor) {
-          const $elem = E.$(
-            `<div class="w-e-menu" data-title="上传附件"><el-button>附件</el-button></div>`
-          )
-          super($elem, editor)
-        }
-        clickHandler() {
-          that.fileType = 'other'
-          that.fileTitle = '上传附件'
-          that.fileDialog = true
-        }
-        tryChangeActive() {}
-      }
-
-      class clear extends BtnMenu {
-        constructor(editor) {
-          const $elem = E.$(
-            `<div class="w-e-menu" data-title="清空内容"><el-button>清空</el-button></div>`
-          )
-          super($elem, editor)
-        }
-        clickHandler() {
-          that.editor.txt.clear()
-        }
-        tryChangeActive() {}
-      }
-      // 配置
-      that.editor = new E('#' + that.editorId)
-      that.editor.config.excludeMenus = that.excludeMenus
-      that.editor.menus.extend('upimageKey', upimage)
-      that.editor.config.menus = that.editor.config.menus.concat('upimageKey')
-      that.editor.menus.extend('upvideoKey', upvideo)
-      that.editor.config.menus = that.editor.config.menus.concat('upvideoKey')
-      that.editor.menus.extend('upaudioKey', upaudio)
-      that.editor.config.menus = that.editor.config.menus.concat('upaudioKey')
-      that.editor.menus.extend('upwordKey', upword)
-      that.editor.config.menus = that.editor.config.menus.concat('upwordKey')
-      that.editor.menus.extend('upotherKey', upother)
-      that.editor.config.menus = that.editor.config.menus.concat('upotherKey')
-      that.editor.menus.extend('clearKey', clear)
-      that.editor.config.menus = that.editor.config.menus.concat('clearKey')
-
-      that.editor.config.zIndex = that.zIndex
-      that.editor.config.height = that.height
-      that.editor.config.focus = that.focus
-      that.editor.config.placeholder = that.placeholder
-
-      that.editor.config.onchange = (newHtml) => {
-        that.editorContentNew = newHtml
-        this.$emit('change', that.editorContentNew)
-      }
-
-      console.log(that.editor.textElemId)
-      console.log(that.editor.toolbarElemId)
-
-      that.editor.create()
-      that.editor.txt.clear()
-      that.editor.txt.html(that.editorContent)
-    },
-    // 编辑器销毁
-    editorDestroy() {
-      this.editorContent = ''
-      this.editorContentNew = ''
-      if (this.editor) {
-        this.editor.txt.html('')
-        this.editor.destroy()
-        this.editor = null
+    uploadVideo: {
+      // 自定义选择视频
+      customBrowseAndUpload() {
+        fileDialog.value = true
+        fileType.value = 'video'
       }
     },
-    // 文件管理
-    fileCancel() {
-      this.fileDialog = false
-    },
-    fileSubmit(filelist, filetype) {
-      this.fileDialog = false
-      this.fileTitle = ''
-      const fileLength = filelist.length
-      if (fileLength) {
-        for (let i = 0; i < fileLength; i++) {
-          if (filetype === 'image') {
-            this.editor.cmd.do(
-              'insertHTML',
-              `<img file-id="${filelist[i]['file_id']}" src="${filelist[i]['file_url']}" style="max-width:50%;"/>`
-            )
-          } else if (filetype === 'video') {
-            this.editor.cmd.do(
-              'insertHTML',
-              `<video width="50%" height="50%" controls>
-                <source file-id="${filelist[i]['file_id']}" src="${filelist[i]['file_url']}" type="video/mp4">
-                <object file-id="${filelist[i]['file_id']}" data="${filelist[i]['file_url']}" width="50%" height="50%">
-                  <embed file-id="${filelist[i]['file_id']}" src="${filelist[i]['file_url']}" width="50%" height="50%">
-                </object>
-              </video>`
-            )
-          } else if (filetype === 'audio') {
-            this.editor.cmd.do(
-              'insertHTML',
-              `<audio width="50%" height="50%" controls>
-                <source file-id="${filelist[i]['file_id']}" src="${filelist[i]['file_url']}" type="audio/mp3">
-                <embed file-id="${filelist[i]['file_id']}" src="${filelist[i]['file_url']}" width="50%" height="50%">
-              </audio>`
-            )
-          } else {
-            this.editor.cmd.do(
-              'insertHTML',
-              `<a file-id="${filelist[i]['file_id']}" href="${filelist[i]['file_url']}" download="${filelist[i]['file_url']}" target="_blank">${filelist[i]['file_name']}.${filelist[i]['file_ext']}</a>`
-            )
-          }
-        }
+    uploadAttachment: {
+      // 自定义选择附件
+      customBrowseAndUpload() {
+        fileDialog.value = true
+        fileType.value = 'word'
       }
     }
   }
+})
+
+const handleCreated = (editor) => {
+  // 记录 editor 实例，重要！
+  editorRef.value = editor
 }
+
+function handleChange(editor) {
+  modelValue.value = editor.getHtml()
+}
+
+// 文件管理
+const fileDialog = ref(false)
+const fileTitle = ref('文件管理')
+const fileType = ref('image')
+function fileCancel() {
+  fileDialog.value = false
+}
+function fileSubmit(files) {
+  fileDialog.value = false
+  var htmls = ''
+  const length = files.length
+  for (let i = 0; i < length; i++) {
+    if (files[i]['file_type'] === 'image') {
+      htmls += `<img file-id="${files[i]['file_id']}" src="${files[i]['file_url']}" style="width:640px;"/>`
+    } else if (files[i]['file_type'] === 'video') {
+      htmls += `<div data-w-e-type="video" data-w-e-is-void><video width="640" height="480" controls>
+                <source file-id="${files[i]['file_id']}" src="${files[i]['file_url']}" type="video/mp4">
+                <object file-id="${files[i]['file_id']}" data="${files[i]['file_url']}">
+                  <embed file-id="${files[i]['file_id']}" src="${files[i]['file_url']}" width="640" height="480">
+                </object>
+              </video></div>`
+    } else if (files[i]['file_type'] === 'audio') {
+      htmls += `<div data-w-e-type="audio" data-w-e-is-void data-w-e-is-inline><audio controls>
+                <source file-id="${files[i]['file_id']}" src="${files[i]['file_url']}" type="audio/mp3">
+                <embed file-id="${files[i]['file_id']}" src="${files[i]['file_url']}">
+              </audio></div>`
+    } else {
+      htmls += `<div data-w-e-type="attachment" data-w-e-is-void data-w-e-is-inline><a file-id="${files[i]['file_id']}" href="${files[i]['file_url']}" download="${files[i]['file_url']}" target="_blank">${files[i]['file_name']}.${files[i]['file_ext']}</a></div>`
+    }
+  }
+  const editor = editorRef.value
+  editor.dangerouslyInsertHtml(htmls)
+}
+
+// 组件销毁时，也及时销毁编辑器
+onBeforeUnmount(() => {
+  const editor = editorRef.value
+  if (editor == null) return
+  editor.destroy()
+})
 </script>
 
-<style lang="scss">
-.w-e-toolbar {
-  border: 1px solid var(--el-border-color) !important;
-  background-color: var(--el-bg-color) !important;
-  border-bottom: 0 !important;
-}
-.w-e-text-container {
-  border: 1px solid var(--el-border-color) !important;
-  background-color: var(--el-bg-color) !important;
+<style src="@wangeditor/editor/dist/css/style.css"></style>
+<style>
+.editor-wrapper {
+  border: 1px solid #cfd3dc;
 }
 </style>

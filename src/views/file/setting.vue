@@ -332,7 +332,8 @@
                   </el-input>
                 </el-col>
                 <el-col class="line" :span="13">
-                  官方域名 在 [ 百度云 > 对象存储 > 发布管理 ] 获取。如：yyladmin.gz.bcebos.com
+                  官方域名 在 [ 百度云 > 对象存储 > Bucket列表 > 发布管理 ]
+                  获取。如：yyladmin.gz.bcebos.com
                 </el-col>
               </el-form-item>
               <el-form-item label="所属地域" prop="baidu_endpoint">
@@ -502,7 +503,12 @@
               <el-col :span="11">
                 <el-input v-model="model.image_ext" clearable />
               </el-col>
-              <el-col class="line" :span="13"> 允许上传的图片后缀，逗号,隔开 </el-col>
+              <el-col class="line" :span="13">
+                <el-tooltip :content="model.image_exts">
+                  <svg-icon icon-class="question-filled" />
+                </el-tooltip>
+                允许上传的图片后缀，逗号,隔开
+              </el-col>
             </el-form-item>
             <el-form-item label="图片大小" prop="image_size">
               <el-col :span="11">
@@ -517,7 +523,12 @@
               <el-col :span="11">
                 <el-input v-model="model.video_ext" clearable />
               </el-col>
-              <el-col class="line" :span="13"> 允许上传的视频后缀，逗号,隔开 </el-col>
+              <el-col class="line" :span="13">
+                <el-tooltip :content="model.video_exts">
+                  <svg-icon icon-class="question-filled" />
+                </el-tooltip>
+                允许上传的视频后缀，逗号,隔开
+              </el-col>
             </el-form-item>
             <el-form-item label="视频大小" prop="video_size">
               <el-col :span="11">
@@ -532,7 +543,12 @@
               <el-col :span="11">
                 <el-input v-model="model.audio_ext" clearable />
               </el-col>
-              <el-col class="line" :span="13"> 允许上传的音频后缀，逗号,隔开 </el-col>
+              <el-col class="line" :span="13">
+                <el-tooltip :content="model.audio_exts">
+                  <svg-icon icon-class="question-filled" />
+                </el-tooltip>
+                允许上传的音频后缀，逗号,隔开
+              </el-col>
             </el-form-item>
             <el-form-item label="音频大小" prop="audio_size">
               <el-col :span="11">
@@ -547,7 +563,12 @@
               <el-col :span="11">
                 <el-input v-model="model.word_ext" clearable />
               </el-col>
-              <el-col class="line" :span="13"> 允许上传的文档后缀，逗号,隔开 </el-col>
+              <el-col class="line" :span="13">
+                <el-tooltip :content="model.word_exts">
+                  <svg-icon icon-class="question-filled" />
+                </el-tooltip>
+                允许上传的文档后缀，逗号,隔开
+              </el-col>
             </el-form-item>
             <el-form-item label="文档大小" prop="word_size">
               <el-col :span="11">
@@ -562,7 +583,12 @@
               <el-col :span="11">
                 <el-input v-model="model.other_ext" clearable />
               </el-col>
-              <el-col class="line" :span="13"> 允许上传的其它文件后缀，逗号,隔开 </el-col>
+              <el-col class="line" :span="13">
+                <el-tooltip :content="model.other_exts">
+                  <svg-icon icon-class="question-filled" />
+                </el-tooltip>
+                允许上传的其它文件后缀，逗号,隔开
+              </el-col>
             </el-form-item>
             <el-form-item label="其它大小" prop="other_size">
               <el-col :span="11">
@@ -640,14 +666,19 @@ export default {
         aws_region: '',
         aws_domain: '',
         image_ext: '',
+        image_exts: '',
         image_size: 0,
         video_ext: '',
+        video_exts: '',
         video_size: 0,
         audio_ext: '',
+        audio_exts: '',
         audio_size: 0,
         word_ext: '',
+        word_exts: '',
         word_size: 0,
         other_ext: '',
+        other_exts: '',
         other_size: 0
       },
       rules: {
