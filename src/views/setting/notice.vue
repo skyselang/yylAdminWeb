@@ -298,7 +298,7 @@ export default {
         image_url: '',
         type: 0,
         title: '',
-        title_color: '#606266',
+        title_color: '',
         start_time: '',
         end_time: '',
         desc: '',
