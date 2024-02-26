@@ -186,7 +186,9 @@
       same "printed page" as the copyright notice for easier
       identification within third-party archives.
 
-   Copyright skyselang https://github.com/skyselang
+   name yylAdmin
+   version v4
+   Copyright skyselang https://github.com/skyselang yyladmin v4
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
