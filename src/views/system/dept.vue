@@ -546,7 +546,7 @@ export default {
         } else if (selectType === 'editpid') {
           this.selectTitle = this.name + '修改上级'
         } else if (selectType === 'disable') {
-          this.selectTitle = 'this.name + 是否禁用'
+          this.selectTitle = this.name + '是否禁用'
         } else if (selectType === 'dele') {
           this.selectTitle = this.name + '删除'
         }
