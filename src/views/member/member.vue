@@ -505,7 +505,7 @@
               </el-form-item>
             </el-scrollbar>
           </el-tab-pane>
-          <el-tab-pane label="其它信息">
+          <el-tab-pane label="登录注册">
             <el-scrollbar native :height="height - 80">
               <el-form-item v-if="model[idkey]" label="登录IP" prop="login_ip">
                 <el-input v-model="model.login_ip" disabled />

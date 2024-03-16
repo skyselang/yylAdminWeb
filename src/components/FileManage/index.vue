@@ -71,8 +71,8 @@
           回收站
         </el-button>
         <el-radio-group v-model="showMode" class="float-right" @change="showChange">
-          <el-radio-button label="card">卡片</el-radio-button>
-          <el-radio-button label="table">表格</el-radio-button>
+          <el-radio-button value="card" label="card">卡片</el-radio-button>
+          <el-radio-button value="table" label="table">表格</el-radio-button>
         </el-radio-group>
       </el-col>
     </el-row>
@@ -423,7 +423,7 @@
                 :underline="false"
                 @click="storageSelect(index)"
               >
-                <el-text size="default" truncated>{{ item }}</el-text>
+                {{ item }}
               </el-link>
             </el-col>
           </el-row>
@@ -454,7 +454,7 @@
                     }"
                   >
                     <div style="text-align: left">
-                      <el-checkbox :key="item[idkey]" :label="item[idkey]">
+                      <el-checkbox :key="item[idkey]" :value="item[idkey]" :label="item[idkey]">
                         {{ item[idkey] }} ({{ item.file_size }}, {{ item.file_ext }}
                       </el-checkbox>
                     </div>

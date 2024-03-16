@@ -275,6 +275,15 @@
               <el-form-item label="名称" prop="name">
                 <el-input v-model="model.name" placeholder="请输入名称" clearable />
               </el-form-item>
+              <el-form-item label="发布时间" prop="release_time">
+                <el-date-picker
+                  v-model="model.release_time"
+                  type="datetime"
+                  value-format="YYYY-MM-DD HH:mm:ss"
+                  :default-time="new Date(2024, 1, 1, 0, 0, 0)"
+                  placeholder="开始时间"
+                />
+              </el-form-item>
               <el-form-item label="分类" prop="category_ids">
                 <el-cascader
                   v-model="model.category_ids"
@@ -341,9 +350,6 @@
                     disabled
                   />
                 </el-col>
-              </el-form-item>
-              <el-form-item v-if="model[idkey]" label="发布时间" prop="release_time">
-                <el-input v-model="model.release_time" disabled />
               </el-form-item>
               <el-form-item v-if="model[idkey]" label="添加时间" prop="create_time">
                 <el-input v-model="model.create_time" disabled />
@@ -486,7 +492,8 @@ export default {
         others: []
       },
       rules: {
-        name: [{ required: true, message: '请输入名称', trigger: 'blur' }]
+        name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
+        release_time: [{ required: true, message: '请选择发布时间', trigger: 'blur' }]
       },
       tagData: [],
       categoryData: [],

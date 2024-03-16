@@ -607,6 +607,56 @@
             </el-form-item>
           </el-scrollbar>
         </el-tab-pane>
+        <el-tab-pane label="前台设置" lazy>
+          <el-scrollbar native :height="height">
+            <el-form-item label="前台文件" prop="is_api_file">
+              <el-switch v-model="model.is_api_file" :active-value="1" :inactive-value="0" />
+              <span> 是否开启前台文件功能</span>
+            </el-form-item>
+            <el-form-item label="文件类型" prop="api_file_types">
+              <el-checkbox-group v-model="model.api_file_types">
+                <el-checkbox
+                  v-for="(item, index) in file_types"
+                  :key="index"
+                  :value="index"
+                  :label="item"
+                />
+              </el-checkbox-group>
+            </el-form-item>
+            <el-form-item label="文件分组" prop="api_file_group_ids">
+              <el-select
+                v-model="model.api_file_group_ids"
+                clearable
+                filterable
+                multiple
+                class="!w-[50%]"
+              >
+                <el-option
+                  v-for="(item, index) in group"
+                  :key="index"
+                  :value="item.group_id"
+                  :label="item.group_name"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="文件标签" prop="api_file_tag_ids">
+              <el-select
+                v-model="model.api_file_tag_ids"
+                clearable
+                filterable
+                multiple
+                class="!w-[50%]"
+              >
+                <el-option
+                  v-for="item in tag"
+                  :key="item.tag_id"
+                  :label="item.tag_name"
+                  :value="item.tag_id"
+                />
+              </el-select>
+            </el-form-item>
+          </el-scrollbar>
+        </el-tab-pane>
       </el-tabs>
     </el-form>
     <el-form label-width="150px">
@@ -633,6 +683,9 @@ export default {
       height: 680,
       loading: false,
       storages: [],
+      file_types: [],
+      group: [],
+      tag: [],
       model: {
         is_upload_admin: 1,
         is_upload_api: 1,
@@ -679,7 +732,11 @@ export default {
         word_size: 0,
         other_ext: '',
         other_exts: '',
-        other_size: 0
+        other_size: 0,
+        is_api_file: 0,
+        api_file_types: [],
+        api_file_group_ids: [],
+        api_file_tag_ids: []
       },
       rules: {
         storage: [{ required: true, message: '请选择存储方式', trigger: 'blur' }],
@@ -727,8 +784,7 @@ export default {
     // 信息
     info() {
       info().then((res) => {
-        this.model = res.data
-        this.storages = res.data.storages
+        this.setData(res)
       })
     },
     // 刷新
@@ -736,14 +792,24 @@ export default {
       this.loading = true
       info()
         .then((res) => {
-          this.model = res.data
-          this.storages = res.data.storages
-          this.loading = false
+          this.setData(res)
           ElMessage.success(res.msg)
         })
         .catch(() => {
           this.loading = false
         })
+    },
+    setData(res) {
+      this.model = { ...res.data }
+      this.storages = res.data.storages
+      this.file_types = res.data.file_types
+      this.group = res.data.group
+      this.tag = res.data.tag
+      delete this.model.storages
+      delete this.model.file_types
+      delete this.model.group
+      delete this.model.tag
+      this.loading = false
     },
     // 提交
     submit() {

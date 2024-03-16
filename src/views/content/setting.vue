@@ -103,6 +103,10 @@
           <el-scrollbar native :height="height">
             <el-row>
               <el-col :span="16">
+                <el-form-item label="前台内容" prop="is_api_content">
+                  <el-switch v-model="model.is_api_content" :active-value="1" :inactive-value="0" />
+                  <span> 是否开启前台内容功能</span>
+                </el-form-item>
                 <el-form-item label="内容默认图片" prop="content_default_img_id">
                   <FileImage
                     v-model="model.content_default_img_id"
@@ -207,8 +211,9 @@ export default {
         fax: '',
         mobile: '',
         email: '',
-        qq: '',
         wechat: '',
+        qq: '',
+        is_api_content: 0,
         content_default_img_id: 0,
         content_default_img_url: '',
         content_default_img_open: 0,

@@ -272,7 +272,7 @@ export default {
         image_id: 0,
         image_url: '',
         name: '',
-        name_color: '#606266',
+        name_color: '',
         url: '',
         desc: '',
         start_time: '',
