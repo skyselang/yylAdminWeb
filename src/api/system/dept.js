@@ -100,3 +100,14 @@ export function userRemove(data) {
     data
   })
 }
+/**
+ * 用户默认部门
+ * @param {array} data 请求数据
+ */
+export function userDefault(data) {
+  return request({
+    url: url + 'userDefault',
+    method: 'post',
+    data
+  })
+}

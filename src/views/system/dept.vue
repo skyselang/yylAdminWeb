@@ -269,6 +269,16 @@
         <el-table-column :prop="userPk" label="用户ID" min-width="100" sortable="custom" />
         <el-table-column prop="nickname" label="昵称" min-width="120" show-overflow-tooltip />
         <el-table-column prop="username" label="账号" min-width="120" show-overflow-tooltip />
+        <el-table-column prop="is_default" label="默认" min-width="85" sortable="custom">
+          <template #default="scope">
+            <el-switch
+              v-model="scope.row.is_default"
+              :active-value="1"
+              :inactive-value="0"
+              @change="userDefault(scope.row.user_id)"
+            />
+          </template>
+        </el-table-column>
         <el-table-column prop="dept_names" label="部门" min-width="120" show-overflow-tooltip />
         <el-table-column prop="is_super" label="超管" min-width="85" sortable="custom">
           <template #default="scope">
@@ -340,7 +350,18 @@ import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination/index.vue'
 import { arrayColumn } from '@/utils/index'
 import { getPageLimit } from '@/utils/settings'
-import { list, info, add, edit, dele, editpid, disable, user, userRemove } from '@/api/system/dept'
+import {
+  list,
+  info,
+  add,
+  edit,
+  dele,
+  editpid,
+  disable,
+  user,
+  userRemove,
+  userDefault
+} from '@/api/system/dept'
 
 export default {
   name: 'SystemDept',
@@ -662,6 +683,16 @@ export default {
       user(this.userQuery)
         .then((res) => {
           this.userData = res.data.list
+          //通过对比 userQuery.dept_id 和 res.data.list 中的 default_dept_id 是否一致 增加一个 is_default 字段
+          for (let i = 0; i < res.data.list.length; i++) {
+            if (res.data.list[i].default_dept_id === this.userQuery.dept_id) {
+              res.data.list[i].is_default = 1
+            } else {
+              res.data.list[i].is_default = 0
+            }
+          }
+          this.userTotal = res.data.count
+          this.userLoad = false
           this.userCount = res.data.count
           this.userLoad = false
         })
@@ -735,6 +766,26 @@ export default {
         userRemove({
           dept_id: this.userQuery.dept_id,
           user_ids: this.userSelectGetIds(row)
+        })
+          .then((res) => {
+            this.user()
+            ElMessage.success(res.msg)
+          })
+          .catch(() => {
+            this.userLoad = false
+          })
+      }
+    },
+    // 用户默认部门
+    userDefault(userPK) {
+      console.log(userPK)
+      if (!userPK) {
+        this.userSelectAlert()
+      } else {
+        this.userLoad = true
+        userDefault({
+          dept_id: this.userQuery.dept_id,
+          user_id: userPK
         })
           .then((res) => {
             this.user()

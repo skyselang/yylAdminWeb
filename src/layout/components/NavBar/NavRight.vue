@@ -6,6 +6,12 @@
         <span>{{ user.nickname }}</span>
       </el-tooltip>
     </div>
+    <!-- 科室切换 -->
+    <div class="setting-item">
+      <el-tooltip effect="dark" :content="$t('navbar.Dept switching')">
+        <dept-select />
+      </el-tooltip>
+    </div>
     <!-- 系统设置 -->
     <div class="setting-item" v-if="checkPermission(['admin/system.UserCenter/setting'])">
       <el-tooltip effect="dark" :content="$t('route.System setting')">
@@ -83,6 +89,7 @@ import { useTagsViewStore } from '@/store/modules/tagsView'
 import { cacheClear } from '@/api/system/setting'
 import LangSelect from '@/components/LangSelect/index.vue'
 import ThemeSelect from '@/components/ThemeSelect/index.vue'
+import DeptSelect from '@/components/DeptSelect/index.vue'
 
 const route = useRoute()
 const router = useRouter()
