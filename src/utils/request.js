@@ -15,10 +15,25 @@ const service = axios.create({
 service.interceptors.request.use(
   // 请求配置
   (config) => {
+    const settingsStore = useSettingsStoreHook()
     const userStore = useUserStoreHook()
+    if (userStore.dept) {
+      const dept = userStore.dept
+      const deptType = settingsStore.deptType
+      if (deptType === 'header') {
+        // 请求头部token
+        config.headers['dept-id'] = dept.dept_id
+      } else {
+        // 请求参数token
+        if (config.method === 'get') {
+          config.params = { ...config?.params, ['dept-id']: dept.dept_id }
+        } else {
+          config.data = { ...config?.data, ['dept-id']: dept.dept_id }
+        }
+      }
+    }
     if (userStore.token) {
       // 设置Token，请求头部header或请求参数param
-      const settingsStore = useSettingsStoreHook()
       const tokenType = settingsStore.tokenType
       const tokenName = settingsStore.tokenName
       const tokenValue = userStore.token
