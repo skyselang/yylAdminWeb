@@ -440,6 +440,15 @@
               <el-radio :label="1">是</el-radio>
             </el-radio-group>
           </el-form-item>
+          <el-form-item v-if="model.menu_type == 0" label="始终显示" prop="always_show">
+            <el-button title="alwaysShow；是否始终显示（只有一个子路由的时候）">
+              <svg-icon icon-class="question-filled" />
+            </el-button>
+            <el-radio-group v-model="model.always_show" style="margin-left: 10px">
+              <el-radio :label="0">否</el-radio>
+              <el-radio :label="1">是</el-radio>
+            </el-radio-group>
+          </el-form-item>
           <el-form-item label="菜单排序" prop="sort">
             <el-input v-model="model.sort" type="number" placeholder="250">
               <template #prepend>
@@ -645,6 +654,7 @@ export default {
         meta_query: '',
         hidden: 0,
         keep_alive: 1,
+        always_show: 0,
         sort: 250,
         add_info: false,
         add_add: false,

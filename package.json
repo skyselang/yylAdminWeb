@@ -31,16 +31,16 @@
     "crypto-js": "^4.2.0",
     "default-passive-events": "^2.0.0",
     "echarts": "^5.5.0",
-    "element-plus": "^2.6.1",
+    "element-plus": "^2.7.2",
     "js-cookie": "^3.0.5",
     "nprogress": "^0.2.0",
     "path-browserify": "^1.0.1",
-    "path-to-regexp": "^6.2.1",
+    "path-to-regexp": "^6.2.2",
     "pinia": "^2.1.7",
-    "terser": "^5.29.2",
-    "vue": "^3.4.21",
-    "vue-i18n": "^9.10.2",
-    "vue-router": "^4.3.0",
+    "terser": "^5.31.0",
+    "vue": "^3.4.26",
+    "vue-i18n": "^9.13.1",
+    "vue-router": "^4.3.2",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
@@ -48,15 +48,15 @@
     "eslint-config-prettier": "^8.10.0",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-prettier": "^4.2.1",
-    "eslint-plugin-vue": "^9.23.0",
+    "eslint-plugin-vue": "^9.25.0",
     "fast-glob": "^3.3.2",
     "prettier": "^2.8.8",
-    "sass": "^1.72.0",
-    "unocss": "^0.58.6",
+    "sass": "^1.75.0",
+    "unocss": "^0.58.9",
     "unplugin-auto-import": "^0.15.3",
     "unplugin-icons": "^0.16.6",
     "unplugin-vue-components": "^0.24.1",
-    "vite": "^5.1.6",
+    "vite": "^5.2.10",
     "vite-plugin-svg-icons": "^2.0.1"
   },
   "repository": {
@@ -67,7 +67,7 @@
     "url": "https://gitee.com/skyselang/yylAdminWeb/issues"
   },
   "engines": {
-    "node": ">=18.12.0",
+    "node": ">=18.18.0",
     "npm": ">=8.19.0"
   }
 }
