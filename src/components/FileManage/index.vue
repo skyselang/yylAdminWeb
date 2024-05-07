@@ -35,7 +35,7 @@
           start-placeholder="开始日期"
           end-placeholder="结束日期"
           value-format="YYYY-MM-DD HH:mm:ss"
-          :default-time="[[new Date(2024, 1, 1, 0, 0, 0), new Date(2024, 1, 1, 23, 59, 59)]]"
+          :default-time="[new Date(2024, 1, 1, 0, 0, 0), new Date(2024, 1, 1, 23, 59, 59)]"
         />
         <el-button type="primary" @click="search()">查询</el-button>
         <el-button title="重置" @click="refresh()">
