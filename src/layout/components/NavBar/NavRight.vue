@@ -83,6 +83,7 @@ import { useTagsViewStore } from '@/store/modules/tagsView'
 import { cacheClear } from '@/api/system/setting'
 import LangSelect from '@/components/LangSelect/index.vue'
 import ThemeSelect from '@/components/ThemeSelect/index.vue'
+import { useI18n } from 'vue-i18n'
 
 const route = useRoute()
 const router = useRouter()
@@ -91,6 +92,7 @@ const userStore = useUserStore()
 const tagsViewStore = useTagsViewStore()
 const { device } = storeToRefs(appStore)
 const { user } = storeToRefs(userStore)
+const { t } = useI18n()
 
 // 清除缓存
 function clearCache() {
@@ -107,7 +109,7 @@ const { toggle } = useFullscreen()
 
 // 退出系统
 function logout() {
-  ElMessageBox.confirm('确定要退出系统吗？', '提示', {
+  ElMessageBox.confirm(t('common.Are you sure you want to exit the system?'), t('common.tip'), {
     type: 'warning'
   })
     .then(() => {

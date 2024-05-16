@@ -1,11 +1,37 @@
 export default {
+  // 会员
+  member: {
+    'Member statistic': '会员统计'
+  },
+  // 内容
+  content: {
+    content: '内容',
+    category: '分类',
+    tag: '标签',
+    'Content statistic': '内容统计'
+  },
+  // 文件
+  file: {
+    file: '文件',
+    group: '分组',
+    tag: '标签',
+    'File statistic': '文件统计',
+    'file type': '文件类型'
+  },
   // 公共
   common: {
     Notice: '公告',
     view: '查看',
     close: '关闭',
+    tip: '提示',
     'Don not prompt again': '不再提示',
-    'Please enter': '请输入'
+    'Please enter': '请输入',
+    day: '日',
+    month: '月',
+    'Start date': '开始日期',
+    'End date': '结束日期',
+    'Count statistic': '总数统计',
+    'Are you sure you want to exit the system?': '确定要退出系统吗？'
   },
   // 路由
   route: {

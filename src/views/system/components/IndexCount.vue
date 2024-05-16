@@ -18,9 +18,18 @@ export default {
   name: 'SystemIndexCount',
   data() {
     return {
-      name: '总数统计',
       loading: false,
       datas: []
+    }
+  },
+  computed: {
+    name() {
+      return this.$t('common.Count statistic')
+    }
+  },
+  watch: {
+    name() {
+      this.count()
     }
   },
   created() {

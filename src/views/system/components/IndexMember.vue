@@ -4,16 +4,15 @@
       <span>{{ name }}</span>
       <el-col class="text-center">
         <el-select v-model="date_type" class="!w-[100px]" @change="typeChange">
-          <el-option label="日" value="day" />
-          <el-option label="月" value="month" />
+          <el-option :label="$t('common.day')" value="day" />
+          <el-option :label="$t('common.month')" value="month" />
         </el-select>
         <el-date-picker
           v-model="date_range"
           :type="date_ptype"
           :value-format="date_format"
-          :picker-options="date_options"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
+          :start-placeholder="$t('common.Start date')"
+          :end-placeholder="$t('common.End date')"
           @change="dateChange"
         />
       </el-col>
@@ -58,94 +57,22 @@ export default {
   name: 'SystemIndexMember',
   data() {
     return {
-      name: '会员统计',
       height: 500,
       loading: false,
       date_type: 'day',
       date_range: [],
       date_ptype: 'monthrange',
-      date_format: 'YYYY-MM',
-      date_options: {},
-      date_options_day: {
-        shortcuts: [
-          {
-            text: '最近7天',
-            onClick(picker) {
-              const end = new Date()
-              const start = new Date()
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 6)
-              picker.$emit('pick', [start, end])
-            }
-          },
-          {
-            text: '最近30天',
-            onClick(picker) {
-              const end = new Date()
-              const start = new Date()
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 29)
-              picker.$emit('pick', [start, end])
-            }
-          },
-          {
-            text: '最近90天',
-            onClick(picker) {
-              const end = new Date()
-              const start = new Date()
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 89)
-              picker.$emit('pick', [start, end])
-            }
-          },
-          {
-            text: '最近120天',
-            onClick(picker) {
-              const end = new Date()
-              const start = new Date()
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 119)
-              picker.$emit('pick', [start, end])
-            }
-          }
-        ]
-      },
-      date_options_month: {
-        shortcuts: [
-          {
-            text: '最近3个月',
-            onClick(picker) {
-              const end = new Date()
-              const start = new Date()
-              start.setMonth(start.getMonth() - 2)
-              picker.$emit('pick', [start, end])
-            }
-          },
-          {
-            text: '最近6个月',
-            onClick(picker) {
-              const end = new Date()
-              const start = new Date()
-              start.setMonth(start.getMonth() - 5)
-              picker.$emit('pick', [start, end])
-            }
-          },
-          {
-            text: '最近9个月',
-            onClick(picker) {
-              const end = new Date()
-              const start = new Date()
-              start.setMonth(start.getMonth() - 8)
-              picker.$emit('pick', [start, end])
-            }
-          },
-          {
-            text: '最近12个月',
-            onClick(picker) {
-              const end = new Date()
-              const start = new Date()
-              start.setMonth(start.getMonth() - 11)
-              picker.$emit('pick', [start, end])
-            }
-          }
-        ]
-      }
+      date_format: 'YYYY-MM'
+    }
+  },
+  computed: {
+    name() {
+      return this.$t('member.Member statistic')
+    }
+  },
+  watch: {
+    name() {
+      this.stat()
     }
   },
   created() {
@@ -178,11 +105,9 @@ export default {
       if (type === 'day') {
         this.date_ptype = 'daterange'
         this.date_format = 'YYYY-MM-DD'
-        this.date_options = this.date_options_day
       } else if (type === 'month') {
         this.date_ptype = 'monthrange'
         this.date_format = 'YYYY-MM'
-        this.date_options = this.date_options_month
       }
     },
     dateChange() {
@@ -197,7 +122,7 @@ export default {
         legend: {
           top: '20px',
           data: data.legend,
-          selected: { 总数: false }
+          selected: data.selected
         },
         grid: {
           top: '80px',
@@ -224,7 +149,10 @@ export default {
           feature: {
             magicType: { show: true, type: ['line', 'bar'] },
             dataView: { show: true, readOnly: true },
-            saveAsImage: { show: true, name: this.name + data.date[0] + '-' + data.date[1] }
+            saveAsImage: {
+              show: true,
+              name: this.name + data.date[0] + '-' + data.date[1]
+            }
           }
         },
         series: data.series

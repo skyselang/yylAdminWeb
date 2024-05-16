@@ -123,7 +123,6 @@ export default {
       text: '',
       barAreaColor: undefined,
       barAreaBorderColor: undefined,
-      showRefresh: true,
       bindingClick: true
     }
   },
@@ -229,8 +228,6 @@ export default {
       this.tempPoints.splice(0, this.tempPoints.length)
       this.checkPosArr.splice(0, this.checkPosArr.length)
       this.getPictrue()
-      this.text = '验证失败'
-      this.showRefresh = true
     },
 
     // 请求背景图片和验证图片

@@ -24,16 +24,16 @@
         <el-row class="text-center">
           <el-col>
             <el-select v-model="date_type" class="!w-[100px]" @change="typeChange">
-              <el-option label="日" value="day" />
-              <el-option label="月" value="month" />
+              <el-option :label="$t('common.day')" value="day" />
+              <el-option :label="$t('common.month')" value="month" />
             </el-select>
             <el-date-picker
               v-model="date_range"
               :type="date_ptype"
               :value-format="date_format"
               :picker-options="date_options"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
+              :start-placeholder="$t('common.Start date')"
+              :end-placeholder="$t('common.End date')"
               @change="dateChange"
             />
           </el-col>

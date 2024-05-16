@@ -30,12 +30,27 @@ export default {
   name: 'SystemIndexFile',
   data() {
     return {
-      name: '文件统计',
       loading: false,
       date_pie: {
         count: 0,
         date: []
       }
+    }
+  },
+  computed: {
+    name() {
+      return this.$t('file.File statistic')
+    },
+    files() {
+      return this.$t('file.file')
+    },
+    file_type() {
+      return this.$t('file.file type')
+    }
+  },
+  watch: {
+    name() {
+      this.file()
     }
   },
   created() {
@@ -57,7 +72,7 @@ export default {
       var echart = echarts.init(document.getElementById('echartIndexFile'))
       var option = {
         title: {
-          subtext: '文件：' + data.count,
+          subtext: this.files + '：' + data.count,
           left: 'center'
         },
         legend: {
@@ -70,7 +85,7 @@ export default {
         },
         series: [
           {
-            name: '文件类型',
+            name: this.file_type,
             type: 'pie',
             radius: ['40%', '70%'],
             avoidLabelOverlap: false,

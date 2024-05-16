@@ -30,8 +30,23 @@ export default {
   name: 'SystemIndexContent',
   data() {
     return {
-      name: '内容统计',
       loading: false
+    }
+  },
+  computed: {
+    name() {
+      return this.$t('content.Content statistic')
+    },
+    contents() {
+      return this.$t('content.content')
+    },
+    category() {
+      return this.$t('content.category')
+    }
+  },
+  watch: {
+    name() {
+      this.content()
     }
   },
   created() {
@@ -53,7 +68,8 @@ export default {
       var echart = echarts.init(document.getElementById('echartIndexContent'))
       var option = {
         title: {
-          subtext: '分类：' + data.category + '，内容：' + data.content,
+          subtext:
+            this.category + '：' + data.category + '，' + this.contents + '：' + data.content,
           left: 'center'
         },
         tooltip: {

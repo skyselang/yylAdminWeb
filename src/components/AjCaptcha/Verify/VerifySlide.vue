@@ -161,7 +161,6 @@ export default {
       iconClass: 'icon-right',
       status: false, // 鼠标状态
       isEnd: false, // 是否验证完成
-      showRefresh: true,
       transitionLeft: '',
       transitionWidth: ''
     }
@@ -310,7 +309,6 @@ export default {
             this.leftBarBorderColor = '#5cb85c'
             this.iconColor = '#fff'
             this.iconClass = 'icon-check'
-            this.showRefresh = false
             this.isEnd = true
             if (this.mode === 'pop') {
               setTimeout(() => {
@@ -359,7 +357,6 @@ export default {
       this.leftBarBorderColor = '#ddd'
       this.moveBlockBackgroundColor = '#fff'
       this.moveBlockLeft = 0
-      this.showRefresh = true
       this.finishText = ''
       this.iconColor = '#000'
       this.iconClass = 'icon-right'

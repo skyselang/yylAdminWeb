@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { useSettingsStoreHook } from '@/store/modules/settings'
 import { useUserStoreHook } from '@/store/modules/user'
+import { useAppStoreHook } from '@/store/modules/app'
 
 // 创建axios实例
 const service = axios.create({
@@ -15,13 +16,15 @@ const service = axios.create({
 service.interceptors.request.use(
   // 请求配置
   (config) => {
+    const appStore = useAppStoreHook()
     const userStore = useUserStoreHook()
-    if (userStore.token) {
-      // 设置Token，请求头部header或请求参数param
-      const settingsStore = useSettingsStoreHook()
-      const tokenType = settingsStore.tokenType
+    const settingsStore = useSettingsStoreHook()
+    const language = appStore.language
+    const tokenValue = userStore.token
+    const tokenType = settingsStore.tokenType
+    // 设置Token
+    if (tokenValue) {
       const tokenName = settingsStore.tokenName
-      const tokenValue = userStore.token
       if (tokenType === 'header') {
         // 请求头部token
         config.headers[tokenName] = tokenValue
@@ -33,6 +36,12 @@ service.interceptors.request.use(
           config.data = { ...config?.data, [tokenName]: tokenValue }
         }
       }
+    }
+    // 设置语言
+    if (tokenType === 'header') {
+      config.headers['think-lang'] = language
+    } else {
+      config.params.lang = language
     }
     return config
   },
