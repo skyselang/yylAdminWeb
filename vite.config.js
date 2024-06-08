@@ -78,6 +78,7 @@ export default defineConfig(({ mode }) => {
         'axios',
         'crypto-js',
         'js-cookie',
+        'nprogress',
         'path-to-regexp',
         'path-browserify',
         'echarts/core',
