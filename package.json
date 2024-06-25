@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "@vitejs/plugin-vue": "^4.6.2",
-    "@vueuse/core": "^10.10.0",
+    "@vueuse/core": "^10.11.0",
     "@wangeditor/editor": "^5.1.23",
     "@wangeditor/editor-for-vue": "5.1.10",
     "@wangeditor/plugin-upload-attachment": "^1.1.0",
@@ -33,16 +33,16 @@
     "crypto-js": "^4.2.0",
     "default-passive-events": "^2.0.0",
     "echarts": "^5.5.0",
-    "element-plus": "^2.7.4",
+    "element-plus": "^2.7.6",
     "js-cookie": "^3.0.5",
     "nprogress": "^0.2.0",
     "path-browserify": "^1.0.1",
     "path-to-regexp": "^6.2.2",
     "pinia": "^2.1.7",
     "terser": "^5.31.1",
-    "vue": "^3.4.27",
+    "vue": "^3.4.30",
     "vue-i18n": "^9.13.1",
-    "vue-router": "^4.3.2",
+    "vue-router": "^4.4.0",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
@@ -53,12 +53,12 @@
     "eslint-plugin-vue": "^9.26.0",
     "fast-glob": "^3.3.2",
     "prettier": "^2.8.8",
-    "sass": "^1.77.4",
+    "sass": "^1.77.6",
     "unocss": "^0.58.9",
     "unplugin-auto-import": "^0.15.3",
     "unplugin-icons": "^0.16.6",
     "unplugin-vue-components": "^0.24.1",
-    "vite": "^5.2.12",
+    "vite": "^5.3.1",
     "vite-plugin-svg-icons": "^2.0.1"
   },
   "repository": {
