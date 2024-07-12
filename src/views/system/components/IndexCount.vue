@@ -1,7 +1,7 @@
 <template>
   <el-row v-loading="loading" :gutter="10">
     <el-col v-for="(item, index) in datas" :key="index" :xs="24" :sm="3">
-      <el-card :body-style="{ padding: '10px 0px' }" class="text-center">
+      <el-card :body-style="{ padding: '10px 0px' }" class="text-center" shadow="never">
         <template #header>
           <span>{{ item.name }}</span>
         </template>

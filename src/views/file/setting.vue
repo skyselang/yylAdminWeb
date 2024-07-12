@@ -25,7 +25,7 @@
             </el-form-item>
             <div v-if="model.storage == 'local'">
               <el-form-item>
-                <el-card>
+                <el-card shadow="never">
                   <div>
                     文件将存储在本地服务器，默认保存在 public/storage 目录，文件以散列 hash 命名。
                     <br />
@@ -36,7 +36,7 @@
             </div>
             <div v-else-if="model.storage == 'qiniu'">
               <el-form-item>
-                <el-card>
+                <el-card shadow="never">
                   <div>
                     文件将上传到七牛云 Kodo 存储，对象存储 > 空间管理 > 空间设置 > 访问控制, 设置为
                     公开空间。
@@ -105,7 +105,7 @@
             </div>
             <div v-else-if="model.storage == 'aliyun'">
               <el-form-item>
-                <el-card>
+                <el-card shadow="never">
                   <div>
                     文件将上传到阿里云 OSS 存储，需要配置 OSS 公开访问及跨域策略。
                     <br />
@@ -187,7 +187,7 @@
             </div>
             <div v-else-if="model.storage == 'tencent'">
               <el-form-item>
-                <el-card>
+                <el-card shadow="never">
                   <div>
                     文件将上传到腾讯云 COS 存储，需要配置 COS 公有读私有写访问权限及跨域策略。
                     <br />
@@ -269,7 +269,7 @@
             </div>
             <div v-else-if="model.storage == 'baidu'">
               <el-form-item>
-                <el-card>
+                <el-card shadow="never">
                   <div>
                     文件将上传到百度云 BOS 存储，对象存储 > Bucket列表 > 配置设置 > Bucket权限配置,
                     设置为 公共 *。
@@ -353,7 +353,7 @@
             </div>
             <div v-else-if="model.storage == 'upyun'">
               <el-form-item>
-                <el-card>
+                <el-card shadow="never">
                   <div>
                     文件将上传到又拍云 USS 存储，云存储 > 服务管理 > 配置 > CORS 跨域共享, 设置为
                     已开启。
@@ -422,7 +422,7 @@
             </div>
             <div v-else-if="model.storage == 'aws'">
               <el-form-item>
-                <el-card>
+                <el-card shadow="never">
                   <div>
                     文件将上传到 AWS S3。
                     <br />

@@ -452,6 +452,7 @@
                       minHeight: '180px',
                       padding: '0 6px'
                     }"
+                    shadow="never"
                   >
                     <div style="text-align: left">
                       <el-checkbox :key="item[idkey]" :value="item[idkey]" :label="item[idkey]">

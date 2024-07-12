@@ -1,5 +1,5 @@
 <template>
-  <el-card v-loading="loading">
+  <el-card v-loading="loading" shadow="never">
     <el-row>
       <span>{{ name }}</span>
       <el-col class="text-center">

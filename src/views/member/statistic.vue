@@ -3,7 +3,7 @@
     <div class="app-container">
       <el-row v-loading="loading" :gutter="10">
         <el-col v-for="(item, index) in count" :key="index" :xs="24" :span="3">
-          <el-card :body-style="{ padding: '10px 0px' }">
+          <el-card :body-style="{ padding: '10px 0px' }" shadow="never">
             <template #header>
               <div class="text-center">
                 <span>{{ item.name }}</span>
@@ -20,6 +20,7 @@
         :key="index"
         v-loading="loading"
         class="mt-[10px]"
+        shadow="never"
       >
         <el-row class="text-center">
           <el-col>
