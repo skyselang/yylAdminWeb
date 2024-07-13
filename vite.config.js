@@ -77,7 +77,6 @@ export default defineConfig(({ mode }) => {
         'pinia',
         'axios',
         'crypto-js',
-        'js-cookie',
         'nprogress',
         'path-to-regexp',
         'path-browserify',

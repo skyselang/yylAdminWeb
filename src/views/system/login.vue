@@ -214,22 +214,25 @@ export default {
     setting() {
       this.model.captcha_id = ''
       this.model.captcha_code = ''
-      setting().then((res) => {
-        delNotice()
-        const data = res.data
-        const settingsStore = useSettingsStoreHook()
-        this.captchaData(data)
-        this.login_bg_url = data.login_bg_url
-        this.login_bg_color = data.login_bg_color
-        this.logo_url = data.logo_url
-        this.system_name = data.system_name
-        settingsStore.changeSetting({ key: 'loginBgUrl', value: data.login_bg_url })
-        settingsStore.changeSetting({ key: 'loginBgColor', value: data.login_bg_color })
-        settingsStore.changeSetting({ key: 'logoUrl', value: data.logo_url })
-        settingsStore.changeSetting({ key: 'systemName', value: data.system_name })
-        settingsStore.changeSetting({ key: 'pageTitle', value: data.page_title })
-        settingsStore.changeSetting({ key: 'pageLimit', value: data.page_limit })
-      })
+      setting()
+        .then((res) => {
+          delNotice()
+          const data = res.data
+          const settingsStore = useSettingsStoreHook()
+          this.captchaData(data)
+          this.login_bg_url = data.login_bg_url
+          this.login_bg_color = data.login_bg_color
+          this.logo_url = data.logo_url
+          this.system_name = data.system_name
+          settingsStore.changeSetting({ key: 'loginBgUrl', value: data.login_bg_url })
+          settingsStore.changeSetting({ key: 'loginBgColor', value: data.login_bg_color })
+          settingsStore.changeSetting({ key: 'logoUrl', value: data.logo_url })
+          settingsStore.changeSetting({ key: 'systemName', value: data.system_name })
+          settingsStore.changeSetting({ key: 'pageTitle', value: data.page_title })
+          settingsStore.changeSetting({ key: 'pageLimit', value: data.page_limit })
+          settingsStore.changeSetting({ key: 'notice', value: 0 })
+        })
+        .catch(() => {})
     },
     // 登录
     handleLogin() {

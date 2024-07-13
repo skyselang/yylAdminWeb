@@ -177,30 +177,32 @@ export default {
               : JSON.stringify(this.checkPosArr),
             token: this.backToken
           }
-          reqCheck(data).then((ret) => {
-            const res = ret.data
-            if (res.repCode === '0000') {
-              this.barAreaColor = '#4cae4c'
-              this.barAreaBorderColor = '#5cb85c'
-              this.text = this.$t('AjCaptch.Verification successful') //'验证成功'
-              this.bindingClick = false
-              if (this.mode === 'pop') {
+          reqCheck(data)
+            .then((ret) => {
+              const res = ret.data
+              if (res.repCode === '0000') {
+                this.barAreaColor = '#4cae4c'
+                this.barAreaBorderColor = '#5cb85c'
+                this.text = this.$t('AjCaptch.Verification successful') //'验证成功'
+                this.bindingClick = false
+                if (this.mode === 'pop') {
+                  setTimeout(() => {
+                    this.$parent.clickShow = false
+                  }, 700)
+                }
+                this.$parent.closeBox()
+                this.$parent.$emit('success', { captchaVerification })
+              } else {
+                this.$parent.$emit('error', this)
+                this.barAreaColor = '#d9534f'
+                this.barAreaBorderColor = '#d9534f'
+                this.text = this.$t('AjCaptch.Validation failed') //'验证失败'
                 setTimeout(() => {
-                  this.$parent.clickShow = false
+                  this.refresh()
                 }, 700)
               }
-              this.$parent.closeBox()
-              this.$parent.$emit('success', { captchaVerification })
-            } else {
-              this.$parent.$emit('error', this)
-              this.barAreaColor = '#d9534f'
-              this.barAreaBorderColor = '#d9534f'
-              this.text = this.$t('AjCaptch.Validation failed') //'验证失败'
-              setTimeout(() => {
-                this.refresh()
-              }, 700)
-            }
-          })
+            })
+            .catch(() => {})
         }, 400)
       }
       if (this.num < this.checkNum) {

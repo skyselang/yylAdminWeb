@@ -19,6 +19,7 @@ export const useSettingsStore = defineStore('setting', () => {
   const tokenType = useStorage('tokenType', defaultSettings.tokenType)
   const tokenName = useStorage('tokenName', defaultSettings.tokenName)
   const pageLimit = useStorage('pageLimit', defaultSettings.pageLimit)
+  const notice = useStorage('notice', 0)
 
   const settingsMap = {
     loginBgUrl,
@@ -36,7 +37,8 @@ export const useSettingsStore = defineStore('setting', () => {
     themeColor,
     tokenType,
     tokenName,
-    pageLimit
+    pageLimit,
+    notice
   }
 
   function changeSetting({ key, value }) {
@@ -83,6 +85,7 @@ export const useSettingsStore = defineStore('setting', () => {
     tokenType,
     tokenName,
     pageLimit,
+    notice,
     changeSetting
   }
 })

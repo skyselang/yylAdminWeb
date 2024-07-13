@@ -302,50 +302,52 @@ export default {
             : JSON.stringify({ x: moveLeftDistance, y: 5.0 }),
           token: this.backToken
         }
-        reqCheck(data).then((ret) => {
-          const res = ret.data
-          if (res.repCode === '0000') {
-            this.moveBlockBackgroundColor = '#5cb85c'
-            this.leftBarBorderColor = '#5cb85c'
-            this.iconColor = '#fff'
-            this.iconClass = 'icon-check'
-            this.isEnd = true
-            if (this.mode === 'pop') {
+        reqCheck(data)
+          .then((ret) => {
+            const res = ret.data
+            if (res.repCode === '0000') {
+              this.moveBlockBackgroundColor = '#5cb85c'
+              this.leftBarBorderColor = '#5cb85c'
+              this.iconColor = '#fff'
+              this.iconClass = 'icon-check'
+              this.isEnd = true
+              if (this.mode === 'pop') {
+                setTimeout(() => {
+                  this.$parent.clickShow = false
+                }, 1500)
+              }
+              this.passFlag = true
+              this.tipWords =
+                `${((this.endMovetime - this.startMoveTime) / 1000).toFixed(2)}s` +
+                this.$t('AjCaptch.Verification successful') //验证成功`
+              var captchaVerification = this.secretKey
+                ? aesEncrypt(
+                    this.backToken + '---' + JSON.stringify({ x: moveLeftDistance, y: 5.0 }),
+                    this.secretKey
+                  )
+                : this.backToken + '---' + JSON.stringify({ x: moveLeftDistance, y: 5.0 })
               setTimeout(() => {
-                this.$parent.clickShow = false
-              }, 1500)
+                this.tipWords = ''
+                this.$parent.closeBox()
+                this.$parent.$emit('success', { captchaVerification })
+              }, 700)
+            } else {
+              this.moveBlockBackgroundColor = '#d9534f'
+              this.leftBarBorderColor = '#d9534f'
+              this.iconClass = 'icon-close'
+              this.iconColor = '#fff'
+              this.passFlag = false
+              setTimeout(function () {
+                _this.refresh()
+              }, 1000)
+              this.$parent.$emit('error', this)
+              this.tipWords = this.$t('AjCaptch.Validation failed') //'验证失败'
+              setTimeout(() => {
+                this.tipWords = ''
+              }, 1000)
             }
-            this.passFlag = true
-            this.tipWords =
-              `${((this.endMovetime - this.startMoveTime) / 1000).toFixed(2)}s` +
-              this.$t('AjCaptch.Verification successful') //验证成功`
-            var captchaVerification = this.secretKey
-              ? aesEncrypt(
-                  this.backToken + '---' + JSON.stringify({ x: moveLeftDistance, y: 5.0 }),
-                  this.secretKey
-                )
-              : this.backToken + '---' + JSON.stringify({ x: moveLeftDistance, y: 5.0 })
-            setTimeout(() => {
-              this.tipWords = ''
-              this.$parent.closeBox()
-              this.$parent.$emit('success', { captchaVerification })
-            }, 700)
-          } else {
-            this.moveBlockBackgroundColor = '#d9534f'
-            this.leftBarBorderColor = '#d9534f'
-            this.iconClass = 'icon-close'
-            this.iconColor = '#fff'
-            this.passFlag = false
-            setTimeout(function () {
-              _this.refresh()
-            }, 1000)
-            this.$parent.$emit('error', this)
-            this.tipWords = this.$t('AjCaptch.Validation failed') //'验证失败'
-            setTimeout(() => {
-              this.tipWords = ''
-            }, 1000)
-          }
-        })
+          })
+          .catch(() => {})
         this.status = false
       }
     },

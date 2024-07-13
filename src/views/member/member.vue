@@ -334,7 +334,7 @@
         <el-tabs>
           <el-tab-pane label="基础信息">
             <el-scrollbar native :height="height - 80">
-              <el-form-item label="头像" prop="avatar_url">
+              <el-form-item label="头像" prop="avatar_id">
                 <FileImage
                   v-model="model.avatar_id"
                   :file-url="model.avatar_url"

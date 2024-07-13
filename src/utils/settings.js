@@ -1,7 +1,6 @@
-import Cookies from 'js-cookie'
 import { useSettingsStoreHook } from '@/store/modules/settings'
 
-const keyPrefix = 'yaSettings'
+const settingsStore = useSettingsStoreHook()
 
 export function getPageLimit(defaultLimit = '') {
   if (defaultLimit !== '') {
@@ -11,13 +10,12 @@ export function getPageLimit(defaultLimit = '') {
   return settingsStore.pageLimit
 }
 
-const noticeKey = keyPrefix + 'Notice'
 export function setNotice(notice) {
-  return Cookies.set(noticeKey, notice)
+  settingsStore.changeSetting({ key: 'notice', value: notice })
 }
 export function getNotice() {
-  return Cookies.get(noticeKey)
+  return settingsStore.notice
 }
 export function delNotice() {
-  return Cookies.remove(noticeKey)
+  settingsStore.changeSetting({ key: 'notice', value: 0 })
 }

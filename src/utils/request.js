@@ -89,12 +89,15 @@ service.interceptors.response.use(
   },
   (error) => {
     // 响应错误
-    const res = error.response.data
-    responseHandle(res)
-    if (import.meta.env.DEV) {
-      console.log(error.response)
+    if (error.response) {
+      const res = error.response.data
+      responseHandle(res)
+      if (import.meta.env.DEV) {
+        console.log(error.response)
+      }
+    } else {
+      return Promise.reject(error)
     }
-    return Promise.reject(error)
   }
 )
 
