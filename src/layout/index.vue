@@ -104,15 +104,15 @@ function toggleSideBar() {
 
 <style lang="scss" scoped>
 .app-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+
   &::after {
     display: table;
     clear: both;
     content: '';
   }
-
-  position: relative;
-  width: 100%;
-  height: 100%;
 
   &.mobile.openSidebar {
     position: fixed;
@@ -131,6 +131,9 @@ function toggleSideBar() {
 }
 // 导航栏顶部显示
 .isTop {
+  // 顶部模式全局变量修改
+  --el-menu-item-height: 50px;
+
   .sidebar-container {
     z-index: 800;
     display: flex;
@@ -153,9 +156,6 @@ function toggleSideBar() {
     margin-left: 0;
     overflow: hidden;
   }
-
-  // 顶部模式全局变量修改
-  --el-menu-item-height: 50px;
 }
 
 .mobile.isTop {
