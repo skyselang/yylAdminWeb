@@ -1,5 +1,5 @@
 <template>
-  <div style="position: relative">
+  <div v-loading="loading" style="position: relative">
     <div
       v-if="type === '2'"
       class="verify-img-out"
@@ -134,6 +134,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       secretKey: '', // 后端返回的加密秘钥 字段
       passFlag: '', // 是否通过的标识
       backImgBase: '', // 验证码背景图片
@@ -374,11 +375,8 @@ export default {
 
     // 请求背景图片和验证图片
     getPictrue() {
-      const data = {
-        ts: Date.now(), // 现在的时间戳
-        clientUid: localStorage.getItem('slider'),
-        captchaType: this.captchaType
-      }
+      this.loading = true
+      const data = {}
       reqGet(data)
         .then((ret) => {
           const res = ret.data
@@ -396,8 +394,11 @@ export default {
             this.backImgBase = null
             this.blockBackImgBase = null
           }
+          this.loading = false
         })
-        .catch(() => {})
+        .catch(() => {
+          this.loading = false
+        })
     }
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <div style="position: relative">
+  <div v-loading="loading" style="position: relative">
     <div class="verify-img-out">
       <div
         class="verify-img-panel"
@@ -105,6 +105,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       secretKey: '', // 后端返回的ase加密秘钥
       checkNum: 3, // 默认需要点击的字数
       fontPos: [], // 选中的坐标信息
@@ -234,11 +235,8 @@ export default {
 
     // 请求背景图片和验证图片
     getPictrue() {
-      const data = {
-        ts: Date.now(), // 现在的时间戳
-        captchaType: this.captchaType,
-        clientUid: localStorage.getItem('point')
-      }
+      this.loading = true
+      const data = {}
       reqGet(data)
         .then((ret) => {
           const res = ret.data
@@ -262,8 +260,11 @@ export default {
           if (res.repCode === '6201') {
             this.pointBackImgBase = null
           }
+          this.loading = false
         })
-        .catch(() => {})
+        .catch(() => {
+          this.loading = false
+        })
     },
     // 坐标转换函数
     pointTransfrom(pointArr, imgSize) {
