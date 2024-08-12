@@ -1,14 +1,18 @@
 import router from '@/router'
+import defaultSettings from '@/settings'
 import { useUserStoreHook } from '@/store/modules/user'
+import { useSettingsStoreHook } from '@/store/modules/settings'
 import { usePermissionStoreHook } from '@/store/modules/permission'
-import NProgress from 'nprogress'
-import 'nprogress/nprogress.css'
 import { translateRouteTitle } from '@/utils/i18n'
 import getPageTitle from '@/utils/page-title'
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
+
 // 进度条
 NProgress.configure({ showSpinner: false })
 
 const userStore = useUserStoreHook()
+const settingsStore = useSettingsStoreHook()
 const permissionStore = usePermissionStoreHook()
 
 // 白名单路由
@@ -19,7 +23,9 @@ router.beforeEach(async (to, from, next) => {
   // 设置页面标题
   document.title = getPageTitle(translateRouteTitle(to.meta.title))
 
-  const hasToken = localStorage.getItem('AdminToken')
+  const storePrefix = defaultSettings.storePrefix
+  const tokenName = settingsStore.tokenName
+  const hasToken = localStorage.getItem(storePrefix + tokenName)
   if (hasToken) {
     if (to.path === '/login') {
       // 如果已登录，跳转首页

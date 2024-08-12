@@ -201,7 +201,7 @@
           <el-form-item v-else-if="selectType === 'repwd'" label="新密码">
             <el-input v-model="password" placeholder="请输入新密码" clearable />
           </el-form-item>
-          <el-form-item v-else-if="selectType === 'dele'">
+          <el-form-item v-else-if="selectType === 'dele'" label="删除？">
             <el-text size="default" type="danger">确定要删除选中的{{ name }}吗？</el-text>
           </el-form-item>
           <div v-else-if="selectType === 'export'">

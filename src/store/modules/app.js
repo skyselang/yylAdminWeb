@@ -7,16 +7,17 @@ import en from 'element-plus/es/locale/lang/en'
 
 // setup
 export const useAppStore = defineStore('app', () => {
+  const storePrefix = defaultSettings.storePrefix
   // state
-  const device = useStorage('device', 'desktop')
-  const size = useStorage('size', defaultSettings.size)
-  const language = useStorage('language', defaultSettings.language)
-  const sidebarStatus = useStorage('sidebarStatus', 'closed')
+  const device = useStorage(storePrefix + 'device', 'desktop')
+  const size = useStorage(storePrefix + 'size', defaultSettings.size)
+  const language = useStorage(storePrefix + 'language', defaultSettings.language)
+  const activeTopMenu = useStorage(storePrefix + 'activeTop', '')
+  const sidebarStatus = useStorage(storePrefix + 'sidebarStatus', 'closed')
   const sidebar = reactive({
     opened: sidebarStatus.value != 'closed',
     withoutAnimation: false
   })
-  const activeTopMenu = useStorage('activeTop', '')
   // 语言包
   const locale = computed(() => {
     if (language?.value == 'en') {

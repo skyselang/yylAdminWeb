@@ -5,9 +5,13 @@ import { useStorage } from '@vueuse/core'
 import { useSettingsStore } from '@/store/modules/settings'
 import { login as loginApi, logout as logoutApi } from '@/api/system/login'
 import { info as userInfoApi } from '@/api/system/user-center'
+import defaultSettings from '@/settings'
 
 export const useUserStore = defineStore('user', () => {
-  const token = useStorage('AdminToken', '')
+  const settingsStore = useSettingsStore()
+  const storePrefix = defaultSettings.storePrefix
+  const tokenName = settingsStore.tokenName
+  const token = useStorage(storePrefix + tokenName, '')
   const user = reactive({
     username: '',
     nickname: '',
@@ -22,7 +26,6 @@ export const useUserStore = defineStore('user', () => {
       loginApi(data)
         .then((res) => {
           const data = res.data
-          const settingsStore = useSettingsStore()
           const tokenName = settingsStore.tokenName
           token.value = data[tokenName]
           resolve()

@@ -36,6 +36,7 @@
 import screenHeight from '@/utils/screen-height'
 import clip from '@/utils/clipboard'
 import { apidoc } from '@/api/system/apidoc'
+import { useUserStoreHook } from '@/store/modules/user'
 
 export default {
   name: 'SystemApidoc',
@@ -47,7 +48,6 @@ export default {
       model: {
         apidoc_url: '',
         apidoc_pwd: '',
-        user_id: 0,
         token: '',
         token_sub: ''
       }
@@ -58,13 +58,17 @@ export default {
     if (!this.isload) {
       this.apidoc()
     }
+    const userStore = useUserStoreHook()
+    this.model.token = userStore.token
+    this.model.token_sub = userStore.token.substring(0, 16) + '...'
   },
   methods: {
     // 文档
     apidoc() {
       apidoc().then((res) => {
         this.isload = true
-        this.model = res.data
+        this.model.apidoc_url = res.data.apidoc_url
+        this.model.apidoc_pwd = res.data.apidoc_pwd
       })
     },
     // 刷新

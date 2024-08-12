@@ -152,7 +152,7 @@
         <el-form-item v-else-if="selectType === 'disable'" label="是否禁用">
           <el-switch v-model="is_disable" :active-value="1" :inactive-value="0" />
         </el-form-item>
-        <el-form-item v-else-if="selectType === 'dele'">
+        <el-form-item v-else-if="selectType === 'dele'" label="删除？">
           <span class="c-red">确定要删除选中的{{ name }}吗？</span>
         </el-form-item>
         <el-form-item :label="name + 'ID'" :prop="idkey">

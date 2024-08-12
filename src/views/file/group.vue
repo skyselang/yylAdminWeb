@@ -5,6 +5,7 @@
       <el-col class="mb-2">
         <el-select v-model="query.search_field" class="ya-search-field" placeholder="查询字段">
           <el-option :value="idkey" label="ID" />
+          <el-option value="group_unique" label="标识" />
           <el-option value="group_name" label="名称" />
           <el-option value="group_desc" label="描述" />
           <el-option value="remark" label="备注" />
@@ -93,6 +94,7 @@
     >
       <el-table-column type="selection" width="42" title="全选/反选" />
       <el-table-column :prop="idkey" label="ID" width="80" sortable="custom" />
+      <el-table-column prop="group_unique" label="标识" min-width="110" show-overflow-tooltip />
       <el-table-column prop="group_name" label="名称" min-width="130" show-overflow-tooltip />
       <el-table-column prop="group_desc" label="描述" min-width="160" show-overflow-tooltip />
       <el-table-column prop="remark" label="备注" min-width="150" show-overflow-tooltip />
@@ -142,6 +144,9 @@
     >
       <el-scrollbar native :height="height - 30">
         <el-form ref="ref" :rules="rules" :model="model" label-width="100px">
+          <el-form-item label="标识" prop="group_unique">
+            <el-input v-model="model.group_unique" placeholder="请输入标识" clearable />
+          </el-form-item>
           <el-form-item label="名称" prop="group_name">
             <el-input v-model="model.group_name" placeholder="请输入名称" clearable />
           </el-form-item>
@@ -320,6 +325,7 @@ export default {
       dialogTitle: '',
       model: {
         group_id: '',
+        group_unique: '',
         group_name: '',
         group_desc: '',
         remark: '',

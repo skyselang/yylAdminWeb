@@ -3,23 +3,24 @@ import { store } from '@/store'
 import defaultSettings from '@/settings'
 
 export const useSettingsStore = defineStore('setting', () => {
-  const loginBgUrl = useStorage('loginBgUrl', defaultSettings.loginBgUrl)
-  const loginBgColor = useStorage('loginBgColor', defaultSettings.loginBgColor)
-  const systemName = useStorage('systemName', defaultSettings.systemName)
-  const pageTitle = useStorage('pageTitle', defaultSettings.pageTitle)
-  const faviconUrl = useStorage('faviconUrl', defaultSettings.faviconUrl)
-  const logoUrl = useStorage('logoUrl', defaultSettings.logoUrl)
-  const sidebarLogo = useStorage('sidebarLogo', defaultSettings.sidebarLogo)
-  const sidebarName = useStorage('sidebarName', defaultSettings.sidebarName)
-  const fixedHeader = useStorage('fixedHeader', defaultSettings.fixedHeader)
-  const tagsView = useStorage('tagsView', defaultSettings.tagsView)
-  const layout = useStorage('layout', defaultSettings.layout)
-  const theme = useStorage('theme', defaultSettings.theme)
-  const themeColor = useStorage('themeColor', defaultSettings.themeColor)
-  const tokenType = useStorage('tokenType', defaultSettings.tokenType)
-  const tokenName = useStorage('tokenName', defaultSettings.tokenName)
-  const pageLimit = useStorage('pageLimit', defaultSettings.pageLimit)
-  const notice = useStorage('notice', 0)
+  const storePrefix = defaultSettings.storePrefix
+  const loginBgUrl = useStorage(storePrefix + 'loginBgUrl', defaultSettings.loginBgUrl)
+  const loginBgColor = useStorage(storePrefix + 'loginBgColor', defaultSettings.loginBgColor)
+  const systemName = useStorage(storePrefix + 'systemName', defaultSettings.systemName)
+  const pageTitle = useStorage(storePrefix + 'pageTitle', defaultSettings.pageTitle)
+  const faviconUrl = useStorage(storePrefix + 'faviconUrl', defaultSettings.faviconUrl)
+  const logoUrl = useStorage(storePrefix + 'logoUrl', defaultSettings.logoUrl)
+  const sidebarLogo = useStorage(storePrefix + 'sidebarLogo', defaultSettings.sidebarLogo)
+  const sidebarName = useStorage(storePrefix + 'sidebarName', defaultSettings.sidebarName)
+  const fixedHeader = useStorage(storePrefix + 'fixedHeader', defaultSettings.fixedHeader)
+  const tagsView = useStorage(storePrefix + 'tagsView', defaultSettings.tagsView)
+  const layout = useStorage(storePrefix + 'layout', defaultSettings.layout)
+  const theme = useStorage(storePrefix + 'theme', defaultSettings.theme)
+  const themeColor = useStorage(storePrefix + 'themeColor', defaultSettings.themeColor)
+  const tokenType = useStorage(storePrefix + 'tokenType', defaultSettings.tokenType)
+  const tokenName = useStorage(storePrefix + 'tokenName', defaultSettings.tokenName)
+  const pageLimit = useStorage(storePrefix + 'pageLimit', defaultSettings.pageLimit)
+  const notice = useStorage(storePrefix + 'notice', 0)
 
   const settingsMap = {
     loginBgUrl,

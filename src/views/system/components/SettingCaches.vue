@@ -4,10 +4,10 @@
       <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
         <el-form-item label="缓存类型" prop="cache_type">
           <el-col :span="8">
-            <el-input v-model="model.cache_type" />
+            <el-text>{{ model.cache_type }}</el-text>
           </el-col>
         </el-form-item>
-        <el-form-item> 手动清除所有缓存，后台登录状态不会清除。 </el-form-item>
+        <el-form-item> <el-text>用户和会员登录状态不会清除。</el-text></el-form-item>
         <el-form-item>
           <el-button :loading="loading" @click="refresh()">刷新</el-button>
           <el-button :loading="loading" type="primary" @click="clear()">清除</el-button>
@@ -23,7 +23,6 @@ import { cacheInfo, cacheClear } from '@/api/system/setting'
 
 export default {
   name: 'SystemSettingCache',
-
   data() {
     return {
       name: '缓存设置',
