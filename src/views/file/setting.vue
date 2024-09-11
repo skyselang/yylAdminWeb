@@ -504,7 +504,7 @@
               <el-form-item>
                 <el-card shadow="never">
                   <div>
-                    文件将上传到 AWS S3。
+                    文件将上传到 AWS S3。兼容基于AWS S3的对象存储，如京东云OSS。
                     <br />
                     请根据业务域名和需求，配置 AWS S3 访问控制。
                   </div>
@@ -538,7 +538,7 @@
                   Secret Access KEY 在 [ AWS > 我的账号 > 安全凭证 ] 设置和获取
                 </el-col>
               </el-form-item>
-              <el-form-item label="存储桶名称" prop="aws_bucket">
+              <el-form-item label="Bucket 名称" prop="aws_bucket">
                 <el-col :span="11">
                   <el-input v-model="model.aws_bucket" clearable>
                     <template #append>
@@ -548,9 +548,9 @@
                     </template>
                   </el-input>
                 </el-col>
-                <el-col class="line" :span="13"> 存储桶名称 在 [ AWS > S3 ] 设置和获取 </el-col>
+                <el-col class="line" :span="13"> Bucket 名称 在 [ AWS > S3 ] 设置和获取 </el-col>
               </el-form-item>
-              <el-form-item label="区域终端节点" prop="aws_region">
+              <el-form-item label="Region 区域" prop="aws_region">
                 <el-col :span="11">
                   <el-input v-model="model.aws_region" clearable>
                     <template #append>
@@ -560,9 +560,21 @@
                     </template>
                   </el-input>
                 </el-col>
-                <el-col class="line" :span="13"> 区域终端节点 在 [ AWS > S3 ] 设置和获取 </el-col>
+                <el-col class="line" :span="13"> Region 区域 在 [ AWS > S3 ] 设置和获取 </el-col>
               </el-form-item>
-              <el-form-item label="访问域名" prop="aws_domain">
+              <el-form-item label="Endpoint 端点" prop="aws_endpoint">
+                <el-col :span="11">
+                  <el-input v-model="model.aws_endpoint" clearable>
+                    <template #append>
+                      <el-button title="复制" @click="copy(model.aws_endpoint)">
+                        <svg-icon icon-class="copy-document" />
+                      </el-button>
+                    </template>
+                  </el-input>
+                </el-col>
+                <el-col class="line" :span="13"> Endpoint 端点 在 [ AWS > S3 ] 设置和获取 </el-col>
+              </el-form-item>
+              <el-form-item label="Bucket 域名" prop="aws_domain">
                 <el-col :span="11">
                   <el-input v-model="model.aws_domain" clearable>
                     <template #append>
@@ -572,7 +584,7 @@
                     </template>
                   </el-input>
                 </el-col>
-                <el-col class="line" :span="13"> 访问域名 在 [ AWS > S3 ] 设置和获取 </el-col>
+                <el-col class="line" :span="13"> Bucket 域名 在 [ AWS > S3 ] 设置和获取 </el-col>
               </el-form-item>
             </div>
           </el-scrollbar>
@@ -793,16 +805,17 @@ export default {
         upyun_operator_name: '',
         upyun_operator_pwd: '',
         upyun_domain: '',
-        aws_access_key_id: '',
-        aws_secret_access_key: '',
-        aws_bucket: '',
-        aws_region: '',
-        aws_domain: '',
         huawei_access_key_id: '',
         huawei_secret_access_key: '',
         huawei_bucket: '',
         huawei_endpoint: '',
         huawei_domain: '',
+        aws_access_key_id: '',
+        aws_secret_access_key: '',
+        aws_bucket: '',
+        aws_region: '',
+        aws_endpoint: '',
+        aws_domain: '',
         image_ext: '',
         image_exts: '',
         image_size: 0,
@@ -863,9 +876,10 @@ export default {
         aws_secret_access_key: [
           { required: true, message: '请输入 Secret Access Key', trigger: 'blur' }
         ],
-        aws_bucket: [{ required: true, message: '请输入存储桶名称', trigger: 'blur' }],
-        aws_region: [{ required: true, message: '请输入区域终端节点', trigger: 'blur' }],
-        aws_domain: [{ required: true, message: '请输入访问域名', trigger: 'blur' }]
+        aws_bucket: [{ required: true, message: '请输入 Bucket 名称', trigger: 'blur' }],
+        aws_region: [{ required: true, message: '请输入 Region 区域', trigger: 'blur' }],
+        aws_endpoint: [{ required: true, message: '请输入 Endpoint 端点', trigger: 'blur' }],
+        aws_domain: [{ required: true, message: '请输入 Bucket 域名', trigger: 'blur' }]
       }
     }
   },
