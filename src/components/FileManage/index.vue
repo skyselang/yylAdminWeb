@@ -681,13 +681,20 @@
     >
       <el-scrollbar native :height="height - 30">
         <el-form ref="ref" :rules="rules" :model="model" label-width="100px">
-          <el-form-item label="标识" prop="unique">
-            <el-input v-model="model.unique" placeholder="请输入标识（唯一）" clearable />
+          <el-form-item v-if="model.file_id" label="标识" prop="unique">
+            <el-input v-model="model.unique" placeholder="请输入标识（唯一）" clearable>
+              <template #append>
+                <el-link :underline="false" title="复制" @click="copy(model.unique)">
+                  <svg-icon icon-class="copy-document" />
+                </el-link>
+              </template>
+            </el-input>
           </el-form-item>
           <el-form-item v-if="model.file_id" label="文件" prop="file_id">
             <FilePreview :file="model" :height="150" download />
           </el-form-item>
           <el-form-item
+            v-if="model.file_id"
             label="文件名称"
             prop="file_name"
             :rules="{
@@ -696,7 +703,13 @@
               trigger: 'blur'
             }"
           >
-            <el-input v-model="model.file_name" placeholder="请输入文件名称" clearable />
+            <el-input v-model="model.file_name" placeholder="请输入文件名称" clearable>
+              <template #append>
+                <el-link :underline="false" title="复制" @click="copy(model.file_name)">
+                  <svg-icon icon-class="copy-document" />
+                </el-link>
+              </template>
+            </el-input>
           </el-form-item>
           <el-form-item label="文件分组" prop="group_id">
             <el-select v-model="model.group_id" clearable>
@@ -729,14 +742,26 @@
             </el-select>
           </el-form-item>
           <el-form-item v-if="model.file_id" label="文件域名" prop="domain">
-            <el-input v-model="model.domain" placeholder="请输入域名" clearable />
+            <el-input v-model="model.domain" placeholder="请输入域名" clearable>
+              <template #append>
+                <el-link :underline="false" title="复制" @click="copy(model.domain)">
+                  <svg-icon icon-class="copy-document" />
+                </el-link>
+              </template>
+            </el-input>
           </el-form-item>
           <el-form-item v-if="model.file_id" label="文件路径" prop="file_path">
             <el-input
               v-model="model.file_path"
               placeholder="请输入路径"
               :disabled="model.file_id ? true : false"
-            />
+            >
+              <template #append>
+                <el-link :underline="false" title="复制" @click="copy(model.file_path)">
+                  <svg-icon icon-class="copy-document" />
+                </el-link>
+              </template>
+            </el-input>
           </el-form-item>
           <el-form-item label="文件链接" prop="file_url">
             <el-input
@@ -744,9 +769,15 @@
               placeholder="请输入链接"
               :disabled="model.file_id ? true : false"
               clearable
-            />
+            >
+              <template #append>
+                <el-link :underline="false" title="复制" @click="copy(model.file_url)">
+                  <svg-icon icon-class="copy-document" />
+                </el-link>
+              </template>
+            </el-input>
           </el-form-item>
-          <el-form-item label="存储方式" prop="storage">
+          <el-form-item v-if="model.file_id" label="存储方式" prop="storage">
             <el-select v-model="model.storage" :disabled="model.file_id ? true : false">
               <el-option
                 v-for="(item, index) in storages"
@@ -772,10 +803,22 @@
             <el-input v-model="model.file_ext" placeholder="" disabled />
           </el-form-item>
           <el-form-item v-if="model.file_id" label="文件MD5" prop="file_md5">
-            <el-input v-model="model.file_md5" placeholder="" disabled />
+            <el-input v-model="model.file_md5" placeholder="" disabled>
+              <template #append>
+                <el-link :underline="false" title="复制" @click="copy(model.file_md5)">
+                  <svg-icon icon-class="copy-document" />
+                </el-link>
+              </template>
+            </el-input>
           </el-form-item>
           <el-form-item v-if="model.file_id" label="文件散列" prop="file_hash">
-            <el-input v-model="model.file_hash" placeholder="" disabled />
+            <el-input v-model="model.file_hash" placeholder="" disabled>
+              <template #append>
+                <el-link :underline="false" title="复制" @click="copy(model.file_hash)">
+                  <svg-icon icon-class="copy-document" />
+                </el-link>
+              </template>
+            </el-input>
           </el-form-item>
           <el-form-item v-if="model.file_id" label="添加时间" prop="create_time">
             <el-input v-model="model.create_time" disabled />
@@ -1194,7 +1237,9 @@ export default {
       if (value) {
         this.selection = this.fileIds
         if (this.$refs['table'] !== undefined) {
-          this.$refs['table'].toggleAllSelection()
+          try {
+            this.$refs['table'].toggleAllSelection()
+          } catch (error) {}
         }
       } else {
         this.selection = []

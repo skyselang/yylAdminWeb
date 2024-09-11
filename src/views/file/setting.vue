@@ -27,7 +27,7 @@
               <el-form-item>
                 <el-card shadow="never">
                   <div>
-                    文件将存储在本地服务器，默认保存在 public/storage 目录，文件以散列 hash 命名。
+                    文件将存储在服务器，保存在 public/storage 目录，文件以散列 hash 命名。
                     <br />
                     文件存储的目录需要有读写权限（777），有足够的存储空间。
                   </div>
@@ -88,7 +88,7 @@
                   空间名称 在 [ 七牛云 > 对象存储 > 空间管理 ] 设置和获取
                 </el-col>
               </el-form-item>
-              <el-form-item label="外链域名" prop="qiniu_domain">
+              <el-form-item label="访问域名" prop="qiniu_domain">
                 <el-col :span="11">
                   <el-input v-model="model.qiniu_domain" clearable>
                     <template #append>
@@ -99,7 +99,7 @@
                   </el-input>
                 </el-col>
                 <el-col class="line" :span="13">
-                  外链域名 在 [ 七牛云 > 对象存储 > 空间管理 > 域名设置 ] 设置和获取
+                  访问域名 在 [ 七牛云 > 对象存储 > 空间管理 > 域名管理 ] 设置和获取
                 </el-col>
               </el-form-item>
             </div>
@@ -156,20 +156,6 @@
                   Bucket 名称 在 [ 阿里云 > 对象存储 > Bucket 列表 ] 获取
                 </el-col>
               </el-form-item>
-              <el-form-item label="Bucket域名" prop="aliyun_bucket_domain">
-                <el-col :span="11">
-                  <el-input v-model="model.aliyun_bucket_domain" clearable>
-                    <template #append>
-                      <el-button title="复制" @click="copy(model.aliyun_bucket_domain)">
-                        <svg-icon icon-class="copy-document" />
-                      </el-button>
-                    </template>
-                  </el-input>
-                </el-col>
-                <el-col class="line" :span="13">
-                  Bucket 域名 在 [ 阿里云 > 对象存储 > Bucket 列表 > Bucket 概览 ] 获取
-                </el-col>
-              </el-form-item>
               <el-form-item label="Endpoint地域节点" prop="aliyun_endpoint">
                 <el-col :span="11">
                   <el-input v-model="model.aliyun_endpoint" clearable>
@@ -182,6 +168,20 @@
                 </el-col>
                 <el-col class="line" :span="13">
                   Endpoint（地域节点） 在 [ 阿里云 > 对象存储 > Bucket 列表 > Bucket 概览 ] 获取
+                </el-col>
+              </el-form-item>
+              <el-form-item label="Bucket域名" prop="aliyun_domain">
+                <el-col :span="11">
+                  <el-input v-model="model.aliyun_domain" clearable>
+                    <template #append>
+                      <el-button title="复制" @click="copy(model.aliyun_domain)">
+                        <svg-icon icon-class="copy-document" />
+                      </el-button>
+                    </template>
+                  </el-input>
+                </el-col>
+                <el-col class="line" :span="13">
+                  Bucket 域名 在 [ 阿里云 > 对象存储 > Bucket 列表 > Bucket 概览 ] 获取
                 </el-col>
               </el-form-item>
             </div>
@@ -318,22 +318,7 @@
                   </el-input>
                 </el-col>
                 <el-col class="line" :span="13">
-                  Bucket 名称 在 [ 百度云 > 对象存储 > Bucket 列表 ] 获取。如：yyladmin
-                </el-col>
-              </el-form-item>
-              <el-form-item label="官方域名" prop="baidu_domain">
-                <el-col :span="11">
-                  <el-input v-model="model.baidu_domain" clearable>
-                    <template #append>
-                      <el-button title="复制" @click="copy(model.baidu_domain)">
-                        <svg-icon icon-class="copy-document" />
-                      </el-button>
-                    </template>
-                  </el-input>
-                </el-col>
-                <el-col class="line" :span="13">
-                  官方域名 在 [ 百度云 > 对象存储 > Bucket列表 > 发布管理 ]
-                  获取。如：yyladmin.gz.bcebos.com
+                  Bucket 名称 在 [ 百度云 > 对象存储 > Bucket 列表 ] 获取
                 </el-col>
               </el-form-item>
               <el-form-item label="所属地域" prop="baidu_endpoint">
@@ -348,6 +333,20 @@
                 </el-col>
                 <el-col class="line" :span="13">
                   所属地域：官方域名去掉 Bucket 名称，如：gz.bcebos.com
+                </el-col>
+              </el-form-item>
+              <el-form-item label="官方域名" prop="baidu_domain">
+                <el-col :span="11">
+                  <el-input v-model="model.baidu_domain" clearable>
+                    <template #append>
+                      <el-button title="复制" @click="copy(model.baidu_domain)">
+                        <svg-icon icon-class="copy-document" />
+                      </el-button>
+                    </template>
+                  </el-input>
+                </el-col>
+                <el-col class="line" :span="13">
+                  官方域名 在 [ 百度云 > 对象存储 > Bucket列表 > 发布管理 ]获取
                 </el-col>
               </el-form-item>
             </div>
@@ -420,6 +419,87 @@
                 </el-col>
               </el-form-item>
             </div>
+            <div v-else-if="model.storage == 'huawei'">
+              <el-form-item>
+                <el-card shadow="never">
+                  <div>
+                    文件将上传到 华为云 OBS。
+                    <br />
+                    请根据业务域名和需求，配置 华为云 OBS 权限控制桶策略，数据安全CORS规则。
+                  </div>
+                </el-card>
+              </el-form-item>
+              <el-form-item label="Access Key ID" prop="huawei_access_key_id">
+                <el-col :span="11">
+                  <el-input v-model="model.huawei_access_key_id" clearable>
+                    <template #append>
+                      <el-button title="复制" @click="copy(model.huawei_access_key_id)">
+                        <svg-icon icon-class="copy-document" />
+                      </el-button>
+                    </template>
+                  </el-input>
+                </el-col>
+                <el-col class="line" :span="13">
+                  Access Key ID 在 [ 华为云 > 我的账号 > 我的凭证 > 访问密钥 ] 设置和获取
+                </el-col>
+              </el-form-item>
+              <el-form-item label="Secret Access KEY" prop="huawei_secret_access_key">
+                <el-col :span="11">
+                  <el-input v-model="model.huawei_secret_access_key" clearable>
+                    <template #append>
+                      <el-button title="复制" @click="copy(model.huawei_secret_access_key)">
+                        <svg-icon icon-class="copy-document" />
+                      </el-button>
+                    </template>
+                  </el-input>
+                </el-col>
+                <el-col class="line" :span="13">
+                  Secret Access KEY 在 [ 华为云 > 我的账号 > 我的凭证 > 访问密钥 ] 设置和获取
+                </el-col>
+              </el-form-item>
+              <el-form-item label="桶名称" prop="huawei_bucket">
+                <el-col :span="11">
+                  <el-input v-model="model.huawei_bucket" clearable>
+                    <template #append>
+                      <el-button title="复制" @click="copy(model.huawei_bucket)">
+                        <svg-icon icon-class="copy-document" />
+                      </el-button>
+                    </template>
+                  </el-input>
+                </el-col>
+                <el-col class="line" :span="13">
+                  桶名称 在 [ 华为云 > 对象存储 > 桶列表 ] 设置和获取</el-col
+                >
+              </el-form-item>
+              <el-form-item label="Endpoint(地域节点)" prop="huawei_endpoint">
+                <el-col :span="11">
+                  <el-input v-model="model.huawei_endpoint" clearable>
+                    <template #append>
+                      <el-button title="复制" @click="copy(model.huawei_endpoint)">
+                        <svg-icon icon-class="copy-document" />
+                      </el-button>
+                    </template>
+                  </el-input>
+                </el-col>
+                <el-col class="line" :span="13">
+                  Endpoint(地域节点) 在 [ 华为云 > 对象存储 > 桶列表 > 概览 ] 设置和获取</el-col
+                >
+              </el-form-item>
+              <el-form-item label="访问域名" prop="huawei_domain">
+                <el-col :span="11">
+                  <el-input v-model="model.huawei_domain" clearable>
+                    <template #append>
+                      <el-button title="复制" @click="copy(model.huawei_domain)">
+                        <svg-icon icon-class="copy-document" />
+                      </el-button>
+                    </template>
+                  </el-input>
+                </el-col>
+                <el-col class="line" :span="13">
+                  访问域名 在 [ 华为云 > 对象存储 > 桶列表 > 概览 ] 设置和获取</el-col
+                >
+              </el-form-item>
+            </div>
             <div v-else-if="model.storage == 'aws'">
               <el-form-item>
                 <el-card shadow="never">
@@ -458,18 +538,6 @@
                   Secret Access KEY 在 [ AWS > 我的账号 > 安全凭证 ] 设置和获取
                 </el-col>
               </el-form-item>
-              <el-form-item label="区域终端节点" prop="aws_region">
-                <el-col :span="11">
-                  <el-input v-model="model.aws_region" clearable>
-                    <template #append>
-                      <el-button title="复制" @click="copy(model.aws_region)">
-                        <svg-icon icon-class="copy-document" />
-                      </el-button>
-                    </template>
-                  </el-input>
-                </el-col>
-                <el-col class="line" :span="13"> 区域终端节点 在 [ AWS > S3 ] 设置和获取 </el-col>
-              </el-form-item>
               <el-form-item label="存储桶名称" prop="aws_bucket">
                 <el-col :span="11">
                   <el-input v-model="model.aws_bucket" clearable>
@@ -481,6 +549,18 @@
                   </el-input>
                 </el-col>
                 <el-col class="line" :span="13"> 存储桶名称 在 [ AWS > S3 ] 设置和获取 </el-col>
+              </el-form-item>
+              <el-form-item label="区域终端节点" prop="aws_region">
+                <el-col :span="11">
+                  <el-input v-model="model.aws_region" clearable>
+                    <template #append>
+                      <el-button title="复制" @click="copy(model.aws_region)">
+                        <svg-icon icon-class="copy-document" />
+                      </el-button>
+                    </template>
+                  </el-input>
+                </el-col>
+                <el-col class="line" :span="13"> 区域终端节点 在 [ AWS > S3 ] 设置和获取 </el-col>
               </el-form-item>
               <el-form-item label="访问域名" prop="aws_domain">
                 <el-col :span="11">
@@ -697,7 +777,7 @@ export default {
         aliyun_access_key_id: '',
         aliyun_access_key_secret: '',
         aliyun_bucket: '',
-        aliyun_bucket_domain: '',
+        aliyun_domain: '',
         aliyun_endpoint: '',
         tencent_secret_id: '',
         tencent_secret_key: '',
@@ -718,6 +798,11 @@ export default {
         aws_bucket: '',
         aws_region: '',
         aws_domain: '',
+        huawei_access_key_id: '',
+        huawei_secret_access_key: '',
+        huawei_bucket: '',
+        huawei_endpoint: '',
+        huawei_domain: '',
         image_ext: '',
         image_exts: '',
         image_size: 0,
@@ -743,14 +828,14 @@ export default {
         qiniu_access_key: [{ required: true, message: '请输入 AccessKey', trigger: 'blur' }],
         qiniu_secret_key: [{ required: true, message: '请输入 SecretKey', trigger: 'blur' }],
         qiniu_bucket: [{ required: true, message: '请输入空间名称', trigger: 'blur' }],
-        qiniu_domain: [{ required: true, message: '请输入外链域名', trigger: 'blur' }],
+        qiniu_domain: [{ required: true, message: '请输入访问域名', trigger: 'blur' }],
         aliyun_access_key_id: [{ required: true, message: '请输入 AccessKey ID', trigger: 'blur' }],
         aliyun_access_key_secret: [
           { required: true, message: '请输入 AccessKey Secret', trigger: 'blur' }
         ],
         aliyun_bucket: [{ required: true, message: '请输入 Bucket 名称', trigger: 'blur' }],
-        aliyun_bucket_domain: [{ required: true, message: '请输入 Bucket 域名', trigger: 'blur' }],
         aliyun_endpoint: [{ required: true, message: '请输入 Endpoint 地域节点', trigger: 'blur' }],
+        aliyun_domain: [{ required: true, message: '请输入 Bucket 域名', trigger: 'blur' }],
         tencent_secret_id: [{ required: true, message: '请输入 SecretId', trigger: 'blur' }],
         tencent_secret_key: [{ required: true, message: '请输入 SecretKey', trigger: 'blur' }],
         tencent_bucket: [{ required: true, message: '请输入存储桶名称', trigger: 'blur' }],
@@ -759,12 +844,21 @@ export default {
         baidu_access_key: [{ required: true, message: '请输入 Access Key', trigger: 'blur' }],
         baidu_secret_key: [{ required: true, message: '请输入 Secret Key', trigger: 'blur' }],
         baidu_bucket: [{ required: true, message: '请输入 Bucket 名称', trigger: 'blur' }],
-        baidu_endpoint: [{ required: true, message: '请输入官方域名', trigger: 'blur' }],
         baidu_domain: [{ required: true, message: '请输入所属地域', trigger: 'blur' }],
+        baidu_endpoint: [{ required: true, message: '请输入官方域名', trigger: 'blur' }],
         upyun_service_name: [{ required: true, message: '请输入服务名称', trigger: 'blur' }],
         upyun_operator_name: [{ required: true, message: '请输入操作员', trigger: 'blur' }],
         upyun_operator_pwd: [{ required: true, message: '请输入操作员密码', trigger: 'blur' }],
         upyun_domain: [{ required: true, message: '请输入加速域名', trigger: 'blur' }],
+        huawei_access_key_id: [
+          { required: true, message: '请输入 Access Key ID', trigger: 'blur' }
+        ],
+        huawei_secret_access_key: [
+          { required: true, message: '请输入 Secret Access Key', trigger: 'blur' }
+        ],
+        huawei_bucket: [{ required: true, message: '请输入桶名称', trigger: 'blur' }],
+        huawei_endpoint: [{ required: true, message: '请输入Endpoint(地域节点)', trigger: 'blur' }],
+        huawei_domain: [{ required: true, message: '请输入访问域名', trigger: 'blur' }],
         aws_access_key_id: [{ required: true, message: '请输入 Access Key ID', trigger: 'blur' }],
         aws_secret_access_key: [
           { required: true, message: '请输入 Secret Access Key', trigger: 'blur' }

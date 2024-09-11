@@ -98,6 +98,9 @@ export default {
                 formatter: '{b} : {c} ({d}%)'
               }
             },
+            label: {
+              formatter: '{b}：{@c} ({d}%)'
+            },
             data: data.data
           }
         ]
