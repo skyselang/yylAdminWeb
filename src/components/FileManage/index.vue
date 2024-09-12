@@ -534,7 +534,7 @@
                           type="primary"
                           class="mr-1"
                           :underline="false"
-                          :title="item.file_hash"
+                          :title="item.file_path"
                           @click="fileDownload(item)"
                         >
                           下载
@@ -646,7 +646,7 @@
                   type="primary"
                   class="mr-1"
                   :underline="false"
-                  :title="scope.row.file_hash"
+                  :title="scope.row.file_path"
                   @click="fileDownload(scope.row)"
                 >
                   下载
