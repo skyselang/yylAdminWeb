@@ -15,7 +15,7 @@
             </el-col>
             <el-col :span="16"> 浏览器页面标题后缀。 </el-col>
           </el-form-item>
-          <el-form-item label="favicon" prop="favicon_id">
+          <el-form-item label="网页图标" prop="favicon_id">
             <FileImage
               v-model="model.favicon_id"
               :file-url="model.favicon_url"
@@ -25,7 +25,7 @@
               upload
             />
           </el-form-item>
-          <el-form-item label="logo" prop="logo_id">
+          <el-form-item label="系统logo" prop="logo_id">
             <FileImage
               v-model="model.logo_id"
               :file-url="model.logo_url"
@@ -71,7 +71,15 @@
               <el-input v-model="model.page_limit" type="number" />
             </el-col>
             <el-col :span="16">
-              <el-text size="default">分页每页显示数量。</el-text>
+              <el-text size="default">分页每页默认显示数量。</el-text>
+            </el-col>
+          </el-form-item>
+          <el-form-item label="页面水印" prop="is_watermark">
+            <el-col :span="8">
+              <el-switch v-model="model.is_watermark" :active-value="1" :inactive-value="0" />
+            </el-col>
+            <el-col :span="16">
+              <el-text size="default">开启后页面会显示水印。</el-text>
             </el-col>
           </el-form-item>
           <el-form-item>
@@ -106,7 +114,8 @@ export default {
         login_bg_id: 0,
         login_bg_url: '',
         login_bg_color: '',
-        page_limit: 20
+        page_limit: 20,
+        is_watermark: 0
       }
     }
   },
@@ -161,6 +170,7 @@ export default {
       settingsStore.changeSetting({ key: 'faviconUrl', value: setting.favicon_url })
       settingsStore.changeSetting({ key: 'logoUrl', value: setting.logo_url })
       settingsStore.changeSetting({ key: 'pageLimit', value: setting.page_limit })
+      settingsStore.changeSetting({ key: 'watermarkEnabled', value: setting.is_watermark })
     },
     // 上传图片
     fileUpload(field, title = '') {

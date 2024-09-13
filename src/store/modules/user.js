@@ -54,6 +54,10 @@ export const useUserStore = defineStore('user', () => {
           user.avatar_url = data.avatar_url
           user.roles = data.roles
           user.menus = data.menus
+          settingsStore.changeSetting({
+            key: 'watermarkContent',
+            value: settingsStore.systemName + '@' + data.nickname
+          })
           resolve(data)
         })
         .catch((err) => {

@@ -1,6 +1,16 @@
 <template>
   <el-config-provider :locale="appStore.locale" :size="appStore.size">
-    <router-view />
+    <!-- 开启水印 -->
+    <el-watermark
+      v-if="watermarkEnabled"
+      :font="{ color: watermarkfontColor }"
+      :content="watermarkContent"
+      class="w-full h-full"
+    >
+      <router-view />
+    </el-watermark>
+    <!-- 关闭水印 -->
+    <router-view v-else />
   </el-config-provider>
 </template>
 
@@ -21,5 +31,12 @@ onMounted(() => {
   settingsStore.changeSetting({ key: 'theme', value: settingsStore.theme })
   settingsStore.changeSetting({ key: 'themeColor', value: settingsStore.themeColor })
   settingsStore.changeSetting({ key: 'faviconUrl', value: settingsStore.faviconUrl })
+})
+
+const watermarkEnabled = computed(() => settingsStore.watermarkEnabled)
+const watermarkContent = computed(() => settingsStore.watermarkContent)
+// 明亮/暗黑主题水印字体颜色适配
+const watermarkfontColor = computed(() => {
+  return settingsStore.theme === 'dark' ? 'rgba(255, 255, 255, .15)' : 'rgba(0, 0, 0, .15)'
 })
 </script>

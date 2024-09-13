@@ -21,6 +21,8 @@ export const useSettingsStore = defineStore('setting', () => {
   const tokenName = useStorage(storePrefix + 'tokenName', defaultSettings.tokenName)
   const pageLimit = useStorage(storePrefix + 'pageLimit', defaultSettings.pageLimit)
   const notice = useStorage(storePrefix + 'notice', 0)
+  const watermarkEnabled = useStorage(storePrefix + 'watermarkEnabled', 0)
+  const watermarkContent = useStorage(storePrefix + 'watermarkContent', '')
 
   const settingsMap = {
     loginBgUrl,
@@ -39,7 +41,9 @@ export const useSettingsStore = defineStore('setting', () => {
     tokenType,
     tokenName,
     pageLimit,
-    notice
+    notice,
+    watermarkEnabled,
+    watermarkContent
   }
 
   function changeSetting({ key, value }) {
@@ -87,6 +91,8 @@ export const useSettingsStore = defineStore('setting', () => {
     tokenName,
     pageLimit,
     notice,
+    watermarkEnabled,
+    watermarkContent,
     changeSetting
   }
 })

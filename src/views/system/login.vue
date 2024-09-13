@@ -13,7 +13,7 @@
       </el-col>
     </el-row>
     <el-form ref="ref" class="login-form" :model="model" :rules="rules">
-      <div class="login-logo">
+      <div class="login-logo" :style="{ backgroundColor: login_bg_color }">
         <el-image v-if="logo_url" :src="logo_url" style="height: 108px">
           <template #error>
             <svg-icon icon-class="picture" />
@@ -99,6 +99,7 @@
 </template>
 
 <script>
+import defaultSettings from '@/settings'
 import LangSelect from '@/components/LangSelect/index.vue'
 import ThemeSelect from '@/components/ThemeSelect/index.vue'
 import AjCaptcha from '@/components/AjCaptcha/index.vue'
@@ -196,6 +197,11 @@ export default {
       } else {
         this.captcha_type = 'clickWord'
       }
+      const storePrefix = defaultSettings.storePrefix
+      localStorage.setItem(storePrefix + 'captchaSwitch', data.captcha_switch)
+      localStorage.setItem(storePrefix + 'captchaMode', data.captcha_mode)
+      localStorage.setItem(storePrefix + 'captchaType', data.captcha_type)
+      localStorage.setItem(storePrefix + 'captchaSrc', data.captcha_src)
     },
     ajcaptchaSuccess(params) {
       this.model.ajcaptcha = params
@@ -212,13 +218,23 @@ export default {
     },
     // 设置
     setting() {
+      const storePrefix = defaultSettings.storePrefix
+      this.login_bg_url = localStorage.getItem(storePrefix + 'loginBgUrl')
+      this.login_bg_color = localStorage.getItem(storePrefix + 'loginBgColor')
+      this.logo_url = localStorage.getItem(storePrefix + 'logoUrl')
+      this.system_name = localStorage.getItem(storePrefix + 'systemName')
       this.model.captcha_id = ''
       this.model.captcha_code = ''
+      this.captcha_switch = localStorage.getItem(storePrefix + 'captchaSwitch')
+      this.captcha_mode = localStorage.getItem(storePrefix + 'captchaMode')
+      this.captcha_type = localStorage.getItem(storePrefix + 'captchaType')
+      this.captcha_src = localStorage.getItem(storePrefix + 'captchaSrc')
+      const settingsStore = useSettingsStoreHook()
+      settingsStore.changeSetting({ key: 'watermarkContent', value: '' })
       setting()
         .then((res) => {
           delNotice()
           const data = res.data
-          const settingsStore = useSettingsStoreHook()
           this.captchaData(data)
           this.login_bg_url = data.login_bg_url
           this.login_bg_color = data.login_bg_color
@@ -231,6 +247,7 @@ export default {
           settingsStore.changeSetting({ key: 'pageTitle', value: data.page_title })
           settingsStore.changeSetting({ key: 'pageLimit', value: data.page_limit })
           settingsStore.changeSetting({ key: 'notice', value: 0 })
+          settingsStore.changeSetting({ key: 'watermarkEnabled', value: data.is_watermark })
         })
         .catch(() => {})
     },

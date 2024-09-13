@@ -139,7 +139,8 @@ export default defineConfig(({ mode }) => {
         'element-plus/es/components/tooltip/style/css',
         'element-plus/es/components/tree-select/style/css',
         'element-plus/es/components/tree/style/css',
-        'element-plus/es/components/upload/style/css'
+        'element-plus/es/components/upload/style/css',
+        'element-plus/es/components/watermark/style/css'
       ]
     },
     // 构建配置
