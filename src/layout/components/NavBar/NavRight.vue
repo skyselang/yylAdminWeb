@@ -48,9 +48,9 @@
     <div class="avatar-container">
       <el-avatar v-if="user.avatar_url" :size="40" :src="user.avatar_url" />
       <el-avatar v-else :size="40">
-        <svg-icon icon-class="user-filled" size="25px" />
+        <svg-icon icon-class="user-filled" size="25px" style="margin-right: 0" />
       </el-avatar>
-      <svg-icon icon-class="caret-bottom" />
+      <svg-icon icon-class="caret-bottom" style="margin-right: 0" />
     </div>
     <template #dropdown>
       <el-dropdown-menu>

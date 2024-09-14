@@ -33,7 +33,7 @@ const router = useRouter()
 const appStore = useAppStore()
 const activePath = computed(() => appStore.activeTopMenu)
 // 递归跳转
-const goFirst = () => {
+const goFirst = (menu) => {
   if (!menu.length) return
   const [first] = menu
   if (first.children) {

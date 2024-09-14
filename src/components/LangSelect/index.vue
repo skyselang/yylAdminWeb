@@ -1,7 +1,7 @@
 <template>
   <el-dropdown trigger="click" @command="handleLanguageChange">
     <div>
-      <svg-icon icon-class="map-location" />
+      <svg-icon icon-class="map-location" style="margin-right: 0" />
     </div>
     <template #dropdown>
       <el-dropdown-menu>

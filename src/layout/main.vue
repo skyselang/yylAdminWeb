@@ -61,7 +61,7 @@ watchEffect(() => {
 }
 
 .hideSidebar .fixed-header {
-  width: calc(100% - 54px);
+  width: calc(100% - 63px);
 }
 
 .hideSidebar.mobile .fixed-header {

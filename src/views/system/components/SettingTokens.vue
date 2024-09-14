@@ -4,7 +4,7 @@
       <el-form ref="ref" :model="model" :rules="rules" label-width="120px">
         <el-form-item label="Token密钥" prop="token_key">
           <el-col :span="8">
-            <el-input v-model="model.token_key" type="text" clearable />
+            <el-input v-model="model.token_key" type="password" clearable show-password />
           </el-col>
           <el-col :span="16"> 修改后用户登录状态失效，需重新登录。 </el-col>
         </el-form-item>

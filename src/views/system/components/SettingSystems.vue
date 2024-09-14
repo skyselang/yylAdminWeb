@@ -30,7 +30,7 @@
               v-model="model.logo_id"
               :file-url="model.logo_url"
               file-title="上传logo"
-              file-tip="图片小于 200 KB，jpg、png格式，150 x 150"
+              file-tip="图片小于 200 KB，jpg、png格式，150 x 150。"
               :height="100"
               upload
             />

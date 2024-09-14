@@ -31,9 +31,6 @@
       <el-tab-pane v-if="checkPermission(['admin/system.Setting/apiInfo'])" label="接口设置" lazy>
         <SettingApis />
       </el-tab-pane>
-      <el-tab-pane v-if="checkPermission(['admin/system.Setting/emailInfo'])" label="邮件设置" lazy>
-        <SettingEmails />
-      </el-tab-pane>
       <el-tab-pane
         v-if="checkPermission(['admin/system.Setting/serverInfo'])"
         label="服务器信息"
@@ -50,7 +47,6 @@ import checkPermission from '@/utils/permission'
 import SettingApis from './components/SettingApis.vue'
 import SettingCaches from './components/SettingCaches.vue'
 import SettingCaptchas from './components/SettingCaptchas.vue'
-import SettingEmails from './components/SettingEmails.vue'
 import SettingLogs from './components/SettingLogs.vue'
 import SettingServers from './components/SettingServers.vue'
 import SettingSystems from './components/SettingSystems.vue'
@@ -62,7 +58,6 @@ export default {
     SettingApis,
     SettingCaches,
     SettingCaptchas,
-    SettingEmails,
     SettingLogs,
     SettingServers,
     SettingSystems,
