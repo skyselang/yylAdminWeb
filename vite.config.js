@@ -25,6 +25,7 @@ export default defineConfig(({ mode }) => {
       preprocessorOptions: {
         // 定义全局 SCSS 变量
         scss: {
+          api: 'modern-compiler',
           javascriptEnabled: true,
           additionalData: `@use "@/styles/variables.scss" as *;`
         }

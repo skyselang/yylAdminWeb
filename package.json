@@ -52,7 +52,7 @@
     "eslint-plugin-vue": "^9.28.0",
     "fast-glob": "^3.3.2",
     "prettier": "^2.8.8",
-    "sass": "^1.78.0",
+    "sass": "~1.79.5",
     "unocss": "^0.58.9",
     "unplugin-auto-import": "^0.15.3",
     "unplugin-icons": "^0.16.6",
