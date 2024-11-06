@@ -57,20 +57,9 @@
           multiple
           collapse-tags
         >
-          <el-option
-            v-for="item in roleData"
-            :key="item.role_id"
-            :label="item.role_name"
-            :value="item.role_id"
-          />
+          <el-option v-for="item in roleData" :key="item.role_id" :label="item.role_name" :value="item.role_id" />
         </el-select>
-        <el-input
-          v-else
-          v-model="query.search_value"
-          class="ya-search-value"
-          placeholder="查询内容"
-          clearable
-        />
+        <el-input v-else v-model="query.search_value" class="ya-search-value" placeholder="查询内容" clearable />
         <el-select v-model="query.date_field" class="ya-date-field" placeholder="时间类型">
           <el-option value="create_time" label="添加时间" />
           <el-option value="update_time" label="修改时间" />
@@ -86,10 +75,8 @@
           value-format="YYYY-MM-DD HH:mm:ss"
           :default-time="[new Date(2024, 1, 1, 0, 0, 0), new Date(2024, 1, 1, 23, 59, 59)]"
         />
-        <el-button type="primary" @click="search()">查询</el-button>
-        <el-button title="重置" @click="refresh()">
-          <svg-icon icon-class="refresh" />
-        </el-button>
+        <el-button type="primary" title="查询/刷新" @click="search()">查询</el-button>
+        <el-button type="default" title="重置查询条件" @click="refresh()">重置</el-button>
         <el-button type="primary" @click="add()">添加</el-button>
       </el-col>
     </el-row>
@@ -98,9 +85,9 @@
       <el-col>
         <el-button :title="'删除' + name" @click="selectOpen('dele')">删除</el-button>
         <el-button title="是否禁用" @click="selectOpen('disable')">禁用</el-button>
+        <el-button title="修改角色" @click="selectOpen('editrole')">角色</el-button>
         <el-button title="修改部门" @click="selectOpen('editdept')">部门</el-button>
         <el-button title="修改职位" @click="selectOpen('editpost')">职位</el-button>
-        <el-button title="修改角色" @click="selectOpen('editrole')">角色</el-button>
         <el-button title="重置密码" @click="selectOpen('password')">密码</el-button>
         <el-button title="是否超管" @click="selectOpen('super')">超管</el-button>
       </el-col>
@@ -114,33 +101,14 @@
     >
       <el-form ref="selectRef" label-width="120px">
         <el-form-item v-if="selectType === 'editdept'" label="部门" prop="dept_ids">
-          <el-cascader
-            v-model="dept_ids"
-            :options="deptData"
-            :props="deptProps"
-            class="w-full"
-            clearable
-            filterable
-          />
+          <el-cascader v-model="dept_ids" :options="deptData" :props="deptProps" class="w-full" clearable filterable />
         </el-form-item>
         <el-form-item v-else-if="selectType === 'editpost'" label="职位" prop="post_ids">
-          <el-cascader
-            v-model="post_ids"
-            :options="postData"
-            :props="postProps"
-            class="w-full"
-            clearable
-            filterable
-          />
+          <el-cascader v-model="post_ids" :options="postData" :props="postProps" class="w-full" clearable filterable />
         </el-form-item>
         <el-form-item v-else-if="selectType === 'editrole'" label="角色" prop="role_ids">
           <el-select v-model="role_ids" class="w-full" clearable filterable multiple>
-            <el-option
-              v-for="item in roleData"
-              :key="item.role_id"
-              :label="item.role_name"
-              :value="item.role_id"
-            />
+            <el-option v-for="item in roleData" :key="item.role_id" :label="item.role_name" :value="item.role_id" />
           </el-select>
         </el-form-item>
         <el-form-item v-else-if="selectType === 'password'" label="新密码" prop="password">
@@ -180,62 +148,22 @@
           <FileImage :file-url="scope.row.avatar_url" avatar lazy />
         </template>
       </el-table-column>
-      <el-table-column
-        prop="number"
-        label="编号"
-        min-width="85"
-        sortable="custom"
-        show-overflow-tooltip
-      />
-      <el-table-column
-        prop="nickname"
-        label="昵称"
-        min-width="100"
-        sortable="custom"
-        show-overflow-tooltip
-      />
-      <el-table-column
-        prop="username"
-        label="账号"
-        min-width="100"
-        sortable="custom"
-        show-overflow-tooltip
-      />
+      <el-table-column prop="number" label="编号" min-width="85" sortable="custom" show-overflow-tooltip />
+      <el-table-column prop="nickname" label="昵称" min-width="100" sortable="custom" show-overflow-tooltip />
+      <el-table-column prop="username" label="账号" min-width="100" sortable="custom" show-overflow-tooltip />
       <el-table-column prop="dept_names" label="部门" min-width="120" show-overflow-tooltip />
       <el-table-column prop="post_names" label="职位" min-width="120" show-overflow-tooltip />
       <el-table-column prop="role_names" label="角色" min-width="120" show-overflow-tooltip />
-      <el-table-column prop="is_super" label="超管" min-width="85" sortable="custom">
-        <template #default="scope">
-          <el-switch
-            v-model="scope.row.is_super"
-            :active-value="1"
-            :inactive-value="0"
-            @change="issuper([scope.row])"
-          />
-        </template>
-      </el-table-column>
-      <el-table-column prop="is_disable" label="禁用" min-width="85" sortable="custom">
-        <template #default="scope">
-          <el-switch
-            v-model="scope.row.is_disable"
-            :active-value="1"
-            :inactive-value="0"
-            @change="disable([scope.row])"
-          />
-        </template>
-      </el-table-column>
-      <el-table-column prop="sort" label="排序" min-width="85" sortable="custom" />
+      <el-table-column prop="is_super_name" label="超管" min-width="80" sortable="custom" />
+      <el-table-column prop="is_disable_name" label="禁用" min-width="80" sortable="custom" />
+      <el-table-column prop="sort" label="排序" min-width="80" sortable="custom" />
       <el-table-column prop="login_time" label="登录时间" width="165" sortable="custom" />
       <el-table-column prop="create_time" label="添加时间" width="165" sortable="custom" />
       <el-table-column prop="update_time" label="修改时间" width="165" sortable="custom" />
       <el-table-column label="操作" width="95">
         <template #default="scope">
-          <el-link type="primary" class="mr-1" :underline="false" @click="edit(scope.row)">
-            修改
-          </el-link>
-          <el-link type="primary" :underline="false" @click="selectOpen('dele', [scope.row])">
-            删除
-          </el-link>
+          <el-link type="primary" class="mr-1" :underline="false" @click="edit(scope.row)"> 修改 </el-link>
+          <el-link type="primary" :underline="false" @click="selectOpen('dele', [scope.row])"> 删除 </el-link>
         </template>
       </el-table-column>
     </el-table>
@@ -270,37 +198,16 @@
             />
           </el-form-item>
           <el-form-item label="编号" prop="number">
-            <el-input
-              key="number"
-              v-model="model.number"
-              placeholder="请输入编号（工号）"
-              clearable
-            />
+            <el-input key="number" v-model="model.number" placeholder="请输入编号（工号）" clearable />
           </el-form-item>
           <el-form-item label="昵称" prop="nickname">
-            <el-input
-              key="nickname"
-              v-model="model.nickname"
-              placeholder="请输入昵称（姓名）"
-              clearable
-            />
+            <el-input key="nickname" v-model="model.nickname" placeholder="请输入昵称（姓名）" clearable />
           </el-form-item>
           <el-form-item label="账号" prop="username">
-            <el-input
-              key="username"
-              v-model="model.username"
-              placeholder="请输入账号（用户名）"
-              clearable
-            />
+            <el-input key="username" v-model="model.username" placeholder="请输入账号（用户名）" clearable />
           </el-form-item>
           <el-form-item v-if="model[idkey] == ''" label="密码" prop="password">
-            <el-input
-              key="password"
-              v-model="model.password"
-              placeholder="请输入密码"
-              clearable
-              show-password
-            />
+            <el-input key="password" v-model="model.password" placeholder="请输入密码" clearable show-password />
           </el-form-item>
           <el-form-item label="手机" prop="phone">
             <el-input v-model="model.phone" clearable />
@@ -357,19 +264,12 @@
           </el-form-item>
           <el-form-item v-if="model[idkey]" label="角色" prop="role_ids">
             <el-select v-model="model.role_ids" class="w-full" disabled multiple placeholder="">
-              <el-option
-                v-for="item in roleData"
-                :key="item.role_id"
-                :label="item.role_name"
-                :value="item.role_id"
-              />
+              <el-option v-for="item in roleData" :key="item.role_id" :label="item.role_name" :value="item.role_id" />
             </el-select>
           </el-form-item>
           <el-form-item v-if="model[idkey]" label="菜单(权限)" prop="menu_tree">
             <el-col>
-              <el-checkbox v-model="menuExpandAll" title="展开/收起" @change="menuExpandAllChange">
-                展开
-              </el-checkbox>
+              <el-checkbox v-model="menuExpandAll" title="展开/收起" @change="menuExpandAllChange"> 展开 </el-checkbox>
             </el-col>
             <el-tree
               ref="menuRef"
@@ -384,12 +284,7 @@
                 <span class="custom-tree-node">
                   <span>
                     {{ scope.node.label }}
-                    <i
-                      v-if="scope.data.is_check"
-                      class="el-icon-check"
-                      style="color: #1890ff"
-                      title="已分配"
-                    >
+                    <i v-if="scope.data.is_check" class="el-icon-check" style="color: #1890ff" title="已分配">
                       <svg-icon icon-class="check" />
                     </i>
                   </span>
@@ -397,11 +292,7 @@
                     <i v-if="scope.data.is_role" style="margin-left: 10px" title="角色">
                       <svg-icon icon-class="custom" />
                     </i>
-                    <i
-                      v-if="scope.data.menu_url"
-                      style="margin-left: 10px"
-                      :title="scope.data.menu_url"
-                    >
+                    <i v-if="scope.data.menu_url" style="margin-left: 10px" :title="scope.data.menu_url">
                       <svg-icon icon-class="link" />
                     </i>
                     <i v-else style="margin-left: 10px; color: #fff">
@@ -439,19 +330,7 @@ import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination/index.vue'
 import { arrayColumn } from '@/utils/index'
 import { getPageLimit } from '@/utils/settings'
-import {
-  list,
-  info,
-  add,
-  edit,
-  dele,
-  editdept,
-  editpost,
-  editrole,
-  repwd,
-  issuper,
-  disable
-} from '@/api/system/user'
+import { list, info, add, edit, dele, editdept, editpost, editrole, repwd, issuper, disable } from '@/api/system/user'
 
 export default {
   name: 'SystemUser',
@@ -611,21 +490,21 @@ export default {
       } else {
         this.model = this.$options.data().model
       }
+      this.menuExpandAll = false
+      this.fileDialog = false
       if (this.$refs['ref'] !== undefined) {
         try {
           this.$refs['ref'].resetFields()
           this.$refs['ref'].clearValidate()
         } catch (error) {}
       }
-      this.menuExpandAll = false
-      this.fileDialog = false
     },
     // 查询
     search() {
       this.query.page = 1
       this.list()
     },
-    // 刷新
+    // 重置查询
     refresh() {
       const limit = this.query.limit
       this.query = this.$options.data().query
@@ -717,7 +596,7 @@ export default {
         this.selectDialog = false
       }
     },
-    // 重置密码
+    // 修改密码
     repwd(row, select = false) {
       if (!row.length) {
         this.selectAlert()

@@ -16,21 +16,11 @@
         <el-select v-model="query.search_exp" class="ya-search-exp">
           <el-option v-for="exp in exps" :key="exp.exp" :value="exp.exp" :label="exp.name" />
         </el-select>
-        <el-select
-          v-if="query.search_field === 'is_disable'"
-          v-model="query.search_value"
-          class="ya-search-value"
-        >
+        <el-select v-if="query.search_field === 'is_disable'" v-model="query.search_value" class="ya-search-value">
           <el-option :value="1" label="是" />
           <el-option :value="0" label="否" />
         </el-select>
-        <el-input
-          v-else
-          v-model="query.search_value"
-          class="ya-search-value"
-          placeholder="查询内容"
-          clearable
-        />
+        <el-input v-else v-model="query.search_value" class="ya-search-value" placeholder="查询内容" clearable />
         <el-select v-model="query.date_field" class="ya-date-field" placeholder="时间类型">
           <el-option value="create_time" label="添加时间" />
           <el-option value="update_time" label="修改时间" />
@@ -44,10 +34,8 @@
           value-format="YYYY-MM-DD HH:mm:ss"
           :default-time="[new Date(2024, 1, 1, 0, 0, 0), new Date(2024, 1, 1, 23, 59, 59)]"
         />
-        <el-button type="primary" @click="search()">查询</el-button>
-        <el-button title="重置" @click="refresh()">
-          <svg-icon icon-class="refresh" />
-        </el-button>
+        <el-button type="primary" title="查询/刷新" @click="search()">查询</el-button>
+        <el-button type="default" title="重置查询条件" @click="refresh()">重置</el-button>
         <el-button type="primary" @click="add()">添加</el-button>
       </el-col>
     </el-row>
@@ -103,30 +91,15 @@
         </template>
       </el-table-column>
       <el-table-column prop="tag_name" label="名称" min-width="130" show-overflow-tooltip />
-      <el-table-column prop="is_disable" label="禁用" min-width="85" sortable="custom">
-        <template #default="scope">
-          <el-switch
-            v-model="scope.row.is_disable"
-            :active-value="1"
-            :inactive-value="0"
-            @change="disable([scope.row])"
-          />
-        </template>
-      </el-table-column>
+      <el-table-column prop="is_disable_name" label="禁用" min-width="85" sortable="custom" />
       <el-table-column prop="sort" label="排序" min-width="85" sortable="custom" />
       <el-table-column prop="create_time" label="添加时间" width="165" sortable="custom" />
       <el-table-column prop="update_time" label="修改时间" width="165" sortable="custom" />
       <el-table-column label="操作" width="130">
         <template #default="scope">
-          <el-link type="primary" class="mr-1" :underline="false" @click="contentShow(scope.row)">
-            内容
-          </el-link>
-          <el-link type="primary" class="mr-1" :underline="false" @click="edit(scope.row)">
-            修改
-          </el-link>
-          <el-link type="primary" :underline="false" @click="selectOpen('dele', [scope.row])">
-            删除
-          </el-link>
+          <el-link type="primary" class="mr-1" :underline="false" @click="contentShow(scope.row)"> 内容 </el-link>
+          <el-link type="primary" class="mr-1" :underline="false" @click="edit(scope.row)"> 修改 </el-link>
+          <el-link type="primary" :underline="false" @click="selectOpen('dele', [scope.row])"> 删除 </el-link>
         </template>
       </el-table-column>
     </el-table>
@@ -165,12 +138,7 @@
             <el-input v-model="model.keywords" placeholder="keywords" clearable />
           </el-form-item>
           <el-form-item label="描述" prop="description">
-            <el-input
-              v-model="model.description"
-              type="textarea"
-              autosize
-              placeholder="description"
-            />
+            <el-input v-model="model.description" type="textarea" autosize placeholder="description" />
           </el-form-item>
           <el-form-item label="备注" prop="remark">
             <el-input v-model="model.remark" placeholder="remark" clearable />
@@ -179,12 +147,7 @@
             <el-input v-model="model.sort" type="number" />
           </el-form-item>
           <el-form-item label="图片列表" prop="images">
-            <FileUploads
-              v-model="model.images"
-              upload-btn="上传图片"
-              file-type="image"
-              file-tip="图片文件"
-            />
+            <FileUploads v-model="model.images" upload-btn="上传图片" file-type="image" file-tip="图片文件" />
           </el-form-item>
           <el-form-item v-if="model[idkey]" label="添加时间" prop="create_time">
             <el-input v-model="model.create_time" disabled />
@@ -214,15 +177,8 @@
       <!-- 标签内容操作 -->
       <el-row>
         <el-col>
-          <el-button type="primary" title="解除" @click="contentSelectOpen('contentRemove')">
-            解除
-          </el-button>
-          <el-input
-            v-model="contentQuery.search_value"
-            class="ya-search-value"
-            placeholder="名称"
-            clearable
-          />
+          <el-button type="primary" title="解除" @click="contentSelectOpen('contentRemove')"> 解除 </el-button>
+          <el-input v-model="contentQuery.search_value" class="ya-search-value" placeholder="名称" clearable />
           <el-button type="primary" @click="content()">查询</el-button>
         </el-col>
       </el-row>
@@ -246,38 +202,13 @@
         <el-table-column prop="unique" label="标识" min-width="80" show-overflow-tooltip />
         <el-table-column prop="category_names" label="分类" min-width="120" show-overflow-tooltip />
         <el-table-column prop="tag_names" label="标签" min-width="120" show-overflow-tooltip />
-        <el-table-column prop="is_top" label="置顶" min-width="85" sortable="custom">
-          <template #default="scope">
-            <el-switch v-model="scope.row.is_top" :active-value="1" :inactive-value="0" disabled />
-          </template>
-        </el-table-column>
-        <el-table-column prop="is_hot" label="热门" min-width="85" sortable="custom">
-          <template #default="scope">
-            <el-switch v-model="scope.row.is_hot" :active-value="1" :inactive-value="0" disabled />
-          </template>
-        </el-table-column>
-        <el-table-column prop="is_rec" label="推荐" min-width="85" sortable="custom">
-          <template #default="scope">
-            <el-switch v-model="scope.row.is_rec" :active-value="1" :inactive-value="0" disabled />
-          </template>
-        </el-table-column>
-        <el-table-column prop="is_disable" label="禁用" min-width="85" sortable="custom">
-          <template #default="scope">
-            <el-switch
-              v-model="scope.row.is_disable"
-              :active-value="1"
-              :inactive-value="0"
-              disabled
-            />
-          </template>
-        </el-table-column>
+        <el-table-column prop="is_top_name" label="置顶" min-width="80" sortable="custom" />
+        <el-table-column prop="is_hot_name" label="热门" min-width="80" sortable="custom" />
+        <el-table-column prop="is_rec_name" label="推荐" min-width="80" sortable="custom" />
+        <el-table-column prop="is_disable_name" label="禁用" min-width="80" sortable="custom" />
         <el-table-column label="操作" min-width="70">
           <template #default="scope">
-            <el-link
-              type="primary"
-              :underline="false"
-              @click="contentSelectOpen('contentRemove', scope.row)"
-            >
+            <el-link type="primary" :underline="false" @click="contentSelectOpen('contentRemove', scope.row)">
               解除
             </el-link>
           </template>
@@ -319,7 +250,7 @@ import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination/index.vue'
 import { arrayColumn } from '@/utils/index'
 import { getPageLimit } from '@/utils/settings'
-import { list, info, add, edit, dele, disable, content, contentRemove } from '@/api/content/tag'
+import { list, info, add, edit, dele, disable, contentList, contentRemove } from '@/api/content/tag'
 
 export default {
   name: 'ContentTag',
@@ -472,7 +403,7 @@ export default {
       this.query.page = 1
       this.list()
     },
-    // 刷新
+    // 重置查询
     refresh() {
       const limit = this.query.limit
       this.query = this.$options.data().query
@@ -619,7 +550,7 @@ export default {
     // 标签内容列表
     content() {
       this.contentLoad = true
-      content(this.contentQuery)
+      contentList(this.contentQuery)
         .then((res) => {
           this.contentData = res.data.list
           this.contentCount = res.data.count

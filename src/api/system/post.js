@@ -79,12 +79,12 @@ export function disable(data) {
   })
 }
 /**
- * 职位用户
+ * 职位用户列表
  * @param {array} params 请求参数
  */
-export function user(params) {
+export function userList(params) {
   return request({
-    url: url + 'user',
+    url: url + 'userList',
     method: 'get',
     params: params
   })

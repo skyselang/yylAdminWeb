@@ -1,9 +1,6 @@
 <template>
   <div v-show="showBox" :class="mode == 'pop' ? 'mask' : ''">
-    <div
-      :class="mode == 'pop' ? 'verifybox' : ''"
-      :style="{ 'max-width': parseInt(imgSize.width) + 30 + 'px' }"
-    >
+    <div :class="mode == 'pop' ? 'verifybox' : ''" :style="{ 'max-width': parseInt(imgSize.width) + 30 + 'px' }">
       <div v-if="mode == 'pop'" class="verifybox-top">
         <span>{{ $t('AjCaptch.Please complete security verification') }}</span>
         <span class="verifybox-close">

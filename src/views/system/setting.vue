@@ -1,28 +1,16 @@
 <template>
   <div class="app-container">
     <el-tabs>
-      <el-tab-pane
-        v-if="checkPermission(['admin/system.Setting/systemInfo'])"
-        label="系统设置"
-        lazy
-      >
+      <el-tab-pane v-if="checkPermission(['admin/system.Setting/systemInfo'])" label="系统设置" lazy>
         <SettingSystems />
       </el-tab-pane>
-      <el-tab-pane
-        v-if="checkPermission(['admin/system.Setting/captchaInfo'])"
-        label="验证码设置"
-        lazy
-      >
+      <el-tab-pane v-if="checkPermission(['admin/system.Setting/captchaInfo'])" label="验证码设置" lazy>
         <SettingCaptchas />
       </el-tab-pane>
       <el-tab-pane v-if="checkPermission(['admin/system.Setting/cacheInfo'])" label="缓存设置" lazy>
         <SettingCaches />
       </el-tab-pane>
-      <el-tab-pane
-        v-if="checkPermission(['admin/system.Setting/tokenInfo'])"
-        label="Token设置"
-        lazy
-      >
+      <el-tab-pane v-if="checkPermission(['admin/system.Setting/tokenInfo'])" label="Token设置" lazy>
         <SettingTokens />
       </el-tab-pane>
       <el-tab-pane v-if="checkPermission(['admin/system.Setting/logInfo'])" label="日志设置" lazy>
@@ -31,11 +19,7 @@
       <el-tab-pane v-if="checkPermission(['admin/system.Setting/apiInfo'])" label="接口设置" lazy>
         <SettingApis />
       </el-tab-pane>
-      <el-tab-pane
-        v-if="checkPermission(['admin/system.Setting/serverInfo'])"
-        label="服务器信息"
-        lazy
-      >
+      <el-tab-pane v-if="checkPermission(['admin/system.Setting/serverInfo'])" label="服务器信息" lazy>
         <SettingServers />
       </el-tab-pane>
     </el-tabs>

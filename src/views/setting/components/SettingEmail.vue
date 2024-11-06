@@ -11,12 +11,7 @@
         <el-form-item label="SMTP协议" prop="email_secure">
           <el-col :span="8">
             <el-select v-model="model.email_secure" placeholder="">
-              <el-option
-                v-for="item in secure"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              />
+              <el-option v-for="item in secure" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
           </el-col>
           <el-col :span="16"> 发送邮件服务器加密方式，如：SSL </el-col>

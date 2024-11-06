@@ -81,12 +81,7 @@
               <el-input v-model="model.db0" />
             </el-form-item>
             <template v-for="n in 15">
-              <el-form-item
-                v-if="model['db' + n]"
-                :key="n"
-                :label="'DB' + n"
-                class="ya-margin-bottom"
-              >
+              <el-form-item v-if="model['db' + n]" :key="n" :label="'DB' + n" class="ya-margin-bottom">
                 <el-input v-model="model['db' + n]" />
               </el-form-item>
             </template>

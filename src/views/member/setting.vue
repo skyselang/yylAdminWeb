@@ -1,39 +1,19 @@
 <template>
   <div class="app-container">
     <el-tabs>
-      <el-tab-pane
-        v-if="checkPermission(['admin/member.Setting/memberInfo'])"
-        label="会员设置"
-        lazy
-      >
+      <el-tab-pane v-if="checkPermission(['admin/member.Setting/memberInfo'])" label="会员设置" lazy>
         <SettingMember />
       </el-tab-pane>
-      <el-tab-pane
-        v-if="checkPermission(['admin/member.Setting/logregInfo'])"
-        label="登录注册设置"
-        lazy
-      >
+      <el-tab-pane v-if="checkPermission(['admin/member.Setting/logregInfo'])" label="登录注册设置" lazy>
         <SettingLogreg />
       </el-tab-pane>
-      <el-tab-pane
-        v-if="checkPermission(['admin/member.Setting/thirdInfo'])"
-        label="第三方账号设置"
-        lazy
-      >
+      <el-tab-pane v-if="checkPermission(['admin/member.Setting/thirdInfo'])" label="第三方账号设置" lazy>
         <SettingThird />
       </el-tab-pane>
-      <el-tab-pane
-        v-if="checkPermission(['admin/member.Setting/captchaInfo'])"
-        label="验证码设置"
-        lazy
-      >
+      <el-tab-pane v-if="checkPermission(['admin/member.Setting/captchaInfo'])" label="验证码设置" lazy>
         <SettingCaptcha />
       </el-tab-pane>
-      <el-tab-pane
-        v-if="checkPermission(['admin/member.Setting/tokenInfo'])"
-        label="Token设置"
-        lazy
-      >
+      <el-tab-pane v-if="checkPermission(['admin/member.Setting/tokenInfo'])" label="Token设置" lazy>
         <SettingToken />
       </el-tab-pane>
       <el-tab-pane v-if="checkPermission(['admin/member.Setting/logInfo'])" label="日志设置" lazy>

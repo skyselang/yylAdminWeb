@@ -25,13 +25,7 @@
           clearable
           filterable
         />
-        <el-input
-          v-else
-          v-model="query.search_value"
-          class="ya-search-value"
-          placeholder="查询内容"
-          clearable
-        />
+        <el-input v-else v-model="query.search_value" class="ya-search-value" placeholder="查询内容" clearable />
         <el-select v-model="query.date_field" class="ya-date-field" placeholder="时间类型">
           <el-option value="create_time" label="添加时间" />
           <el-option value="update_time" label="修改时间" />
@@ -45,10 +39,8 @@
           value-format="YYYY-MM-DD HH:mm:ss"
           :default-time="[new Date(2024, 1, 1, 0, 0, 0), new Date(2024, 1, 1, 23, 59, 59)]"
         />
-        <el-button type="primary" @click="search()">查询</el-button>
-        <el-button title="重置" @click="refresh()">
-          <svg-icon icon-class="refresh" />
-        </el-button>
+        <el-button type="primary" title="查询/刷新" @click="search()">查询</el-button>
+        <el-button type="default" title="重置查询条件" @click="refresh()">重置</el-button>
         <el-button type="primary" @click="add()">添加</el-button>
       </el-col>
     </el-row>
@@ -114,7 +106,6 @@
       :load="load"
       @sort-change="sort"
       @selection-change="select"
-      @cell-dblclick="cellDbclick"
     >
       <el-table-column type="selection" width="42" title="全选/反选" />
       <el-table-column prop="region_name" label="名称" min-width="250" show-overflow-tooltip />
@@ -123,35 +114,16 @@
       <el-table-column prop="region_zipcode" label="邮编" min-width="80" />
       <el-table-column prop="region_longitude" label="经度" min-width="110" />
       <el-table-column prop="region_latitude" label="纬度" min-width="110" />
-      <el-table-column prop="is_disable" label="禁用" width="85">
-        <template #default="scope">
-          <el-switch
-            v-model="scope.row.is_disable"
-            :active-value="1"
-            :inactive-value="0"
-            @change="disable([scope.row])"
-          />
-        </template>
-      </el-table-column>
+      <el-table-column prop="is_disable_name" label="禁用" width="80" />
       <el-table-column :prop="idkey" label="ID" min-width="95" />
       <el-table-column prop="sort" label="排序" min-width="80" />
       <el-table-column label="操作" width="130">
         <template #default="scope">
-          <el-link
-            type="primary"
-            class="mr-1"
-            :underline="false"
-            title="添加下级"
-            @click="add(scope.row)"
-          >
+          <el-link type="primary" class="mr-1" :underline="false" title="添加下级" @click="add(scope.row)">
             添加
           </el-link>
-          <el-link type="primary" class="mr-1" :underline="false" @click="edit(scope.row)">
-            修改
-          </el-link>
-          <el-link type="primary" :underline="false" @click="selectOpen('dele', [scope.row])">
-            删除
-          </el-link>
+          <el-link type="primary" class="mr-1" :underline="false" @click="edit(scope.row)"> 修改 </el-link>
+          <el-link type="primary" :underline="false" @click="selectOpen('dele', [scope.row])"> 删除 </el-link>
         </template>
       </el-table-column>
     </el-table>
@@ -185,7 +157,7 @@
           <el-form-item label="名称" prop="region_name">
             <el-input v-model="model.region_name" placeholder="请输入名称，eg：北京市" clearable>
               <template #append>
-                <el-button title="复制" @click="copy(model.region_name)">
+                <el-button title="复制" @click="clipboard(model.region_name)">
                   <svg-icon icon-class="copy-document" />
                 </el-button>
               </template>
@@ -194,7 +166,7 @@
           <el-form-item label="拼音" prop="region_pinyin">
             <el-input v-model="model.region_pinyin" placeholder="请输入拼音，eg：Beijing" clearable>
               <template #append>
-                <el-button title="复制" @click="copy(model.region_pinyin)">
+                <el-button title="复制" @click="clipboard(model.region_pinyin)">
                   <svg-icon icon-class="copy-document" />
                 </el-button>
               </template>
@@ -203,7 +175,7 @@
           <el-form-item label="简拼" prop="region_jianpin">
             <el-input v-model="model.region_jianpin" placeholder="请输入简拼，eg：BJ" clearable>
               <template #append>
-                <el-button title="复制" @click="copy(model.region_jianpin)">
+                <el-button title="复制" @click="clipboard(model.region_jianpin)">
                   <svg-icon icon-class="copy-document" />
                 </el-button>
               </template>
@@ -212,7 +184,7 @@
           <el-form-item label="首字母" prop="region_initials">
             <el-input v-model="model.region_initials" placeholder="请输入首字母，eg：B" clearable>
               <template #append>
-                <el-button title="复制" @click="copy(model.region_initials)">
+                <el-button title="复制" @click="clipboard(model.region_initials)">
                   <svg-icon icon-class="copy-document" />
                 </el-button>
               </template>
@@ -221,7 +193,7 @@
           <el-form-item label="区号" prop="region_citycode">
             <el-input v-model="model.region_citycode" placeholder="请输入区号，eg：010" clearable>
               <template #append>
-                <el-button title="复制" @click="copy(model.region_citycode)">
+                <el-button title="复制" @click="clipboard(model.region_citycode)">
                   <svg-icon icon-class="copy-document" />
                 </el-button>
               </template>
@@ -230,47 +202,34 @@
           <el-form-item label="邮编" prop="region_zipcode">
             <el-input v-model="model.region_zipcode" placeholder="请输入邮编，eg：1000" clearable>
               <template #append>
-                <el-button title="复制" @click="copy(model.region_zipcode)">
+                <el-button title="复制" @click="clipboard(model.region_zipcode)">
                   <svg-icon icon-class="copy-document" />
                 </el-button>
               </template>
             </el-input>
           </el-form-item>
           <el-form-item label="经度" prop="region_longitude">
-            <el-input
-              v-model="model.region_longitude"
-              placeholder="请输入经度（高德），eg：116.403263"
-              clearable
-            >
+            <el-input v-model="model.region_longitude" placeholder="请输入经度（高德），eg：116.403263" clearable>
               <template #append>
-                <el-button title="复制" @click="copy(model.region_longitude)">
+                <el-button title="复制" @click="clipboard(model.region_longitude)">
                   <svg-icon icon-class="copy-document" />
                 </el-button>
               </template>
             </el-input>
           </el-form-item>
           <el-form-item label="纬度" prop="region_latitude">
-            <el-input
-              v-model="model.region_latitude"
-              placeholder="请输入纬度（高德），eg：39.915156"
-              clearable
-            >
+            <el-input v-model="model.region_latitude" placeholder="请输入纬度（高德），eg：39.915156" clearable>
               <template #append>
-                <el-button title="复制" @click="copy(model.region_latitude)">
+                <el-button title="复制" @click="clipboard(model.region_latitude)">
                   <svg-icon icon-class="copy-document" />
                 </el-button>
               </template>
             </el-input>
           </el-form-item>
           <el-form-item label="排序" prop="sort">
-            <el-input
-              v-model="model.sort"
-              type="number"
-              placeholder="请输入排序，eg：2250"
-              clearable
-            >
+            <el-input v-model="model.sort" type="number" placeholder="请输入排序，eg：2250" clearable>
               <template #append>
-                <el-button title="复制" @click="copy(model.sort)">
+                <el-button title="复制" @click="clipboard(model.sort)">
                   <svg-icon icon-class="copy-document" />
                 </el-button>
               </template>
@@ -279,7 +238,7 @@
           <el-form-item v-if="model[idkey]" label="完整名称" prop="region_fullname">
             <el-input v-model="model.region_fullname" placeholder="" disabled>
               <template #append>
-                <el-button title="复制" @click="copy(model.region_fullname)">
+                <el-button title="复制" @click="clipboard(model.region_fullname)">
                   <svg-icon icon-class="copy-document" />
                 </el-button>
               </template>
@@ -288,7 +247,7 @@
           <el-form-item v-if="model[idkey]" label="完整拼音" prop="region_fullname_py">
             <el-input v-model="model.region_fullname_py" placeholder="" disabled>
               <template #append>
-                <el-button title="复制" @click="copy(model.region_fullname_py)">
+                <el-button title="复制" @click="clipboard(model.region_fullname_py)">
                   <svg-icon icon-class="copy-document" />
                 </el-button>
               </template>
@@ -315,19 +274,8 @@
 
 <script>
 import screenHeight from '@/utils/screen-height'
-import clip from '@/utils/clipboard'
-import { arrayColumn } from '@/utils/index'
-import {
-  list,
-  info,
-  add,
-  edit,
-  dele,
-  editpid,
-  citycode,
-  zipcode,
-  disable as disableApi
-} from '@/api/setting/region'
+import { arrayColumn, clipboard } from '@/utils/index'
+import { list, info, add, edit, dele, editpid, citycode, zipcode, disable as disableApi } from '@/api/setting/region'
 
 export default {
   name: 'SettingRegion',
@@ -384,6 +332,7 @@ export default {
     this.list()
   },
   methods: {
+    clipboard,
     // 列表
     list() {
       this.loading = true
@@ -477,7 +426,7 @@ export default {
     search() {
       this.list()
     },
-    // 刷新
+    // 重置查询
     refresh() {
       const limit = this.query.limit
       this.query = this.$options.data().query
@@ -652,14 +601,6 @@ export default {
             this.loading = false
           })
       }
-    },
-    // 复制
-    copy(text) {
-      clip(text)
-    },
-    // 单元格双击复制
-    cellDbclick(row, column) {
-      this.copy(row[column.property])
     }
   }
 }

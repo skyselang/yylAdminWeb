@@ -7,18 +7,10 @@
       <el-tab-pane v-if="checkPermission(['admin/setting.Setting/info'])" label="联系信息" lazy>
         <SettingContact />
       </el-tab-pane>
-      <el-tab-pane
-        v-if="checkPermission(['admin/setting.Setting/emailInfo'])"
-        label="邮件设置"
-        lazy
-      >
+      <el-tab-pane v-if="checkPermission(['admin/setting.Setting/emailInfo'])" label="邮件设置" lazy>
         <SettingEmail />
       </el-tab-pane>
-      <el-tab-pane
-        v-if="checkPermission(['admin/setting.Setting/emailTest'])"
-        label="邮件测试"
-        lazy
-      >
+      <el-tab-pane v-if="checkPermission(['admin/setting.Setting/emailTest'])" label="邮件测试" lazy>
         <SettingEmailTest />
       </el-tab-pane>
     </el-tabs>

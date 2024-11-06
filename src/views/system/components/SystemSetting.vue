@@ -15,12 +15,7 @@
       </el-form-item>
       <el-form-item label="组件大小">
         <el-select v-model="appStore.size" style="width: 12%" @change="sizeChange">
-          <el-option
-            v-for="item in sizes"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
+          <el-option v-for="item in sizes" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
       <el-form-item label="主题颜色">
@@ -40,9 +35,7 @@
         <ul class="layout">
           <el-tooltip content="左侧模式" placement="right">
             <li
-              :class="
-                'layout-item layout-left ' + (settingsStore.layout === 'left' ? 'is-active' : '')
-              "
+              :class="'layout-item layout-left ' + (settingsStore.layout === 'left' ? 'is-active' : '')"
               @click="changeLayout('left')"
             >
               <div></div>
@@ -51,9 +44,7 @@
           </el-tooltip>
           <el-tooltip content="顶部模式" placement="right">
             <li
-              :class="
-                'layout-item layout-top ' + (settingsStore.layout === 'top' ? 'is-active' : '')
-              "
+              :class="'layout-item layout-top ' + (settingsStore.layout === 'top' ? 'is-active' : '')"
               @click="changeLayout('top')"
             >
               <div></div>
@@ -62,9 +53,7 @@
           </el-tooltip>
           <el-tooltip content="混合模式" placement="right">
             <li
-              :class="
-                'layout-item layout-mix ' + (settingsStore.layout === 'mix' ? 'is-active' : '')
-              "
+              :class="'layout-item layout-mix ' + (settingsStore.layout === 'mix' ? 'is-active' : '')"
               @click="changeLayout('mix')"
             >
               <div></div>

@@ -247,11 +247,7 @@ export default {
             this.secretKey = res.repData.secretKey
             this.checkNum = res.repData.wordList.length
             // '请依次点击【'
-            this.text =
-              this.$t('AjCaptch.Please click on them one by one') +
-              '【' +
-              this.poinTextList.join(',') +
-              '】'
+            this.text = this.$t('AjCaptch.Please click on them one by one') + '【' + this.poinTextList.join(',') + '】'
           } else {
             this.text = res.repMsg
           }

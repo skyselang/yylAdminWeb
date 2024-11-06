@@ -49,16 +49,7 @@
             <el-col :span="8">
               <el-color-picker
                 v-model="model.login_bg_color"
-                :predefine="[
-                  '#2d3a4b',
-                  '#2C8AFF',
-                  '#1C2D56',
-                  '#121E56',
-                  '#079583',
-                  '#09AEC2',
-                  '#5F45CD',
-                  '#E10E2D'
-                ]"
+                :predefine="['#2d3a4b', '#2C8AFF', '#1C2D56', '#121E56', '#079583', '#09AEC2', '#5F45CD', '#E10E2D']"
                 @change="loginBgColorChange"
               />
             </el-col>

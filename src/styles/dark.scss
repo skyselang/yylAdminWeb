@@ -1,12 +1,12 @@
-// 暗黑 css
+// dark css
 
 html.dark {
   --menuBg: var(--el-bg-color-overlay);
   --menuText: #fff;
-  --menuHover: rgb(0 0 0 / 20%);
+  --menuHover: rgba(0, 0, 0, 0.2);
   --menuActiveText: var(--el-menu-active-color);
   --subMenuBg: var(--el-menu-bg-color);
-  --subMenuHover: rgb(0 0 0 / 20%);
+  --subMenuHover: rgba(0, 0, 0, 0.2);
   --subMenuActiveText: var(--el-menu-active-color);
 
   // wangEditor

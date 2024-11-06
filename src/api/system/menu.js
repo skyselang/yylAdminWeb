@@ -134,12 +134,12 @@ export function disable(data) {
   })
 }
 /**
- * 菜单角色
+ * 菜单角色列表
  * @param {array} params 请求参数
  */
-export function role(params) {
+export function roleList(params) {
   return request({
-    url: url + 'role',
+    url: url + 'roleList',
     method: 'get',
     params: params
   })

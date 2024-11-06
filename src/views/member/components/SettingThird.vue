@@ -20,11 +20,7 @@
               <el-input v-model="model[index + '_appsecret']" />
             </el-col>
             <el-col :span="2">
-              <el-switch
-                v-model="model[index + '_register']"
-                :active-value="1"
-                :inactive-value="0"
-              />
+              <el-switch v-model="model[index + '_register']" :active-value="1" :inactive-value="0" />
             </el-col>
             <el-col :span="2">
               <el-switch v-model="model[index + '_login']" :active-value="1" :inactive-value="0" />

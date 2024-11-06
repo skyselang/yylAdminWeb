@@ -67,7 +67,7 @@
 
 <script setup>
 import FileManage from '@/components/FileManage/index.vue'
-import clip from '@/utils/clipboard'
+import { clipboard } from '@/utils/index'
 import { watch } from 'vue'
 // 单文件上传
 const model = defineModel({
@@ -159,7 +159,7 @@ function fileDelete() {
   file.value.file_ext = ''
 }
 function fileDownload(file) {
-  clip(fileName(file), '文件名复制成功')
+  clipboard(fileName(file), '文件名已复制')
   setTimeout(() => {
     window.open(file.file_url, '_blank')
   }, 500)

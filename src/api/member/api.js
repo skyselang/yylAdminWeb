@@ -123,12 +123,12 @@ export function disable(data) {
   })
 }
 /**
- * 会员接口分组
+ * 会员接口分组列表
  * @param {array} params 请求参数
  */
-export function group(params) {
+export function groupList(params) {
   return request({
-    url: url + 'group',
+    url: url + 'groupList',
     method: 'get',
     params: params
   })

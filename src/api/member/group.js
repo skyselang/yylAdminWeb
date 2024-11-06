@@ -90,12 +90,12 @@ export function disable(data) {
   })
 }
 /**
- * 会员分组会员
+ * 会员分组会员列表
  * @param {array} params 请求参数
  */
-export function member(params) {
+export function memberList(params) {
   return request({
-    url: url + 'member',
+    url: url + 'memberList',
     method: 'get',
     params: params
   })

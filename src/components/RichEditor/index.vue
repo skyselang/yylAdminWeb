@@ -2,12 +2,7 @@
   <div class="editor-wrapper">
     <!-- 工具栏 -->
     <el-affix target=".editor-wrapper" :offset="150">
-      <Toolbar
-        id="toolbar-container"
-        :editor="editorRef"
-        :default-config="toolbarConfig"
-        :mode="mode"
-      />
+      <Toolbar id="toolbar-container" :editor="editorRef" :default-config="toolbarConfig" :mode="mode" />
     </el-affix>
     <!-- 编辑器 -->
     <Editor

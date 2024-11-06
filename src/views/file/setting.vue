@@ -38,11 +38,9 @@
               <el-form-item>
                 <el-card shadow="never">
                   <div>
-                    文件将上传到七牛云 Kodo 存储，对象存储 > 空间管理 > 空间设置 > 访问控制, 设置为
-                    公开空间。
+                    文件将上传到七牛云 Kodo 存储，对象存储 > 空间管理 > 空间设置 > 访问控制, 设置为 公开空间。
                     <br />
-                    需要配置跨域访问 CORS 规则，设置：来源 Origin 为 *，允许 Methods 为
-                    GET,POST，允许 Headers 为 *。
+                    需要配置跨域访问 CORS 规则，设置：来源 Origin 为 *，允许 Methods 为 GET,POST，允许 Headers 为 *。
                   </div>
                 </el-card>
               </el-form-item>
@@ -50,49 +48,43 @@
                 <el-col :span="11">
                   <el-input v-model="model.qiniu_access_key" clearable>
                     <template #append>
-                      <el-button title="复制" @click="copy(model.qiniu_access_key)">
+                      <el-button title="复制" @click="clipboard(model.qiniu_access_key)">
                         <svg-icon icon-class="copy-document" />
                       </el-button>
                     </template>
                   </el-input>
                 </el-col>
-                <el-col class="line" :span="13">
-                  AccessKey（AK）在 [ 七牛云 > 个人中心 > 密钥管理 ] 设置和获取
-                </el-col>
+                <el-col class="line" :span="13"> AccessKey（AK）在 [ 七牛云 > 个人中心 > 密钥管理 ] 设置和获取 </el-col>
               </el-form-item>
               <el-form-item label="SecretKey" prop="qiniu_secret_key">
                 <el-col :span="11">
                   <el-input v-model="model.qiniu_secret_key" clearable>
                     <template #append>
-                      <el-button title="复制" @click="copy(model.qiniu_secret_key)">
+                      <el-button title="复制" @click="clipboard(model.qiniu_secret_key)">
                         <svg-icon icon-class="copy-document" />
                       </el-button>
                     </template>
                   </el-input>
                 </el-col>
-                <el-col class="line" :span="13">
-                  SecretKey（SK）在 [ 七牛云 > 个人中心 > 密钥管理 ] 设置和获取
-                </el-col>
+                <el-col class="line" :span="13"> SecretKey（SK）在 [ 七牛云 > 个人中心 > 密钥管理 ] 设置和获取 </el-col>
               </el-form-item>
               <el-form-item label="空间名称" prop="qiniu_bucket">
                 <el-col :span="11">
                   <el-input v-model="model.qiniu_bucket" clearable>
                     <template #append>
-                      <el-button title="复制" @click="copy(model.qiniu_bucket)">
+                      <el-button title="复制" @click="clipboard(model.qiniu_bucket)">
                         <svg-icon icon-class="copy-document" />
                       </el-button>
                     </template>
                   </el-input>
                 </el-col>
-                <el-col class="line" :span="13">
-                  空间名称 在 [ 七牛云 > 对象存储 > 空间管理 ] 设置和获取
-                </el-col>
+                <el-col class="line" :span="13"> 空间名称 在 [ 七牛云 > 对象存储 > 空间管理 ] 设置和获取 </el-col>
               </el-form-item>
               <el-form-item label="访问域名" prop="qiniu_domain">
                 <el-col :span="11">
                   <el-input v-model="model.qiniu_domain" clearable>
                     <template #append>
-                      <el-button title="复制" @click="copy(model.qiniu_domain)">
+                      <el-button title="复制" @click="clipboard(model.qiniu_domain)">
                         <svg-icon icon-class="copy-document" />
                       </el-button>
                     </template>
@@ -109,8 +101,7 @@
                   <div>
                     文件将上传到阿里云 OSS 存储，需要配置 OSS 公开访问及跨域策略。
                     <br />
-                    需要配置跨域访问 CORS 规则，设置：来源 Origin 为 *，允许 Methods 为
-                    GET,POST，允许 Headers 为 *。
+                    需要配置跨域访问 CORS 规则，设置：来源 Origin 为 *，允许 Methods 为 GET,POST，允许 Headers 为 *。
                   </div>
                 </el-card>
               </el-form-item>
@@ -118,7 +109,7 @@
                 <el-col :span="11">
                   <el-input v-model="model.aliyun_access_key_id" clearable>
                     <template #append>
-                      <el-button title="复制" @click="copy(model.aliyun_access_key_id)">
+                      <el-button title="复制" @click="clipboard(model.aliyun_access_key_id)">
                         <svg-icon icon-class="copy-document" />
                       </el-button>
                     </template>
@@ -132,7 +123,7 @@
                 <el-col :span="11">
                   <el-input v-model="model.aliyun_access_key_secret" clearable>
                     <template #append>
-                      <el-button title="复制" @click="copy(model.aliyun_access_key_secret)">
+                      <el-button title="复制" @click="clipboard(model.aliyun_access_key_secret)">
                         <svg-icon icon-class="copy-document" />
                       </el-button>
                     </template>
@@ -146,21 +137,19 @@
                 <el-col :span="11">
                   <el-input v-model="model.aliyun_bucket" clearable>
                     <template #append>
-                      <el-button title="复制" @click="copy(model.aliyun_bucket)">
+                      <el-button title="复制" @click="clipboard(model.aliyun_bucket)">
                         <svg-icon icon-class="copy-document" />
                       </el-button>
                     </template>
                   </el-input>
                 </el-col>
-                <el-col class="line" :span="13">
-                  Bucket 名称 在 [ 阿里云 > 对象存储 > Bucket 列表 ] 获取
-                </el-col>
+                <el-col class="line" :span="13"> Bucket 名称 在 [ 阿里云 > 对象存储 > Bucket 列表 ] 获取 </el-col>
               </el-form-item>
               <el-form-item label="Endpoint地域节点" prop="aliyun_endpoint">
                 <el-col :span="11">
                   <el-input v-model="model.aliyun_endpoint" clearable>
                     <template #append>
-                      <el-button title="复制" @click="copy(model.aliyun_endpoint)">
+                      <el-button title="复制" @click="clipboard(model.aliyun_endpoint)">
                         <svg-icon icon-class="copy-document" />
                       </el-button>
                     </template>
@@ -174,7 +163,7 @@
                 <el-col :span="11">
                   <el-input v-model="model.aliyun_domain" clearable>
                     <template #append>
-                      <el-button title="复制" @click="copy(model.aliyun_domain)">
+                      <el-button title="复制" @click="clipboard(model.aliyun_domain)">
                         <svg-icon icon-class="copy-document" />
                       </el-button>
                     </template>
@@ -191,8 +180,7 @@
                   <div>
                     文件将上传到腾讯云 COS 存储，需要配置 COS 公有读私有写访问权限及跨域策略。
                     <br />
-                    需要配置跨域访问 CORS 规则，设置：来源 Origin 为 *，允许 Methods 为
-                    GET,POST，允许 Headers 为 *。
+                    需要配置跨域访问 CORS 规则，设置：来源 Origin 为 *，允许 Methods 为 GET,POST，允许 Headers 为 *。
                   </div>
                 </el-card>
               </el-form-item>
@@ -200,7 +188,7 @@
                 <el-col :span="11">
                   <el-input v-model="model.tencent_secret_id" clearable>
                     <template #append>
-                      <el-button title="复制" @click="copy(model.tencent_secret_id)">
+                      <el-button title="复制" @click="clipboard(model.tencent_secret_id)">
                         <svg-icon icon-class="copy-document" />
                       </el-button>
                     </template>
@@ -214,7 +202,7 @@
                 <el-col :span="11">
                   <el-input v-model="model.tencent_secret_key" clearable>
                     <template #append>
-                      <el-button title="复制" @click="copy(model.tencent_secret_key)">
+                      <el-button title="复制" @click="clipboard(model.tencent_secret_key)">
                         <svg-icon icon-class="copy-document" />
                       </el-button>
                     </template>
@@ -228,21 +216,19 @@
                 <el-col :span="11">
                   <el-input v-model="model.tencent_bucket" clearable>
                     <template #append>
-                      <el-button title="复制" @click="copy(model.tencent_bucket)">
+                      <el-button title="复制" @click="clipboard(model.tencent_bucket)">
                         <svg-icon icon-class="copy-document" />
                       </el-button>
                     </template>
                   </el-input>
                 </el-col>
-                <el-col class="line" :span="13">
-                  存储桶名称 在 [ 腾讯云 > 对象存储 > 存储桶列表 ] 获取
-                </el-col>
+                <el-col class="line" :span="13"> 存储桶名称 在 [ 腾讯云 > 对象存储 > 存储桶列表 ] 获取 </el-col>
               </el-form-item>
               <el-form-item label="所属地域" prop="tencent_region">
                 <el-col :span="11">
                   <el-input v-model="model.tencent_region" clearable>
                     <template #append>
-                      <el-button title="复制" @click="copy(model.tencent_region)">
+                      <el-button title="复制" @click="clipboard(model.tencent_region)">
                         <svg-icon icon-class="copy-document" />
                       </el-button>
                     </template>
@@ -256,26 +242,22 @@
                 <el-col :span="11">
                   <el-input v-model="model.tencent_domain" clearable>
                     <template #append>
-                      <el-button title="复制" @click="copy(model.tencent_domain)">
+                      <el-button title="复制" @click="clipboard(model.tencent_domain)">
                         <svg-icon icon-class="copy-document" />
                       </el-button>
                     </template>
                   </el-input>
                 </el-col>
-                <el-col class="line" :span="13">
-                  访问域名 在 [ 腾讯云 > 对象存储 > 存储桶列表 > 概览 ] 获取
-                </el-col>
+                <el-col class="line" :span="13"> 访问域名 在 [ 腾讯云 > 对象存储 > 存储桶列表 > 概览 ] 获取 </el-col>
               </el-form-item>
             </div>
             <div v-else-if="model.storage == 'baidu'">
               <el-form-item>
                 <el-card shadow="never">
                   <div>
-                    文件将上传到百度云 BOS 存储，对象存储 > Bucket列表 > 配置设置 > Bucket权限配置,
-                    设置为 公共 *。
+                    文件将上传到百度云 BOS 存储，对象存储 > Bucket列表 > 配置设置 > Bucket权限配置, 设置为 公共 *。
                     <br />
-                    需要配置跨域访问 CORS 规则，设置：来源 Origin 为 *，允许 Methods 为
-                    GET,POST，允许 Headers 为 *。
+                    需要配置跨域访问 CORS 规则，设置：来源 Origin 为 *，允许 Methods 为 GET,POST，允许 Headers 为 *。
                   </div>
                 </el-card>
               </el-form-item>
@@ -283,7 +265,7 @@
                 <el-col :span="11">
                   <el-input v-model="model.baidu_access_key" clearable>
                     <template #append>
-                      <el-button title="复制" @click="copy(model.baidu_access_key)">
+                      <el-button title="复制" @click="clipboard(model.baidu_access_key)">
                         <svg-icon icon-class="copy-document" />
                       </el-button>
                     </template>
@@ -297,7 +279,7 @@
                 <el-col :span="11">
                   <el-input v-model="model.baidu_secret_key" clearable>
                     <template #append>
-                      <el-button title="复制" @click="copy(model.baidu_secret_key)">
+                      <el-button title="复制" @click="clipboard(model.baidu_secret_key)">
                         <svg-icon icon-class="copy-document" />
                       </el-button>
                     </template>
@@ -311,51 +293,44 @@
                 <el-col :span="11">
                   <el-input v-model="model.baidu_bucket" clearable>
                     <template #append>
-                      <el-button title="复制" @click="copy(model.baidu_bucket)">
+                      <el-button title="复制" @click="clipboard(model.baidu_bucket)">
                         <svg-icon icon-class="copy-document" />
                       </el-button>
                     </template>
                   </el-input>
                 </el-col>
-                <el-col class="line" :span="13">
-                  Bucket 名称 在 [ 百度云 > 对象存储 > Bucket 列表 ] 获取
-                </el-col>
+                <el-col class="line" :span="13"> Bucket 名称 在 [ 百度云 > 对象存储 > Bucket 列表 ] 获取 </el-col>
               </el-form-item>
               <el-form-item label="所属地域" prop="baidu_endpoint">
                 <el-col :span="11">
                   <el-input v-model="model.baidu_endpoint" clearable>
                     <template #append>
-                      <el-button title="复制" @click="copy(model.baidu_endpoint)">
+                      <el-button title="复制" @click="clipboard(model.baidu_endpoint)">
                         <svg-icon icon-class="copy-document" />
                       </el-button>
                     </template>
                   </el-input>
                 </el-col>
-                <el-col class="line" :span="13">
-                  所属地域：官方域名去掉 Bucket 名称，如：gz.bcebos.com
-                </el-col>
+                <el-col class="line" :span="13"> 所属地域：官方域名去掉 Bucket 名称，如：gz.bcebos.com </el-col>
               </el-form-item>
               <el-form-item label="官方域名" prop="baidu_domain">
                 <el-col :span="11">
                   <el-input v-model="model.baidu_domain" clearable>
                     <template #append>
-                      <el-button title="复制" @click="copy(model.baidu_domain)">
+                      <el-button title="复制" @click="clipboard(model.baidu_domain)">
                         <svg-icon icon-class="copy-document" />
                       </el-button>
                     </template>
                   </el-input>
                 </el-col>
-                <el-col class="line" :span="13">
-                  官方域名 在 [ 百度云 > 对象存储 > Bucket列表 > 发布管理 ]获取
-                </el-col>
+                <el-col class="line" :span="13"> 官方域名 在 [ 百度云 > 对象存储 > Bucket列表 > 发布管理 ]获取 </el-col>
               </el-form-item>
             </div>
             <div v-else-if="model.storage == 'upyun'">
               <el-form-item>
                 <el-card shadow="never">
                   <div>
-                    文件将上传到又拍云 USS 存储，云存储 > 服务管理 > 配置 > CORS 跨域共享, 设置为
-                    已开启。
+                    文件将上传到又拍云 USS 存储，云存储 > 服务管理 > 配置 > CORS 跨域共享, 设置为 已开启。
                     <br />
                     请根据业务域名和需求，配置 CORS 跨域共享 规则，CORS 配置。
                   </div>
@@ -365,21 +340,19 @@
                 <el-col :span="11">
                   <el-input v-model="model.upyun_service_name" clearable>
                     <template #append>
-                      <el-button title="复制" @click="copy(model.upyun_service_name)">
+                      <el-button title="复制" @click="clipboard(model.upyun_service_name)">
                         <svg-icon icon-class="copy-document" />
                       </el-button>
                     </template>
                   </el-input>
                 </el-col>
-                <el-col class="line" :span="13">
-                  服务名称 在 [ 又拍云 > 云存储 > 服务管理 ] 设置和获取
-                </el-col>
+                <el-col class="line" :span="13"> 服务名称 在 [ 又拍云 > 云存储 > 服务管理 ] 设置和获取 </el-col>
               </el-form-item>
               <el-form-item label="操作员" prop="upyun_operator_name">
                 <el-col :span="11">
                   <el-input v-model="model.upyun_operator_name" clearable>
                     <template #append>
-                      <el-button title="复制" @click="copy(model.upyun_operator_name)">
+                      <el-button title="复制" @click="clipboard(model.upyun_operator_name)">
                         <svg-icon icon-class="copy-document" />
                       </el-button>
                     </template>
@@ -393,22 +366,21 @@
                 <el-col :span="11">
                   <el-input v-model="model.upyun_operator_pwd" clearable>
                     <template #append>
-                      <el-button title="复制" @click="copy(model.upyun_operator_pwd)">
+                      <el-button title="复制" @click="clipboard(model.upyun_operator_pwd)">
                         <svg-icon icon-class="copy-document" />
                       </el-button>
                     </template>
                   </el-input>
                 </el-col>
                 <el-col class="line" :span="13">
-                  操作员密码 在 [ 又拍云 > 云存储 > 服务管理 > 配置 > 存储管理-操作员授权 ]
-                  设置和获取
+                  操作员密码 在 [ 又拍云 > 云存储 > 服务管理 > 配置 > 存储管理-操作员授权 ] 设置和获取
                 </el-col>
               </el-form-item>
               <el-form-item label="加速域名" prop="upyun_domain">
                 <el-col :span="11">
                   <el-input v-model="model.upyun_domain" clearable>
                     <template #append>
-                      <el-button title="复制" @click="copy(model.upyun_domain)">
+                      <el-button title="复制" @click="clipboard(model.upyun_domain)">
                         <svg-icon icon-class="copy-document" />
                       </el-button>
                     </template>
@@ -433,7 +405,7 @@
                 <el-col :span="11">
                   <el-input v-model="model.huawei_access_key_id" clearable>
                     <template #append>
-                      <el-button title="复制" @click="copy(model.huawei_access_key_id)">
+                      <el-button title="复制" @click="clipboard(model.huawei_access_key_id)">
                         <svg-icon icon-class="copy-document" />
                       </el-button>
                     </template>
@@ -447,7 +419,7 @@
                 <el-col :span="11">
                   <el-input v-model="model.huawei_secret_access_key" clearable>
                     <template #append>
-                      <el-button title="复制" @click="copy(model.huawei_secret_access_key)">
+                      <el-button title="复制" @click="clipboard(model.huawei_secret_access_key)">
                         <svg-icon icon-class="copy-document" />
                       </el-button>
                     </template>
@@ -461,21 +433,19 @@
                 <el-col :span="11">
                   <el-input v-model="model.huawei_bucket" clearable>
                     <template #append>
-                      <el-button title="复制" @click="copy(model.huawei_bucket)">
+                      <el-button title="复制" @click="clipboard(model.huawei_bucket)">
                         <svg-icon icon-class="copy-document" />
                       </el-button>
                     </template>
                   </el-input>
                 </el-col>
-                <el-col class="line" :span="13">
-                  桶名称 在 [ 华为云 > 对象存储 > 桶列表 ] 设置和获取</el-col
-                >
+                <el-col class="line" :span="13"> 桶名称 在 [ 华为云 > 对象存储 > 桶列表 ] 设置和获取</el-col>
               </el-form-item>
               <el-form-item label="Endpoint(地域节点)" prop="huawei_endpoint">
                 <el-col :span="11">
                   <el-input v-model="model.huawei_endpoint" clearable>
                     <template #append>
-                      <el-button title="复制" @click="copy(model.huawei_endpoint)">
+                      <el-button title="复制" @click="clipboard(model.huawei_endpoint)">
                         <svg-icon icon-class="copy-document" />
                       </el-button>
                     </template>
@@ -489,15 +459,13 @@
                 <el-col :span="11">
                   <el-input v-model="model.huawei_domain" clearable>
                     <template #append>
-                      <el-button title="复制" @click="copy(model.huawei_domain)">
+                      <el-button title="复制" @click="clipboard(model.huawei_domain)">
                         <svg-icon icon-class="copy-document" />
                       </el-button>
                     </template>
                   </el-input>
                 </el-col>
-                <el-col class="line" :span="13">
-                  访问域名 在 [ 华为云 > 对象存储 > 桶列表 > 概览 ] 设置和获取</el-col
-                >
+                <el-col class="line" :span="13"> 访问域名 在 [ 华为云 > 对象存储 > 桶列表 > 概览 ] 设置和获取</el-col>
               </el-form-item>
             </div>
             <div v-else-if="model.storage == 'aws'">
@@ -514,35 +482,31 @@
                 <el-col :span="11">
                   <el-input v-model="model.aws_access_key_id" clearable>
                     <template #append>
-                      <el-button title="复制" @click="copy(model.aws_access_key_id)">
+                      <el-button title="复制" @click="clipboard(model.aws_access_key_id)">
                         <svg-icon icon-class="copy-document" />
                       </el-button>
                     </template>
                   </el-input>
                 </el-col>
-                <el-col class="line" :span="13">
-                  Access Key ID 在 [ AWS > 我的账号 > 安全凭证 ] 设置和获取
-                </el-col>
+                <el-col class="line" :span="13"> Access Key ID 在 [ AWS > 我的账号 > 安全凭证 ] 设置和获取 </el-col>
               </el-form-item>
               <el-form-item label="Secret Access KEY" prop="aws_secret_access_key">
                 <el-col :span="11">
                   <el-input v-model="model.aws_secret_access_key" clearable>
                     <template #append>
-                      <el-button title="复制" @click="copy(model.aws_secret_access_key)">
+                      <el-button title="复制" @click="clipboard(model.aws_secret_access_key)">
                         <svg-icon icon-class="copy-document" />
                       </el-button>
                     </template>
                   </el-input>
                 </el-col>
-                <el-col class="line" :span="13">
-                  Secret Access KEY 在 [ AWS > 我的账号 > 安全凭证 ] 设置和获取
-                </el-col>
+                <el-col class="line" :span="13"> Secret Access KEY 在 [ AWS > 我的账号 > 安全凭证 ] 设置和获取 </el-col>
               </el-form-item>
               <el-form-item label="Bucket 名称" prop="aws_bucket">
                 <el-col :span="11">
                   <el-input v-model="model.aws_bucket" clearable>
                     <template #append>
-                      <el-button title="复制" @click="copy(model.aws_bucket)">
+                      <el-button title="复制" @click="clipboard(model.aws_bucket)">
                         <svg-icon icon-class="copy-document" />
                       </el-button>
                     </template>
@@ -554,7 +518,7 @@
                 <el-col :span="11">
                   <el-input v-model="model.aws_region" clearable>
                     <template #append>
-                      <el-button title="复制" @click="copy(model.aws_region)">
+                      <el-button title="复制" @click="clipboard(model.aws_region)">
                         <svg-icon icon-class="copy-document" />
                       </el-button>
                     </template>
@@ -566,7 +530,7 @@
                 <el-col :span="11">
                   <el-input v-model="model.aws_endpoint" clearable>
                     <template #append>
-                      <el-button title="复制" @click="copy(model.aws_endpoint)">
+                      <el-button title="复制" @click="clipboard(model.aws_endpoint)">
                         <svg-icon icon-class="copy-document" />
                       </el-button>
                     </template>
@@ -578,7 +542,7 @@
                 <el-col :span="11">
                   <el-input v-model="model.aws_domain" clearable>
                     <template #append>
-                      <el-button title="复制" @click="copy(model.aws_domain)">
+                      <el-button title="复制" @click="clipboard(model.aws_domain)">
                         <svg-icon icon-class="copy-document" />
                       </el-button>
                     </template>
@@ -707,22 +671,11 @@
             </el-form-item>
             <el-form-item label="文件类型" prop="api_file_types">
               <el-checkbox-group v-model="model.api_file_types">
-                <el-checkbox
-                  v-for="(item, index) in file_types"
-                  :key="index"
-                  :value="index"
-                  :label="item"
-                />
+                <el-checkbox v-for="(item, index) in file_types" :key="index" :value="index" :label="item" />
               </el-checkbox-group>
             </el-form-item>
             <el-form-item label="文件分组" prop="api_file_group_ids">
-              <el-select
-                v-model="model.api_file_group_ids"
-                clearable
-                filterable
-                multiple
-                class="!w-[50%]"
-              >
+              <el-select v-model="model.api_file_group_ids" clearable filterable multiple class="!w-[50%]">
                 <el-option
                   v-for="(item, index) in group"
                   :key="index"
@@ -732,19 +685,8 @@
               </el-select>
             </el-form-item>
             <el-form-item label="文件标签" prop="api_file_tag_ids">
-              <el-select
-                v-model="model.api_file_tag_ids"
-                clearable
-                filterable
-                multiple
-                class="!w-[50%]"
-              >
-                <el-option
-                  v-for="item in tag"
-                  :key="item.tag_id"
-                  :label="item.tag_name"
-                  :value="item.tag_id"
-                />
+              <el-select v-model="model.api_file_tag_ids" clearable filterable multiple class="!w-[50%]">
+                <el-option v-for="item in tag" :key="item.tag_id" :label="item.tag_name" :value="item.tag_id" />
               </el-select>
             </el-form-item>
           </el-scrollbar>
@@ -763,12 +705,11 @@
 <script>
 import screenHeight from '@/utils/screen-height'
 import checkPermission from '@/utils/permission'
-import clip from '@/utils/clipboard'
+import { clipboard } from '@/utils/index'
 import { info, edit } from '@/api/file/setting'
 
 export default {
   name: 'FileSetting',
-
   data() {
     return {
       name: '文件设置',
@@ -843,9 +784,7 @@ export default {
         qiniu_bucket: [{ required: true, message: '请输入空间名称', trigger: 'blur' }],
         qiniu_domain: [{ required: true, message: '请输入访问域名', trigger: 'blur' }],
         aliyun_access_key_id: [{ required: true, message: '请输入 AccessKey ID', trigger: 'blur' }],
-        aliyun_access_key_secret: [
-          { required: true, message: '请输入 AccessKey Secret', trigger: 'blur' }
-        ],
+        aliyun_access_key_secret: [{ required: true, message: '请输入 AccessKey Secret', trigger: 'blur' }],
         aliyun_bucket: [{ required: true, message: '请输入 Bucket 名称', trigger: 'blur' }],
         aliyun_endpoint: [{ required: true, message: '请输入 Endpoint 地域节点', trigger: 'blur' }],
         aliyun_domain: [{ required: true, message: '请输入 Bucket 域名', trigger: 'blur' }],
@@ -863,19 +802,13 @@ export default {
         upyun_operator_name: [{ required: true, message: '请输入操作员', trigger: 'blur' }],
         upyun_operator_pwd: [{ required: true, message: '请输入操作员密码', trigger: 'blur' }],
         upyun_domain: [{ required: true, message: '请输入加速域名', trigger: 'blur' }],
-        huawei_access_key_id: [
-          { required: true, message: '请输入 Access Key ID', trigger: 'blur' }
-        ],
-        huawei_secret_access_key: [
-          { required: true, message: '请输入 Secret Access Key', trigger: 'blur' }
-        ],
+        huawei_access_key_id: [{ required: true, message: '请输入 Access Key ID', trigger: 'blur' }],
+        huawei_secret_access_key: [{ required: true, message: '请输入 Secret Access Key', trigger: 'blur' }],
         huawei_bucket: [{ required: true, message: '请输入桶名称', trigger: 'blur' }],
         huawei_endpoint: [{ required: true, message: '请输入Endpoint(地域节点)', trigger: 'blur' }],
         huawei_domain: [{ required: true, message: '请输入访问域名', trigger: 'blur' }],
         aws_access_key_id: [{ required: true, message: '请输入 Access Key ID', trigger: 'blur' }],
-        aws_secret_access_key: [
-          { required: true, message: '请输入 Secret Access Key', trigger: 'blur' }
-        ],
+        aws_secret_access_key: [{ required: true, message: '请输入 Secret Access Key', trigger: 'blur' }],
         aws_bucket: [{ required: true, message: '请输入 Bucket 名称', trigger: 'blur' }],
         aws_region: [{ required: true, message: '请输入 Region 区域', trigger: 'blur' }],
         aws_endpoint: [{ required: true, message: '请输入 Endpoint 端点', trigger: 'blur' }],
@@ -889,6 +822,7 @@ export default {
   },
   methods: {
     checkPermission,
+    clipboard,
     // 信息
     info() {
       info().then((res) => {
@@ -940,10 +874,6 @@ export default {
       if (this.$refs['ref'] !== undefined) {
         this.$refs['ref'].clearValidate()
       }
-    },
-    // 复制
-    copy(text, event) {
-      clip(text, event)
     }
   }
 }

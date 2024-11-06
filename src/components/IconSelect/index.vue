@@ -1,12 +1,6 @@
 <template>
   <div ref="iconRef" class="iconselect-container">
-    <el-input
-      v-model="inputValue"
-      readonly
-      clearable
-      placeholder="点击选择图标"
-      @click="iconShow = !iconShow"
-    >
+    <el-input v-model="inputValue" readonly clearable placeholder="点击选择图标" @click="iconShow = !iconShow">
       <template #prepend>
         <svg-icon :icon-class="inputValue" size="1.2em" />
       </template>
@@ -24,13 +18,7 @@
       </template>
 
       <div ref="iconDialogRef">
-        <el-input
-          v-model="iconFilter"
-          class="px-2 w-[98%]"
-          clearable
-          placeholder="搜索图标"
-          @input="handleFilter"
-        />
+        <el-input v-model="iconFilter" class="px-2 w-[98%]" clearable placeholder="搜索图标" @input="handleFilter" />
         <el-scrollbar height="300px">
           <ul class="icon-list">
             <li

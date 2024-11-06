@@ -13,21 +13,11 @@
         <el-select v-model="query.search_exp" class="ya-search-exp">
           <el-option v-for="exp in exps" :key="exp.exp" :value="exp.exp" :label="exp.name" />
         </el-select>
-        <el-select
-          v-if="query.search_field === 'is_disable'"
-          v-model="query.search_value"
-          class="ya-search-value"
-        >
+        <el-select v-if="query.search_field === 'is_disable'" v-model="query.search_value" class="ya-search-value">
           <el-option :value="1" label="是" />
           <el-option :value="0" label="否" />
         </el-select>
-        <el-input
-          v-else
-          v-model="query.search_value"
-          class="ya-search-value"
-          placeholder="查询内容"
-          clearable
-        />
+        <el-input v-else v-model="query.search_value" class="ya-search-value" placeholder="查询内容" clearable />
         <el-select v-model="query.date_field" class="ya-date-field" placeholder="时间类型">
           <el-option value="create_time" label="添加时间" />
           <el-option value="update_time" label="修改时间" />
@@ -41,10 +31,8 @@
           value-format="YYYY-MM-DD HH:mm:ss"
           :default-time="[new Date(2024, 1, 1, 0, 0, 0), new Date(2024, 1, 1, 23, 59, 59)]"
         />
-        <el-button type="primary" @click="search()">查询</el-button>
-        <el-button title="重置" @click="refresh()">
-          <svg-icon icon-class="refresh" />
-        </el-button>
+        <el-button type="primary" title="查询/刷新" @click="search()">查询</el-button>
+        <el-button type="default" title="重置查询条件" @click="refresh()">重置</el-button>
         <el-button type="primary" @click="add()">添加</el-button>
       </el-col>
     </el-row>
@@ -54,6 +42,8 @@
         <el-button title="删除" @click="selectOpen('dele')">删除</el-button>
         <el-button title="是否禁用" @click="selectOpen('disable')">禁用</el-button>
         <el-button title="解除会员" @click="selectOpen('removem')">解除会员</el-button>
+        <TagExport :query="query" />
+        <TagImport />
       </el-col>
     </el-row>
     <el-dialog
@@ -64,17 +54,17 @@
       top="20vh"
     >
       <el-form ref="selectRef" label-width="120px">
-        <el-form-item v-if="selectType === 'removem'">
+        <el-form-item v-if="selectType === 'removem'" label="解除会员">
           <el-text size="default">确定要解除选中的{{ name }}的会员吗？</el-text>
         </el-form-item>
         <el-form-item v-else-if="selectType === 'disable'" label="是否禁用">
           <el-switch v-model="is_disable" :active-value="1" :inactive-value="0" />
         </el-form-item>
-        <el-form-item v-else-if="selectType === 'dele'">
+        <el-form-item v-else-if="selectType === 'dele'" label="删除">
           <el-text size="default" type="danger">确定要删除选中的{{ name }}吗？</el-text>
         </el-form-item>
         <el-form-item :label="name + 'ID'">
-          <el-input v-model="selectIds" type="textarea" autosize disabled />
+          <el-input v-model="selectIds" type="textarea" :rows="18" disabled />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -96,30 +86,15 @@
       <el-table-column prop="tag_name" label="名称" min-width="160" show-overflow-tooltip />
       <el-table-column prop="tag_desc" label="描述" min-width="220" show-overflow-tooltip />
       <el-table-column prop="remark" label="备注" min-width="150" show-overflow-tooltip />
-      <el-table-column prop="is_disable" label="禁用" min-width="85" sortable="custom">
-        <template #default="scope">
-          <el-switch
-            v-model="scope.row.is_disable"
-            :active-value="1"
-            :inactive-value="0"
-            @change="disable([scope.row])"
-          />
-        </template>
-      </el-table-column>
+      <el-table-column prop="is_disable_name" label="禁用" min-width="85" sortable="custom" />
       <el-table-column prop="sort" label="排序" min-width="85" sortable="custom" />
       <el-table-column prop="create_time" label="添加时间" width="165" sortable="custom" />
       <el-table-column prop="update_time" label="修改时间" width="165" sortable="custom" />
       <el-table-column label="操作" width="130">
         <template #default="scope">
-          <el-link type="primary" class="mr-1" :underline="false" @click="memberShow(scope.row)">
-            会员
-          </el-link>
-          <el-link type="primary" class="mr-1" :underline="false" @click="edit(scope.row)">
-            修改
-          </el-link>
-          <el-link type="primary" :underline="false" @click="selectOpen('dele', [scope.row])">
-            删除
-          </el-link>
+          <el-link type="primary" class="mr-1" :underline="false" @click="memberShow(scope.row)"> 会员 </el-link>
+          <el-link type="primary" class="mr-1" :underline="false" @click="edit(scope.row)"> 修改 </el-link>
+          <el-link type="primary" :underline="false" @click="selectOpen('dele', [scope.row])"> 删除 </el-link>
         </template>
       </el-table-column>
     </el-table>
@@ -183,12 +158,7 @@
       <el-row>
         <el-col>
           <el-button type="primary" @click="memberSelectOpen('memberRemove')">解除</el-button>
-          <el-input
-            v-model="memberQuery.search_value"
-            class="ya-search-value"
-            placeholder="昵称"
-            clearable
-          />
+          <el-input v-model="memberQuery.search_value" class="ya-search-value" placeholder="昵称" clearable />
           <el-button type="primary" @click="member()">查询</el-button>
         </el-col>
       </el-row>
@@ -208,43 +178,15 @@
             <FileImage :file-url="scope.row.avatar_url" avatar lazy />
           </template>
         </el-table-column>
-        <el-table-column
-          prop="nickname"
-          label="昵称"
-          min-width="150"
-          sortable="custom"
-          show-overflow-tooltip
-        />
-        <el-table-column
-          prop="username"
-          label="用户名"
-          min-width="145"
-          sortable="custom"
-          show-overflow-tooltip
-        />
-        <el-table-column
-          prop="phone"
-          label="手机"
-          min-width="120"
-          sortable="custom"
-          show-overflow-tooltip
-        />
-        <el-table-column
-          prop="email"
-          label="邮箱"
-          min-width="180"
-          sortable="custom"
-          show-overflow-tooltip
-        />
+        <el-table-column prop="nickname" label="昵称" min-width="150" sortable="custom" show-overflow-tooltip />
+        <el-table-column prop="username" label="用户名" min-width="145" sortable="custom" show-overflow-tooltip />
+        <el-table-column prop="phone" label="手机" min-width="120" sortable="custom" show-overflow-tooltip />
+        <el-table-column prop="email" label="邮箱" min-width="180" sortable="custom" show-overflow-tooltip />
         <el-table-column prop="tag_names" label="标签" min-width="170" show-overflow-tooltip />
         <el-table-column prop="group_names" label="分组" min-width="170" show-overflow-tooltip />
         <el-table-column label="操作" min-width="70">
           <template #default="scope">
-            <el-link
-              type="primary"
-              :underline="false"
-              @click="memberSelectOpen('memberRemove', scope.row)"
-            >
+            <el-link type="primary" :underline="false" @click="memberSelectOpen('memberRemove', scope.row)">
               解除
             </el-link>
           </template>
@@ -287,11 +229,13 @@ import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination/index.vue'
 import { arrayColumn } from '@/utils/index'
 import { getPageLimit } from '@/utils/settings'
-import { list, info, add, edit, dele, disable, member, memberRemove } from '@/api/member/tag'
+import { list, info, add, edit, dele, disable, memberList, memberRemove } from '@/api/member/tag'
+import TagExport from './components/TagExport.vue'
+import TagImport from './components/TagImport.vue'
 
 export default {
   name: 'MemberTag',
-  components: { Pagination },
+  components: { Pagination, TagExport, TagImport },
   data() {
     return {
       name: '会员标签',
@@ -434,7 +378,7 @@ export default {
       this.query.page = 1
       this.list()
     },
-    // 刷新
+    // 重置查询
     refresh() {
       const limit = this.query.limit
       this.query = this.$options.data().query
@@ -581,7 +525,7 @@ export default {
     // 标签会员列表
     member() {
       this.memberLoad = true
-      member(this.memberQuery)
+      memberList(this.memberQuery)
         .then((res) => {
           this.memberData = res.data.list
           this.memberCount = res.data.count

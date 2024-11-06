@@ -125,10 +125,35 @@ export function disable(data) {
 /**
  * 会员导入
  * @param {array} data 请求数据
+ * @param {string} method get下载导入模板，post上传导入文件
  */
-export function imports(data) {
+export function imports(data = {}, method = 'post') {
+  if (method == 'get') {
+    return request({
+      url: url + 'import',
+      method: 'get',
+      params: data,
+      responseType: 'blob'
+    })
+  }
+  return import.meta.env.VITE_APP_BASE_URL + url + 'import'
+}
+/**
+ * 会员导出
+ * @param {array} data 请求数据
+ * @param {string} method get下载导出文件，post提交导出
+ */
+export function exports(data, method = 'post') {
+  if (method == 'get') {
+    return request({
+      url: url + 'export',
+      method: 'get',
+      params: data,
+      responseType: 'blob'
+    })
+  }
   return request({
-    url: url + 'import',
+    url: url + 'export',
     method: 'post',
     data
   })

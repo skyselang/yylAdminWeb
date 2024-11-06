@@ -1,4 +1,4 @@
-// 侧边栏 css
+// sidebar css
 
 .app {
   .main-container {
@@ -21,7 +21,7 @@
     background-color: $menuBg;
     transition: width 0.28s;
 
-    // 重置 element-plus 样式
+    // reset element-plus css
     .horizontal-collapse-transition {
       transition: 0s width ease-in-out, 0s padding-left ease-in-out, 0s padding-right ease-in-out;
     }

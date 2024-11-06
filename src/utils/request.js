@@ -48,7 +48,7 @@ service.interceptors.request.use(
   // 请求错误
   (error) => {
     if (import.meta.env.DEV) {
-      console.log(error)
+      console.log('request', error)
     }
     return Promise.reject(error)
   }
@@ -63,19 +63,26 @@ service.interceptors.response.use(
   (response) => {
     // 响应数据
     const res = response.data
-    if (response.data && response.config.responseType === 'blob') {
+    if (response.data instanceof Blob) {
       // 文件下载
-      if (response.data.type === 'application/json') {
+      if (response.data.type == 'application/json') {
         const reader = new FileReader()
-        reader.readAsText(response.data, 'utf-8')
-        reader.onload = () => {
-          const result = JSON.parse(reader.result)
-          responseHandle(result)
-          return Promise.reject(new Error(result.msg || 'Server error'))
+        reader.onload = function (event) {
+          const jsonString = event.target.result
+          const jsonObject = JSON.parse(jsonString)
+          responseHandle(jsonObject)
         }
-        return Promise.reject()
+        reader.readAsText(response.data)
       } else {
-        return response.data
+        const file_name = response.config.params?.file_name || ''
+        let link = document.createElement('a')
+        link.href = window.URL.createObjectURL(response.data)
+        if (file_name) {
+          link.setAttribute('download', file_name)
+        }
+        document.body.appendChild(link)
+        link.click()
+        link.remove()
       }
     } else {
       // 返回码200：成功
@@ -83,7 +90,7 @@ service.interceptors.response.use(
         return res
       } else {
         responseHandle(res)
-        return Promise.reject(new Error(res.msg || 'Server error'))
+        return Promise.reject(new Error(res.msg || 'Server error !200'))
       }
     }
   },
@@ -93,7 +100,7 @@ service.interceptors.response.use(
       const res = error.response.data
       responseHandle(res)
       if (import.meta.env.DEV) {
-        console.log(error.response)
+        console.log('response', error)
       }
     } else {
       return Promise.reject(error)
@@ -120,7 +127,7 @@ function responseHandle(res) {
   } else {
     ElMessage({
       showClose: true,
-      message: res.msg || 'Server error',
+      message: res.msg || 'Server error !401',
       type: 'error',
       duration: 5000
     })

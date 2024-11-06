@@ -1,3 +1,7 @@
+import { useSettingsStoreHook } from '@/store/modules/settings'
+import { useUserStoreHook } from '@/store/modules/user'
+import { ElMessage } from 'element-plus'
+
 /**
  * 检查元素是否有类
  * @param {HTMLElement} ele
@@ -30,6 +34,7 @@ export function removeClass(ele, cls) {
 }
 
 /**
+ * 是否外部链接
  * @param {string} path
  * @returns {Boolean}
  */
@@ -135,4 +140,91 @@ export function arrayToArray(array) {
     }
   }
   return arr
+}
+
+/**
+ * token名称
+ * @returns {string}
+ */
+export function tokenName() {
+  const settingsStore = useSettingsStoreHook()
+  return settingsStore.tokenName
+}
+
+/**
+ * token值
+ * @returns {string}
+ */
+export function tokenValue() {
+  const userStore = useUserStoreHook()
+  return userStore.token
+}
+
+/**
+ * 下载文件
+ * @param {string} url 链接
+ * @param {object} param 参数
+ * @return {void|string} 打开下载窗口或返回下载链接
+ */
+export function downloadFile(url, param = {}) {
+  const settingsStore = useSettingsStoreHook()
+  const userStore = useUserStoreHook()
+  const tokenName = settingsStore.tokenName
+  const tokenValue = userStore.token
+  if (tokenValue) {
+    param[tokenName] = tokenValue
+  }
+  let params = new URLSearchParams()
+  for (let key in param) {
+    params.append(key, param[key])
+  }
+  const paramsString = params.toString()
+  const downloadUrl = `${url}?${paramsString}`
+  const handle = window.open(downloadUrl, '_self')
+  if (!handle) {
+    return downloadUrl
+  }
+}
+
+/**
+ * 复制文本
+ * @param {string} text 文本
+ * @param {string} suc_msg 成功提示
+ * @param {string} err_msg 失败提示
+ */
+export function clipboard(text, suc_msg = '', err_msg = '') {
+  try {
+    navigator.clipboard.writeText(text)
+    ElMessage({
+      message: suc_msg || '复制成功',
+      type: 'success',
+      duration: 1500
+    })
+  } catch (e) {
+    ElMessage({
+      message: err_msg || '复制失败',
+      type: 'error'
+    })
+  }
+}
+
+/**
+ * 获取当前日期时间
+ * @param {string} date_separator 日期分隔符
+ * @param {string} time_separator 时间分隔符
+ * @param {string} date_time_separator 日期时间分隔符
+ * @return {string} eg：2024-10-17 14:12:00
+ */
+export function datetime(date_separator = '-', time_separator = ':', date_time_separator = ' ') {
+  const now = new Date()
+  const year = now.getFullYear()
+  const month = String(now.getMonth() + 1).padStart(2, '0')
+  const day = String(now.getDate()).padStart(2, '0')
+  const hours = String(now.getHours()).padStart(2, '0')
+  const minutes = String(now.getMinutes()).padStart(2, '0')
+  const seconds = String(now.getSeconds()).padStart(2, '0')
+  const formattedDate = `${year}${date_separator}${month}${date_separator}${day}`
+  const formattedTime = `${hours}${time_separator}${minutes}${time_separator}${seconds}`
+  const formattedDateTime = `${formattedDate}${date_time_separator}${formattedTime}`
+  return formattedDateTime
 }

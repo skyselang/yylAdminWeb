@@ -14,21 +14,11 @@
         <el-select v-model="query.search_exp" class="ya-search-exp">
           <el-option v-for="exp in exps" :key="exp.exp" :value="exp.exp" :label="exp.name" />
         </el-select>
-        <el-select
-          v-if="query.search_field === 'is_disable'"
-          v-model="query.search_value"
-          class="ya-search-value"
-        >
+        <el-select v-if="query.search_field === 'is_disable'" v-model="query.search_value" class="ya-search-value">
           <el-option :value="1" label="是" />
           <el-option :value="0" label="否" />
         </el-select>
-        <el-input
-          v-else
-          v-model="query.search_value"
-          class="ya-search-value"
-          placeholder="搜索文件"
-          clearable
-        />
+        <el-input v-else v-model="query.search_value" class="ya-search-value" placeholder="搜索文件" clearable />
         <el-select v-model="query.date_field" class="ya-date-field" placeholder="时间类型">
           <el-option value="create_time" label="添加时间" />
           <el-option value="update_time" label="修改时间" />
@@ -42,10 +32,8 @@
           value-format="YYYY-MM-DD HH:mm:ss"
           :default-time="[new Date(2024, 1, 1, 0, 0, 0), new Date(2024, 1, 1, 23, 59, 59)]"
         />
-        <el-button type="primary" @click="search()">查询</el-button>
-        <el-button title="重置" @click="refresh()">
-          <svg-icon icon-class="refresh" />
-        </el-button>
+        <el-button type="primary" title="查询/刷新" @click="search()">查询</el-button>
+        <el-button type="default" title="重置查询条件" @click="refresh()">重置</el-button>
         <el-button type="primary" @click="add()">添加</el-button>
       </el-col>
     </el-row>
@@ -98,30 +86,15 @@
       <el-table-column prop="group_name" label="名称" min-width="130" show-overflow-tooltip />
       <el-table-column prop="group_desc" label="描述" min-width="160" show-overflow-tooltip />
       <el-table-column prop="remark" label="备注" min-width="150" show-overflow-tooltip />
-      <el-table-column prop="is_disable" label="禁用" min-width="85" sortable="custom">
-        <template #default="scope">
-          <el-switch
-            v-model="scope.row.is_disable"
-            :active-value="1"
-            :inactive-value="0"
-            @change="disable([scope.row])"
-          />
-        </template>
-      </el-table-column>
+      <el-table-column prop="is_disable_name" label="禁用" min-width="85" sortable="custom" />
       <el-table-column prop="sort" label="排序" min-width="85" sortable="custom" />
       <el-table-column prop="create_time" label="添加时间" width="165" sortable="custom" />
       <el-table-column prop="update_time" label="修改时间" width="165" sortable="custom" />
       <el-table-column label="操作" width="130">
         <template #default="scope">
-          <el-link type="primary" class="mr-1" :underline="false" @click="fileShow(scope.row)"
-            >文件</el-link
-          >
-          <el-link type="primary" class="mr-1" :underline="false" @click="edit(scope.row)"
-            >修改</el-link
-          >
-          <el-link type="primary" :underline="false" @click="selectOpen('dele', [scope.row])"
-            >删除</el-link
-          >
+          <el-link type="primary" class="mr-1" :underline="false" @click="fileShow(scope.row)">文件</el-link>
+          <el-link type="primary" class="mr-1" :underline="false" @click="edit(scope.row)">修改</el-link>
+          <el-link type="primary" :underline="false" @click="selectOpen('dele', [scope.row])">删除</el-link>
         </template>
       </el-table-column>
     </el-table>
@@ -151,12 +124,7 @@
             <el-input v-model="model.group_name" placeholder="请输入名称" clearable />
           </el-form-item>
           <el-form-item label="描述" prop="group_desc">
-            <el-input
-              v-model="model.group_desc"
-              type="textarea"
-              autosize
-              placeholder="请输入描述"
-            />
+            <el-input v-model="model.group_desc" type="textarea" autosize placeholder="请输入描述" />
           </el-form-item>
           <el-form-item label="备注" prop="remark">
             <el-input v-model="model.remark" placeholder="请输入备注" clearable />
@@ -192,15 +160,8 @@
       <!-- 分组文件操作 -->
       <el-row>
         <el-col>
-          <el-button type="primary" title="解除" @click="fileSelectOpen('fileRemove')">
-            解除
-          </el-button>
-          <el-input
-            v-model="fileQuery.search_value"
-            class="ya-search-value"
-            placeholder="名称"
-            clearable
-          />
+          <el-button type="primary" title="解除" @click="fileSelectOpen('fileRemove')"> 解除 </el-button>
+          <el-input v-model="fileQuery.search_value" class="ya-search-value" placeholder="名称" clearable />
           <el-button type="primary" @click="file()">查询</el-button>
         </el-col>
       </el-row>
@@ -221,43 +182,16 @@
           </template>
         </el-table-column>
         <el-table-column prop="file_type_name" label="类型" min-width="85" sortable="custom" />
-        <el-table-column
-          prop="file_name"
-          label="名称"
-          min-width="120"
-          sortable="custom"
-          show-overflow-tooltip
-        />
+        <el-table-column prop="file_name" label="名称" min-width="120" sortable="custom" show-overflow-tooltip />
         <el-table-column prop="file_ext" label="后缀" min-width="85" sortable="custom" />
-        <el-table-column
-          prop="file_size"
-          label="大小"
-          min-width="85"
-          sortable="custom"
-          show-overflow-tooltip
-        />
+        <el-table-column prop="file_size" label="大小" min-width="85" sortable="custom" show-overflow-tooltip />
         <el-table-column prop="group_name" label="分组" min-width="120" show-overflow-tooltip />
         <el-table-column prop="tag_names" label="标签" min-width="130" show-overflow-tooltip />
-        <el-table-column prop="is_disable" label="禁用" min-width="85" sortable="custom">
-          <template #default="scope">
-            <el-switch
-              v-model="scope.row.is_disable"
-              :active-value="1"
-              :inactive-value="0"
-              disabled
-            />
-          </template>
-        </el-table-column>
+        <el-table-column prop="is_disable_name" label="禁用" min-width="80" sortable="custom" />
         <el-table-column prop="sort" label="排序" min-width="85" sortable="custom" />
         <el-table-column label="操作" min-width="70">
           <template #default="scope">
-            <el-link
-              type="primary"
-              :underline="false"
-              @click="fileSelectOpen('fileRemove', scope.row)"
-            >
-              解除
-            </el-link>
+            <el-link type="primary" :underline="false" @click="fileSelectOpen('fileRemove', scope.row)"> 解除 </el-link>
           </template>
         </el-table-column>
       </el-table>
@@ -300,7 +234,7 @@ import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination/index.vue'
 import { arrayColumn } from '@/utils/index'
 import { getPageLimit } from '@/utils/settings'
-import { list, info, add, edit, dele, disable, file, fileRemove } from '@/api/file/group'
+import { list, info, add, edit, dele, disable, fileList, fileRemove } from '@/api/file/group'
 
 export default {
   name: 'FileGroup',
@@ -448,7 +382,7 @@ export default {
       this.query.page = 1
       this.list()
     },
-    // 刷新
+    // 重置查询
     refresh() {
       const limit = this.query.limit
       this.query = this.$options.data().query
@@ -595,7 +529,7 @@ export default {
     // 分组文件列表
     file() {
       this.fileLoad = true
-      file(this.fileQuery)
+      fileList(this.fileQuery)
         .then((res) => {
           this.fileData = res.data.list
           this.fileCount = res.data.count

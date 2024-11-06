@@ -10,13 +10,7 @@
       top="10vh"
       center
     >
-      <el-table
-        ref="table"
-        v-loading="loading"
-        :data="data"
-        :height="height - 200"
-        :show-header="false"
-      >
+      <el-table ref="table" v-loading="loading" :data="data" :height="height - 200" :show-header="false">
         <el-table-column prop="image_id" min-width="90">
           <template #default="scope">
             <FileImage :file-url="scope.row.image_url" lazy />
@@ -82,13 +76,7 @@
       </template>
     </el-dialog>
     <!-- 公告详情 -->
-    <el-dialog
-      v-model="infoDialog"
-      :close-on-click-modal="false"
-      :close-on-press-escape="false"
-      top="9vh"
-      center
-    >
+    <el-dialog v-model="infoDialog" :close-on-click-modal="false" :close-on-press-escape="false" top="9vh" center>
       <template #header>
         <span :style="{ color: infoModel.title_color }">{{ infoModel.title }}</span>
       </template>

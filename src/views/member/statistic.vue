@@ -15,13 +15,7 @@
           </el-card>
         </el-col>
       </el-row>
-      <el-card
-        v-for="(item, index) in echart_num"
-        :key="index"
-        v-loading="loading"
-        class="mt-[10px]"
-        shadow="never"
-      >
+      <el-card v-for="(item, index) in echart_num" :key="index" v-loading="loading" class="mt-[10px]" shadow="never">
         <el-row class="text-center">
           <el-col>
             <el-select v-model="date_type" class="!w-[100px]" @change="typeChange">
@@ -56,13 +50,7 @@ import * as echarts from 'echarts/core'
 // 引入图表，图表后缀都为 Chart
 import { LineChart, BarChart } from 'echarts/charts'
 // 引入组件，组件后缀都为 Component
-import {
-  TitleComponent,
-  LegendComponent,
-  GridComponent,
-  TooltipComponent,
-  ToolboxComponent
-} from 'echarts/components'
+import { TitleComponent, LegendComponent, GridComponent, TooltipComponent, ToolboxComponent } from 'echarts/components'
 // 引入 Canvas 渲染器，注意引入 CanvasRenderer 或者 SVGRenderer 是必须的一步
 import { CanvasRenderer } from 'echarts/renderers'
 // 注册必须的组件

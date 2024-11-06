@@ -13,21 +13,11 @@
         <el-select v-model="query.search_exp" class="ya-search-exp">
           <el-option v-for="exp in exps" :key="exp.exp" :value="exp.exp" :label="exp.name" />
         </el-select>
-        <el-select
-          v-if="query.search_field === 'is_disable'"
-          v-model="query.search_value"
-          class="ya-search-value"
-        >
+        <el-select v-if="query.search_field === 'is_disable'" v-model="query.search_value" class="ya-search-value">
           <el-option :value="1" label="是" />
           <el-option :value="0" label="否" />
         </el-select>
-        <el-input
-          v-else
-          v-model="query.search_value"
-          class="ya-search-value"
-          placeholder="查询内容"
-          clearable
-        />
+        <el-input v-else v-model="query.search_value" class="ya-search-value" placeholder="查询内容" clearable />
         <el-select v-model="query.date_field" class="ya-date-field" placeholder="时间字段">
           <el-option value="create_time" label="添加时间" />
           <el-option value="update_time" label="修改时间" />
@@ -43,10 +33,8 @@
           value-format="YYYY-MM-DD HH:mm:ss"
           :default-time="[new Date(2024, 1, 1, 0, 0, 0), new Date(2024, 1, 1, 23, 59, 59)]"
         />
-        <el-button type="primary" @click="search()">查询</el-button>
-        <el-button title="重置" @click="refresh()">
-          <svg-icon icon-class="refresh" />
-        </el-button>
+        <el-button type="primary" title="查询/刷新" @click="search()">查询</el-button>
+        <el-button type="default" title="重置查询条件" @click="refresh()">重置</el-button>
         <el-button type="primary" @click="add()">添加</el-button>
       </el-col>
     </el-row>
@@ -121,27 +109,14 @@
       </el-table-column>
       <el-table-column prop="start_time" label="开始时间" width="165" sortable="custom" />
       <el-table-column prop="end_time" label="结束时间" width="165" sortable="custom" />
-      <el-table-column prop="is_disable" label="禁用" min-width="85" sortable="custom">
-        <template #default="scope">
-          <el-switch
-            v-model="scope.row.is_disable"
-            :active-value="1"
-            :inactive-value="0"
-            @change="disable([scope.row])"
-          />
-        </template>
-      </el-table-column>
+      <el-table-column prop="is_disable_name" label="禁用" min-width="85" sortable="custom" />
       <el-table-column prop="sort" label="排序" min-width="85" sortable="custom" />
       <el-table-column prop="create_time" label="添加时间" width="165" sortable="custom" />
       <el-table-column prop="update_time" label="修改时间" width="165" sortable="custom" />
       <el-table-column label="操作" width="95">
         <template #default="scope">
-          <el-link type="primary" class="mr-1" :underline="false" @click="edit(scope.row)">
-            修改
-          </el-link>
-          <el-link type="primary" :underline="false" @click="selectOpen('dele', [scope.row])">
-            删除
-          </el-link>
+          <el-link type="primary" class="mr-1" :underline="false" @click="edit(scope.row)"> 修改 </el-link>
+          <el-link type="primary" :underline="false" @click="selectOpen('dele', [scope.row])"> 删除 </el-link>
         </template>
       </el-table-column>
     </el-table>
@@ -167,12 +142,7 @@
           <el-tab-pane label="信息">
             <el-scrollbar native :height="height - 80">
               <el-form-item label="图片" prop="image_id">
-                <FileImage
-                  v-model="model.image_id"
-                  :file-url="model.image_url"
-                  :height="100"
-                  upload
-                />
+                <FileImage v-model="model.image_id" :file-url="model.image_url" :height="100" upload />
               </el-form-item>
               <el-form-item label="标题" prop="title">
                 <el-col :span="18">
@@ -385,7 +355,7 @@ export default {
       this.query.page = 1
       this.list()
     },
-    // 刷新
+    // 重置查询
     refresh() {
       const limit = this.query.limit
       this.query = this.$options.data().query

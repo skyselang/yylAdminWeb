@@ -62,8 +62,7 @@ export const useSettingsStore = defineStore('setting', () => {
         }
       } else if (key == 'faviconUrl') {
         if (value) {
-          const favicon =
-            document.querySelector("link[rel*='icon']") || document.createElement('link')
+          const favicon = document.querySelector("link[rel*='icon']") || document.createElement('link')
           favicon.href = value
           favicon.rel = 'shortcut icon'
           favicon.type = 'image/x-icon'

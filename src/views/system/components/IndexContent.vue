@@ -68,8 +68,7 @@ export default {
       var echart = echarts.init(document.getElementById('echartIndexContent'))
       var option = {
         title: {
-          subtext:
-            this.category + '：' + data.category + '，' + this.contents + '：' + data.content,
+          subtext: this.category + '：' + data.category + '，' + this.contents + '：' + data.content,
           left: 'center'
         },
         tooltip: {

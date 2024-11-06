@@ -27,7 +27,7 @@ import screenHeight from '@/utils/screen-height'
 import { memberInfo, memberEdit } from '@/api/member/setting'
 
 export default {
-  name: 'SettingMember',
+  name: 'MemberSettingMember',
   data() {
     return {
       name: '会员设置',

@@ -57,13 +57,9 @@ export function dele(data) {
   })
 }
 /**
- * 会员第三方账号是否禁用
+ * 会员第三方账号禁用
  * @param {array} data 请求数据
  */
 export function disable(data) {
-  return request({
-    url: url + 'disable',
-    method: 'post',
-    data
-  })
+  return request({ url: url + 'disable', method: 'post', data })
 }

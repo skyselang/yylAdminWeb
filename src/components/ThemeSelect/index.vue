@@ -1,8 +1,5 @@
 <template>
-  <svg-icon
-    :icon-class="settingsStore.theme == 'dark' ? 'moon' : 'sunny'"
-    @click="handleThemeChange"
-  />
+  <svg-icon :icon-class="settingsStore.theme == 'dark' ? 'moon' : 'sunny'" @click="handleThemeChange" />
 </template>
 
 <script setup>

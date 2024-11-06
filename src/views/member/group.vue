@@ -22,13 +22,7 @@
           <el-option :value="1" label="是" />
           <el-option :value="0" label="否" />
         </el-select>
-        <el-input
-          v-else
-          v-model="query.search_value"
-          class="ya-search-value"
-          placeholder="查询内容"
-          clearable
-        />
+        <el-input v-else v-model="query.search_value" class="ya-search-value" placeholder="查询内容" clearable />
         <el-select v-model="query.date_field" class="ya-date-field" placeholder="时间类型">
           <el-option value="create_time" label="添加时间" />
           <el-option value="update_time" label="修改时间" />
@@ -42,10 +36,8 @@
           value-format="YYYY-MM-DD HH:mm:ss"
           :default-time="[new Date(2024, 1, 1, 0, 0, 0), new Date(2024, 1, 1, 23, 59, 59)]"
         />
-        <el-button type="primary" @click="search()">查询</el-button>
-        <el-button title="重置" @click="refresh()">
-          <svg-icon icon-class="refresh" />
-        </el-button>
+        <el-button type="primary" title="查询/刷新" @click="search()">查询</el-button>
+        <el-button type="default" title="重置查询条件" @click="refresh()">重置</el-button>
         <el-button type="primary" @click="add()">添加</el-button>
       </el-col>
     </el-row>
@@ -73,18 +65,10 @@
           </el-form-item>
           <el-form-item v-else-if="selectType === 'editapi'" label="会员接口">
             <el-col>
-              <el-checkbox
-                v-model="apiExpandAll"
-                title="展开/收起"
-                @change="apiExpandAllChange('selApiRef')"
-              >
+              <el-checkbox v-model="apiExpandAll" title="展开/收起" @change="apiExpandAllChange('selApiRef')">
                 展开
               </el-checkbox>
-              <el-checkbox
-                v-model="apiCheckAll"
-                title="全选/反选"
-                @change="apiCheckAllChange('selApiRef')"
-              >
+              <el-checkbox v-model="apiCheckAll" title="全选/反选" @change="apiCheckAllChange('selApiRef')">
                 全选
               </el-checkbox>
             </el-col>
@@ -103,19 +87,12 @@
                 <span class="custom-tree-node">
                   <span>{{ scope.node.label }}</span>
                   <span v-if="scope.data.children" style="margin-left: 10px">
-                    <el-checkbox
-                      title="全选/反选"
-                      @change="apiCheckAllChangePid(scope.node, scope.data, 'selApiRef')"
-                    >
+                    <el-checkbox title="全选/反选" @change="apiCheckAllChangePid(scope.node, scope.data, 'selApiRef')">
                       全选
                     </el-checkbox>
                   </span>
                   <span>
-                    <i
-                      v-if="scope.data.api_url"
-                      style="margin-left: 10px"
-                      :title="scope.data.api_url"
-                    >
+                    <i v-if="scope.data.api_url" style="margin-left: 10px" :title="scope.data.api_url">
                       <svg-icon icon-class="link" />
                     </i>
                     <i v-else style="margin-left: 10px; color: #fff">
@@ -172,40 +149,16 @@
       <el-table-column prop="group_name" label="名称" min-width="160" show-overflow-tooltip />
       <el-table-column prop="group_desc" label="描述" min-width="220" show-overflow-tooltip />
       <el-table-column prop="remark" label="备注" min-width="150" show-overflow-tooltip />
-      <el-table-column prop="is_default" label="默认" min-width="85" sortable="custom">
-        <template #default="scope">
-          <el-switch
-            v-model="scope.row.is_default"
-            :active-value="1"
-            :inactive-value="0"
-            @change="defaults([scope.row])"
-          />
-        </template>
-      </el-table-column>
-      <el-table-column prop="is_disable" label="禁用" min-width="85" sortable="custom">
-        <template #default="scope">
-          <el-switch
-            v-model="scope.row.is_disable"
-            :active-value="1"
-            :inactive-value="0"
-            @change="disable([scope.row])"
-          />
-        </template>
-      </el-table-column>
+      <el-table-column prop="is_default_name" label="默认" min-width="85" sortable="custom" />
+      <el-table-column prop="is_disable_name" label="禁用" min-width="85" sortable="custom" />
       <el-table-column prop="sort" label="排序" min-width="85" sortable="custom" />
       <el-table-column prop="create_time" label="添加时间" width="165" sortable="custom" />
       <el-table-column prop="update_time" label="修改时间" width="165" sortable="custom" />
       <el-table-column label="操作" width="130">
         <template #default="scope">
-          <el-link type="primary" class="mr-1" :underline="false" @click="memberShow(scope.row)">
-            会员
-          </el-link>
-          <el-link type="primary" class="mr-1" :underline="false" @click="edit(scope.row)">
-            修改
-          </el-link>
-          <el-link type="primary" :underline="false" @click="selectOpen('dele', [scope.row])">
-            删除
-          </el-link>
+          <el-link type="primary" class="mr-1" :underline="false" @click="memberShow(scope.row)"> 会员 </el-link>
+          <el-link type="primary" class="mr-1" :underline="false" @click="edit(scope.row)"> 修改 </el-link>
+          <el-link type="primary" :underline="false" @click="selectOpen('dele', [scope.row])"> 删除 </el-link>
         </template>
       </el-table-column>
     </el-table>
@@ -233,12 +186,7 @@
             <el-input v-model="model.group_name" placeholder="请输入名称" clearable />
           </el-form-item>
           <el-form-item label="描述" prop="group_desc">
-            <el-input
-              v-model="model.group_desc"
-              type="textarea"
-              autosize
-              placeholder="请输入描述"
-            />
+            <el-input v-model="model.group_desc" type="textarea" autosize placeholder="请输入描述" />
           </el-form-item>
           <el-form-item label="备注" prop="remark">
             <el-input v-model="model.remark" placeholder="请输入备注" clearable />
@@ -248,18 +196,10 @@
           </el-form-item>
           <el-form-item label="接口">
             <el-col :span="24">
-              <el-checkbox
-                v-model="apiExpandAll"
-                title="展开/收起"
-                @change="apiExpandAllChange('apiRef')"
-              >
+              <el-checkbox v-model="apiExpandAll" title="展开/收起" @change="apiExpandAllChange('apiRef')">
                 展开
               </el-checkbox>
-              <el-checkbox
-                v-model="apiCheckAll"
-                title="全选/反选"
-                @change="apiCheckAllChange('apiRef')"
-              >
+              <el-checkbox v-model="apiCheckAll" title="全选/反选" @change="apiCheckAllChange('apiRef')">
                 全选
               </el-checkbox>
             </el-col>
@@ -279,19 +219,12 @@
                   <span class="custom-tree-node">
                     <span>{{ scope.node.label }}</span>
                     <span v-if="scope.data.children" style="margin-left: 10px">
-                      <el-checkbox
-                        title="全选/反选"
-                        @change="apiCheckAllChangePid(scope.node, scope.data, 'apiRef')"
-                      >
+                      <el-checkbox title="全选/反选" @change="apiCheckAllChangePid(scope.node, scope.data, 'apiRef')">
                         全选
                       </el-checkbox>
                     </span>
                     <span>
-                      <i
-                        v-if="scope.data.api_url"
-                        style="margin-left: 10px"
-                        :title="scope.data.api_url"
-                      >
+                      <i v-if="scope.data.api_url" style="margin-left: 10px" :title="scope.data.api_url">
                         <svg-icon icon-class="link" />
                       </i>
                       <i v-else style="margin-left: 10px; color: #fff">
@@ -343,15 +276,8 @@
       <!-- 分组会员操作 -->
       <el-row>
         <el-col>
-          <el-button type="primary" title="解除" @click="memberSelectOpen('memberRemove')">
-            解除
-          </el-button>
-          <el-input
-            v-model="memberQuery.search_value"
-            class="ya-search-value"
-            placeholder="昵称"
-            clearable
-          />
+          <el-button type="primary" title="解除" @click="memberSelectOpen('memberRemove')"> 解除 </el-button>
+          <el-input v-model="memberQuery.search_value" class="ya-search-value" placeholder="昵称" clearable />
           <el-button type="primary" @click="member()">查询</el-button>
         </el-col>
       </el-row>
@@ -371,43 +297,15 @@
             <FileImage :file-url="scope.row.avatar_url" avatar lazy />
           </template>
         </el-table-column>
-        <el-table-column
-          prop="nickname"
-          label="昵称"
-          min-width="150"
-          sortable="custom"
-          show-overflow-tooltip
-        />
-        <el-table-column
-          prop="username"
-          label="用户名"
-          min-width="145"
-          sortable="custom"
-          show-overflow-tooltip
-        />
-        <el-table-column
-          prop="phone"
-          label="手机"
-          min-width="120"
-          sortable="custom"
-          show-overflow-tooltip
-        />
-        <el-table-column
-          prop="email"
-          label="邮箱"
-          min-width="180"
-          sortable="custom"
-          show-overflow-tooltip
-        />
+        <el-table-column prop="nickname" label="昵称" min-width="150" sortable="custom" show-overflow-tooltip />
+        <el-table-column prop="username" label="用户名" min-width="145" sortable="custom" show-overflow-tooltip />
+        <el-table-column prop="phone" label="手机" min-width="120" sortable="custom" show-overflow-tooltip />
+        <el-table-column prop="email" label="邮箱" min-width="180" sortable="custom" show-overflow-tooltip />
         <el-table-column prop="tag_names" label="标签" min-width="170" show-overflow-tooltip />
         <el-table-column prop="group_names" label="分组" width="170" show-overflow-tooltip />
         <el-table-column label="操作" min-width="70">
           <template #default="scope">
-            <el-link
-              type="primary"
-              :underline="false"
-              @click="memberSelectOpen('memberRemove', scope.row)"
-            >
+            <el-link type="primary" :underline="false" @click="memberSelectOpen('memberRemove', scope.row)">
               解除
             </el-link>
           </template>
@@ -450,18 +348,7 @@ import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination/index.vue'
 import { arrayColumn } from '@/utils/index'
 import { getPageLimit } from '@/utils/settings'
-import {
-  list,
-  info,
-  add,
-  edit,
-  dele,
-  editapi,
-  defaults,
-  disable,
-  member,
-  memberRemove
-} from '@/api/member/group'
+import { list, info, add, edit, dele, editapi, defaults, disable, memberList, memberRemove } from '@/api/member/group'
 
 export default {
   name: 'MemberGroup',
@@ -608,22 +495,22 @@ export default {
       } else {
         this.model = this.$options.data().model
       }
+      this.apiCheckAll = false
+      this.apiExpandAll = false
+      this.apiCheckAllPid = {}
       if (this.$refs['ref'] !== undefined) {
         try {
           this.$refs['ref'].resetFields()
           this.$refs['ref'].clearValidate()
         } catch (error) {}
       }
-      this.apiCheckAll = false
-      this.apiExpandAll = false
-      this.apiCheckAllPid = {}
     },
     // 查询
     search() {
       this.query.page = 1
       this.list()
     },
-    // 刷新
+    // 重置查询
     refresh() {
       const limit = this.query.limit
       this.query = this.$options.data().query
@@ -860,7 +747,7 @@ export default {
     // 分组会员列表
     member() {
       this.memberLoad = true
-      member(this.memberQuery)
+      memberList(this.memberQuery)
         .then((res) => {
           this.memberData = res.data.list
           this.memberCount = res.data.count

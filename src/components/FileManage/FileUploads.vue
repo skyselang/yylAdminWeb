@@ -64,22 +64,10 @@
           >
             <svg-icon icon-class="d-arrow-right" />
           </el-link>
-          <el-link
-            class="file-link"
-            type="primary"
-            :underline="false"
-            title="下载"
-            @click="fileDownload(item)"
-          >
+          <el-link class="file-link" type="primary" :underline="false" title="下载" @click="fileDownload(item)">
             <svg-icon icon-class="download" />
           </el-link>
-          <el-link
-            class="file-link"
-            type="primary"
-            :underline="false"
-            title="删除"
-            @click="fileDelete(index)"
-          >
+          <el-link class="file-link" type="primary" :underline="false" title="删除" @click="fileDelete(index)">
             <svg-icon icon-class="delete" />
           </el-link>
         </el-col>
@@ -101,7 +89,7 @@
 
 <script setup>
 import FileManage from '@/components/FileManage/index.vue'
-import clip from '@/utils/clipboard'
+import { clipboard } from '@/utils/index'
 // 多文件上传
 const props = defineProps({
   modelValue: {
@@ -208,7 +196,7 @@ function fileDelete(index) {
   }
 }
 function fileDownload(file) {
-  clip(fileName(file), '文件名复制成功')
+  clipboard(fileName(file), '文件名复制成功')
   setTimeout(() => {
     window.open(file.file_url, '_blank')
   }, 500)

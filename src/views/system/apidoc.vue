@@ -3,25 +3,19 @@
     <el-row>
       <el-col>
         <el-text size="default">密码：{{ model.apidoc_pwd }}</el-text>
-        <el-button text type="primary" title="复制密码" @click="copy(model.apidoc_pwd)">
+        <el-button text type="primary" title="复制密码" @click="clipboard(model.apidoc_pwd)">
           <svg-icon icon-class="copy-document" />
         </el-button>
 
         <el-text size="default">Token：{{ model.token_sub }}</el-text>
-        <el-button text type="primary" title="复制Token" @click="copy(model.token)">
+        <el-button text type="primary" title="复制Token" @click="clipboard(model.token)">
           <svg-icon icon-class="copy-document" />
         </el-button>
 
         <el-button text type="primary" title="刷新" @click="refresh()">
           <svg-icon icon-class="refresh" size="18px" />
         </el-button>
-        <el-link
-          type="primary"
-          :href="model.apidoc_url"
-          :underline="false"
-          target="_blank"
-          title="新标签页打开"
-        >
+        <el-link type="primary" :href="model.apidoc_url" :underline="false" target="_blank" title="新标签页打开">
           <svg-icon icon-class="position" size="18px" />
         </el-link>
       </el-col>
@@ -34,7 +28,7 @@
 
 <script>
 import screenHeight from '@/utils/screen-height'
-import clip from '@/utils/clipboard'
+import { clipboard } from '@/utils/index'
 import { apidoc } from '@/api/system/apidoc'
 import { useUserStoreHook } from '@/store/modules/user'
 
@@ -63,6 +57,7 @@ export default {
     this.model.token_sub = userStore.token.substring(0, 16) + '...'
   },
   methods: {
+    clipboard,
     // 文档
     apidoc() {
       apidoc().then((res) => {
@@ -74,10 +69,6 @@ export default {
     // 刷新
     refresh() {
       this.apidoc()
-    },
-    // 复制
-    copy(text) {
-      clip(text)
     }
   }
 }

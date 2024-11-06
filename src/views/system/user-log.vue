@@ -28,12 +28,7 @@
           multiple
           allow-create
         >
-          <el-option
-            v-for="item in userData"
-            :key="item.user_id"
-            :value="item.user_id"
-            :label="item.nickname"
-          >
+          <el-option v-for="item in userData" :key="item.user_id" :value="item.user_id" :label="item.nickname">
             {{ item.nickname }} ({{ item.username }})
           </el-option>
         </el-select>
@@ -58,13 +53,7 @@
         >
           <el-option v-for="(item, index) in logTypes" :key="index" :value="index" :label="item" />
         </el-select>
-        <el-input
-          v-else
-          v-model="query.search_value"
-          class="ya-search-value"
-          placeholder="查询内容"
-          clearable
-        />
+        <el-input v-else v-model="query.search_value" class="ya-search-value" placeholder="查询内容" clearable />
         <el-date-picker
           v-model="query.date_value"
           type="datetimerange"
@@ -74,10 +63,8 @@
           value-format="YYYY-MM-DD HH:mm:ss"
           :default-time="[new Date(2024, 1, 1, 0, 0, 0), new Date(2024, 1, 1, 23, 59, 59)]"
         />
-        <el-button type="primary" @click="search()">查询</el-button>
-        <el-button title="重置" @click="refresh()">
-          <svg-icon icon-class="refresh" />
-        </el-button>
+        <el-button type="primary" title="查询/刷新" @click="search()">查询</el-button>
+        <el-button type="default" title="重置查询条件" @click="refresh()">重置</el-button>
       </el-col>
     </el-row>
     <!-- 操作 -->
@@ -125,24 +112,15 @@
       <el-table-column prop="menu_name" label="菜单名称" min-width="130" show-overflow-tooltip />
       <el-table-column prop="menu_url" label="菜单链接" min-width="180" show-overflow-tooltip />
       <el-table-column prop="request_ip" label="请求IP" min-width="130" show-overflow-tooltip />
-      <el-table-column
-        prop="request_region"
-        label="请求地区"
-        min-width="150"
-        show-overflow-tooltip
-      />
+      <el-table-column prop="request_region" label="请求地区" min-width="150" show-overflow-tooltip />
       <el-table-column prop="request_isp" label="请求ISP" min-width="105" show-overflow-tooltip />
       <el-table-column prop="response_code" label="返回码" min-width="80" show-overflow-tooltip />
       <el-table-column prop="response_msg" label="返回描述" min-width="120" show-overflow-tooltip />
       <el-table-column prop="create_time" label="请求时间" width="165" sortable="custom" />
       <el-table-column label="操作" width="95">
         <template #default="scope">
-          <el-link type="primary" class="mr-1" :underline="false" @click="info(scope.row)">
-            详情
-          </el-link>
-          <el-link type="primary" :underline="false" @click="selectOpen('dele', [scope.row])">
-            删除
-          </el-link>
+          <el-link type="primary" class="mr-1" :underline="false" @click="info(scope.row)"> 详情 </el-link>
+          <el-link type="primary" :underline="false" @click="selectOpen('dele', [scope.row])"> 删除 </el-link>
         </template>
       </el-table-column>
     </el-table>
@@ -228,8 +206,7 @@
 <script>
 import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination/index.vue'
-import clip from '@/utils/clipboard'
-import { arrayColumn } from '@/utils/index'
+import { arrayColumn, clipboard } from '@/utils/index'
 import { getPageLimit } from '@/utils/settings'
 import { list, info, dele, clear } from '@/api/system/user-log'
 
@@ -278,6 +255,7 @@ export default {
     this.list()
   },
   methods: {
+    clipboard,
     // 列表
     list() {
       this.loading = true
@@ -328,7 +306,7 @@ export default {
       this.query.page = 1
       this.list()
     },
-    // 刷新
+    // 重置查询
     refresh() {
       const limit = this.query.limit
       this.query = this.$options.data().query
@@ -431,14 +409,10 @@ export default {
         })
         .catch(() => {})
     },
-    // 复制
-    copy(text) {
-      clip(text)
-    },
     // 参数复制
     requestParamCopy() {
       const text = this.$refs.requestParamRef
-      this.copy(text.textContent)
+      clipboard(text.textContent)
     }
   }
 }

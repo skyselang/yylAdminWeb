@@ -38,13 +38,7 @@
           <el-option :value="1" label="是" />
           <el-option :value="0" label="否" />
         </el-select>
-        <el-input
-          v-else
-          v-model="query.search_value"
-          class="ya-search-value"
-          placeholder="查询内容"
-          clearable
-        />
+        <el-input v-else v-model="query.search_value" class="ya-search-value" placeholder="查询内容" clearable />
         <el-select v-model="query.date_field" class="ya-date-field" placeholder="时间类型">
           <el-option value="create_time" label="添加时间" />
           <el-option value="update_time" label="修改时间" />
@@ -58,23 +52,15 @@
           value-format="YYYY-MM-DD HH:mm:ss"
           :default-time="[new Date(2024, 1, 1, 0, 0, 0), new Date(2024, 1, 1, 23, 59, 59)]"
         />
-        <el-button type="primary" @click="search()">查询</el-button>
-        <el-button title="重置" @click="refresh()">
-          <svg-icon icon-class="refresh" />
-        </el-button>
+        <el-button type="primary" title="查询/刷新" @click="search()">查询</el-button>
+        <el-button type="default" title="重置查询条件" @click="refresh()">重置</el-button>
         <el-button type="primary" @click="add()">添加</el-button>
       </el-col>
     </el-row>
     <!-- 操作 -->
     <el-row>
       <el-col>
-        <el-checkbox
-          border
-          v-model="isExpandAll"
-          class="!mr-[10px] top-[3px]"
-          title="收起/展开"
-          @change="expandAll"
-        >
+        <el-checkbox border v-model="isExpandAll" class="!mr-[10px] top-[3px]" title="收起/展开" @change="expandAll">
           收起
         </el-checkbox>
         <el-button title="删除" @click="selectOpen('dele')">删除</el-button>
@@ -149,81 +135,24 @@
       default-expand-all
       @selection-change="select"
       @select-all="selectAll"
-      @cell-dblclick="cellDbclick"
     >
       <el-table-column type="selection" width="42" title="全选/反选" />
-      <el-table-column prop="api_name" label="接口名称" min-width="210" show-overflow-tooltip />
+      <el-table-column prop="api_name" label="接口名称" min-width="220" show-overflow-tooltip />
       <el-table-column prop="api_url" label="接口链接" min-width="300" show-overflow-tooltip />
       <el-table-column :prop="idkey" label="ID" width="80" />
-      <el-table-column prop="is_unlogin" label="免登" min-width="85">
-        <template #default="scope">
-          <el-switch
-            v-if="scope.row.api_url"
-            v-model="scope.row.is_unlogin"
-            :active-value="1"
-            :inactive-value="0"
-            @change="unlogin([scope.row])"
-          />
-          <span v-else></span>
-        </template>
-      </el-table-column>
-      <el-table-column prop="is_unauth" label="免权" min-width="85">
-        <template #default="scope">
-          <el-switch
-            v-if="scope.row.api_url"
-            v-model="scope.row.is_unauth"
-            :active-value="1"
-            :inactive-value="0"
-            @change="unauth([scope.row])"
-          />
-          <span v-else></span>
-        </template>
-      </el-table-column>
-      <el-table-column prop="is_unrate" label="免限" min-width="85">
-        <template #default="scope">
-          <el-switch
-            v-if="scope.row.api_url"
-            v-model="scope.row.is_unrate"
-            :active-value="1"
-            :inactive-value="0"
-            @change="unrate([scope.row])"
-          />
-          <span v-else></span>
-        </template>
-      </el-table-column>
-      <el-table-column prop="is_disable" label="禁用" min-width="85">
-        <template #default="scope">
-          <el-switch
-            v-if="scope.row.api_url"
-            v-model="scope.row.is_disable"
-            :active-value="1"
-            :inactive-value="0"
-            @change="disable([scope.row])"
-          />
-          <span v-else></span>
-        </template>
-      </el-table-column>
+      <el-table-column prop="is_unlogin_name" label="免登" min-width="80" />
+      <el-table-column prop="is_unauth_name" label="免权" min-width="80" />
+      <el-table-column prop="is_unrate_name" label="免限" min-width="80" />
+      <el-table-column prop="is_disable_name" label="禁用" min-width="80" />
       <el-table-column prop="sort" label="排序" min-width="85" />
       <el-table-column label="操作" width="170">
         <template #default="scope">
-          <el-link type="primary" class="mr-1" :underline="false" @click="groupShow(scope.row)">
-            分组
-          </el-link>
-          <el-link
-            type="primary"
-            class="mr-1"
-            :underline="false"
-            title="添加下级"
-            @click="add(scope.row)"
-          >
+          <el-link type="primary" class="mr-1" :underline="false" @click="groupShow(scope.row)"> 分组 </el-link>
+          <el-link type="primary" class="mr-1" :underline="false" title="添加下级" @click="add(scope.row)">
             添加
           </el-link>
-          <el-link type="primary" class="mr-1" :underline="false" @click="edit(scope.row)">
-            修改
-          </el-link>
-          <el-link type="primary" :underline="false" @click="selectOpen('dele', [scope.row])">
-            删除
-          </el-link>
+          <el-link type="primary" class="mr-1" :underline="false" @click="edit(scope.row)"> 修改 </el-link>
+          <el-link type="primary" :underline="false" @click="selectOpen('dele', [scope.row])"> 删除 </el-link>
         </template>
       </el-table-column>
     </el-table>
@@ -258,7 +187,7 @@
           <el-form-item label="接口名称" prop="api_name">
             <el-input v-model="model.api_name" placeholder="请输入接口名称" clearable>
               <template #append>
-                <el-link :underline="false" title="复制" @click="copy(model.api_name)">
+                <el-link :underline="false" title="复制" @click="clipboard(model.api_name)">
                   <svg-icon icon-class="copy-document" />
                 </el-link>
               </template>
@@ -267,7 +196,7 @@
           <el-form-item label="接口链接" prop="api_url">
             <el-input v-model="model.api_url" placeholder="应用/控制器/操作，区分大小写" clearable>
               <template #append>
-                <el-link :underline="false" title="复制" @click="copy(model.api_url)">
+                <el-link :underline="false" title="复制" @click="clipboard(model.api_url)">
                   <svg-icon icon-class="copy-document" />
                 </el-link>
               </template>
@@ -304,15 +233,8 @@
       <!-- 接口分组操作 -->
       <el-row>
         <el-col>
-          <el-button type="primary" title="解除" @click="groupSelectOpen('groupRemove')">
-            解除
-          </el-button>
-          <el-input
-            v-model="groupQuery.search_value"
-            class="ya-search-value"
-            placeholder="分组名称"
-            clearable
-          />
+          <el-button type="primary" title="解除" @click="groupSelectOpen('groupRemove')"> 解除 </el-button>
+          <el-input v-model="groupQuery.search_value" class="ya-search-value" placeholder="分组名称" clearable />
           <el-button type="primary" @click="groupList()">查询</el-button>
         </el-col>
       </el-row>
@@ -327,31 +249,12 @@
       >
         <el-table-column type="selection" width="42" title="全选/反选" />
         <el-table-column :prop="groupPk" label="分组ID" min-width="100" sortable="custom" />
-        <el-table-column
-          prop="group_name"
-          label="分组名称"
-          min-width="130"
-          sortable="custom"
-          show-overflow-tooltip
-        />
+        <el-table-column prop="group_name" label="分组名称" min-width="130" sortable="custom" show-overflow-tooltip />
         <el-table-column prop="group_desc" label="分组描述" min-width="130" show-overflow-tooltip />
-        <el-table-column prop="is_disable" label="禁用" min-width="85" sortable="custom">
-          <template #default="scope">
-            <el-switch
-              v-model="scope.row.is_disable"
-              :active-value="1"
-              :inactive-value="0"
-              disabled
-            />
-          </template>
-        </el-table-column>
+        <el-table-column prop="is_disable_name" label="禁用" min-width="85" sortable="custom" />
         <el-table-column label="操作" width="70">
           <template #default="scope">
-            <el-link
-              type="primary"
-              :underline="false"
-              @click="groupSelectOpen('groupRemove', scope.row)"
-            >
+            <el-link type="primary" :underline="false" @click="groupSelectOpen('groupRemove', scope.row)">
               解除
             </el-link>
           </template>
@@ -391,8 +294,7 @@
 <script>
 import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination/index.vue'
-import clip from '@/utils/clipboard'
-import { arrayColumn } from '@/utils/index'
+import { arrayColumn, clipboard } from '@/utils/index'
 import { getPageLimit } from '@/utils/settings'
 import {
   list,
@@ -406,7 +308,7 @@ import {
   unauth,
   unrate,
   disable,
-  group,
+  groupList,
   groupRemove
 } from '@/api/member/api'
 
@@ -476,6 +378,7 @@ export default {
     this.list()
   },
   methods: {
+    clipboard,
     // 列表
     list() {
       this.loading = true
@@ -562,7 +465,7 @@ export default {
     search() {
       this.list()
     },
-    // 刷新
+    // 重置查询
     refresh() {
       const limit = this.query.limit
       this.query = this.$options.data().query
@@ -845,7 +748,7 @@ export default {
     // 分组列表
     groupList() {
       this.groupLoad = true
-      group(this.groupQuery)
+      groupList(this.groupQuery)
         .then((res) => {
           this.groupData = res.data.list
           this.groupCount = res.data.count
@@ -930,14 +833,6 @@ export default {
             this.groupLoad = false
           })
       }
-    },
-    // 复制
-    copy(text) {
-      clip(text)
-    },
-    // 单元格双击复制
-    cellDbclick(row, column) {
-      this.copy(row[column.property])
     }
   }
 }

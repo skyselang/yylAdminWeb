@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="px-[15px] flex items-center justify-center color-[var(--el-text-color-regular)]"
-    @click="toggleClick"
-  >
+  <div class="px-[15px] flex items-center justify-center color-[var(--el-text-color-regular)]" @click="toggleClick">
     <svg-icon class="hamburger" :class="{ 'is-active': isActive }" icon-class="fold" />
   </div>
 </template>

@@ -82,8 +82,10 @@ export default {
   methods: {
     // 重置
     reset() {
-      this.$refs['ref'].resetFields()
-      this.$refs['ref'].clearValidate()
+      if (this.$refs['ref'] !== undefined) {
+        this.$refs['ref'].resetFields()
+        this.$refs['ref'].clearValidate()
+      }
     },
     // 提交
     submit() {

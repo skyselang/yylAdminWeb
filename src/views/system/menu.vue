@@ -27,11 +27,7 @@
           clearable
           filterable
         />
-        <el-select
-          v-else-if="query.search_field === 'menu_type'"
-          v-model="query.search_value"
-          class="ya-search-value"
-        >
+        <el-select v-else-if="query.search_field === 'menu_type'" v-model="query.search_value" class="ya-search-value">
           <el-option :value="0" label="目录" />
           <el-option :value="1" label="菜单" />
           <el-option :value="2" label="按钮" />
@@ -50,13 +46,7 @@
           <el-option :value="1" label="是" />
           <el-option :value="0" label="否" />
         </el-select>
-        <el-input
-          v-else
-          v-model="query.search_value"
-          class="ya-search-value"
-          placeholder="查询内容"
-          clearable
-        />
+        <el-input v-else v-model="query.search_value" class="ya-search-value" placeholder="查询内容" clearable />
         <el-select v-model="query.date_field" class="ya-date-field" placeholder="时间类型">
           <el-option value="create_time" label="添加时间" />
           <el-option value="update_time" label="修改时间" />
@@ -70,23 +60,15 @@
           value-format="YYYY-MM-DD HH:mm:ss"
           :default-time="[new Date(2024, 1, 1, 0, 0, 0), new Date(2024, 1, 1, 23, 59, 59)]"
         />
-        <el-button type="primary" @click="search()">查询</el-button>
-        <el-button title="重置" @click="refresh()">
-          <svg-icon icon-class="refresh" />
-        </el-button>
+        <el-button type="primary" title="查询/刷新" @click="search()">查询</el-button>
+        <el-button type="default" title="重置查询条件" @click="refresh()">重置</el-button>
         <el-button type="primary" @click="add()">添加</el-button>
       </el-col>
     </el-row>
     <!-- 操作 -->
     <el-row>
       <el-col>
-        <el-checkbox
-          border
-          v-model="isExpandAll"
-          class="!mr-[10px] top-[3px]"
-          title="收起/展开"
-          @change="expandAll"
-        >
+        <el-checkbox border v-model="isExpandAll" class="!mr-[10px] top-[3px]" title="收起/展开" @change="expandAll">
           收起
         </el-checkbox>
         <el-button title="删除" @click="selectOpen('dele')">删除</el-button>
@@ -165,7 +147,6 @@
       default-expand-all
       @selection-change="select"
       @select-all="selectAll"
-      @cell-dblclick="cellDbclick"
     >
       <el-table-column type="selection" width="42" title="全选/反选" />
       <el-table-column prop="menu_name" label="菜单名称" min-width="210" show-overflow-tooltip />
@@ -174,102 +155,26 @@
           <svg-icon :icon-class="scope.row.meta_icon" />
         </template>
       </el-table-column>
-      <el-table-column prop="menu_url" label="菜单链接" min-width="220" show-overflow-tooltip />
+      <el-table-column prop="menu_url" label="菜单链接" min-width="230" show-overflow-tooltip />
       <el-table-column prop="path" label="路由地址" min-width="150" show-overflow-tooltip />
       <el-table-column prop="name" label="路由名称" min-width="130" show-overflow-tooltip />
       <el-table-column prop="component" label="组件路径" min-width="135" show-overflow-tooltip />
-      <el-table-column prop="menu_type" label="类型" min-width="60">
+      <el-table-column prop="menu_type_name" label="类型" min-width="60" />
+      <el-table-column prop="is_unlogin_name" label="免登" min-width="60" />
+      <el-table-column prop="is_unauth_name" label="免权" min-width="60" />
+      <el-table-column prop="is_unrate_name" label="免限" min-width="60" />
+      <el-table-column prop="is_disable_name" label="禁用" min-width="60" />
+      <el-table-column prop="hidden_name" label="隐藏" min-width="60" />
+      <el-table-column :prop="idkey" label="ID" min-width="60" />
+      <el-table-column prop="sort" label="排序" min-width="70" />
+      <el-table-column label="操作" width="165">
         <template #default="scope">
-          <i v-if="scope.row.menu_type == 0" title="目录"><svg-icon icon-class="folder" /></i>
-          <i v-else-if="scope.row.menu_type == 1" title="菜单"><svg-icon icon-class="menu" /></i>
-          <i v-else-if="scope.row.menu_type == 2" title="按钮"><svg-icon icon-class="open" /></i>
-        </template>
-      </el-table-column>
-      <el-table-column prop="is_unlogin" label="免登" min-width="66">
-        <template #default="scope">
-          <el-switch
-            v-if="scope.row.menu_url"
-            v-model="scope.row.is_unlogin"
-            :width="35"
-            :active-value="1"
-            :inactive-value="0"
-            @change="unlogin([scope.row])"
-          />
-          <span v-else></span>
-        </template>
-      </el-table-column>
-      <el-table-column prop="is_unauth" label="免权" min-width="66">
-        <template #default="scope">
-          <el-switch
-            v-if="scope.row.menu_url"
-            v-model="scope.row.is_unauth"
-            :width="35"
-            :active-value="1"
-            :inactive-value="0"
-            @change="unauth([scope.row])"
-          />
-          <span v-else></span>
-        </template>
-      </el-table-column>
-      <el-table-column prop="is_unrate" label="免限" min-width="66">
-        <template #default="scope">
-          <el-switch
-            v-if="scope.row.menu_url"
-            v-model="scope.row.is_unrate"
-            :width="35"
-            :active-value="1"
-            :inactive-value="0"
-            @change="unrate([scope.row])"
-          />
-          <span v-else></span>
-        </template>
-      </el-table-column>
-      <el-table-column prop="is_disable" label="禁用" min-width="66">
-        <template #default="scope">
-          <el-switch
-            v-if="scope.row.menu_url"
-            v-model="scope.row.is_disable"
-            :width="35"
-            :active-value="1"
-            :inactive-value="0"
-            @change="disable([scope.row])"
-          />
-          <span v-else></span>
-        </template>
-      </el-table-column>
-      <el-table-column prop="hidden" label="隐藏" min-width="66">
-        <template #default="scope">
-          <el-switch
-            v-model="scope.row.hidden"
-            :width="35"
-            :active-value="1"
-            :inactive-value="0"
-            @change="ishidden([scope.row])"
-          />
-        </template>
-      </el-table-column>
-      <el-table-column :prop="idkey" label="ID" min-width="80" />
-      <el-table-column prop="sort" label="排序" min-width="80" />
-      <el-table-column label="操作" width="170">
-        <template #default="scope">
-          <el-link type="primary" class="mr-1" :underline="false" @click="roleShow(scope.row)">
-            角色
-          </el-link>
-          <el-link
-            type="primary"
-            class="mr-1"
-            :underline="false"
-            title="添加下级"
-            @click="add(scope.row)"
-          >
+          <el-link type="primary" class="mr-1" :underline="false" @click="roleShow(scope.row)"> 角色 </el-link>
+          <el-link type="primary" class="mr-1" :underline="false" title="添加下级" @click="add(scope.row)">
             添加
           </el-link>
-          <el-link type="primary" class="mr-1" :underline="false" @click="edit(scope.row)">
-            修改
-          </el-link>
-          <el-link type="primary" :underline="false" @click="selectOpen('dele', scope.row)">
-            删除
-          </el-link>
+          <el-link type="primary" class="mr-1" :underline="false" @click="edit(scope.row)"> 修改 </el-link>
+          <el-link type="primary" :underline="false" @click="selectOpen('dele', [scope.row])"> 删除 </el-link>
         </template>
       </el-table-column>
     </el-table>
@@ -286,6 +191,8 @@
       :close-on-press-escape="false"
       :before-close="cancel"
       top="5vh"
+      draggable
+      overflow
     >
       <el-scrollbar native :height="height - 50">
         <el-form ref="ref" :rules="rules" :model="model" label-width="100px">
@@ -302,9 +209,9 @@
           </el-form-item>
           <el-form-item label="菜单类型" prop="menu_type">
             <el-radio-group v-model="model.menu_type">
-              <el-radio :label="0">目录<svg-icon icon-class="folder" /></el-radio>
-              <el-radio :label="1">菜单<svg-icon icon-class="menu" /></el-radio>
-              <el-radio :label="2">按钮<svg-icon icon-class="open" /></el-radio>
+              <el-radio :value="0">目录</el-radio>
+              <el-radio :value="1">菜单</el-radio>
+              <el-radio :value="2">按钮</el-radio>
             </el-radio-group>
           </el-form-item>
           <el-form-item v-if="model.menu_type !== 2" label="菜单图标" prop="meta_icon">
@@ -318,25 +225,21 @@
                 </el-button>
               </template>
               <template #append>
-                <el-button title="复制" @click="copy(model.menu_name)">
+                <el-button title="复制" @click="clipboard(model.menu_name)">
                   <svg-icon icon-class="copy-document" />
                 </el-button>
               </template>
             </el-input>
           </el-form-item>
           <el-form-item label="菜单链接" prop="menu_url">
-            <el-input
-              v-model="model.menu_url"
-              clearable
-              placeholder="roles；权限标识：应用/控制器/操作；区分大小写"
-            >
+            <el-input v-model="model.menu_url" clearable placeholder="roles；权限标识：应用/控制器/操作；区分大小写">
               <template #prepend>
                 <el-button title="roles；权限标识：应用/控制器/操作，区分大小写">
                   <svg-icon icon-class="question-filled" />
                 </el-button>
               </template>
               <template #append>
-                <el-button title="复制" @click="copy(model.menu_url)">
+                <el-button title="复制" @click="clipboard(model.menu_url)">
                   <svg-icon icon-class="copy-document" />
                 </el-button>
               </template>
@@ -349,14 +252,12 @@
               placeholder="path；路由地址，如：member，一级菜单需在前面加斜杠/；外链为 http 地址"
             >
               <template #prepend>
-                <el-button
-                  title="path；路由地址，如：member，一级菜单需在前面加斜杠/；外链为 http 地址"
-                >
+                <el-button title="path；路由地址，如：member，一级菜单需在前面加斜杠/；外链为 http 地址">
                   <svg-icon icon-class="question-filled" />
                 </el-button>
               </template>
               <template #append>
-                <el-button title="复制" @click="copy(model.path)">
+                <el-button title="复制" @click="clipboard(model.path)">
                   <svg-icon icon-class="copy-document" />
                 </el-button>
               </template>
@@ -369,24 +270,18 @@
               placeholder="name；组件name属性，如：Member，<keep-alive> 用到；外链可随意填写"
             >
               <template #prepend>
-                <el-button
-                  title="name；组件的name属性，如：Member，<keep-alive> 用到；外链可随意填写"
-                >
+                <el-button title="name；组件的name属性，如：Member，<keep-alive> 用到；外链可随意填写">
                   <svg-icon icon-class="question-filled" />
                 </el-button>
               </template>
               <template #append>
-                <el-button title="复制" @click="copy(model.name)">
+                <el-button title="复制" @click="clipboard(model.name)">
                   <svg-icon icon-class="copy-document" />
                 </el-button>
               </template>
             </el-input>
           </el-form-item>
-          <el-form-item
-            v-if="model.menu_type === 0 || model.menu_type === 1"
-            label="组件地址"
-            prop="component"
-          >
+          <el-form-item v-if="model.menu_type === 0 || model.menu_type === 1" label="组件路径" prop="component">
             <el-input
               v-model="model.component"
               clearable
@@ -398,7 +293,7 @@
                 </el-button>
               </template>
               <template #append>
-                <el-button title="复制" @click="copy(model.component)">
+                <el-button title="复制" @click="clipboard(model.component)">
                   <svg-icon icon-class="copy-document" />
                 </el-button>
               </template>
@@ -416,7 +311,7 @@
                 </el-button>
               </template>
               <template #append>
-                <el-button title="复制" @click="copy(model.meta_query)">
+                <el-button title="复制" @click="clipboard(model.meta_query)">
                   <svg-icon icon-class="copy-document" />
                 </el-button>
               </template>
@@ -427,8 +322,8 @@
               <svg-icon icon-class="question-filled" />
             </el-button>
             <el-radio-group v-model="model.hidden" style="margin-left: 10px">
-              <el-radio :label="0">否</el-radio>
-              <el-radio :label="1">是</el-radio>
+              <el-radio :value="0">否</el-radio>
+              <el-radio :value="1">是</el-radio>
             </el-radio-group>
           </el-form-item>
           <el-form-item v-if="model.menu_type !== 2" label="是否缓存" prop="keep_alive">
@@ -436,8 +331,8 @@
               <svg-icon icon-class="question-filled" />
             </el-button>
             <el-radio-group v-model="model.keep_alive" style="margin-left: 10px">
-              <el-radio :label="0">否</el-radio>
-              <el-radio :label="1">是</el-radio>
+              <el-radio :value="0">否</el-radio>
+              <el-radio :value="1">是</el-radio>
             </el-radio-group>
           </el-form-item>
           <el-form-item v-if="model.menu_type == 0" label="始终显示" prop="always_show">
@@ -445,8 +340,8 @@
               <svg-icon icon-class="question-filled" />
             </el-button>
             <el-radio-group v-model="model.always_show" style="margin-left: 10px">
-              <el-radio :label="0">否</el-radio>
-              <el-radio :label="1">是</el-radio>
+              <el-radio :value="0">否</el-radio>
+              <el-radio :value="1">是</el-radio>
             </el-radio-group>
           </el-form-item>
           <el-form-item label="菜单排序" prop="sort">
@@ -459,10 +354,7 @@
             </el-input>
           </el-form-item>
           <el-form-item v-if="model.menu_type === 1" label="快速添加" prop="add">
-            <el-button
-              class="ya-margin-right"
-              title="快速添加，需要输入菜单链接：应用/控制器/操作；区分大小写"
-            >
+            <el-button class="ya-margin-right" title="快速添加，需要输入菜单链接：应用/控制器/操作；区分大小写">
               <svg-icon icon-class="question-filled" />
             </el-button>
             <el-checkbox v-model="model.add_info">信息</el-checkbox>
@@ -471,16 +363,8 @@
             <el-checkbox v-model="model.add_dele">删除</el-checkbox>
             <el-checkbox v-model="model.add_disable">禁用</el-checkbox>
           </el-form-item>
-          <el-form-item
-            v-if="model.menu_type === 1"
-            v-show="model[idkey]"
-            label="快速修改"
-            prop="edit"
-          >
-            <el-button
-              class="ya-margin-right"
-              title="快速修改，需要输入菜单链接：应用/控制器/操作；区分大小写"
-            >
+          <el-form-item v-if="model.menu_type === 1" v-show="model[idkey]" label="快速修改" prop="edit">
+            <el-button class="ya-margin-right" title="快速修改，需要输入菜单链接：应用/控制器/操作；区分大小写">
               <svg-icon icon-class="question-filled" />
             </el-button>
             <el-checkbox v-model="model.edit_info">信息</el-checkbox>
@@ -518,15 +402,8 @@
       <!-- 角色操作 -->
       <el-row>
         <el-col>
-          <el-button type="primary" title="解除" @click="roleSelectOpen('roleRemove')">
-            解除
-          </el-button>
-          <el-input
-            v-model="roleQuery.search_value"
-            class="ya-search-value"
-            placeholder="名称"
-            clearable
-          />
+          <el-button type="primary" title="解除" @click="roleSelectOpen('roleRemove')"> 解除 </el-button>
+          <el-input v-model="roleQuery.search_value" class="ya-search-value" placeholder="名称" clearable />
           <el-button type="primary" @click="roleList()">查询</el-button>
         </el-col>
       </el-row>
@@ -541,34 +418,13 @@
       >
         <el-table-column type="selection" width="42" title="全选/反选" />
         <el-table-column :prop="rolePk" label="角色ID" width="100" sortable="custom" />
-        <el-table-column
-          prop="role_name"
-          label="角色名称"
-          min-width="120"
-          sortable="custom"
-          show-overflow-tooltip
-        />
+        <el-table-column prop="role_name" label="角色名称" min-width="120" sortable="custom" show-overflow-tooltip />
         <el-table-column prop="role_desc" label="描述" min-width="130" show-overflow-tooltip />
-        <el-table-column prop="is_disable" label="禁用" min-width="85" sortable="custom">
-          <template #default="scope">
-            <el-switch
-              v-model="scope.row.is_disable"
-              :active-value="1"
-              :inactive-value="0"
-              disabled
-            />
-          </template>
-        </el-table-column>
+        <el-table-column prop="is_disable_name" label="禁用" min-width="85" sortable="custom" />
         <el-table-column prop="sort" label="排序" min-width="85" sortable="custom" />
         <el-table-column label="操作" width="70">
           <template #default="scope">
-            <el-link
-              type="primary"
-              :underline="false"
-              @click="roleSelectOpen('roleRemove', scope.row)"
-            >
-              解除
-            </el-link>
+            <el-link type="primary" :underline="false" @click="roleSelectOpen('roleRemove', scope.row)"> 解除 </el-link>
           </template>
         </el-table-column>
       </el-table>
@@ -607,8 +463,7 @@
 <script>
 import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination/index.vue'
-import clip from '@/utils/clipboard'
-import { arrayColumn } from '@/utils/index'
+import { arrayColumn, clipboard } from '@/utils/index'
 import { getPageLimit } from '@/utils/settings'
 import {
   list,
@@ -623,7 +478,7 @@ import {
   unrate,
   ishidden,
   disable,
-  role,
+  roleList,
   roleRemove
 } from '@/api/system/menu'
 
@@ -715,6 +570,7 @@ export default {
     this.list()
   },
   methods: {
+    clipboard,
     // 列表
     list() {
       this.loading = true
@@ -813,7 +669,7 @@ export default {
     search() {
       this.list()
     },
-    // 刷新
+    // 重置查询
     refresh() {
       this.query = this.$options.data().query
       this.list()
@@ -1120,7 +976,7 @@ export default {
     // 角色列表
     roleList() {
       this.roleLoad = true
-      role(this.roleQuery)
+      roleList(this.roleQuery)
         .then((res) => {
           this.roleData = res.data.list
           this.roleCount = res.data.count
@@ -1205,14 +1061,6 @@ export default {
             this.roleLoad = false
           })
       }
-    },
-    // 复制
-    copy(text) {
-      clip(text)
-    },
-    // 单元格双击复制
-    cellDbclick(row, column) {
-      this.copy(row[column.property])
     }
   }
 }

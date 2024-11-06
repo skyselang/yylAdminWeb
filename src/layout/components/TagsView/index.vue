@@ -11,11 +11,7 @@
         @contextmenu.prevent="openTagMenu(tag, $event)"
       >
         {{ translateRouteTitle(tag.title) }}
-        <span
-          v-if="!isAffix(tag)"
-          class="tags-item-close"
-          @click.prevent.stop="closeSelectedTag(tag)"
-        >
+        <span v-if="!isAffix(tag)" class="tags-item-close" @click.prevent.stop="closeSelectedTag(tag)">
           <svg-icon icon-class="close" />
         </span>
       </router-link>
@@ -205,10 +201,7 @@ function isFirstView() {
 
 function isLastView() {
   try {
-    return (
-      selectedTag.value.fullPath ===
-      tagsViewStore.visitedViews[tagsViewStore.visitedViews.length - 1].fullPath
-    )
+    return selectedTag.value.fullPath === tagsViewStore.visitedViews[tagsViewStore.visitedViews.length - 1].fullPath
   } catch (err) {
     return false
   }

@@ -1,10 +1,5 @@
 <template>
-  <el-scrollbar
-    ref="scrollContainer"
-    class="scroll-container"
-    :vertical="false"
-    @wheel.prevent="handleScroll"
-  >
+  <el-scrollbar ref="scrollContainer" class="scroll-container" :vertical="false" @wheel.prevent="handleScroll">
     <slot></slot>
   </el-scrollbar>
 </template>
@@ -73,8 +68,7 @@ function moveToTarget(currentTag) {
 
     try {
       // 标签的偏移下一个标签的左后
-      const afterNextTagOffsetLeft =
-        nextTag.offsetLeft + nextTag.offsetWidth + tagAndTagSpacing.value
+      const afterNextTagOffsetLeft = nextTag.offsetLeft + nextTag.offsetWidth + tagAndTagSpacing.value
 
       // 标签的偏移前一个标签的左前
       const beforePrevTagOffsetLeft = prevTag.offsetLeft - tagAndTagSpacing.value

@@ -1,10 +1,6 @@
 <template>
   <div v-loading="loading" style="position: relative">
-    <div
-      v-if="type === '2'"
-      class="verify-img-out"
-      :style="{ height: parseInt(setSize.imgHeight) + vSpace + 'px' }"
-    >
+    <div v-if="type === '2'" class="verify-img-out" :style="{ height: parseInt(setSize.imgHeight) + vSpace + 'px' }">
       <div class="verify-img-panel" :style="{ width: setSize.imgWidth, height: setSize.imgHeight }">
         <img
           alt=""
@@ -272,12 +268,8 @@ export default {
         var bar_area_left = this.barArea.getBoundingClientRect().left
         // 小方块相对于父元素的left值
         var move_block_left = x - bar_area_left
-        if (
-          move_block_left >=
-          this.barArea.offsetWidth - parseInt(parseInt(this.blockSize.width) / 2) - 2
-        ) {
-          move_block_left =
-            this.barArea.offsetWidth - parseInt(parseInt(this.blockSize.width) / 2) - 2
+        if (move_block_left >= this.barArea.offsetWidth - parseInt(parseInt(this.blockSize.width) / 2) - 2) {
+          move_block_left = this.barArea.offsetWidth - parseInt(parseInt(this.blockSize.width) / 2) - 2
         }
         if (move_block_left <= 0) {
           move_block_left = parseInt(parseInt(this.blockSize.width) / 2)
@@ -322,10 +314,7 @@ export default {
                 `${((this.endMovetime - this.startMoveTime) / 1000).toFixed(2)}s` +
                 this.$t('AjCaptch.Verification successful') //验证成功`
               var captchaVerification = this.secretKey
-                ? aesEncrypt(
-                    this.backToken + '---' + JSON.stringify({ x: moveLeftDistance, y: 5.0 }),
-                    this.secretKey
-                  )
+                ? aesEncrypt(this.backToken + '---' + JSON.stringify({ x: moveLeftDistance, y: 5.0 }), this.secretKey)
                 : this.backToken + '---' + JSON.stringify({ x: moveLeftDistance, y: 5.0 })
               setTimeout(() => {
                 this.tipWords = ''

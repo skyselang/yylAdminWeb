@@ -1,11 +1,7 @@
 <template>
   <div :class="classObj" class="app-wrapper">
     <!-- 手机端侧边栏打开遮罩层 -->
-    <div
-      v-if="classObj.mobile && classObj.openSidebar"
-      class="drawer__background"
-      @click="handleOutsideClick"
-    ></div>
+    <div v-if="classObj.mobile && classObj.openSidebar" class="drawer__background" @click="handleOutsideClick"></div>
 
     <Sidebar class="sidebar-container" />
 

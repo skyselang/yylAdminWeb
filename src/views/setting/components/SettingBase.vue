@@ -32,12 +32,7 @@
           <el-input v-model="model.keywords" placeholder="keywords" clearable />
         </el-form-item>
         <el-form-item label="描述" prop="description">
-          <el-input
-            v-model="model.description"
-            type="textarea"
-            autosize
-            placeholder="description"
-          />
+          <el-input v-model="model.description" type="textarea" autosize placeholder="description" />
         </el-form-item>
         <el-form-item label="备案号" prop="icp">
           <el-input v-model="model.icp" placeholder="icp" clearable />

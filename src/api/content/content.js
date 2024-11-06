@@ -133,3 +133,23 @@ export function release(data) {
     data
   })
 }
+/**
+ * 内容导出
+ * @param {array} data 请求数据
+ * @param {string} method get下载导出文件，post提交导出
+ */
+export function exports(data, method = 'post') {
+  if (method == 'get') {
+    return request({
+      url: url + 'export',
+      method: 'get',
+      params: data,
+      responseType: 'blob'
+    })
+  }
+  return request({
+    url: url + 'export',
+    method: 'post',
+    data
+  })
+}

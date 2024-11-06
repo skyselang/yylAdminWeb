@@ -68,12 +68,12 @@ export function disable(data) {
   })
 }
 /**
- * 文件分组文件
+ * 文件分组文件列表
  * @param {array} params 请求参数
  */
-export function file(params) {
+export function fileList(params) {
   return request({
-    url: url + 'file',
+    url: url + 'fileList',
     method: 'get',
     params: params
   })

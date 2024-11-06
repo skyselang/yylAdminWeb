@@ -16,11 +16,7 @@
         </el-form-item>
         <el-form-item label="内容" prop="email_content">
           <el-col :span="8">
-            <el-input
-              v-model="model.email_content"
-              type="textarea"
-              :autosize="{ minRows: 4, maxRows: 10 }"
-            />
+            <el-input v-model="model.email_content" type="textarea" :autosize="{ minRows: 4, maxRows: 10 }" />
           </el-col>
           <el-col :span="16"> 邮件内容 </el-col>
         </el-form-item>

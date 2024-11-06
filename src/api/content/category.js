@@ -79,12 +79,12 @@ export function disable(data) {
   })
 }
 /**
- * 内容分类内容
+ * 内容分类内容列表
  * @param {array} params 请求参数
  */
-export function content(params) {
+export function contentList(params) {
   return request({
-    url: url + 'content',
+    url: url + 'contentList',
     method: 'get',
     params: params
   })

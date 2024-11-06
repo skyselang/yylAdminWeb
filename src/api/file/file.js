@@ -15,13 +15,18 @@ export function list(params) {
 /**
  * 文件信息
  * @param {array} params 请求参数
+ * @param {boolean} is_down 是否下载文件
  */
-export function info(params) {
-  return request({
+export function info(params, is_down = false) {
+  let config = {
     url: url + 'info',
     method: 'get',
     params: params
-  })
+  }
+  if (is_down) {
+    config.responseType = 'blob'
+  }
+  return request(config)
 }
 /**
  * 文件上传、添加
@@ -117,12 +122,32 @@ export function disable(data) {
   })
 }
 /**
- * 文件回收站
+ * 文件导出
+ * @param {array} data 请求数据
+ * @param {string} method get下载导出文件，post提交导出
+ */
+export function exports(data, method = 'post') {
+  if (method == 'get') {
+    return request({
+      url: url + 'export',
+      method: 'get',
+      params: data,
+      responseType: 'blob'
+    })
+  }
+  return request({
+    url: url + 'export',
+    method: 'post',
+    data
+  })
+}
+/**
+ * 文件回收站列表
  * @param {array} data 请求参数
  */
-export function recycle(params) {
+export function recycleList(params) {
   return request({
-    url: url + 'recycle',
+    url: url + 'recycleList',
     method: 'get',
     params: params
   })

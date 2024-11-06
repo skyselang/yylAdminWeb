@@ -32,13 +32,7 @@
         </el-input>
       </el-form-item>
       <el-form-item prop="password">
-        <el-input
-          v-model="model.password"
-          type="password"
-          :placeholder="$t('login.password')"
-          clearable
-          show-password
-        >
+        <el-input v-model="model.password" type="password" :placeholder="$t('login.password')" clearable show-password>
           <template #prefix>
             <svg-icon icon-class="lock" />
           </template>
@@ -46,12 +40,7 @@
       </el-form-item>
       <el-form-item v-if="captcha_switch && captcha_src" prop="captcha_code">
         <el-col :span="13">
-          <el-input
-            v-model="model.captcha_code"
-            :placeholder="$t('login.captchaCode')"
-            autocomplete="off"
-            clearable
-          >
+          <el-input v-model="model.captcha_code" :placeholder="$t('login.captchaCode')" autocomplete="off" clearable>
             <template #prefix>
               <svg-icon icon-class="picture" />
             </template>
@@ -85,13 +74,7 @@
       >
         {{ $t('login.login') }}
       </el-button>
-      <el-button
-        v-else
-        :loading="loading"
-        type="primary"
-        class="login-bottom"
-        @click.prevent="handleLogin"
-      >
+      <el-button v-else :loading="loading" type="primary" class="login-bottom" @click.prevent="handleLogin">
         {{ $t('login.login') }}
       </el-button>
     </el-form>
@@ -147,15 +130,9 @@ export default {
     },
     rules() {
       return {
-        username: [
-          { required: true, message: this.$t('login.Please enter username'), trigger: 'blur' }
-        ],
-        password: [
-          { required: true, message: this.$t('login.Please enter password'), trigger: 'blur' }
-        ],
-        captcha_code: [
-          { required: true, message: this.$t('login.Please enter captcha code'), trigger: 'blur' }
-        ]
+        username: [{ required: true, message: this.$t('login.Please enter username'), trigger: 'blur' }],
+        password: [{ required: true, message: this.$t('login.Please enter password'), trigger: 'blur' }],
+        captcha_code: [{ required: true, message: this.$t('login.Please enter captcha code'), trigger: 'blur' }]
       }
     }
   },

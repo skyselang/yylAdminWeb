@@ -35,12 +35,7 @@
                   <el-input v-model="model.keywords" placeholder="keywords" clearable />
                 </el-form-item>
                 <el-form-item label="描述" prop="description">
-                  <el-input
-                    v-model="model.description"
-                    type="textarea"
-                    autosize
-                    placeholder="description"
-                  />
+                  <el-input v-model="model.description" type="textarea" autosize placeholder="description" />
                 </el-form-item>
                 <el-form-item label="备案号" prop="icp">
                   <el-input v-model="model.icp" placeholder="icp" clearable />
@@ -119,11 +114,7 @@
                 </el-form-item>
                 <el-form-item prop="content_default_img_open">
                   <el-col :span="12">
-                    <el-switch
-                      v-model="model.content_default_img_open"
-                      :active-value="1"
-                      :inactive-value="0"
-                    />
+                    <el-switch v-model="model.content_default_img_open" :active-value="1" :inactive-value="0" />
                   </el-col>
                   <el-col :span="12">是否开启内容默认图片。</el-col>
                 </el-form-item>
@@ -139,11 +130,7 @@
                 </el-form-item>
                 <el-form-item prop="category_default_img_open">
                   <el-col :span="12">
-                    <el-switch
-                      v-model="model.category_default_img_open"
-                      :active-value="1"
-                      :inactive-value="0"
-                    />
+                    <el-switch v-model="model.category_default_img_open" :active-value="1" :inactive-value="0" />
                   </el-col>
                   <el-col :span="12">是否开启分类默认图片。</el-col>
                 </el-form-item>
@@ -159,11 +146,7 @@
                 </el-form-item>
                 <el-form-item prop="tag_default_img_open">
                   <el-col :span="12">
-                    <el-switch
-                      v-model="model.tag_default_img_open"
-                      :active-value="1"
-                      :inactive-value="0"
-                    />
+                    <el-switch v-model="model.tag_default_img_open" :active-value="1" :inactive-value="0" />
                   </el-col>
                   <el-col :span="12">是否开启标签默认图片。</el-col>
                 </el-form-item>

@@ -42,7 +42,7 @@
 </template>
 
 <script setup>
-import clip from '@/utils/clipboard'
+import { clipboard } from '@/utils/index'
 // 文件预览
 const props = defineProps({
   file: {
@@ -104,7 +104,7 @@ function fileName(file) {
   return file.file_name + '.' + file.file_ext
 }
 function fileDownload(file) {
-  clip(fileName(file), '文件名复制成功')
+  clipboard(fileName(file), '文件名已复制')
   setTimeout(() => {
     window.open(file.file_url, '_blank')
   }, 500)

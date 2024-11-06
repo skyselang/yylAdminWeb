@@ -24,21 +24,11 @@
           clearable
           filterable
         />
-        <el-select
-          v-else-if="query.search_field === 'is_disable'"
-          v-model="query.search_value"
-          class="ya-search-value"
-        >
+        <el-select v-else-if="query.search_field === 'is_disable'" v-model="query.search_value" class="ya-search-value">
           <el-option :value="1" label="是" />
           <el-option :value="0" label="否" />
         </el-select>
-        <el-input
-          v-else
-          v-model="query.search_value"
-          class="ya-search-value"
-          placeholder="查询内容"
-          clearable
-        />
+        <el-input v-else v-model="query.search_value" class="ya-search-value" placeholder="查询内容" clearable />
         <el-select v-model="query.date_field" class="ya-date-field" placeholder="时间类型">
           <el-option value="create_time" label="添加时间" />
           <el-option value="update_time" label="修改时间" />
@@ -52,23 +42,15 @@
           value-format="YYYY-MM-DD HH:mm:ss"
           :default-time="[new Date(2024, 1, 1, 0, 0, 0), new Date(2024, 1, 1, 23, 59, 59)]"
         />
-        <el-button type="primary" @click="search()">查询</el-button>
-        <el-button title="重置" @click="refresh()">
-          <svg-icon icon-class="refresh" />
-        </el-button>
+        <el-button type="primary" title="查询/刷新" @click="search()">查询</el-button>
+        <el-button type="default" title="重置查询条件" @click="refresh()">重置</el-button>
         <el-button type="primary" @click="add()">添加</el-button>
       </el-col>
     </el-row>
     <!-- 操作 -->
     <el-row>
       <el-col>
-        <el-checkbox
-          border
-          v-model="isExpandAll"
-          class="!mr-[10px] top-[3px]"
-          title="收起/展开"
-          @change="expandAll"
-        >
+        <el-checkbox border v-model="isExpandAll" class="!mr-[10px] top-[3px]" title="收起/展开" @change="expandAll">
           收起
         </el-checkbox>
         <el-button title="删除" @click="selectOpen('dele')">删除</el-button>
@@ -129,39 +111,18 @@
       <el-table-column prop="post_abbr" label="简称" min-width="100" />
       <el-table-column prop="post_desc" label="描述" min-width="150" show-overflow-tooltip />
       <el-table-column :prop="idkey" label="ID" width="80" sortable="custom" />
-      <el-table-column prop="is_disable" label="禁用" min-width="85" sortable="custom">
-        <template #default="scope">
-          <el-switch
-            v-model="scope.row.is_disable"
-            :active-value="1"
-            :inactive-value="0"
-            @change="disable([scope.row])"
-          />
-        </template>
-      </el-table-column>
+      <el-table-column prop="is_disable_name" label="禁用" min-width="85" sortable="custom" />
       <el-table-column prop="sort" label="排序" min-width="85" />
       <el-table-column prop="create_time" label="添加时间" width="165" sortable="custom" />
       <el-table-column prop="update_time" label="修改时间" width="165" sortable="custom" />
       <el-table-column label="操作" width="170">
         <template #default="scope">
-          <el-link type="primary" class="mr-1" :underline="false" @click="userShow(scope.row)">
-            用户
-          </el-link>
-          <el-link
-            type="primary"
-            class="mr-1"
-            :underline="false"
-            title="添加下级"
-            @click="add(scope.row)"
-          >
+          <el-link type="primary" class="mr-1" :underline="false" @click="userShow(scope.row)"> 用户 </el-link>
+          <el-link type="primary" class="mr-1" :underline="false" title="添加下级" @click="add(scope.row)">
             添加
           </el-link>
-          <el-link type="primary" class="mr-1" :underline="false" @click="edit(scope.row)">
-            修改
-          </el-link>
-          <el-link type="primary" :underline="false" @click="selectOpen('dele', [scope.row])">
-            删除
-          </el-link>
+          <el-link type="primary" class="mr-1" :underline="false" @click="edit(scope.row)"> 修改 </el-link>
+          <el-link type="primary" :underline="false" @click="selectOpen('dele', [scope.row])"> 删除 </el-link>
         </template>
       </el-table-column>
     </el-table>
@@ -235,9 +196,7 @@
       <!-- 职位用户操作 -->
       <el-row>
         <el-col>
-          <el-button type="primary" title="解除" @click="userSelectOpen('userRemove')">
-            解除
-          </el-button>
+          <el-button type="primary" title="解除" @click="userSelectOpen('userRemove')"> 解除 </el-button>
           <el-input
             v-model="userQuery.search_value"
             class="ya-search-value ya-margin-left"
@@ -261,34 +220,12 @@
         <el-table-column prop="nickname" label="昵称" min-width="120" show-overflow-tooltip />
         <el-table-column prop="username" label="账号" min-width="120" show-overflow-tooltip />
         <el-table-column prop="post_names" label="职位" min-width="120" show-overflow-tooltip />
-        <el-table-column prop="is_super" label="超管" width="85" sortable="custom">
-          <template #default="scope">
-            <el-switch
-              v-model="scope.row.is_super"
-              :active-value="1"
-              :inactive-value="0"
-              disabled
-            />
-          </template>
-        </el-table-column>
-        <el-table-column prop="is_disable" label="禁用" width="85" sortable="custom">
-          <template #default="scope">
-            <el-switch
-              v-model="scope.row.is_disable"
-              :active-value="1"
-              :inactive-value="0"
-              disabled
-            />
-          </template>
-        </el-table-column>
+        <el-table-column prop="is_super_name" label="超管" width="85" sortable="custom" />
+        <el-table-column prop="is_disable_name" label="禁用" width="85" sortable="custom" />
         <el-table-column prop="remark" label="备注" width="100" show-overflow-tooltip />
         <el-table-column label="操作" width="70">
           <template #default="scope">
-            <el-link
-              type="primary"
-              :underline="false"
-              @click="userSelectOpen('userRemove', [scope.row])"
-            >
+            <el-link type="primary" :underline="false" @click="userSelectOpen('userRemove', [scope.row])">
               解除
             </el-link>
           </template>
@@ -331,7 +268,7 @@ import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination/index.vue'
 import { arrayColumn } from '@/utils/index'
 import { getPageLimit } from '@/utils/settings'
-import { list, info, add, edit, dele, editpid, disable, user, userRemove } from '@/api/system/post'
+import { list, info, add, edit, dele, editpid, disable, userList, userRemove } from '@/api/system/post'
 
 export default {
   name: 'SystemPost',
@@ -481,7 +418,7 @@ export default {
     search() {
       this.list()
     },
-    // 刷新
+    // 重置查询
     refresh() {
       this.query = this.$options.data().query
       this.$refs['table'].clearSort()
@@ -644,7 +581,7 @@ export default {
     // 职位用户列表
     user() {
       this.userLoad = true
-      user(this.userQuery)
+      userList(this.userQuery)
         .then((res) => {
           this.userData = res.data.list
           this.userCount = res.data.count

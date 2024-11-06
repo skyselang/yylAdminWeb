@@ -15,11 +15,7 @@
       </el-tooltip>
     </div>
     <!-- 清除缓存 -->
-    <div
-      class="setting-item"
-      v-if="checkPermission(['admin/system.Setting/cacheClear'])"
-      @click="clearCache"
-    >
+    <div class="setting-item" v-if="checkPermission(['admin/system.Setting/cacheClear'])" @click="clearCache">
       <el-tooltip effect="dark" :content="$t('navbar.Clear Cache')">
         <svg-icon icon-class="delete" />
       </el-tooltip>
@@ -58,10 +54,7 @@
           <router-link to="/">{{ $t('navbar.dashboard') }}</router-link>
         </el-dropdown-item>
         <el-dropdown-item>
-          <router-link
-            v-if="checkPermission(['admin/system.UserCenter/info'])"
-            to="/system/user-center"
-          >
+          <router-link v-if="checkPermission(['admin/system.UserCenter/info'])" to="/system/user-center">
             {{ $t('navbar.userCenter') }}
           </router-link>
         </el-dropdown-item>

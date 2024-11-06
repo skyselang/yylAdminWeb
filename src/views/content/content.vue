@@ -39,12 +39,7 @@
           multiple
           collapse-tags
         >
-          <el-option
-            v-for="item in tagData"
-            :key="item.tag_id"
-            :label="item.tag_name"
-            :value="item.tag_id"
-          />
+          <el-option v-for="item in tagData" :key="item.tag_id" :label="item.tag_name" :value="item.tag_id" />
         </el-select>
         <el-select
           v-else-if="
@@ -59,13 +54,7 @@
           <el-option :value="1" label="是" />
           <el-option :value="0" label="否" />
         </el-select>
-        <el-input
-          v-else
-          v-model="query.search_value"
-          class="ya-search-value"
-          placeholder="查询内容"
-          clearable
-        />
+        <el-input v-else v-model="query.search_value" class="ya-search-value" placeholder="查询内容" clearable />
         <el-select v-model="query.date_field" class="ya-date-field" placeholder="时间类型">
           <el-option value="create_time" label="添加时间" />
           <el-option value="update_time" label="修改时间" />
@@ -80,10 +69,8 @@
           value-format="YYYY-MM-DD HH:mm:ss"
           :default-time="[new Date(2024, 1, 1, 0, 0, 0), new Date(2024, 1, 1, 23, 59, 59)]"
         />
-        <el-button type="primary" @click="search()">查询</el-button>
-        <el-button title="重置" @click="refresh()">
-          <svg-icon icon-class="refresh" />
-        </el-button>
+        <el-button type="primary" title="查询/刷新" @click="search()">查询</el-button>
+        <el-button type="default" title="重置查询条件" @click="refresh()">重置</el-button>
         <el-button type="primary" @click="add()">添加</el-button>
       </el-col>
     </el-row>
@@ -98,6 +85,7 @@
         <el-button title="是否置顶" @click="selectOpen('istop')">置顶</el-button>
         <el-button title="是否热门" @click="selectOpen('ishot')">热门</el-button>
         <el-button title="是否推荐" @click="selectOpen('isrec')">推荐</el-button>
+        <ContentExport :query="query" />
       </el-col>
     </el-row>
     <el-dialog
@@ -120,12 +108,7 @@
         </el-form-item>
         <el-form-item v-else-if="selectType === 'edittag'" label="标签">
           <el-select v-model="tag_ids" multiple clearable filterable class="w-full">
-            <el-option
-              v-for="item in tagData"
-              :key="item.tag_id"
-              :label="item.tag_name"
-              :value="item.tag_id"
-            />
+            <el-option v-for="item in tagData" :key="item.tag_id" :label="item.tag_name" :value="item.tag_id" />
           </el-select>
         </el-form-item>
         <el-form-item v-else-if="selectType === 'istop'" label="是否置顶">
@@ -141,11 +124,7 @@
           <el-switch v-model="is_disable" :active-value="1" :inactive-value="0" />
         </el-form-item>
         <el-form-item v-else-if="selectType === 'release'" label="发布时间">
-          <el-date-picker
-            v-model="release_time"
-            type="datetime"
-            value-format="YYYY-MM-DD HH:mm:ss"
-          />
+          <el-date-picker v-model="release_time" type="datetime" value-format="YYYY-MM-DD HH:mm:ss" />
         </el-form-item>
         <el-form-item v-else-if="selectType === 'dele'">
           <span class="c-red">确定要删除选中的{{ name }}吗？</span>
@@ -179,64 +158,18 @@
       <el-table-column prop="name" label="名称" min-width="175" show-overflow-tooltip />
       <el-table-column prop="category_names" label="分类" min-width="105" show-overflow-tooltip />
       <el-table-column prop="tag_names" label="标签" min-width="105" show-overflow-tooltip />
-      <el-table-column prop="is_top" label="置顶" min-width="85" sortable="custom">
-        <template #default="scope">
-          <el-switch
-            v-model="scope.row.is_top"
-            :active-value="1"
-            :inactive-value="0"
-            @change="istop([scope.row])"
-          />
-        </template>
-      </el-table-column>
-      <el-table-column prop="is_hot" label="热门" min-width="85" sortable="custom">
-        <template #default="scope">
-          <el-switch
-            v-model="scope.row.is_hot"
-            :active-value="1"
-            :inactive-value="0"
-            @change="ishot([scope.row])"
-          />
-        </template>
-      </el-table-column>
-      <el-table-column prop="is_rec" label="推荐" min-width="85" sortable="custom">
-        <template #default="scope">
-          <el-switch
-            v-model="scope.row.is_rec"
-            :active-value="1"
-            :inactive-value="0"
-            @change="isrec([scope.row])"
-          />
-        </template>
-      </el-table-column>
-      <el-table-column prop="is_disable" label="禁用" min-width="85" sortable="custom">
-        <template #default="scope">
-          <el-switch
-            v-model="scope.row.is_disable"
-            :active-value="1"
-            :inactive-value="0"
-            @change="disable([scope.row])"
-          />
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="hits"
-        label="点击"
-        min-width="85"
-        show-overflow-tooltip
-        sortable="custom"
-      />
+      <el-table-column prop="is_top_name" label="置顶" min-width="80" sortable="custom" />
+      <el-table-column prop="is_hot_name" label="热门" min-width="80" sortable="custom" />
+      <el-table-column prop="is_rec_name" label="推荐" min-width="80" sortable="custom" />
+      <el-table-column prop="is_disable_name" label="禁用" min-width="80" sortable="custom" />
+      <el-table-column prop="hits" label="点击" min-width="85" show-overflow-tooltip sortable="custom" />
       <el-table-column prop="release_time" label="发布时间" width="165" sortable="custom" />
       <el-table-column prop="create_time" label="添加时间" width="165" sortable="custom" />
       <el-table-column prop="update_time" label="修改时间" width="165" sortable="custom" />
       <el-table-column label="操作" width="95">
         <template #default="scope">
-          <el-link type="primary" class="mr-1" :underline="false" @click="edit(scope.row)">
-            修改
-          </el-link>
-          <el-link type="primary" :underline="false" @click="selectOpen('dele', [scope.row])">
-            删除
-          </el-link>
+          <el-link type="primary" class="mr-1" :underline="false" @click="edit(scope.row)"> 修改 </el-link>
+          <el-link type="primary" :underline="false" @click="selectOpen('dele', [scope.row])"> 删除 </el-link>
         </template>
       </el-table-column>
     </el-table>
@@ -265,12 +198,7 @@
                 <el-input v-model="model.unique" placeholder="请输入标识（唯一）" clearable />
               </el-form-item>
               <el-form-item label="图片" prop="image_id">
-                <FileImage
-                  v-model="model.image_id"
-                  :file-url="model.image_url"
-                  :height="100"
-                  upload
-                />
+                <FileImage v-model="model.image_id" :file-url="model.image_url" :height="100" upload />
               </el-form-item>
               <el-form-item label="名称" prop="name">
                 <el-input v-model="model.name" placeholder="请输入名称" clearable />
@@ -296,12 +224,7 @@
               </el-form-item>
               <el-form-item label="标签" prop="tag_ids">
                 <el-select v-model="model.tag_ids" class="w-full" multiple clearable filterable>
-                  <el-option
-                    v-for="item in tagData"
-                    :key="item.tag_id"
-                    :label="item.tag_name"
-                    :value="item.tag_id"
-                  />
+                  <el-option v-for="item in tagData" :key="item.tag_id" :label="item.tag_name" :value="item.tag_id" />
                 </el-select>
               </el-form-item>
               <el-form-item label="标题" prop="title">
@@ -311,12 +234,7 @@
                 <el-input v-model="model.keywords" placeholder="keywords" clearable />
               </el-form-item>
               <el-form-item label="描述" prop="description">
-                <el-input
-                  v-model="model.description"
-                  type="textarea"
-                  autosize
-                  placeholder="description"
-                />
+                <el-input v-model="model.description" type="textarea" autosize placeholder="description" />
               </el-form-item>
               <el-form-item label="来源" prop="source">
                 <el-input v-model="model.source" placeholder="source" clearable />
@@ -372,44 +290,19 @@
           <el-tab-pane label="附件">
             <el-scrollbar native :height="height - 80">
               <el-form-item label="图片列表" prop="images">
-                <FileUploads
-                  v-model="model.images"
-                  upload-btn="上传图片"
-                  file-type="image"
-                  file-tip="图片文件"
-                />
+                <FileUploads v-model="model.images" upload-btn="上传图片" file-type="image" file-tip="图片文件" />
               </el-form-item>
               <el-form-item label="视频列表" prop="videos">
-                <FileUploads
-                  v-model="model.videos"
-                  upload-btn="上传视频"
-                  file-type="video"
-                  file-tip="视频文件"
-                />
+                <FileUploads v-model="model.videos" upload-btn="上传视频" file-type="video" file-tip="视频文件" />
               </el-form-item>
               <el-form-item label="音频列表" prop="audios">
-                <FileUploads
-                  v-model="model.audios"
-                  upload-btn="上传音频"
-                  file-type="audio"
-                  file-tip="音频文件"
-                />
+                <FileUploads v-model="model.audios" upload-btn="上传音频" file-type="audio" file-tip="音频文件" />
               </el-form-item>
               <el-form-item label="文档列表" prop="words">
-                <FileUploads
-                  v-model="model.words"
-                  upload-btn="上传文档"
-                  file-type="word"
-                  file-tip="文档文件"
-                />
+                <FileUploads v-model="model.words" upload-btn="上传文档" file-type="word" file-tip="文档文件" />
               </el-form-item>
               <el-form-item label="其它列表" prop="others">
-                <FileUploads
-                  v-model="model.others"
-                  upload-btn="上传其它"
-                  file-type="other"
-                  file-tip="其它文件"
-                />
+                <FileUploads v-model="model.others" upload-btn="上传其它" file-type="other" file-tip="其它文件" />
               </el-form-item>
             </el-scrollbar>
           </el-tab-pane>
@@ -443,10 +336,11 @@ import {
   disable,
   release
 } from '@/api/content/content'
+import ContentExport from './components/ContentExport.vue'
 
 export default {
   name: 'ContentContent',
-  components: { Pagination, RichEditor },
+  components: { Pagination, RichEditor, ContentExport },
 
   data() {
     return {
@@ -604,7 +498,7 @@ export default {
       this.query.page = 1
       this.list()
     },
-    // 刷新
+    // 重置查询
     refresh() {
       const limit = this.query.limit
       this.query = this.$options.data().query

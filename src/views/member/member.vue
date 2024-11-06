@@ -32,12 +32,7 @@
           multiple
           collapse-tags
         >
-          <el-option
-            v-for="item in tagData"
-            :key="item.tag_id"
-            :label="item.tag_name"
-            :value="item.tag_id"
-          />
+          <el-option v-for="item in tagData" :key="item.tag_id" :label="item.tag_name" :value="item.tag_id" />
         </el-select>
         <el-select
           v-else-if="query.search_field === 'group_ids'"
@@ -48,12 +43,7 @@
           multiple
           collapse-tags
         >
-          <el-option
-            v-for="item in groupData"
-            :key="item.group_id"
-            :label="item.group_name"
-            :value="item.group_id"
-          />
+          <el-option v-for="item in groupData" :key="item.group_id" :label="item.group_name" :value="item.group_id" />
         </el-select>
         <el-select
           v-else-if="query.search_field === 'is_super' || query.search_field === 'is_disable'"
@@ -78,12 +68,7 @@
           class="ya-search-value"
           clearable
         >
-          <el-option
-            v-for="(item, index) in applications"
-            :key="index"
-            :label="item"
-            :value="index"
-          />
+          <el-option v-for="(item, index) in applications" :key="index" :label="item" :value="index" />
         </el-select>
         <el-cascader
           v-else-if="query.search_field === 'region_id'"
@@ -103,13 +88,7 @@
         >
           <el-option v-for="(item, index) in genders" :key="index" :label="item" :value="index" />
         </el-select>
-        <el-input
-          v-else
-          v-model="query.search_value"
-          class="ya-search-value"
-          placeholder="查询内容"
-          clearable
-        />
+        <el-input v-else v-model="query.search_value" class="ya-search-value" placeholder="查询内容" clearable />
         <el-select v-model="query.date_field" class="ya-date-field" placeholder="时间字段">
           <el-option value="create_time" label="注册时间" />
           <el-option value="login_time" label="登录时间" />
@@ -124,10 +103,8 @@
           value-format="YYYY-MM-DD HH:mm:ss"
           :default-time="[new Date(2024, 1, 1, 0, 0, 0), new Date(2024, 1, 1, 23, 59, 59)]"
         />
-        <el-button type="primary" @click="search()">查询</el-button>
-        <el-button title="重置" @click="refresh()">
-          <svg-icon icon-class="refresh" />
-        </el-button>
+        <el-button type="primary" title="查询/刷新" @click="search()">查询</el-button>
+        <el-button type="default" title="重置查询条件" @click="refresh()">重置</el-button>
         <el-button type="primary" @click="add()">添加</el-button>
       </el-col>
     </el-row>
@@ -141,14 +118,8 @@
         <el-button title="重置密码" @click="selectOpen('repwd')">密码</el-button>
         <el-button title="是否超会" @click="selectOpen('super')">超会</el-button>
         <el-button title="修改所在地" @click="selectOpen('region')">所在地</el-button>
-        <el-button title="导出" class="float-right" @click="selectOpen('export')">导出</el-button>
-        <el-tooltip content="表头：昵称，用户名，手机，邮箱，密码" effect="dark" placement="left">
-          <excel-import
-            v-if="checkPermission(['admin/member.Member/export'])"
-            title="导入"
-            @on-import="imports"
-          />
-        </el-tooltip>
+        <MemberExport :query="query" />
+        <MemberImport />
       </el-col>
     </el-row>
     <el-dialog
@@ -172,12 +143,7 @@
           </el-form-item>
           <el-form-item v-else-if="selectType === 'edittag'" label="标签">
             <el-select v-model="tag_ids" class="w-full" clearable filterable multiple>
-              <el-option
-                v-for="item in tagData"
-                :key="item.tag_id"
-                :label="item.tag_name"
-                :value="item.tag_id"
-              />
+              <el-option v-for="item in tagData" :key="item.tag_id" :label="item.tag_name" :value="item.tag_id" />
             </el-select>
           </el-form-item>
           <el-form-item v-else-if="selectType === 'editgroup'" label="分组">
@@ -201,30 +167,11 @@
           <el-form-item v-else-if="selectType === 'repwd'" label="新密码">
             <el-input v-model="password" placeholder="请输入新密码" clearable />
           </el-form-item>
-          <el-form-item v-else-if="selectType === 'dele'" label="删除？">
+          <el-form-item v-else-if="selectType === 'dele'" label="删除">
             <el-text size="default" type="danger">确定要删除选中的{{ name }}吗？</el-text>
           </el-form-item>
-          <div v-else-if="selectType === 'export'">
-            <el-form-item label="文件名称">
-              <el-input v-model="exportFileName" placeholder="请输入文件名称" clearable />
-            </el-form-item>
-            <el-form-item label="文件类型">
-              <el-select v-model="exportBookType">
-                <el-option
-                  v-for="item in ['xlsx', 'csv', 'txt']"
-                  :key="item"
-                  :label="item"
-                  :value="item"
-                />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="自动宽度">
-              <el-switch v-model="exportAutoWidth" :active-value="true" :inactive-value="false" />
-              <span> 宽度是否自适应</span>
-            </el-form-item>
-          </div>
           <el-form-item :label="name + 'ID'">
-            <el-input v-model="selectIds" type="textarea" autosize disable />
+            <el-input v-model="selectIds" type="textarea" :rows="18" disabled />
           </el-form-item>
         </el-form>
       </el-scrollbar>
@@ -241,7 +188,6 @@
       :height="height"
       @sort-change="sort"
       @selection-change="select"
-      @cell-dblclick="cellDbclick"
     >
       <el-table-column type="selection" width="42" title="全选/反选" />
       <el-table-column :prop="idkey" label="ID" width="80" sortable="custom" />
@@ -250,66 +196,20 @@
           <FileImage :file-url="scope.row.avatar_url" avatar lazy />
         </template>
       </el-table-column>
-      <el-table-column
-        prop="nickname"
-        label="昵称"
-        min-width="170"
-        sortable="custom"
-        show-overflow-tooltip
-      />
-      <el-table-column
-        prop="username"
-        label="用户名"
-        min-width="170"
-        sortable="custom"
-        show-overflow-tooltip
-      />
-      <el-table-column
-        prop="phone"
-        label="手机"
-        min-width="112"
-        sortable="custom"
-        show-overflow-tooltip
-      />
-      <el-table-column
-        prop="email"
-        label="邮箱"
-        min-width="200"
-        sortable="custom"
-        show-overflow-tooltip
-      />
+      <el-table-column prop="nickname" label="昵称" min-width="170" sortable="custom" show-overflow-tooltip />
+      <el-table-column prop="username" label="用户名" min-width="170" sortable="custom" show-overflow-tooltip />
+      <el-table-column prop="phone" label="手机" min-width="112" sortable="custom" show-overflow-tooltip />
+      <el-table-column prop="email" label="邮箱" min-width="200" sortable="custom" show-overflow-tooltip />
       <el-table-column prop="tag_names" label="标签" min-width="130" show-overflow-tooltip />
       <el-table-column prop="group_names" label="分组" min-width="135" show-overflow-tooltip />
-      <el-table-column prop="is_super" label="超会" min-width="85" sortable="custom">
-        <template #default="scope">
-          <el-switch
-            v-model="scope.row.is_super"
-            :active-value="1"
-            :inactive-value="0"
-            @change="issuper([scope.row])"
-          />
-        </template>
-      </el-table-column>
-      <el-table-column prop="is_disable" label="禁用" min-width="85" sortable="custom">
-        <template #default="scope">
-          <el-switch
-            v-model="scope.row.is_disable"
-            :active-value="1"
-            :inactive-value="0"
-            @change="disable([scope.row])"
-          />
-        </template>
-      </el-table-column>
+      <el-table-column prop="is_super_name" label="超会" min-width="80" sortable="custom" />
+      <el-table-column prop="is_disable_name" label="禁用" min-width="80" sortable="custom" />
       <el-table-column prop="sort" label="排序" width="85" sortable="custom" />
       <el-table-column prop="create_time" label="注册时间" width="165" sortable="custom" />
       <el-table-column label="操作" width="95">
         <template #default="scope">
-          <el-link type="primary" class="mr-1" :underline="false" @click="edit(scope.row)">
-            修改
-          </el-link>
-          <el-link type="primary" :underline="false" @click="selectOpen('dele', [scope.row])">
-            删除
-          </el-link>
+          <el-link type="primary" class="mr-1" :underline="false" @click="edit(scope.row)"> 修改 </el-link>
+          <el-link type="primary" :underline="false" @click="selectOpen('dele', [scope.row])"> 删除 </el-link>
         </template>
       </el-table-column>
     </el-table>
@@ -346,29 +246,13 @@
                 />
               </el-form-item>
               <el-form-item label="昵称" prop="nickname">
-                <el-input
-                  key="nickname"
-                  v-model="model.nickname"
-                  placeholder="请输入昵称"
-                  clearable
-                />
+                <el-input key="nickname" v-model="model.nickname" placeholder="请输入昵称" clearable />
               </el-form-item>
               <el-form-item label="用户名" prop="username">
-                <el-input
-                  key="username"
-                  v-model="model.username"
-                  placeholder="请输入用户名"
-                  clearable
-                />
+                <el-input key="username" v-model="model.username" placeholder="请输入用户名" clearable />
               </el-form-item>
               <el-form-item v-if="model.member_id == ''" label="密码" prop="password">
-                <el-input
-                  key="password"
-                  v-model="model.password"
-                  placeholder="请输入密码"
-                  clearable
-                  show-password
-                />
+                <el-input key="password" v-model="model.password" placeholder="请输入密码" clearable show-password />
               </el-form-item>
               <el-form-item label="手机" prop="phone">
                 <el-input v-model="model.phone" clearable />
@@ -381,12 +265,7 @@
               </el-form-item>
               <el-form-item label="性别" prop="gender">
                 <el-select v-model="model.gender">
-                  <el-option
-                    v-for="(item, index) in genders"
-                    :key="index"
-                    :label="item"
-                    :value="index"
-                  />
+                  <el-option v-for="(item, index) in genders" :key="index" :label="item" :value="index" />
                 </el-select>
               </el-form-item>
               <el-form-item label="所在地" prop="region_id">
@@ -409,29 +288,14 @@
           <el-tab-pane label="权限信息">
             <el-scrollbar native :height="height - 80">
               <el-form-item label="超会" prop="is_super">
-                <el-switch
-                  v-model="model.is_super"
-                  :active-value="1"
-                  :inactive-value="0"
-                  disabled
-                />
+                <el-switch v-model="model.is_super" :active-value="1" :inactive-value="0" disabled />
               </el-form-item>
               <el-form-item label="禁用" prop="is_disable">
-                <el-switch
-                  v-model="model.is_disable"
-                  :active-value="1"
-                  :inactive-value="0"
-                  disabled
-                />
+                <el-switch v-model="model.is_disable" :active-value="1" :inactive-value="0" disabled />
               </el-form-item>
               <el-form-item label="标签" prop="tag_ids">
                 <el-select v-model="model.tag_ids" class="w-full" multiple clearable filterable>
-                  <el-option
-                    v-for="item in tagData"
-                    :key="item.tag_id"
-                    :label="item.tag_name"
-                    :value="item.tag_id"
-                  />
+                  <el-option v-for="item in tagData" :key="item.tag_id" :label="item.tag_name" :value="item.tag_id" />
                 </el-select>
               </el-form-item>
               <el-form-item label="分组(角色)" prop="group_ids">
@@ -446,9 +310,7 @@
               </el-form-item>
               <el-form-item v-if="model[idkey]" label="接口(权限)" prop="api_ids">
                 <el-col :span="24">
-                  <el-checkbox v-model="apiExpandAll" @change="apiExpandAllChange">
-                    展开
-                  </el-checkbox>
+                  <el-checkbox v-model="apiExpandAll" @change="apiExpandAllChange"> 展开 </el-checkbox>
                 </el-col>
                 <el-tree
                   ref="apiRef"
@@ -470,11 +332,7 @@
                         </i>
                       </span>
                       <span>
-                        <i
-                          v-if="scope.data.api_url"
-                          style="margin-left: 10px"
-                          :title="scope.data.api_url"
-                        >
+                        <i v-if="scope.data.api_url" style="margin-left: 10px" :title="scope.data.api_url">
                           <svg-icon icon-class="link" />
                         </i>
                         <i v-else style="margin-left: 10px; color: #fff">
@@ -548,24 +406,9 @@
                     <FileImage :file-url="scope.row.headimgurl" avatar lazy />
                   </template>
                 </el-table-column>
-                <el-table-column
-                  prop="nickname"
-                  label="昵称"
-                  min-width="100"
-                  show-overflow-tooltip
-                />
-                <el-table-column
-                  prop="platform_name"
-                  label="平台"
-                  min-width="80"
-                  show-overflow-tooltip
-                />
-                <el-table-column
-                  prop="application_name"
-                  label="应用"
-                  min-width="110"
-                  show-overflow-tooltip
-                />
+                <el-table-column prop="nickname" label="昵称" min-width="100" show-overflow-tooltip />
+                <el-table-column prop="platform_name" label="平台" min-width="80" show-overflow-tooltip />
+                <el-table-column prop="application_name" label="应用" min-width="110" show-overflow-tooltip />
                 <el-table-column prop="is_disable" label="禁用" min-width="85">
                   <template #default="scope">
                     <el-switch
@@ -581,9 +424,7 @@
                 <el-table-column prop="login_time" label="登录时间" width="165" />
                 <el-table-column label="操作" width="70">
                   <template #default="scope">
-                    <el-link type="primary" :underline="false" @click="thirdUnbindBtn(scope.row)">
-                      解绑
-                    </el-link>
+                    <el-link type="primary" :underline="false" @click="thirdUnbindBtn(scope.row)"> 解绑 </el-link>
                   </template>
                 </el-table-column>
               </el-table>
@@ -598,14 +439,10 @@
     </el-dialog>
     <!-- 第三方账号解绑 -->
     <el-dialog v-model="thirdUnbindDialog" title="会员第三方账号解绑" width="25%" top="20vh">
-      <el-text size="default" type="danger">
-        解绑后该会员无法再通过该第三方账号登录，确定要解绑吗？
-      </el-text>
+      <el-text size="default" type="danger"> 解绑后该会员无法再通过该第三方账号登录，确定要解绑吗？ </el-text>
       <template #footer>
         <el-button :loading="thirdUnbindLoad" @click="thirdUnbindDialog = false">取消</el-button>
-        <el-button :loading="thirdUnbindLoad" type="primary" @click="thirdUnbindSubmit">
-          确定
-        </el-button>
+        <el-button :loading="thirdUnbindLoad" type="primary" @click="thirdUnbindSubmit"> 确定 </el-button>
       </template>
     </el-dialog>
   </div>
@@ -615,28 +452,16 @@
 import checkPermission from '@/utils/permission'
 import screenHeight from '@/utils/screen-height'
 import Pagination from '@/components/Pagination/index.vue'
-import ExcelImport from '@/components/ExcelImport/index.vue'
-import clip from '@/utils/clipboard'
 import { arrayColumn } from '@/utils/index'
 import { getPageLimit } from '@/utils/settings'
-import {
-  list,
-  info,
-  add,
-  edit,
-  dele,
-  region,
-  edittag,
-  editgroup,
-  repwd,
-  issuper,
-  disable,
-  imports
-} from '@/api/member/member'
+import { list, info, add, edit, dele, region, edittag, editgroup, repwd, issuper, disable } from '@/api/member/member'
+import MemberExport from './components/MemberExport.vue'
+import MemberImport from './components/MemberImport.vue'
+import { clipboard } from '@/utils/index'
 
 export default {
   name: 'Member',
-  components: { Pagination, ExcelImport },
+  components: { Pagination, MemberExport, MemberImport },
   data() {
     return {
       name: '会员',
@@ -709,9 +534,6 @@ export default {
       password: '',
       is_super: 0,
       is_disable: 0,
-      exportFileName: '',
-      exportBookType: 'xlsx',
-      exportAutoWidth: false,
       apiProps: { label: 'api_name', children: 'children' },
       apiCheckAll: false,
       apiExpandAll: false,
@@ -726,6 +548,7 @@ export default {
   },
   methods: {
     checkPermission,
+    clipboard,
     // 列表
     list() {
       this.loading = true
@@ -806,20 +629,20 @@ export default {
       } else {
         this.model = this.$options.data().model
       }
+      this.apiExpandAll = false
       if (this.$refs['ref'] !== undefined) {
         try {
           this.$refs['ref'].resetFields()
           this.$refs['ref'].clearValidate()
         } catch (error) {}
       }
-      this.apiExpandAll = false
     },
     // 查询
     search() {
       this.query.page = 1
       this.list()
     },
-    // 刷新
+    // 重置查询
     refresh() {
       const limit = this.query.limit
       this.query = this.$options.data().query
@@ -880,14 +703,6 @@ export default {
           this.selectTitle = this.name + '是否禁用'
         } else if (selectType === 'dele') {
           this.selectTitle = this.name + '删除'
-        } else if (selectType === 'export') {
-          var date = new Date()
-          var month = date.getMonth() + 1
-          month = month < 10 ? '0' + month : month
-          this.exportFileName = this.name + date.getFullYear() + '-' + month + '-' + date.getDate()
-          this.selectTitle = this.name + '导出'
-        } else if (selectType === 'import') {
-          this.selectTitle = this.name + '导入'
         }
         this.selectDialog = true
         this.selectType = selectType
@@ -915,10 +730,6 @@ export default {
           this.disable(this.selection, true)
         } else if (selectType === 'dele') {
           this.dele(this.selection)
-        } else if (selectType === 'export') {
-          this.export(this.selection)
-        } else if (selectType === 'import') {
-          this.import(this.selection)
         }
         this.selectDialog = false
       }
@@ -980,7 +791,7 @@ export default {
           })
       }
     },
-    // 重置密码
+    // 修改密码
     repwd(row) {
       if (!row.length) {
         this.selectAlert()
@@ -1067,45 +878,6 @@ export default {
           })
       }
     },
-    // 导入，results数据，header表头
-    imports({ results, header }) {
-      this.loading = true
-      imports({
-        import: results
-      })
-        .then((res) => {
-          this.list()
-          ElMessage.success(res.msg)
-        })
-        .catch(() => {
-          this.loading = false
-        })
-    },
-    // 导出
-    export(row) {
-      this.loading = true
-      import('@/components/ExcelExport/index').then((excel) => {
-        const header = [
-          { member_id: 'ID' },
-          { nickname: '昵称' },
-          { username: '用户名' },
-          { phone: '手机' },
-          { email: '邮箱' },
-          { is_super: '超会' },
-          { is_disable: '禁用' },
-          { remark: '备注' },
-          { create_time: '注册时间' }
-        ]
-        excel.excelExport(
-          row,
-          header,
-          this.exportFileName,
-          this.exportBookType,
-          this.exportAutoWidth
-        )
-        this.loading = false
-      })
-    },
     // 权限展开
     apiExpandAllChange() {
       const expanded = this.apiExpandAll
@@ -1173,14 +945,6 @@ export default {
             })
             .catch(() => {})
         })
-    },
-    // 复制
-    copy(text) {
-      clip(text)
-    },
-    // 单元格双击复制
-    cellDbclick(row, column) {
-      this.copy(row[column.property])
     }
   }
 }
