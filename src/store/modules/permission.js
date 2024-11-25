@@ -24,7 +24,7 @@ const filterAsyncRoutes = (routes) => {
       if (component) {
         tmpRoute.component = component
       } else {
-        tmpRoute.component = modules[`../../views/error-page/404.vue`]
+        tmpRoute.component = modules[`../../views/system/components/System404.vue`]
       }
     }
 
