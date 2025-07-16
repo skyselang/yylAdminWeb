@@ -17,7 +17,7 @@ const defaultSettings = {
   pageLimit: 20, // 分页每页默认数量
   size: 'default', // 组件大小：large、default、small
   language: 'zh-cn', //语言：zh-cn中文，en英文
-  storePrefix: import.meta.env.VITE_APP_STORE_PREFIX || 'admin_', // // 本地存储前缀
+  storePrefix: import.meta.env.VITE_APP_STORE_PREFIX || 'admin_' // 本地存储前缀
 }
 
 export default defaultSettings
