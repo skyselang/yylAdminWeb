@@ -1,19 +1,19 @@
 <template>
-  <el-row style="width: 100%">
+  <el-row class="w-full">
     <el-col :span="fileSpan" :style="fileStyle">
       <div v-if="file.file_url">
         <div v-if="file.file_type === 'image'">
           <el-image
-            :style="imageStyle"
             :src="file.file_url"
-            :fit="fit"
-            :preview-src-list="[file.file_url]"
+            :preview-src-list="previewSrcList"
             :preview-teleported="previewTeleported"
+            :style="imageStyle"
             :lazy="lazy"
-            title="点击看大图"
+            :fit="fit"
+            :title="$t('点击看大图')"
           >
             <template #error>
-              <svg-icon icon-class="picture" />
+              <Icon icon="Picture" />
             </template>
           </el-image>
         </div>
@@ -28,21 +28,23 @@
           <embed :src="file.file_url" :style="audioStyle" />
         </audio>
         <div v-else-if="file.file_type === 'word'">
-          <svg-icon icon-class="document" :size="iconSize" />
+          <Icon icon="Document" :size="iconSize" />
         </div>
         <div v-else-if="file.file_type === 'other'">
-          <svg-icon icon-class="folder" :size="iconSize" />
+          <Icon icon="Folder" :size="iconSize" />
         </div>
       </div>
     </el-col>
     <el-col :span="operSpan">
-      <el-button @click="fileDownload(file)">下载</el-button>
+      <el-button @click="fileDown(file)">下载</el-button>
     </el-col>
   </el-row>
 </template>
 
 <script setup>
 import { clipboard } from '@/utils/index'
+import { infoApi } from '@/api/file/file'
+import i18n from '@/lang/index'
 // 文件预览
 const props = defineProps({
   file: {
@@ -55,11 +57,15 @@ const props = defineProps({
   },
   fit: {
     type: String,
-    default: ''
+    default: 'contain'
   },
   lazy: {
     type: Boolean,
     default: false
+  },
+  previewSrcList: {
+    type: Array,
+    default: () => []
   },
   previewTeleported: {
     type: Boolean,
@@ -68,6 +74,10 @@ const props = defineProps({
   download: {
     type: Boolean,
     default: false
+  },
+  idkey: {
+    type: String,
+    default: 'file_id'
   }
 })
 
@@ -88,13 +98,16 @@ const audioStyle = computed(() => {
 const iconSize = computed(() => {
   return props.height * 0.7 + 'px'
 })
+const previewSrcList = computed(() => {
+  return props.previewSrcList ? props.previewSrcList : [props.file.file_url]
+})
 
 watch(
   () => props.download,
   (download) => {
     if (download) {
-      fileSpan.value = 12
-      operSpan.value = 12
+      fileSpan.value = 14
+      operSpan.value = 10
     }
   },
   { immediate: true, deep: true }
@@ -103,10 +116,14 @@ watch(
 function fileName(file) {
   return file.file_name + '.' + file.file_ext
 }
-function fileDownload(file) {
-  clipboard(fileName(file), '文件名已复制')
-  setTimeout(() => {
-    window.open(file.file_url, '_blank')
-  }, 500)
+function fileDown(file) {
+  if (file.add_type === 'upload' && file.storage === 'local') {
+    infoApi({ [props.idkey]: file[props.idkey], file_name: file['file_name'] }, true)
+  } else {
+    clipboard(fileName(file), i18n.global.t('文件名已复制'))
+    setTimeout(() => {
+      window.open(file.file_url, '_blank')
+    }, 500)
+  }
 }
 </script>

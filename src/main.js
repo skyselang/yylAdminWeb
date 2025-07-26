@@ -2,14 +2,9 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from '@/router'
 import { setupStore } from '@/store'
-import 'default-passive-events'
-
-import '@/permission'
-
-import 'virtual:svg-icons-register'
-
 import i18n from '@/lang/index'
-
+import 'default-passive-events'
+import '@/permission'
 import 'element-plus/theme-chalk/dark/css-vars.css'
 import '@/styles/index.scss'
 import 'uno.css'

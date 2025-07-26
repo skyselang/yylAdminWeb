@@ -1,115 +1,84 @@
 <template>
-  <div :class="{ hidden: hidden }" class="pagination-container" :style="{ 'text-align': align }">
-    <el-pagination
-      v-model:current-page="currentPage"
-      v-model:page-size="pageSize"
-      :background="background"
-      :layout="layout"
-      :page-sizes="pageSizes"
-      :total="total"
-      :small="small"
-      v-bind="$attrs"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-    />
-  </div>
+  <el-scrollbar>
+    <div :class="{ hidden: hidden }" class="pagination">
+      <el-pagination
+        v-model:current-page="currentPage"
+        v-model:page-size="pageSize"
+        :background="background"
+        :layout="layout"
+        :page-sizes="pageSizes"
+        :total="total"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+      />
+    </div>
+  </el-scrollbar>
 </template>
 
-<script>
-import { scrollTo } from '@/utils/scroll-to'
-import { useAppStoreHook } from '@/store/modules/app'
-
-export default {
-  name: 'Pagination',
-  props: {
-    align: {
-      type: String,
-      default: 'left'
-    },
-    total: {
-      required: true,
-      type: Number
-    },
-    page: {
-      type: Number,
-      default: 1
-    },
-    limit: {
-      type: Number,
-      default: 20
-    },
-    pageSizes: {
-      type: Array,
-      default() {
-        return [10, 12, 15, 18, 20, 30, 50, 80, 100, 150, 200, 300, 500, 800, 1000]
-      }
-    },
-    layout: {
-      type: String,
-      default: 'total, sizes, prev, pager, next, jumper'
-    },
-    background: {
-      type: Boolean,
-      default: true
-    },
-    autoScroll: {
-      type: Boolean,
-      default: true
-    },
-    hidden: {
-      type: Boolean,
-      default: false
+<script setup>
+import { useSettingsStore } from '@/store/modules/settings'
+defineOptions({
+  name: 'Pagination'
+})
+defineProps({
+  total: {
+    required: true,
+    type: Number,
+    default: 0
+  },
+  pageSizes: {
+    type: Array,
+    default() {
+      const settingsStore = useSettingsStore()
+      return settingsStore.pageLimits
     }
   },
-  computed: {
-    small() {
-      const appStore = useAppStoreHook()
-      if (appStore.size == 'small') {
-        return true
-      }
-      return false
-    },
-    currentPage: {
-      get() {
-        return this.page
-      },
-      set(val) {
-        this.$emit('update:page', val)
-      }
-    },
-    pageSize: {
-      get() {
-        return this.limit
-      },
-      set(val) {
-        this.$emit('update:limit', val)
-      }
-    }
+  layout: {
+    type: String,
+    default: 'total, sizes, prev, pager, next, jumper'
   },
-  methods: {
-    handleSizeChange(val) {
-      this.$emit('pagination', { page: this.currentPage, limit: val })
-      if (this.autoScroll) {
-        scrollTo(0, 800)
-      }
-    },
-    handleCurrentChange(val) {
-      this.$emit('pagination', { page: val, limit: this.pageSize })
-      if (this.autoScroll) {
-        scrollTo(0, 800)
-      }
-    }
+  background: {
+    type: Boolean,
+    default: true
+  },
+  autoScroll: {
+    type: Boolean,
+    default: true
+  },
+  hidden: {
+    type: Boolean,
+    default: false
   }
+})
+
+const emit = defineEmits(['pagination'])
+
+const currentPage = defineModel('page', {
+  type: Number,
+  required: true,
+  default: 1
+})
+const pageSize = defineModel('limit', {
+  type: Number,
+  required: true,
+  default: 20
+})
+
+function handleSizeChange(val) {
+  emit('pagination', { page: currentPage.value, limit: val })
+}
+
+function handleCurrentChange(val) {
+  emit('pagination', { page: val, limit: pageSize.value })
 }
 </script>
 
-<style scoped>
-.pagination-container {
+<style lang="scss" scoped>
+.pagination {
   padding-top: 0;
-  margin-top: 20px;
-}
 
-.pagination-container.hidden {
-  display: none;
+  &.hidden {
+    display: none;
+  }
 }
 </style>

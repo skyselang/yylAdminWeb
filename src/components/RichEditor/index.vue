@@ -8,27 +8,29 @@
     <Editor
       id="editor-container"
       v-model="modelValue"
+      :style="{ height: height + 'px' }"
       :default-config="editorConfig"
       :mode="mode"
       @on-change="handleChange"
       @on-created="handleCreated"
     />
-    <!-- 文件管理 -->
-    <el-dialog
-      v-model="fileDialog"
-      :title="fileTitle"
-      :close-on-click-modal="false"
-      :close-on-press-escape="false"
-      top="1vh"
-      width="80%"
-      append-to-body
-    >
-      <FileManage :file-type="fileType" @file-cancel="fileCancel" @file-submit="fileSubmit" />
-    </el-dialog>
   </div>
+  <!-- 文件管理 -->
+  <el-dialog
+    v-model="fileDialog"
+    :title="fileTitle"
+    :close-on-click-modal="false"
+    :close-on-press-escape="false"
+    append-to-body
+    width="80%"
+    top="1vh"
+  >
+    <FileManage :file-type="fileType" @file-cancel="fileCancel" @file-submit="fileSubmit" />
+  </el-dialog>
 </template>
 
 <script setup>
+import { useI18n } from 'vue-i18n'
 import { useAppStore } from '@/store/modules/app'
 import { i18nChangeLanguage } from '@wangeditor/editor'
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
@@ -38,8 +40,15 @@ const props = defineProps({
   modelValue: {
     type: [String],
     default: ''
+  },
+  height: {
+    type: [Number],
+    default: 500
   }
 })
+
+const { t } = useI18n()
+const placeholder = t('请输入内容')
 const appStore = useAppStore()
 const emit = defineEmits(['update:modelValue'])
 // 切换语言 - 'en' 或者 'zh-CN'
@@ -54,11 +63,12 @@ const toolbarConfig = ref({
   insertKeys: {
     index: 24, // 自定义插入的位置
     keys: ['uploadAttachment'] // “上传附件”菜单
-  }
+  },
+  excludeKeys: ['fullScreen']
 })
 // 编辑器配置
 const editorConfig = ref({
-  placeholder: '请输入内容...',
+  placeholder: placeholder,
   MENU_CONF: {
     uploadImage: {
       // 自定义选择图片
@@ -102,11 +112,11 @@ function fileCancel() {
 }
 function fileSubmit(files) {
   fileDialog.value = false
-  var htmls = ''
+  let htmls = ''
   const length = files.length
   for (let i = 0; i < length; i++) {
     if (files[i]['file_type'] === 'image') {
-      htmls += `<img file-id="${files[i]['file_id']}" src="${files[i]['file_url']}" style="width:640px;"/>`
+      htmls += `<img file-id="${files[i]['file_id']}" src="${files[i]['file_url']}" style="width:640px;" alt="" />`
     } else if (files[i]['file_type'] === 'video') {
       htmls += `<div data-w-e-type="video" data-w-e-is-void><video width="640" height="480" controls>
                 <source file-id="${files[i]['file_id']}" src="${files[i]['file_url']}" type="video/mp4">
@@ -138,6 +148,7 @@ onBeforeUnmount(() => {
 <style src="@wangeditor/editor/dist/css/style.css"></style>
 <style>
 .editor-wrapper {
-  border: 1px solid #cfd3dc;
+  min-height: 500px;
+  border: var(--el-border);
 }
 </style>

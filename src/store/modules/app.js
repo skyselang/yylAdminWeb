@@ -1,23 +1,19 @@
 import { defineStore } from 'pinia'
 import { store } from '@/store'
-import { useStorage } from '@vueuse/core'
 import defaultSettings from '@/settings'
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
 import en from 'element-plus/es/locale/lang/en'
 
 // setup
 export const useAppStore = defineStore('app', () => {
-  const storePrefix = defaultSettings.storePrefix
   // state
+  const storePrefix = defaultSettings.storePrefix
   const device = useStorage(storePrefix + 'device', 'desktop')
   const size = useStorage(storePrefix + 'size', defaultSettings.size)
   const language = useStorage(storePrefix + 'language', defaultSettings.language)
   const activeTopMenu = useStorage(storePrefix + 'activeTop', '')
   const sidebarStatus = useStorage(storePrefix + 'sidebarStatus', 'closed')
-  const sidebar = reactive({
-    opened: sidebarStatus.value != 'closed',
-    withoutAnimation: false
-  })
+  const sidebar = reactive({ opened: sidebarStatus.value != 'closed', withoutAnimation: false })
   // 语言包
   const locale = computed(() => {
     if (language?.value == 'en') {

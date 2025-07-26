@@ -1,9 +1,11 @@
-@import './transition';
-@import './sidebar';
-@import './reset';
-@import './dark';
-@import './yyladmin';
+@use './sidebar';
+@use './reset';
+@use './dark';
 
 .app-container {
   padding: 15px;
+}
+
+#nprogress .bar {
+  background: var(--el-color-primary);
 }

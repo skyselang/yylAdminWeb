@@ -3,8 +3,8 @@
   <div class="navbar">
     <!-- 左侧面包屑 -->
     <div class="flex">
-      <hamburger :is-active="appStore.sidebar.opened" @toggle-click="toggleSideBar" />
-      <breadcrumb />
+      <Hamburger :is-active="appStore.sidebar.opened" @toggle-click="toggleSideBar" />
+      <Breadcrumb />
     </div>
     <!-- 右侧导航设置 -->
     <div class="flex">

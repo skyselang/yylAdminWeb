@@ -2,7 +2,7 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 export const Layout = () => import('@/layout/index.vue')
 
 /**
- * 静态路由
+ * 基础路由
  */
 export const constantRoutes = [
   {
@@ -12,7 +12,7 @@ export const constantRoutes = [
     children: [
       {
         path: '/redirect/:path(.*)',
-        component: () => import('@/views/system/components/SystemRedirect.vue')
+        component: () => import('@/views/system/system/redirect.vue')
       }
     ]
   },
@@ -20,7 +20,7 @@ export const constantRoutes = [
   {
     path: '/login',
     name: 'login',
-    component: () => import('@/views/system/login.vue'),
+    component: () => import('@/views/system/system/login.vue'),
     meta: { title: '登录', hidden: true }
   },
 
@@ -33,31 +33,37 @@ export const constantRoutes = [
       {
         path: 'dashboard',
         name: 'Dashboard',
-        component: () => import('@/views/system/index.vue'),
+        component: () => import('@/views/system/system/index.vue'),
         meta: {
-          title: 'dashboard',
-          icon: 'home-filled',
+          title: '首页',
+          icon: 'HomeFilled',
           affix: true,
           keepAlive: true,
           alwaysShow: false
         }
       },
       {
+        path: 'user-center',
+        component: () => import('@/views/system/user-center/index.vue'),
+        name: 'UserCenter',
+        meta: { title: '个人中心', hidden: true }
+      },
+      {
         path: 'setting',
-        component: () => import('@/views/system/components/SystemSetting.vue'),
+        component: () => import('@/views/system/system/setting.vue'),
         name: 'Setting',
-        meta: { title: 'System setting', hidden: true }
+        meta: { title: '设置', hidden: true }
       },
       {
         path: '401',
         name: '401',
-        component: () => import('@/views/system/components/System401.vue'),
+        component: () => import('@/views/system/system/401.vue'),
         meta: { title: '401', hidden: true }
       },
       {
         path: '404',
         name: '404',
-        component: () => import('@/views/system/components/System404.vue'),
+        component: () => import('@/views/system/system/404.vue'),
         meta: { title: '404', hidden: true }
       }
     ]

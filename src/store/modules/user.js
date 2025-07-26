@@ -1,17 +1,13 @@
 import { defineStore } from 'pinia'
 import { resetRouter } from '@/router'
 import { store } from '@/store'
-import { useStorage } from '@vueuse/core'
 import { useSettingsStore } from '@/store/modules/settings'
-import { login as loginApi, logout as logoutApi } from '@/api/system/login'
-import { info as userInfoApi } from '@/api/system/user-center'
-import defaultSettings from '@/settings'
+import { loginApi, logoutApi } from '@/api/system/login'
+import { infoApi as userInfoApi } from '@/api/system/user-center'
+import { tokenValue } from '@/utils/index'
 
 export const useUserStore = defineStore('user', () => {
   const settingsStore = useSettingsStore()
-  const storePrefix = defaultSettings.storePrefix
-  const tokenName = settingsStore.tokenName
-  const token = useStorage(storePrefix + tokenName, '')
   const user = reactive({
     username: '',
     nickname: '',
@@ -27,7 +23,7 @@ export const useUserStore = defineStore('user', () => {
         .then((res) => {
           const data = res.data
           const tokenName = settingsStore.tokenName
-          token.value = data[tokenName]
+          tokenValue(data[tokenName])
           resolve()
         })
         .catch((err) => {
@@ -54,10 +50,8 @@ export const useUserStore = defineStore('user', () => {
           user.avatar_url = data.avatar_url
           user.roles = data.roles
           user.menus = data.menus
-          settingsStore.changeSetting({
-            key: 'watermarkContent',
-            value: settingsStore.systemName + '@' + data.nickname
-          })
+          data.setting.watermark_content = settingsStore.systemName + '@' + data.nickname
+          settingsStore.setSetting(data.setting)
           resolve(data)
         })
         .catch((err) => {
@@ -71,7 +65,7 @@ export const useUserStore = defineStore('user', () => {
     return new Promise((resolve, reject) => {
       logoutApi()
         .then(() => {
-          token.value = ''
+          tokenValue('')
           location.reload() // 清空路由
           resolve()
         })
@@ -81,21 +75,26 @@ export const useUserStore = defineStore('user', () => {
     })
   }
 
+  // 获取token
+  function getToken() {
+    return tokenValue()
+  }
+
   // 移除token
   function resetToken() {
     return new Promise((resolve) => {
-      token.value = ''
+      tokenValue('')
       resetRouter()
       resolve()
     })
   }
 
   return {
-    token,
     user,
     login,
     userInfo,
     logout,
+    getToken,
     resetToken
   }
 })

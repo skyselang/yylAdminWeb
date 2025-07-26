@@ -1,145 +1,105 @@
 import request from '@/utils/request'
-// 内容管理
+// 内容管理接口
 const url = '/admin/content.Content/'
+
 /**
  * 内容列表
  * @param {array} params 请求参数
  */
-export function list(params) {
+export function listApi(params) {
   return request({
     url: url + 'list',
     method: 'get',
     params: params
   })
 }
+
 /**
  * 内容信息
  * @param {array} params 请求参数
  */
-export function info(params) {
+export function infoApi(params) {
   return request({
     url: url + 'info',
     method: 'get',
     params: params
   })
 }
+
 /**
  * 内容添加
  * @param {array} data 请求数据
+ * @param {string} method get获取数据，post提交添加
  */
-export function add(data) {
+export function addApi(data, method = 'post') {
   return request({
     url: url + 'add',
-    method: 'post',
+    method: method,
     data
   })
 }
+
 /**
  * 内容修改
  * @param {array} data 请求数据
+ * @param {string} method get获取数据，post提交修改
  */
-export function edit(data) {
-  return request({
+export function editApi(data, method = 'post') {
+  const config = {
     url: url + 'edit',
-    method: 'post',
-    data
-  })
+    method: method
+  }
+  if (method === 'get') {
+    config.params = data
+  } else {
+    config.data = data
+  }
+  return request(config)
 }
+
 /**
  * 内容删除
  * @param {array} data 请求数据
  */
-export function dele(data) {
+export function deleApi(data) {
   return request({
     url: url + 'dele',
     method: 'post',
     data
   })
 }
-/**
- * 内容修改分类
- * @param {array} data 请求数据
- */
-export function editcate(data) {
-  return request({
-    url: url + 'editcate',
-    method: 'post',
-    data
-  })
-}
-/**
- * 内容修改标签
- * @param {array} data 请求数据
- */
-export function edittag(data) {
-  return request({
-    url: url + 'edittag',
-    method: 'post',
-    data
-  })
-}
-/**
- * 内容是否置顶
- * @param {array} data 请求数据
- */
-export function istop(data) {
-  return request({
-    url: url + 'istop',
-    method: 'post',
-    data
-  })
-}
-/**
- * 内容是否热门
- * @param {array} data 请求数据
- */
-export function ishot(data) {
-  return request({
-    url: url + 'ishot',
-    method: 'post',
-    data
-  })
-}
-/**
- * 内容是否推荐
- * @param {array} data 请求数据
- */
-export function isrec(data) {
-  return request({
-    url: url + 'isrec',
-    method: 'post',
-    data
-  })
-}
+
 /**
  * 内容是否禁用
  * @param {array} data 请求数据
  */
-export function disable(data) {
+export function disableApi(data) {
   return request({
     url: url + 'disable',
     method: 'post',
     data
   })
 }
+
 /**
- * 内容发布时间
- * @param {array} data 请求数据
+ * 内容批量操作
+ * @param {object} data 请求数据
  */
-export function release(data) {
+export function updateApi(data) {
   return request({
-    url: url + 'release',
+    url: url + 'update',
     method: 'post',
     data
   })
 }
+
 /**
  * 内容导出
  * @param {array} data 请求数据
  * @param {string} method get下载导出文件，post提交导出
  */
-export function exports(data, method = 'post') {
-  if (method == 'get') {
+export function exportApi(data, method = 'post') {
+  if (method === 'get') {
     return request({
       url: url + 'export',
       method: 'get',
@@ -152,4 +112,21 @@ export function exports(data, method = 'post') {
     method: 'post',
     data
   })
+}
+
+/**
+ * 内容导入
+ * @param {array} data 请求数据
+ * @param {string} method get下载导入模板，post上传导入文件
+ */
+export function importApi(data = {}, method = 'post') {
+  if (method === 'get') {
+    return request({
+      url: url + 'import',
+      method: 'get',
+      params: data,
+      responseType: data?.file_path ? 'blob' : 'json'
+    })
+  }
+  return import.meta.env.VITE_APP_BASE_URL + url + 'import'
 }

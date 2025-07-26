@@ -1,8 +1,13 @@
 import { defineStore } from 'pinia'
+import { store } from '@/store'
+import router from '@/router'
 
 export const useTagsViewStore = defineStore('tagsView', () => {
+  // state
   const visitedViews = ref([])
   const cachedViews = ref([])
+
+  // actions
 
   /**
    * 添加已访问视图到已访问视图列表中
@@ -87,7 +92,7 @@ export const useTagsViewStore = defineStore('tagsView', () => {
 
   function updateVisitedView(view) {
     for (let v of visitedViews.value) {
-      if (v.path === view.path) {
+      if (v.fullPath === view.fullPath) {
         v = Object.assign(v, view)
         break
       }
@@ -187,6 +192,22 @@ export const useTagsViewStore = defineStore('tagsView', () => {
     })
   }
 
+  function closeView(route) {
+    const view = { path: route.path, fullPath: route.fullPath, name: route.name, title: route.meta.title }
+    delView(view).then((res) => {
+      const latestView = res.visitedViews.slice(-1)[0]
+      if (latestView && latestView.fullPath) {
+        router.push(latestView.fullPath)
+      } else {
+        if (view?.name === 'Dashboard') {
+          router.replace({ path: '/redirect' + view.fullPath })
+        } else {
+          router.push('/')
+        }
+      }
+    })
+  }
+
   return {
     visitedViews,
     cachedViews,
@@ -204,6 +225,12 @@ export const useTagsViewStore = defineStore('tagsView', () => {
     delRightViews,
     delAllViews,
     delAllVisitedViews,
-    delAllCachedViews
+    delAllCachedViews,
+    closeView
   }
 })
+
+// 非setup
+export function useTagsViewStoreHook() {
+  return useTagsViewStore(store)
+}

@@ -1,6 +1,6 @@
 import {
   defineConfig,
-  presetUno,
+  presetWind3,
   presetIcons,
   presetWebFonts,
   presetTypography,
@@ -16,6 +16,6 @@ export default defineConfig({
       primary_dark: 'var(--el-color-primary-light-5)'
     }
   },
-  presets: [presetUno(), presetIcons(), presetWebFonts(), presetTypography(), presetAttributify()],
+  presets: [presetWind3(), presetIcons(), presetWebFonts(), presetTypography(), presetAttributify()],
   transformers: [transformerDirectives(), transformerVariantGroup()]
 })

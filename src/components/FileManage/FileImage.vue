@@ -1,19 +1,19 @@
 <template>
-  <el-row style="width: 100%">
+  <el-row class="w-full">
     <el-col :span="fileSpan" :style="fileStyle">
       <div v-if="fileUrl">
         <el-image
           v-if="fileType === 'image'"
-          :style="imageStyle"
           :src="fileUrl"
-          :fit="fit"
           :preview-src-list="[fileUrl]"
-          :preview-teleported="previewTeleported"
+          :preview-teleported="teleported"
+          :style="imageStyle"
           :lazy="lazy"
-          title="点击看大图"
+          :fit="fit"
+          :title="$t('点击看大图')"
         >
           <template #error>
-            <svg-icon icon-class="picture" />
+            <Icon icon="Picture" :size="iconSize" />
           </template>
         </el-image>
         <video v-else-if="fileType === 'video'" :style="videoStyle" controls>
@@ -27,15 +27,15 @@
           <embed :src="fileUrl" :style="audioStyle" />
         </audio>
         <div v-else-if="fileType === 'word'">
-          <svg-icon icon-class="document" :size="iconSize" />
+          <Icon icon="Document" :size="iconSize" />
         </div>
         <div v-else-if="fileType === 'other'">
-          <svg-icon icon-class="folder" :size="iconSize" />
+          <Icon icon="Folder" :size="iconSize" />
         </div>
       </div>
       <div v-else>
-        <el-avatar v-if="avatar" :size="height">
-          <svg-icon icon-class="user-filled" :size="iconSize" />
+        <el-avatar v-if="avatar" :size="height" alt="">
+          <Icon icon="UserFilled" :size="iconSize" />
         </el-avatar>
       </div>
     </el-col>
@@ -44,7 +44,7 @@
         <el-col>
           <el-button @click="fileUpload()">{{ uploadBtn }}</el-button>
           <el-button @click="fileDelete()">{{ deleteBtn }}</el-button>
-          <el-button v-if="fileUrl" @click="fileDownload()">下载</el-button>
+          <el-button v-if="fileUrl" @click="fileDownload()">{{ $t('下载') }}</el-button>
         </el-col>
         <el-col>
           <el-text size="default" truncated :title="fileTip">{{ fileTip }}</el-text>
@@ -56,9 +56,9 @@
       :title="fileTitle"
       :close-on-click-modal="false"
       :close-on-press-escape="false"
-      top="1vh"
-      width="80%"
       append-to-body
+      width="80%"
+      top="3vh"
     >
       <FileManage :file-type="fileType" @file-cancel="fileCancel" @file-submit="fileSubmit" />
     </el-dialog>
@@ -67,14 +67,14 @@
 
 <script setup>
 import FileManage from '@/components/FileManage/index.vue'
+import { infoApi } from '@/api/file/file'
+import i18n from '@/lang/index'
 // 图片上传
 const model = defineModel({
-  type: Number,
-  default: 0
+  type: Number
 })
 const fileUrl = defineModel('fileUrl', {
-  type: String,
-  default: ''
+  type: String
 })
 const props = defineProps({
   fileType: {
@@ -83,11 +83,15 @@ const props = defineProps({
   },
   fileTitle: {
     type: String,
-    default: '上传图片'
+    default: () => {
+      return i18n.global.t('上传图片')
+    }
   },
   fileTip: {
     type: String,
-    default: '图片小于200KB，jpg、png格式。'
+    default: () => {
+      return i18n.global.t('图片小于200KB，jpg、png格式')
+    }
   },
   height: {
     type: Number,
@@ -101,17 +105,19 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
-  previewTeleported: {
+  teleported: {
     type: Boolean,
     default: true
   },
   uploadBtn: {
     type: String,
-    default: '上传'
+    default: ''
   },
   deleteBtn: {
     type: String,
-    default: '删除'
+    default: () => {
+      return i18n.global.t('删除')
+    }
   },
   avatar: {
     type: Boolean,
@@ -120,6 +126,10 @@ const props = defineProps({
   upload: {
     type: Boolean,
     default: false
+  },
+  idkey: {
+    type: String,
+    default: 'file_id'
   }
 })
 
@@ -141,21 +151,14 @@ const audioStyle = computed(() => {
 const iconSize = computed(() => {
   return props.height * 0.7 + 'px'
 })
-
-watch(
-  [() => props.avatar, () => props.upload],
-  ([avatar, upload]) => {
-    if (avatar) {
-      imageStyle.value.width = props.height + 'px'
-      imageStyle.value.borderRadius = '50%'
-    }
-    if (upload) {
-      fileSpan.value = 12
-      operSpan.value = 12
-    }
-  },
-  { immediate: true }
-)
+const uploadBtn = computed(() => {
+  if (props.uploadBtn) {
+    return props.uploadBtn
+  } else if (props.fileTitle) {
+    return props.fileTitle
+  }
+  return i18n.global.t('上传')
+})
 
 function fileUpload() {
   fileDialog.value = true
@@ -177,6 +180,30 @@ function fileDelete() {
   fileUrl.value = ''
 }
 function fileDownload() {
-  window.open(fileUrl.value, '_blank')
+  infoApi({ [props.idkey]: model.value })
+    .then((res) => {
+      const file = res.data
+      if (file.add_type === 'upload' && file.storage === 'local') {
+        infoApi({ [props.idkey]: file[props.idkey], file_name: file['file_name'] }, true)
+      } else {
+        window.open(fileUrl.value, '_blank')
+      }
+    })
+    .catch(() => {})
 }
+
+watch(
+  [() => props.avatar, () => props.upload],
+  ([avatar, upload]) => {
+    if (avatar) {
+      imageStyle.value.width = props.height + 'px'
+      imageStyle.value.borderRadius = '50%'
+    }
+    if (upload) {
+      fileSpan.value = 10
+      operSpan.value = 14
+    }
+  },
+  { immediate: true }
+)
 </script>

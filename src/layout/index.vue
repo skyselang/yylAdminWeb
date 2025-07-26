@@ -10,7 +10,7 @@
         <LeftMenu :menu-list="mixLeftMenu" :base-path="activeTopMenu" />
         <!-- 展开/收缩侧边栏菜单 -->
         <div class="toggle-sidebar">
-          <hamburger :is-active="appStore.sidebar.opened" @toggle-click="toggleSideBar" />
+          <Hamburger :is-active="appStore.sidebar.opened" @toggle-click="toggleSideBar" />
         </div>
       </div>
       <Main />
@@ -189,14 +189,9 @@ function toggleSideBar() {
         width: 100%;
         height: 50px;
         line-height: 50px;
-        box-shadow: 0 0 6px -2px var(--el-color-primary);
 
         div:hover {
           background-color: var(--menuBg);
-        }
-
-        :deep(svg) {
-          color: #409eff !important;
         }
       }
     }
@@ -212,11 +207,6 @@ function toggleSideBar() {
   .mix-wrapper {
     .mix-wrapper__left {
       width: $sideBarWidth;
-    }
-
-    :deep(.svg-icon) {
-      margin-top: -1px;
-      margin-right: 5px;
     }
 
     .el-menu {

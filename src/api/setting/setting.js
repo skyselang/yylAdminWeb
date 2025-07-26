@@ -1,57 +1,50 @@
 import request from '@/utils/request'
-// 设置管理
+// 设置管理接口
 const url = '/admin/setting.Setting/'
+
 /**
- * 设置信息
+ * 基本设置信息
  * @param {array} params 请求参数
  */
-export function info(params) {
+export function basicInfoApi(params) {
   return request({
-    url: url + 'info',
+    url: url + 'basicInfo',
     method: 'get',
     params: params
   })
 }
+
 /**
- * 设置修改
+ * 基本设置修改
  * @param {array} data 请求数据
  */
-export function edit(data) {
+export function basicEditApi(data) {
   return request({
-    url: url + 'edit',
+    url: url + 'basicEdit',
     method: 'post',
     data
   })
 }
+
 /**
- * 邮箱设置信息
+ * 联系设置信息
  * @param {array} params 请求参数
  */
-export function emailInfo(params) {
+export function contactInfoApi(params) {
   return request({
-    url: url + 'emailInfo',
+    url: url + 'contactInfo',
     method: 'get',
     params: params
   })
 }
+
 /**
- * 邮箱设置修改
+ * 联系设置修改
  * @param {array} data 请求数据
  */
-export function emailEdit(data) {
+export function contactEditApi(data) {
   return request({
-    url: url + 'emailEdit',
-    method: 'post',
-    data
-  })
-}
-/**
- * 邮箱设置测试
- * @param {array} data 请求数据
- */
-export function emailTest(data) {
-  return request({
-    url: url + 'emailTest',
+    url: url + 'contactEdit',
     method: 'post',
     data
   })
