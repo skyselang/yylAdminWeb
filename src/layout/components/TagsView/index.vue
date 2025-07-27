@@ -2,46 +2,45 @@
   <div class="tags-container">
     <scroll-pane ref="scrollPaneRef" @scroll="handleScroll">
       <router-link
-        ref="tagRef"
         v-for="tag in visitedViews"
+        ref="tagRef"
         :key="tag.fullPath"
         :class="'tags-item ' + (isActive(tag) ? 'active' : '')"
         :to="{ path: tag.fullPath, query: tag.query }"
         @click.middle="!isAffix(tag) ? closeSelectedTag(tag) : ''"
         @contextmenu.prevent="openTagMenu(tag, $event)"
       >
-        {{ translateRouteTitle(tag.title) }}
+        {{ tag.title }}
         <span v-if="!isAffix(tag)" class="tags-item-close" @click.prevent.stop="closeSelectedTag(tag)">
-          <svg-icon icon-class="close" />
+          <Icon icon="Close" />
         </span>
       </router-link>
     </scroll-pane>
-
     <!-- tag标签操作菜单 -->
     <ul v-show="tagMenuVisible" class="tag-menu" :style="{ left: left + 'px', top: top + 'px' }">
       <li @click="refreshSelectedTag(selectedTag)">
-        <svg-icon icon-class="refresh" />
-        {{ $t('TagsView.Refresh') }}
+        <Icon icon="Refresh" />
+        {{ $t('刷新') }}
       </li>
       <li v-if="!isAffix(selectedTag)" @click="closeSelectedTag(selectedTag)">
-        <svg-icon icon-class="close" />
-        {{ $t('TagsView.Close') }}
+        <Icon icon="Close" />
+        {{ $t('关闭') }}
       </li>
       <li @click="closeOtherTags">
-        <svg-icon icon-class="sort" />
-        {{ $t('TagsView.Close Other') }}
+        <Icon icon="Sort" />
+        {{ $t('关闭其它') }}
       </li>
       <li v-if="!isFirstView()" @click="closeLeftTags">
-        <svg-icon icon-class="back" />
-        {{ $t('TagsView.Close left side') }}
+        <Icon icon="Back" />
+        {{ $t('关闭左侧') }}
       </li>
       <li v-if="!isLastView()" @click="closeRightTags">
-        <svg-icon icon-class="right" />
-        {{ $t('TagsView.Close right side') }}
+        <Icon icon="Right" />
+        {{ $t('关闭右侧') }}
       </li>
       <li @click="closeAllTags(selectedTag)">
-        <svg-icon icon-class="rank" />
-        {{ $t('TagsView.Close all') }}
+        <Icon icon="Rank" />
+        {{ $t('关闭所有') }}
       </li>
     </ul>
   </div>
@@ -49,15 +48,16 @@
 
 <script setup>
 import { getCurrentInstance } from 'vue'
-import { resolve } from 'path-browserify'
 import { storeToRefs } from 'pinia'
 import { useRoute, useRouter } from 'vue-router'
-import { translateRouteTitle } from '@/utils/i18n'
+import { translateRouteTitle } from '@/utils/index'
 import { useAppStore } from '@/store/modules/app'
 import { useSettingsStore } from '@/store/modules/settings'
 import { usePermissionStore } from '@/store/modules/permission'
 import { useTagsViewStore } from '@/store/modules/tagsView'
 import ScrollPane from './ScrollPane.vue'
+import path from 'path-browserify'
+import i18n from '@/lang/index'
 
 const { proxy } = getCurrentInstance()
 const router = useRouter()
@@ -107,7 +107,7 @@ watch(tagMenuVisible, (value) => {
 
 function filterAffixTags(routes, basePath = '/') {
   const processRoute = (route) => {
-    const fullPath = resolve(basePath, route.path)
+    const fullPath = path.resolve(basePath, route.path)
 
     const tag = {
       path: route.path,
@@ -137,6 +137,7 @@ function initTags() {
   const tags = filterAffixTags(permissionStore.routes)
   affixTags.value = tags
   for (const tag of tags) {
+    tag.title = i18n.global.t(tag.title)
     // 必须有标签名称
     if (tag.name) {
       tagsViewStore.addVisitedView(tag)
@@ -146,9 +147,14 @@ function initTags() {
 
 function addTags() {
   if (route.meta.title) {
+    let title = translateRouteTitle(route.meta.title)
+    const id = route.params?.id
+    if (id) {
+      title += ':' + id
+    }
     tagsViewStore.addView({
       name: route.name,
-      title: route.meta.title,
+      title: title,
       path: route.path,
       fullPath: route.fullPath,
       affix: route.meta?.affix,
@@ -359,7 +365,9 @@ onMounted(() => {
   box-shadow: 0 1px 1px var(--el-box-shadow-light);
 
   .tags-item {
-    display: inline-block;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
     padding: 7px 8px;
     margin: 0 3px;
     font-size: 12px;
@@ -380,18 +388,35 @@ onMounted(() => {
     }
 
     &.active {
-      color: #fff;
+      color: var(--el-color-white);
       background-color: var(--el-color-primary);
       border-color: var(--el-color-primary);
 
-      &::before {
-        display: inline-block;
-        width: 8px;
-        height: 8px;
-        margin-right: 5px;
-        content: '';
-        background: #fff;
-        border-radius: 50%;
+      .tags-item-close {
+        color: var(--el-color-white);
+
+        &:hover {
+          color: var(--el-color-white);
+          background-color: rgba(255, 255, 255, 0.3);
+        }
+      }
+    }
+
+    .tags-item-close {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: 2px;
+      width: 16px;
+      height: 16px;
+      font-size: 12px;
+      font-weight: bold;
+      border-radius: 50%;
+      transition: all 0.2s ease;
+
+      &:hover {
+        color: var(--el-color-white);
+        background-color: var(--el-text-color-placeholder);
       }
     }
   }
@@ -410,7 +435,7 @@ onMounted(() => {
     cursor: pointer;
 
     &:hover {
-      background: var(--el-fill-color-light);
+      color: var(--el-color-primary);
     }
   }
 }

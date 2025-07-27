@@ -52,12 +52,6 @@ watch(
 <style lang="scss" scoped>
 :deep(.setting-container) {
   .setting-item {
-    color: #fff;
-
-    .svg-icon {
-      margin-right: 0;
-    }
-
     &:hover {
       color: var(--el-color-primary);
     }

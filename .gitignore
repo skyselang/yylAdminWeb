@@ -1,32 +1,33 @@
 logs
 *.log
+*.local
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-admin
-dist
-dist-ssr
-node_modules
 coverage
-*.local
-
+/admin
+/dist
+/dist-ssr
+/node_modules
 /cypress/videos/
 /cypress/screenshots/
+/vite.config.js.timestamp-*.mjs
 
 .husky
 .vscode
 .DS_Store
 .idea
+.cursor
+.trae
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
-
 *.tsbuildinfo
 
 yarn.lock
-pnpm-lock.yaml
+package-lock.json

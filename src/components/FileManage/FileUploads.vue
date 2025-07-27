@@ -1,26 +1,26 @@
 <template>
-  <el-row style="width: 100%">
+  <el-row class="w-full">
     <el-col :span="12">
       <el-text size="default" truncated :title="fileTip">{{ fileTip }}</el-text>
     </el-col>
     <el-col :span="12">
       <el-button @click="fileUpload()">{{ uploadBtn }}</el-button>
-      <el-button @click="fileDelete('all')">{{ deleteBtn }}</el-button>
+      <el-button @click="fileDelete(-1)">{{ deleteBtn }}</el-button>
     </el-col>
     <el-col v-for="(item, index) in fileList" :key="index" :span="6">
       <el-row class="file-row">
         <el-col :style="{ height: height + 'px' }">
           <el-image
             v-if="item.file_type === 'image'"
-            :style="{ height: height + 'px' }"
             :src="item.file_url"
-            :fit="fit"
             :preview-src-list="[item.file_url]"
+            :style="{ height: height + 'px' }"
+            :fit="fit"
             :lazy="lazy"
-            title="点击看大图"
+            :title="$t('点击看大图')"
           >
             <template #error>
-              <svg-icon icon-class="picture" />
+              <Icon icon="Picture" />
             </template>
           </el-image>
           <video v-else-if="item.file_type === 'video'" :style="videoStyle" controls>
@@ -34,41 +34,39 @@
             <embed :src="item.file_url" :style="audioStyle" />
           </audio>
           <div v-else-if="item.file_type === 'word'">
-            <svg-icon icon-class="document" :size="iconSize" />
+            <Icon icon="Document" :size="iconSize" />
           </div>
           <div v-else>
-            <svg-icon icon-class="folder" :size="iconSize" />
+            <Icon icon="Folder" :size="iconSize" />
           </div>
         </el-col>
-        <el-col style="max-height: 40px">
-          <el-text size="default" truncated :title="fileName(item)">
-            {{ fileName(item) }}
-          </el-text>
+        <el-col class="max-h-10">
+          <el-text size="default" truncated :title="fileName(item)">{{ fileName(item) }}</el-text>
         </el-col>
-        <el-col style="max-height: 40px">
+        <el-col class="max-h-10">
           <el-link
-            class="file-link"
+            class="mr-2.5"
             type="primary"
-            :underline="false"
-            title="向左移动"
+            underline="never"
+            :title="$t('向左移动')"
             @click="fileMove(index, 'left')"
           >
-            <svg-icon icon-class="d-arrow-left" />
+            <Icon icon="DArrowLeft" />
           </el-link>
           <el-link
-            class="file-link"
+            class="mr-2.5"
             type="primary"
-            :underline="false"
-            title="向左移动"
+            underline="never"
+            :title="$t('向左移动')"
             @click="fileMove(index, 'right')"
           >
-            <svg-icon icon-class="d-arrow-right" />
+            <Icon icon="DArrowRight" />
           </el-link>
-          <el-link class="file-link" type="primary" :underline="false" title="下载" @click="fileDownload(item)">
-            <svg-icon icon-class="download" />
+          <el-link class="mr-2.5" type="primary" underline="never" :title="$t('下载')" @click="fileDownload(item)">
+            <Icon icon="Download" />
           </el-link>
-          <el-link class="file-link" type="primary" :underline="false" title="删除" @click="fileDelete(index)">
-            <svg-icon icon-class="delete" />
+          <el-link class="mr-2.5" type="primary" underline="never" :title="$t('删除')" @click="fileDelete(index)">
+            <Icon icon="Delete" />
           </el-link>
         </el-col>
       </el-row>
@@ -78,9 +76,9 @@
       :title="fileTitle ? fileTitle : uploadBtn"
       :close-on-click-modal="false"
       :close-on-press-escape="false"
-      top="1vh"
-      width="80%"
       append-to-body
+      width="80%"
+      top="1vh"
     >
       <FileManage :file-type="fileType" @file-cancel="fileCancel" @file-submit="fileSubmit" />
     </el-dialog>
@@ -90,6 +88,8 @@
 <script setup>
 import FileManage from '@/components/FileManage/index.vue'
 import { clipboard } from '@/utils/index'
+import { infoApi } from '@/api/file/file'
+import i18n from '@/lang/index'
 // 多文件上传
 const props = defineProps({
   modelValue: {
@@ -122,11 +122,19 @@ const props = defineProps({
   },
   uploadBtn: {
     type: String,
-    default: '上传文件'
+    default: () => {
+      return i18n.global.t('上传文件')
+    }
   },
   deleteBtn: {
     type: String,
-    default: '全部删除'
+    default: () => {
+      return i18n.global.t('全部删除')
+    }
+  },
+  idkey: {
+    type: String,
+    default: 'file_id'
   }
 })
 
@@ -171,7 +179,7 @@ function fileSubmit(fileLists) {
 }
 function fileMove(index, direction = 'right') {
   const length = fileList.value.length
-  var index1 = index
+  let index1 = index
   if (direction === 'left') {
     if (index <= 0) {
       return false
@@ -189,17 +197,26 @@ function fileMove(index, direction = 'right') {
   fileList.value[index1] = value
 }
 function fileDelete(index) {
-  if (index === 'all') {
+  if (index === -1) {
     fileList.value = []
   } else {
     fileList.value.splice(index, 1)
   }
 }
 function fileDownload(file) {
-  clipboard(fileName(file), '文件名复制成功')
-  setTimeout(() => {
-    window.open(file.file_url, '_blank')
-  }, 500)
+  infoApi({ [props.idkey]: file[props.idkey] })
+    .then((res) => {
+      const file = res.data
+      if (file.add_type === 'upload' && file.storage === 'local') {
+        infoApi({ [props.idkey]: file[props.idkey], file_name: file['file_name'] }, true)
+      } else {
+        clipboard(fileName(file), i18n.global.t('文件名已复制'))
+        setTimeout(() => {
+          window.open(file.file_url, '_blank')
+        }, 500)
+      }
+    })
+    .catch(() => {})
 }
 </script>
 
@@ -209,8 +226,5 @@ function fileDownload(file) {
   margin-bottom: 4px;
   text-align: center;
   border: 1px solid var(--el-border-color);
-}
-.file-link {
-  margin-right: 10px;
 }
 </style>

@@ -1,6 +1,13 @@
 <template>
   <div :class="{ hasTagsView: showTagsView }" class="main-container">
-    <div :class="{ 'fixed-header': fixedHeader, device: device }">
+    <div
+      :class="{
+        'fixed-header': fixedHeader,
+        'fixed-header-top': fixedHeaderTop,
+        'fixed-header-mix': fixedHeaderMix,
+        device: device
+      }"
+    >
       <navbar v-if="layout === 'left'" />
       <tags-view v-if="showTagsView" />
     </div>
@@ -32,6 +39,8 @@ const settingsStore = useSettingsStore()
 const fixedHeader = computed(() => settingsStore.fixedHeader)
 const showTagsView = computed(() => settingsStore.tagsView)
 const layout = computed(() => settingsStore.layout)
+const fixedHeaderTop = computed(() => settingsStore.layout === 'top')
+const fixedHeaderMix = computed(() => settingsStore.layout === 'mix')
 const device = computed(() => appStore.device)
 
 watchEffect(() => {
@@ -68,12 +77,12 @@ watchEffect(() => {
   width: 100%;
 }
 
-body[layout='top'] .fixed-header {
+.fixed-header-top {
   top: 50px;
   width: 100% !important;
 }
 
-body[layout='mix'] .fixed-header {
+.fixed-header-mix {
   top: 50px;
 }
 </style>

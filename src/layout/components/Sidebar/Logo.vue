@@ -1,15 +1,15 @@
 <template>
-  <div class="w-full logo-wrap h-[50px] bg-gray-800 dark:bg-[var(--el-bg-color-overlay)]">
+  <div class="w-full logo-wrap h-[50px] pl-5 pr-5">
     <transition name="sidebarLogoFade">
-      <router-link v-if="collapse" key="collapse" class="h-full w-full flex items-center justify-center" to="/">
-        <img v-if="settingsStore.sidebarLogo" :src="logo" class="w-5 h-5" />
+      <router-link v-if="collapse" key="collapse" class="h-full w-full flex items-center" to="/">
+        <img v-if="settingsStore.sidebarLogo" :src="logo" class="w-5 h-5" alt="" />
       </router-link>
 
-      <router-link v-else key="expand" class="h-full w-full flex items-center justify-center" to="/">
-        <img v-if="settingsStore.sidebarLogo" :src="logo" class="w-5 h-5" />
-        <span v-if="settingsStore.sidebarName" class="ml-3 text-white text-sm font-bold">
-          {{ settingsStore.systemName }}
-        </span>
+      <router-link v-else key="expand" class="h-full w-full flex items-center" to="/">
+        <img v-if="settingsStore.sidebarLogo" :src="logo" class="w-5 h-5" alt="" />
+        <el-text v-if="settingsStore.sidebarName">
+          <span class="ml-3 text-sm font-bold color-[var(--sidebarLogoNameColor)]">{{ settingsStore.systemName }}</span>
+        </el-text>
       </router-link>
     </transition>
   </div>
@@ -19,8 +19,6 @@
 import Logo from '@/assets/images/logo.png'
 import { useSettingsStore } from '@/store/modules/settings'
 
-const settingsStore = useSettingsStore()
-
 defineProps({
   collapse: {
     type: Boolean,
@@ -28,9 +26,8 @@ defineProps({
   }
 })
 
-const logo = computed(() => {
-  return settingsStore.logoUrl ? settingsStore.logoUrl : Logo
-})
+const settingsStore = useSettingsStore()
+const logo = computed(() => (settingsStore.logoUrl ? settingsStore.logoUrl : Logo))
 </script>
 
 <style lang="scss" scoped>

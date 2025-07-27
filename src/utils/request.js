@@ -2,11 +2,13 @@ import axios from 'axios'
 import { useSettingsStoreHook } from '@/store/modules/settings'
 import { useUserStoreHook } from '@/store/modules/user'
 import { useAppStoreHook } from '@/store/modules/app'
+import i18n from '@/lang/index'
 
+const settingsStore = useSettingsStoreHook()
 // 创建axios实例
 const service = axios.create({
   baseURL: import.meta.env.VITE_APP_BASE_URL, // 接口baseURL
-  timeout: 60000, // 请求超时时间
+  timeout: settingsStore.timeout * 1000, // 请求超时时间
   headers: {},
   params: {},
   data: {}
@@ -18,19 +20,18 @@ service.interceptors.request.use(
   (config) => {
     const appStore = useAppStoreHook()
     const userStore = useUserStoreHook()
-    const settingsStore = useSettingsStoreHook()
     const language = appStore.language
-    const tokenValue = userStore.token
+    const tokenValue = userStore.getToken()
     const tokenType = settingsStore.tokenType
     // 设置Token
     if (tokenValue) {
       const tokenName = settingsStore.tokenName
-      if (tokenType === 'header') {
+      if (tokenType == 'header') {
         // 请求头部token
         config.headers[tokenName] = tokenValue
       } else {
         // 请求参数token
-        if (config.method === 'get') {
+        if (config.method == 'get') {
           config.params = { ...config?.params, [tokenName]: tokenValue }
         } else {
           config.data = { ...config?.data, [tokenName]: tokenValue }
@@ -38,7 +39,7 @@ service.interceptors.request.use(
       }
     }
     // 设置语言
-    if (tokenType === 'header') {
+    if (tokenType == 'header') {
       config.headers['think-lang'] = language
     } else {
       config.params.lang = language
@@ -48,7 +49,7 @@ service.interceptors.request.use(
   // 请求错误
   (error) => {
     if (import.meta.env.DEV) {
-      console.log('request', error)
+      console.error(error)
     }
     return Promise.reject(error)
   }
@@ -56,10 +57,6 @@ service.interceptors.request.use(
 
 // 响应拦截器
 service.interceptors.response.use(
-  /**
-   * 通过接口返回码确定返回状态
-   * 还可以通过HTTP状态代码来判断请求状态
-   */
   (response) => {
     // 响应数据
     const res = response.data
@@ -86,11 +83,11 @@ service.interceptors.response.use(
       }
     } else {
       // 返回码200：成功
-      if (res.code === 200) {
+      if (res.code == 200) {
         return res
       } else {
         responseHandle(res)
-        return Promise.reject(new Error(res.msg || 'Server error !200'))
+        return Promise.reject(res)
       }
     }
   },
@@ -100,7 +97,7 @@ service.interceptors.response.use(
       const res = error.response.data
       responseHandle(res)
       if (import.meta.env.DEV) {
-        console.log('response', error)
+        console.error(error)
       }
     } else {
       return Promise.reject(error)
@@ -110,12 +107,13 @@ service.interceptors.response.use(
 
 // 响应处理
 function responseHandle(res) {
-  // 返回码 401：Token 无效
-  if (res.code === 401) {
-    ElMessageBox.confirm(res.msg, '提示', {
-      confirmButtonText: '重新登录',
-      cancelButtonText: '取消',
-      type: 'warning'
+  // 返回码401：Token 无效
+  if (res.code == 401) {
+    ElMessageBox.confirm(res.msg, i18n.global.t('提示'), {
+      confirmButtonText: i18n.global.t('重新登录'),
+      cancelButtonText: i18n.global.t('取消'),
+      type: 'warning',
+      center: true
     })
       .then(() => {
         const userStore = useUserStoreHook()
@@ -126,9 +124,10 @@ function responseHandle(res) {
       .catch(() => {})
   } else {
     ElMessage({
-      showClose: true,
-      message: res.msg || 'Server error !401',
+      message: res.msg || 'Server error',
       type: 'error',
+      center: true,
+      showClose: true,
       duration: 5000
     })
   }

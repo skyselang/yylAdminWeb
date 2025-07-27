@@ -10,8 +10,8 @@
     >
       <el-menu-item v-for="route in topMenu" :key="route.path" :index="route.path">
         <template #title>
-          <svg-icon v-if="route.meta && route.meta.icon" :icon-class="route.meta.icon" />
-          <span v-if="route.path === '/'"> {{ translateRouteTitle('dashboard') }} </span>
+          <Icon v-if="route.meta && route.meta.icon" :icon="route.meta.icon" />
+          <span v-if="route.path === '/'">{{ translateRouteTitle('首页') }}</span>
           <template v-else>
             <span v-if="route.meta && route.meta.title">
               {{ translateRouteTitle(route.meta.title) }}
@@ -27,7 +27,7 @@
 import { useRouter } from 'vue-router'
 import { useAppStore } from '@/store/modules/app'
 import { usePermissionStore } from '@/store/modules/permission'
-import { translateRouteTitle } from '@/utils/i18n'
+import { translateRouteTitle } from '@/utils/index'
 import variables from '@/styles/variables.module.scss'
 const router = useRouter()
 const appStore = useAppStore()
@@ -60,5 +60,14 @@ onMounted(() => {
 <style lang="scss" scoped>
 .el-menu {
   height: 50px !important;
+}
+.el-menu--horizontal .el-menu-item:not(.is-disabled):hover {
+  background-color: $subMenuHover !important;
+}
+.el-menu--horizontal .el-menu-item:not(.is-disabled):focus {
+  background-color: $subMenuHover !important;
+}
+.el-menu--horizontal > .el-menu-item.is-active {
+  background-color: $subMenuHover !important;
 }
 </style>

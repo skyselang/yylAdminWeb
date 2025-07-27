@@ -1,17 +1,17 @@
 <template>
-  <el-row style="width: 100%">
+  <el-row class="w-full">
     <el-col :span="12" :style="{ height: height + 'px' }">
       <div v-if="file.file_url">
         <div v-if="file.file_type === 'image'">
           <el-image
-            :style="{ height: height + 'px' }"
             :src="file.file_url"
-            :fit="fit"
             :preview-src-list="[file.file_url]"
-            title="点击看大图"
+            :style="{ height: height + 'px' }"
+            :fit="fit"
+            :title="$t('点击看大图')"
           >
             <template #error>
-              <svg-icon icon-class="picture" />
+              <Icon icon="Picture" />
             </template>
           </el-image>
         </div>
@@ -26,10 +26,10 @@
           <embed :src="file.file_url" :style="audioStyle" />
         </audio>
         <div v-else-if="file.file_type === 'word'">
-          <svg-icon icon-class="document" :size="iconSize" />
+          <Icon icon="Document" :size="iconSize" />
         </div>
         <div v-else-if="file.file_type === 'other'">
-          <svg-icon icon-class="folder" :size="iconSize" />
+          <Icon icon="Folder" :size="iconSize" />
         </div>
         <div v-else></div>
       </div>
@@ -39,15 +39,13 @@
         <el-col>
           <el-button @click="fileUpload()">{{ uploadBtn }}</el-button>
           <el-button @click="fileDelete()">{{ deleteBtn }}</el-button>
-          <el-button v-if="file.file_url" @click="fileDownload(file)">下载</el-button>
+          <el-button v-if="file.file_url" @click="fileDownload(file)">{{ $t('下载') }}</el-button>
         </el-col>
-        <el-col style="max-height: 40px">
+        <el-col class="max-h-[40px]">
           <el-text size="default" truncated :title="fileTip">{{ fileTip }}</el-text>
         </el-col>
-        <el-col style="max-height: 40px">
-          <el-text size="default" truncated :title="fileName(file)">
-            {{ fileName(file) }}
-          </el-text>
+        <el-col class="max-h-[40px]">
+          <el-text size="default" truncated :title="fileName(file)">{{ fileName(file) }}</el-text>
         </el-col>
       </el-row>
     </el-col>
@@ -56,9 +54,9 @@
       :title="fileTitle ? fileTitle : uploadBtn"
       :close-on-click-modal="false"
       :close-on-press-escape="false"
-      top="1vh"
-      width="80%"
       append-to-body
+      width="80%"
+      top="1vh"
     >
       <FileManage :file-type="fileType" @file-cancel="fileCancel" @file-submit="fileSubmit" />
     </el-dialog>
@@ -68,7 +66,8 @@
 <script setup>
 import FileManage from '@/components/FileManage/index.vue'
 import { clipboard } from '@/utils/index'
-import { watch } from 'vue'
+import { infoApi } from '@/api/file/file'
+import i18n from '@/lang/index'
 // 单文件上传
 const model = defineModel({
   type: Number,
@@ -105,11 +104,19 @@ const props = defineProps({
   },
   uploadBtn: {
     type: String,
-    default: '上传'
+    default: () => {
+      return i18n.global.t('上传')
+    }
   },
   deleteBtn: {
     type: String,
-    default: '删除'
+    default: () => {
+      return i18n.global.t('删除')
+    }
+  },
+  idkey: {
+    type: String,
+    default: 'file_id'
   }
 })
 
@@ -159,9 +166,18 @@ function fileDelete() {
   file.value.file_ext = ''
 }
 function fileDownload(file) {
-  clipboard(fileName(file), '文件名已复制')
-  setTimeout(() => {
-    window.open(file.file_url, '_blank')
-  }, 500)
+  infoApi({ [props.idkey]: model.value })
+    .then((res) => {
+      const file = res.data
+      if (file.add_type === 'upload' && file.storage === 'local') {
+        infoApi({ [props.idkey]: file[props.idkey], file_name: file['file_name'] }, true)
+      } else {
+        clipboard(fileName(file), i18n.global.t('文件名已复制'))
+        setTimeout(() => {
+          window.open(file.file_url, '_blank')
+        }, 500)
+      }
+    })
+    .catch(() => {})
 }
 </script>

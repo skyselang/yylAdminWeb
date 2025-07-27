@@ -1,4 +1,5 @@
 // sidebar css
+@use 'variables' as *;
 
 .app {
   .main-container {
@@ -23,7 +24,10 @@
 
     // reset element-plus css
     .horizontal-collapse-transition {
-      transition: 0s width ease-in-out, 0s padding-left ease-in-out, 0s padding-right ease-in-out;
+      transition:
+        0s width ease-in-out,
+        0s padding-left ease-in-out,
+        0s padding-right ease-in-out;
     }
 
     .scrollbar-wrapper {
@@ -48,10 +52,6 @@
       display: none;
     }
 
-    .svg-icon {
-      margin-right: 12px;
-    }
-
     .sub-el-icon {
       margin-right: 12px;
       margin-left: -2px;
@@ -63,7 +63,7 @@
       border: none;
     }
 
-    // 菜单悬停
+    // Menu hover
     .submenu-title-noDropdown,
     .el-sub-menu__title {
       &:hover {
@@ -108,22 +108,14 @@
 
     .submenu-title-noDropdown {
       position: relative;
-      padding: 0 !important;
+      padding: 0 15px !important;
 
       .el-tooltip {
         padding: 0 !important;
 
-        .svg-icon {
-          margin-left: 20px;
-        }
-
         .sub-el-icon {
           margin-left: 19px;
         }
-      }
-
-      & > .svg-icon {
-        margin-left: 20px;
       }
 
       & > span {
@@ -139,11 +131,7 @@
       overflow: hidden;
 
       & > .el-sub-menu__title {
-        padding: 0 !important;
-
-        .svg-icon {
-          margin-left: 20px;
-        }
+        padding: 0 15px !important;
 
         .sub-el-icon {
           margin-left: 19px;
@@ -174,7 +162,7 @@
     min-width: $sideBarWidth !important;
   }
 
-  // 手机端响应
+  // Mobile response
   .mobile {
     .main-container {
       margin-left: 0;
@@ -202,13 +190,9 @@
   }
 }
 
-// 菜单折叠时
+// When folding the menu
 .el-menu--vertical {
   & > .el-menu {
-    .svg-icon {
-      margin-right: 12px;
-    }
-
     .sub-el-icon {
       margin-right: 12px;
       margin-left: -2px;
@@ -218,12 +202,12 @@
   .nest-menu .el-sub-menu > .el-sub-menu__title,
   .el-menu-item {
     &:hover {
-      // 可以使用 $subMenuHover
-      background-color: $menuHover !important;
+      // have access to $subMenuHover
+      background-color: $subMenuHover !important;
     }
   }
 
-  // 当子菜单过长时，会出现滚动条
+  // When the submenu is too long, a scrollbar will appear
   > .el-menu--popup {
     max-height: 100vh;
     overflow-y: auto;
@@ -240,5 +224,8 @@
       background: #99a9bf;
       border-radius: 20px;
     }
+  }
+  .el-sub-menu__title:hover {
+    background-color: $subMenuHover !important;
   }
 }

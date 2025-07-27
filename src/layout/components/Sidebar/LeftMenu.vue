@@ -1,7 +1,7 @@
 <template>
   <el-scrollbar :class="{ 'left-menu-mix': mixLeftMenu }">
     <el-menu
-      :default-active="currRoute.path"
+      :default-active="activeMenu"
       :collapse="!appStore.sidebar.opened"
       :background-color="variables.menuBg"
       :text-color="variables.menuText"
@@ -30,11 +30,6 @@ import variables from '@/styles/variables.module.scss'
 import SidebarItem from './SidebarItem.vue'
 import path from 'path-browserify'
 
-const settingsStore = useSettingsStore()
-const appStore = useAppStore()
-const currRoute = useRoute()
-const layout = computed(() => settingsStore.layout)
-const mixLeftMenu = computed(() => settingsStore.layout === 'mix')
 const props = defineProps({
   menuList: {
     required: true,
@@ -49,8 +44,22 @@ const props = defineProps({
   }
 })
 
+const settingsStore = useSettingsStore()
+const appStore = useAppStore()
+const currRoute = useRoute()
+const layout = computed(() => settingsStore.layout)
+const mixLeftMenu = computed(() => settingsStore.layout === 'mix')
+
+// 激活菜单
+const activeMenu = computed(() => {
+  if (currRoute.meta?.activeMenu) {
+    return currRoute.meta.activeMenu
+  }
+  return currRoute.path
+})
+
 /**
- * 解析路径
+ * 解析路径(相对路径 → 绝对路径)
  * @param routePath 路由路径
  */
 function resolvePath(routePath) {
@@ -60,9 +69,8 @@ function resolvePath(routePath) {
   if (isExternal(props.basePath)) {
     return props.basePath
   }
-
-  // 完整路径 = 父级路径(/level/level_3) + 路由路径
-  const fullPath = path.resolve(props.basePath, routePath) // 相对路径 → 绝对路径
+  // 完整路径(/system/user) = 父级路径(/system) + 路由路径(user)
+  let fullPath = path.resolve(props.basePath, routePath)
   return fullPath
 }
 </script>
@@ -71,5 +79,8 @@ function resolvePath(routePath) {
 .left-menu-mix {
   padding-bottom: 50px;
   background-color: var(--menuBg);
+}
+.el-menu {
+  border: none;
 }
 </style>

@@ -20,7 +20,6 @@
       <template #title>
         <item v-if="item.meta" :icon="item.meta && item.meta.icon" :title="item.meta.title" />
       </template>
-
       <sidebar-item
         v-for="child in item.children"
         :key="child.path"
@@ -33,8 +32,8 @@
 </template>
 
 <script setup>
-import path from 'path-browserify'
 import { isExternal } from '@/utils/index'
+import path from 'path-browserify'
 import AppLink from './Link.vue'
 import Item from './Item.vue'
 
@@ -98,8 +97,7 @@ function hasOneShowingChild(children = [], parent) {
 }
 
 /**
- *  解析路由路径(相对路径 → 绝对路径)
- *
+ * 解析路由路径(相对路径 → 绝对路径)
  * @param routePath 路由路径
  */
 function resolvePath(routePath) {
@@ -109,9 +107,8 @@ function resolvePath(routePath) {
   if (isExternal(props.basePath)) {
     return props.basePath
   }
-
   // 完整路径(/system/user) = 父级路径(/system) + 路由路径(user)
-  const fullPath = path.resolve(props.basePath, routePath)
+  let fullPath = path.resolve(props.basePath, routePath)
   return fullPath
 }
 </script>
@@ -119,5 +116,14 @@ function resolvePath(routePath) {
 <style lang="scss" scoped>
 :deep(.el-menu-item .el-menu-tooltip__trigger) {
   width: auto !important;
+}
+.el-menu--horizontal .el-menu-item:not(.is-disabled):hover {
+  background-color: $subMenuHover !important;
+}
+.el-menu--horizontal .el-menu-item:not(.is-disabled):focus {
+  background-color: $subMenuHover !important;
+}
+.el-menu--horizontal > .el-menu-item.is-active {
+  background-color: $subMenuHover !important;
 }
 </style>

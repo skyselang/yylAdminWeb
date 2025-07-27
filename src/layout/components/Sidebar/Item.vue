@@ -1,10 +1,11 @@
 <template>
-  <SvgIcon v-if="icon" :icon-class="icon" />
+  <Icon v-if="icon" :icon="icon" />
+  <span v-else class="el-icon"></span>
   <span v-if="title">{{ translateRouteTitle(title) }}</span>
 </template>
 
 <script setup>
-import { translateRouteTitle } from '@/utils/i18n'
+import { translateRouteTitle } from '@/utils/index'
 
 defineProps({
   icon: {

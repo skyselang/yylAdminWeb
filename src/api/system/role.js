@@ -1,101 +1,155 @@
 import request from '@/utils/request'
-// 角色管理
+// 角色管理接口
 const url = '/admin/system.Role/'
+
 /**
  * 角色列表
  * @param {array} params 请求参数
  */
-export function list(params) {
+export function listApi(params) {
   return request({
     url: url + 'list',
     method: 'get',
     params: params
   })
 }
+
 /**
  * 角色信息
  * @param {array} params 请求参数
  */
-export function info(params) {
+export function infoApi(params) {
   return request({
     url: url + 'info',
     method: 'get',
     params: params
   })
 }
+
 /**
  * 角色添加
  * @param {array} data 请求数据
+ * @param {string} method get获取数据，post提交添加
  */
-export function add(data) {
+export function addApi(data, method = 'post') {
   return request({
     url: url + 'add',
-    method: 'post',
+    method: method,
     data
   })
 }
+
 /**
  * 角色修改
  * @param {array} data 请求数据
+ * @param {string} method get获取数据，post提交修改
  */
-export function edit(data) {
-  return request({
+export function editApi(data, method = 'post') {
+  const config = {
     url: url + 'edit',
-    method: 'post',
-    data
-  })
+    method: method
+  }
+  if (method === 'get') {
+    config.params = data
+  } else {
+    config.data = data
+  }
+  return request(config)
 }
+
 /**
  * 角色删除
  * @param {array} data 请求数据
  */
-export function dele(data) {
+export function deleApi(data) {
   return request({
     url: url + 'dele',
     method: 'post',
     data
   })
 }
-/**
- * 角色修改菜单
- * @param {array} data 请求数据
- */
-export function editmenu(data) {
-  return request({
-    url: url + 'editmenu',
-    method: 'post',
-    data
-  })
-}
+
 /**
  * 角色是否禁用
  * @param {array} data 请求数据
  */
-export function disable(data) {
+export function disableApi(data) {
   return request({
     url: url + 'disable',
     method: 'post',
     data
   })
 }
+
+/**
+ * 角色批量操作
+ * @param {object} data 请求数据
+ */
+export function updateApi(data) {
+  return request({
+    url: url + 'update',
+    method: 'post',
+    data
+  })
+}
+
+/**
+ * 角色导出
+ * @param {array} data 请求数据
+ * @param {string} method get下载导出文件，post提交导出
+ */
+export function exportApi(data, method = 'post') {
+  if (method === 'get') {
+    return request({
+      url: url + 'export',
+      method: 'get',
+      params: data,
+      responseType: 'blob'
+    })
+  }
+  return request({
+    url: url + 'export',
+    method: 'post',
+    data
+  })
+}
+
+/**
+ * 角色导入
+ * @param {array} data 请求数据
+ * @param {string} method get下载导入模板，post上传导入文件
+ */
+export function importApi(data = {}, method = 'post') {
+  if (method === 'get') {
+    return request({
+      url: url + 'import',
+      method: 'get',
+      params: data,
+      responseType: data?.file_path ? 'blob' : 'json'
+    })
+  }
+  return import.meta.env.VITE_APP_BASE_URL + url + 'import'
+}
+
 /**
  * 角色用户列表
  * @param {array} params 请求参数
  */
-export function userList(params) {
+export function userListApi(params) {
   return request({
     url: url + 'userList',
     method: 'get',
     params: params
   })
 }
+
 /**
  * 角色用户解除
  * @param {array} data 请求数据
  */
-export function userRemove(data) {
+export function userLiftApi(data) {
   return request({
-    url: url + 'userRemove',
+    url: url + 'userLift',
     method: 'post',
     data
   })

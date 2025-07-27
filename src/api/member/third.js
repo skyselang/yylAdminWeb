@@ -1,65 +1,132 @@
 import request from '@/utils/request'
-// 会员第三方账号
+// 会员第三方账号接口
 const url = '/admin/member.Third/'
+
 /**
  * 会员第三方账号列表
  * @param {array} params 请求参数
  */
-export function list(params) {
+export function listApi(params) {
   return request({
     url: url + 'list',
     method: 'get',
     params: params
   })
 }
+
 /**
  * 会员第三方账号信息
  * @param {array} params 请求参数
  */
-export function info(params) {
+export function infoApi(params) {
   return request({
     url: url + 'info',
     method: 'get',
     params: params
   })
 }
+
 /**
  * 会员第三方账号添加
  * @param {array} data 请求数据
+ * @param {string} method get获取数据，post提交添加
  */
-export function add(data) {
+export function addApi(data, method = 'post') {
   return request({
     url: url + 'add',
-    method: 'post',
+    method: method,
     data
   })
 }
+
 /**
  * 会员第三方账号修改
  * @param {array} data 请求数据
+ * @param {string} method get获取数据，post提交修改
  */
-export function edit(data) {
-  return request({
+export function editApi(data, method = 'post') {
+  const config = {
     url: url + 'edit',
-    method: 'post',
-    data
-  })
+    method: method
+  }
+  if (method === 'get') {
+    config.params = data
+  } else {
+    config.data = data
+  }
+  return request(config)
 }
+
 /**
  * 会员第三方账号删除
  * @param {array} data 请求数据
  */
-export function dele(data) {
+export function deleApi(data) {
   return request({
     url: url + 'dele',
     method: 'post',
     data
   })
 }
+
 /**
- * 会员第三方账号禁用
+ * 会员第三方账号是否禁用
  * @param {array} data 请求数据
  */
-export function disable(data) {
-  return request({ url: url + 'disable', method: 'post', data })
+export function disableApi(data) {
+  return request({
+    url: url + 'disable',
+    method: 'post',
+    data
+  })
+}
+
+/**
+ * 会员第三方账号批量操作
+ * @param {object} data 请求数据
+ */
+export function updateApi(data) {
+  return request({
+    url: url + 'update',
+    method: 'post',
+    data
+  })
+}
+
+/**
+ * 会员第三方账号导出
+ * @param {array} data 请求数据
+ * @param {string} method get下载导出文件，post提交导出
+ */
+export function exportApi(data, method = 'post') {
+  if (method === 'get') {
+    return request({
+      url: url + 'export',
+      method: 'get',
+      params: data,
+      responseType: 'blob'
+    })
+  }
+  return request({
+    url: url + 'export',
+    method: 'post',
+    data
+  })
+}
+
+/**
+ * 会员第三方账号导入
+ * @param {array} data 请求数据
+ * @param {string} method get下载导入模板，post上传导入文件
+ */
+export function importApi(data = {}, method = 'post') {
+  if (method === 'get') {
+    return request({
+      url: url + 'import',
+      method: 'get',
+      params: data,
+      responseType: data?.file_path ? 'blob' : 'json'
+    })
+  }
+  return import.meta.env.VITE_APP_BASE_URL + url + 'import'
 }

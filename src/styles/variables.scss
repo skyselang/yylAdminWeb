@@ -1,22 +1,37 @@
-// 全局 SCSS 变量
+// global SCSS variable
 
 :root {
+  --menuBg: #ffffff;
+  --menuText: var(--el-menu-text-color);
+  --menuHover: var(--el-menu-hover-bg-color);
+  --menuActiveText: var(--el-menu-active-color);
+  --subMenuBg: #ffffff;
+  --subMenuHover: var(--el-menu-hover-bg-color);
+  --subMenuActiveText: var(--el-menu-active-color);
+  --sidebarLogoNameColor: var(--el-text-color);
+  --navRightTextColor: var(--el-text-color);
+}
+
+html.sidebar-color-bule {
   --menuBg: #304156;
   --menuText: #bfcbd9;
   --menuHover: #263445;
-  --menuActiveText: #409eff;
+  --menuActiveText: var(--el-menu-active-color);
   --subMenuBg: #1f2d3d;
   --subMenuHover: #001528;
-  --subMenuActiveText: #f4f4f5;
+  --subMenuActiveText: var(--el-menu-active-color);
+  --sidebarLogoNameColor: #ffffff;
+  --navRightTextColor: var(--el-text-color-primary);
 }
 
 $menuBg: var(--menuBg);
 $menuText: var(--menuText);
 $menuHover: var(--menuHover);
 $menuActiveText: var(--menuActiveText);
-
 $subMenuBg: var(--subMenuBg);
 $subMenuHover: var(--subMenuHover);
 $subMenuActiveText: var(--subMenuActiveText);
+$sidebarLogoNameColor: var(--sidebarLogoNameColor);
+$navRightTextColor: var(--navRightTextColor);
 
 $sideBarWidth: 210px;

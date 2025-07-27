@@ -1,150 +1,105 @@
 import request from '@/utils/request'
-// 会员管理
+// 会员管理接口
 const url = '/admin/member.Member/'
+
 /**
  * 会员列表
  * @param {array} params 请求参数
  */
-export function list(params) {
+export function listApi(params) {
   return request({
     url: url + 'list',
     method: 'get',
     params: params
   })
 }
+
 /**
  * 会员信息
  * @param {array} params 请求参数
  */
-export function info(params) {
+export function infoApi(params) {
   return request({
     url: url + 'info',
     method: 'get',
     params: params
   })
 }
+
 /**
  * 会员添加
  * @param {array} data 请求数据
+ * @param {string} method get获取数据，post提交添加
  */
-export function add(data) {
+export function addApi(data, method = 'post') {
   return request({
     url: url + 'add',
-    method: 'post',
+    method: method,
     data
   })
 }
+
 /**
  * 会员修改
  * @param {array} data 请求数据
+ * @param {string} method get获取数据，post提交修改
  */
-export function edit(data) {
-  return request({
+export function editApi(data, method = 'post') {
+  const config = {
     url: url + 'edit',
-    method: 'post',
-    data
-  })
+    method: method
+  }
+  if (method === 'get') {
+    config.params = data
+  } else {
+    config.data = data
+  }
+  return request(config)
 }
+
 /**
  * 会员删除
  * @param {array} data 请求数据
  */
-export function dele(data) {
+export function deleApi(data) {
   return request({
     url: url + 'dele',
     method: 'post',
     data
   })
 }
-/**
- * 会员修改所在地
- * @param {array} data 请求数据
- */
-export function region(data) {
-  return request({
-    url: url + 'region',
-    method: 'post',
-    data
-  })
-}
-/**
- * 会员修改标签
- * @param {array} data 请求数据
- */
-export function edittag(data) {
-  return request({
-    url: url + 'edittag',
-    method: 'post',
-    data
-  })
-}
-/**
- * 会员修改标签
- * @param {array} data 请求数据
- */
-export function editgroup(data) {
-  return request({
-    url: url + 'editgroup',
-    method: 'post',
-    data
-  })
-}
-/**
- * 会员重置密码
- * @param {array} data 请求数据
- */
-export function repwd(data) {
-  return request({
-    url: url + 'repwd',
-    method: 'post',
-    data
-  })
-}
-/**
- * 会员是否超会
- * @param {array} data 请求数据
- */
-export function issuper(data) {
-  return request({
-    url: url + 'super',
-    method: 'post',
-    data
-  })
-}
+
 /**
  * 会员是否禁用
  * @param {array} data 请求数据
  */
-export function disable(data) {
+export function disableApi(data) {
   return request({
     url: url + 'disable',
     method: 'post',
     data
   })
 }
+
 /**
- * 会员导入
- * @param {array} data 请求数据
- * @param {string} method get下载导入模板，post上传导入文件
+ * 会员批量操作
+ * @param {object} data 请求数据
  */
-export function imports(data = {}, method = 'post') {
-  if (method == 'get') {
-    return request({
-      url: url + 'import',
-      method: 'get',
-      params: data,
-      responseType: 'blob'
-    })
-  }
-  return import.meta.env.VITE_APP_BASE_URL + url + 'import'
+export function updateApi(data) {
+  return request({
+    url: url + 'update',
+    method: 'post',
+    data
+  })
 }
+
 /**
  * 会员导出
  * @param {array} data 请求数据
  * @param {string} method get下载导出文件，post提交导出
  */
-export function exports(data, method = 'post') {
-  if (method == 'get') {
+export function exportApi(data, method = 'post') {
+  if (method === 'get') {
     return request({
       url: url + 'export',
       method: 'get',
@@ -158,14 +113,56 @@ export function exports(data, method = 'post') {
     data
   })
 }
+
 /**
- * 会员统计
- * @param {array} params 请求参数
+ * 会员导入
+ * @param {array} data 请求数据
+ * @param {string} method get下载导入模板，post上传导入文件
  */
-export function statistic(params) {
+export function importApi(data = {}, method = 'post') {
+  if (method === 'get') {
+    return request({
+      url: url + 'import',
+      method: 'get',
+      params: data,
+      responseType: data?.file_path ? 'blob' : 'json'
+    })
+  }
+  return import.meta.env.VITE_APP_BASE_URL + url + 'import'
+}
+
+/**
+ * 会员修改密码
+ * @param {object} data 请求数据
+ */
+export function editPwdApi(data) {
   return request({
-    url: url + 'statistic',
-    method: 'get',
-    params: params
+    url: url + 'editPwd',
+    method: 'post',
+    data
+  })
+}
+
+/**
+ * 会员修改分组
+ * @param {object} data 请求数据
+ */
+export function editGroupApi(data) {
+  return request({
+    url: url + 'editGroup',
+    method: 'post',
+    data
+  })
+}
+
+/**
+ * 会员修改超会
+ * @param {object} data 请求数据
+ */
+export function editSuperApi(data) {
+  return request({
+    url: url + 'editSuper',
+    method: 'post',
+    data
   })
 }
