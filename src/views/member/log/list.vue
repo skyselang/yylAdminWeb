@@ -58,8 +58,8 @@
       destroy-on-close
       append-to-body
       draggable
-      align-center
       center
+      align-center
     >
       <AddEdit :id="id" :type="type" dialog @close="close" />
     </el-dialog>

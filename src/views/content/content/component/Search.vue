@@ -29,10 +29,10 @@
     :title="$t('更多条件查询', { name: name })"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
+    width="70%"
     draggable
     center
-    width="70%"
-    top="18vh"
+    align-center
   >
     <el-row class="mb-2">
       <el-col :span="4">

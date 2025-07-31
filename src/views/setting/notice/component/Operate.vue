@@ -36,9 +36,9 @@
     :title="name + '：' + title"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
-    top="18vh"
     draggable
     center
+    align-center
   >
     <el-scrollbar :height="height">
       <el-form ref="ref" label-width="120px">

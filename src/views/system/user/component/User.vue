@@ -4,8 +4,10 @@
     :title="dialogTitle"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
-    width="72%"
-    top="9vh"
+    width="73%"
+    draggable
+    center
+    align-center
     @close="close"
   >
     <!-- 查询 -->
@@ -30,8 +32,9 @@
       :close-on-click-modal="false"
       :close-on-press-escape="false"
       append-to-body
+      draggable
+      align-center
       center
-      top="20vh"
     >
       <el-scrollbar :height="height - 200">
         <el-form label-width="120px">

@@ -26,8 +26,9 @@
       :close-on-click-modal="false"
       :close-on-press-escape="false"
       append-to-body
+      draggable
       center
-      top="20vh"
+      align-center
     >
       <el-scrollbar :height="height - 200">
         <el-form label-width="120px">

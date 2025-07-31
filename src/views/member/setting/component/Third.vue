@@ -36,7 +36,7 @@
       <el-button :loading="loading" type="primary" @click="submit">{{ $t('提交') }}</el-button>
     </el-form-item>
   </el-form>
-  <el-dialog v-model="dialog" :title="$t('说明')" center>
+  <el-dialog v-model="dialog" :title="$t('说明')" draggable center align-center>
     <el-form :model="model" label-width="0">
       <el-form-item prod="platform_desc">
         <div v-html="model.platform_desc"></div>

@@ -14,7 +14,7 @@
       </el-button>
     </template>
   </el-input>
-  <el-dialog v-model="dialog" :title="$t('选择图标')" center align-center @opened="opened">
+  <el-dialog v-model="dialog" :title="$t('选择图标')" draggable center align-center @opened="opened">
     <el-row class="mb-2">
       <el-col :span="12" :offset="6">
         <el-input ref="searchRef" v-model="search" :placeholder="$t('搜索图标')" clearable />

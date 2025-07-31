@@ -39,9 +39,9 @@
     :close-on-click-modal="false"
     :close-on-press-escape="false"
     width="70%"
-    top="18vh"
     draggable
     center
+    align-center
   >
     <el-row class="mb-2">
       <el-col :span="4">

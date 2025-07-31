@@ -8,7 +8,7 @@
     :close-on-press-escape="false"
     draggable
     center
-    top="20vh"
+    align-center
   >
     <el-scrollbar :height="height">
       <el-form label-width="120px">
@@ -60,9 +60,10 @@
     :title="resultTitle"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
+    width="80%"
     draggable
-    width="76%"
-    top="10vh"
+    center
+    align-center
   >
     <el-tabs v-model="resultTab">
       <el-tab-pane :label="resultSuccessLabel" name="success" :style="{ height: resultHeight + 'px' }" lazy>

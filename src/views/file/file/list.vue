@@ -316,8 +316,8 @@
       destroy-on-close
       append-to-body
       draggable
-      align-center
       center
+      align-center
     >
       <AddEdit :id="id" dialog @close="close" />
     </el-dialog>
@@ -329,7 +329,9 @@
       :close-on-press-escape="false"
       :before-close="groupCancel"
       append-to-body
+      draggable
       center
+      align-center
     >
       <el-form ref="groupRef" :rules="groupRules" :model="groupModel" label-width="120px">
         <el-form-item :label="$t('编号')" prop="group_unique">
@@ -361,7 +363,9 @@
       :close-on-press-escape="false"
       :before-close="tagCancel"
       append-to-body
+      draggable
       center
+      align-center
     >
       <el-form ref="tagRef" :rules="tagRules" :model="tagModel" label-width="120px">
         <el-form-item :label="$t('编号')" prop="tag_unique">

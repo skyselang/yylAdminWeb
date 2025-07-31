@@ -58,7 +58,9 @@
       :close-on-press-escape="false"
       append-to-body
       width="80%"
-      top="3vh"
+      draggable
+      center
+      align-center
     >
       <FileManage :file-type="fileType" @file-cancel="fileCancel" @file-submit="fileSubmit" />
     </el-dialog>

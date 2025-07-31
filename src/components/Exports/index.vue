@@ -8,7 +8,7 @@
     :close-on-press-escape="false"
     draggable
     center
-    top="20vh"
+    align-center
   >
     <el-scrollbar :height="height">
       <el-form label-width="120px">

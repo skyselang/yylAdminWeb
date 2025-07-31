@@ -79,7 +79,7 @@
       <AddEdit :id="id" dialog @close="close" />
     </el-dialog>
     <!-- 下载 -->
-    <el-dialog v-model="downDialog" :title="downTitle" top="20vh" width="35%" center>
+    <el-dialog v-model="downDialog" :title="downTitle" draggable center align-center>
       <el-form :model="downModel" label-width="120px">
         <el-form-item :label="$t('类型')" prop="type_name">
           <el-input v-model="downModel.type_name" disabled />

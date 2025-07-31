@@ -29,10 +29,10 @@
     :title="$t('更多条件查询', { name: name })"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
+    width="70%"
     draggable
     center
-    width="69%"
-    top="19vh"
+    align-center
   >
     <el-row class="mb-2">
       <el-col :span="4">
@@ -99,7 +99,7 @@
     :close-on-press-escape="false"
     draggable
     center
-    top="20vh"
+    align-center
   >
     <el-scrollbar :height="height - 220">
       <el-form ref="ref" label-width="120px">
@@ -163,7 +163,7 @@
     :before-close="cancel"
     draggable
     center
-    top="13vh"
+    align-center
   >
     <el-scrollbar :height="height - 50">
       <el-form ref="ref" :rules="rules" :model="model" label-width="110px">
