@@ -14,10 +14,10 @@
       </el-button>
     </template>
   </el-input>
-  <el-dialog v-model="dialog" :title="$t('选择图标')" center top="8vh" width="60%">
+  <el-dialog v-model="dialog" :title="$t('选择图标')" center align-center @opened="opened">
     <el-row class="mb-2">
       <el-col :span="12" :offset="6">
-        <el-input v-model="search" :placeholder="$t('搜索图标')" clearable />
+        <el-input ref="searchRef" v-model="search" :placeholder="$t('搜索图标')" clearable />
       </el-col>
     </el-row>
     <el-scrollbar :height="height">
@@ -55,6 +55,7 @@ const { modelValue } = toRefs(props)
 const height = screenHeight()
 const search = ref('')
 const dialog = ref(false)
+const searchRef = useTemplateRef('searchRef')
 
 const allIcons = Object.entries(ElIcons).map(([name, component]) => ({ name, component }))
 
@@ -70,6 +71,13 @@ const selectedIcon = computed(() => {
 
 function open() {
   dialog.value = true
+}
+
+function opened() {
+  search.value = ''
+  nextTick(() => {
+    searchRef.value.focus()
+  })
 }
 
 function select(name) {

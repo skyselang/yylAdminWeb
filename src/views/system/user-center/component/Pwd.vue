@@ -1,8 +1,8 @@
 <template>
-  <el-scrollbar :height="height">
-    <el-row>
-      <el-col :md="24" :lg="16" :xl="14">
-        <el-form ref="ref" :rules="rules" :model="model" label-width="120px">
+  <el-form ref="ref" :model="model" :rules="rules" label-width="130px">
+    <el-scrollbar :height="height">
+      <el-row>
+        <el-col :md="24" :lg="16" :xl="14">
           <el-form-item :label="$t('旧密码')" prop="password_old">
             <el-input
               v-model="model.password_old"
@@ -30,14 +30,14 @@
               show-password
             />
           </el-form-item>
-          <el-form-item>
-            <el-button :loading="loading" @click="reset">{{ $t('重置') }}</el-button>
-            <el-button :loading="loading" type="primary" @click="submit">{{ $t('提交') }}</el-button>
-          </el-form-item>
-        </el-form>
-      </el-col>
-    </el-row>
-  </el-scrollbar>
+        </el-col>
+      </el-row>
+    </el-scrollbar>
+    <el-form-item>
+      <el-button :loading="loading" @click="reset">{{ $t('清空') }}</el-button>
+      <el-button :loading="loading" type="primary" @click="submit">{{ $t('提交') }}</el-button>
+    </el-form-item>
+  </el-form>
 </template>
 
 <script>
@@ -59,7 +59,7 @@ export default {
     }
   },
   created() {
-    this.height = screenHeight(210)
+    this.height = screenHeight(270)
     const validatePasswordConfirm = (rule, value, callback) => {
       if (value !== this.model.password_new) {
         callback(new Error(this.$t('两次输入的新密码不一致')))

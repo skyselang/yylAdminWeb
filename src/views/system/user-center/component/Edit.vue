@@ -1,8 +1,8 @@
 <template>
-  <el-scrollbar :height="height">
-    <el-row>
-      <el-col :md="24" :lg="16" :xl="14">
-        <el-form ref="ref" :rules="rules" :model="model" label-width="120px">
+  <el-form ref="ref" :model="model" :rules="rules" label-width="130px">
+    <el-scrollbar :height="height">
+      <el-row>
+        <el-col :md="24" :lg="16" :xl="14">
           <el-form-item :label="$t('头像')" prop="avatar_id">
             <FileImage
               v-model="model.avatar_id"
@@ -26,14 +26,14 @@
           <el-form-item :label="$t('邮箱')" prop="email">
             <el-input v-model="model.email" clearable />
           </el-form-item>
-          <el-form-item>
-            <el-button :loading="loading" @click="refresh">{{ $t('刷新') }}</el-button>
-            <el-button :loading="loading" type="primary" @click="submit">{{ $t('提交') }}</el-button>
-          </el-form-item>
-        </el-form>
-      </el-col>
-    </el-row>
-  </el-scrollbar>
+        </el-col>
+      </el-row>
+    </el-scrollbar>
+    <el-form-item>
+      <el-button :loading="loading" @click="refresh">{{ $t('刷新') }}</el-button>
+      <el-button :loading="loading" type="primary" @click="submit">{{ $t('提交') }}</el-button>
+    </el-form-item>
+  </el-form>
 </template>
 
 <script>
@@ -59,7 +59,7 @@ export default {
     }
   },
   created() {
-    this.height = screenHeight(210)
+    this.height = screenHeight(270)
     this.info()
     this.rules = {
       nickname: [{ required: true, message: this.$t('请输入昵称'), trigger: 'blur' }],

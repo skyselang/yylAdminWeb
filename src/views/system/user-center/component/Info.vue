@@ -1,8 +1,8 @@
 <template>
-  <el-scrollbar :height="height">
-    <el-row>
-      <el-col :md="24" :lg="16" :xl="14">
-        <el-form ref="ref" :rules="rules" :model="model" label-width="120px">
+  <el-form ref="ref" :model="model" :rules="rules" label-width="130px">
+    <el-scrollbar :height="height">
+      <el-row>
+        <el-col :md="24" :lg="16" :xl="14">
           <el-form-item :label="$t('头像')">
             <FileImage :file-url="model.avatar_url" :height="100" avatar />
           </el-form-item>
@@ -69,13 +69,13 @@
               <el-input v-model="model.last_login_time" disabled />
             </el-col>
           </el-form-item>
-          <el-form-item>
-            <el-button :loading="loading" @click="refresh">{{ $t('刷新') }}</el-button>
-          </el-form-item>
-        </el-form>
-      </el-col>
-    </el-row>
-  </el-scrollbar>
+        </el-col>
+      </el-row>
+    </el-scrollbar>
+    <el-form-item>
+      <el-button :loading="loading" @click="refresh">{{ $t('刷新') }}</el-button>
+    </el-form-item>
+  </el-form>
 </template>
 
 <script>
@@ -111,7 +111,7 @@ export default {
     }
   },
   created() {
-    this.height = screenHeight(210)
+    this.height = screenHeight(270)
     this.info()
   },
   methods: {

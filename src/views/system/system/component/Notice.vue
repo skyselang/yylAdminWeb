@@ -6,9 +6,9 @@
     :close-on-click-modal="false"
     :close-on-press-escape="false"
     :before-close="cancel"
-    show-overflow-tooltip
+    draggable
     center
-    top="10vh"
+    align-center
   >
     <el-table ref="table" v-loading="loading" :data="data" :height="height - 100" :show-header="false">
       <el-table-column prop="image_id" min-width="80">
@@ -47,14 +47,14 @@
     v-model="oneDialog"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
+    draggable
     center
-    top="18vh"
-    width="33%"
+    align-center
   >
     <template #header>
       <el-text size="default" :style="{ color: oneModel.title_color }">{{ oneModel.title }}</el-text>
     </template>
-    <el-scrollbar :height="height - 300">
+    <el-scrollbar :height="height - 200">
       <el-form ref="ref" :model="oneModel" label-width="0" class="text-center">
         <el-form-item prop="start_time">
           <el-col class="text-center">{{ oneModel.start_time }}</el-col>
@@ -63,7 +63,11 @@
           <FileImage :file-url="oneModel.image_url" :height="150" />
         </el-form-item>
         <el-form-item prop="desc">
-          <el-col class="text-center">{{ oneModel.desc }}</el-col>
+          <el-col class="text-center">
+            <el-card shadow="never">
+              {{ oneModel.desc }}
+            </el-card>
+          </el-col>
         </el-form-item>
       </el-form>
     </el-scrollbar>
@@ -74,7 +78,14 @@
     </template>
   </el-dialog>
   <!-- 公告详情 -->
-  <el-dialog v-model="infoDialog" :close-on-click-modal="false" :close-on-press-escape="false" top="10vh" center>
+  <el-dialog
+    v-model="infoDialog"
+    :close-on-click-modal="false"
+    :close-on-press-escape="false"
+    draggable
+    center
+    align-center
+  >
     <template #header>
       <el-text size="default" :style="{ color: infoModel.title_color }">{{ infoModel.title }}</el-text>
     </template>
@@ -87,7 +98,11 @@
           <FileImage :file-url="infoModel.image_url" :height="150" />
         </el-form-item>
         <el-form-item prop="desc">
-          <el-col class="text-center">{{ infoModel.desc }}</el-col>
+          <el-col class="text-center">
+            <el-card shadow="never">
+              {{ infoModel.desc }}
+            </el-card>
+          </el-col>
         </el-form-item>
         <el-form-item prop="content">
           <el-col class="text-center"><div v-html="infoModel.content"></div></el-col>
@@ -111,10 +126,9 @@ export default {
       idkey: 'notice_id',
       query: { page: 1, limit: getPageLimit() },
       data: [],
-      exps: [],
       count: 0,
       dialog: false,
-      title: this.$t('公告'),
+      title: '',
       infoDialog: false,
       infoModel: {},
       oneDialog: false,
@@ -124,8 +138,8 @@ export default {
   created() {
     this.name = this.$t('公告')
     this.height = screenHeight()
+    this.title = this.$t('公告')
     this.list()
-    this.exps = [{ exp: 'like', name: this.$t('包含') }]
   },
   methods: {
     list() {

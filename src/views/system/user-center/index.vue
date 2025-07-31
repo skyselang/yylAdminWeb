@@ -26,7 +26,7 @@ import Info from './component/Info.vue'
 import Edit from './component/Edit.vue'
 import Pwd from './component/Pwd.vue'
 import Log from './component/Log.vue'
-import Setting from '@/views/system/system/setting.vue'
+import Setting from '@/views/system/system/component/Setting.vue'
 
 export default {
   name: 'SystemUserCenter',

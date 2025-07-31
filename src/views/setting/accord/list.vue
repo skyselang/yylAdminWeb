@@ -58,8 +58,9 @@
       :before-close="cancel"
       destroy-on-close
       append-to-body
+      draggable
+      align-center
       center
-      top="8vh"
     >
       <AddEdit :id="id" :type="type" dialog @close="close" />
     </el-dialog>
