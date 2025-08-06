@@ -101,11 +101,7 @@ export default {
     },
     checkAll() {
       if (this.checkAlled) {
-        const data = this.ids
-        const length = data.length
-        for (let i = 0; i < length; i++) {
-          this.$refs[this.ref].setChecked(data[i], true)
-        }
+        this.$refs[this.ref].setCheckedKeys(this.ids)
       } else {
         this.$refs[this.ref].setCheckedKeys([])
       }
@@ -121,7 +117,9 @@ export default {
       this.checkSetKeys()
     },
     checkSetKeys() {
-      this.$emit('update:modelValue', this.$refs[this.ref].getCheckedKeys())
+      this.$nextTick(() => {
+        this.$emit('update:modelValue', this.$refs[this.ref].getCheckedKeys())
+      })
     },
     expandAll() {
       if (this.expandAlled) {

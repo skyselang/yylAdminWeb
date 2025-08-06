@@ -109,7 +109,9 @@ export default {
       this.checkData = data
     },
     checkSetKeys() {
-      this.$emit('update:modelValue', this.$refs[this.ref].getCheckedKeys())
+      this.$nextTick(() => {
+        this.$emit('update:modelValue', this.$refs[this.ref].getCheckedKeys())
+      })
     },
     checkAllChild(value) {
       const data = this.checkData
