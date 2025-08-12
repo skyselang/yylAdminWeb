@@ -195,7 +195,7 @@ export default {
     init() {
       if (this.id) {
         this.dialog = true
-        this.dialogTitle = this.names + this.name + '：' + this.title + ' [' + this.id + ']'
+        this.dialogTitle = this.names + this.name + '：' + '[' + this.id + '] ' + this.title
         this.reset()
       } else {
         this.dialog = false
