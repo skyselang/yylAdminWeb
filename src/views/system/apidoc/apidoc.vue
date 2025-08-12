@@ -7,10 +7,10 @@
         <el-text size="default">Token：{{ model.token_sub }}</el-text>
         <Clipboard :content="model.token" :text="true" color="#409EFF" :title="$t('复制Token')" />
         <el-button text type="primary" :title="$t('刷新')" @click="refresh">
-          <Icon icon="Refresh" :size="18" />
+          <Icons icon="Refresh" :size="18" />
         </el-button>
         <el-link type="primary" :href="model.apidoc_url" underline="never" target="_blank" :title="$t('新标签页打开')">
-          <Icon icon="Position" :size="18" />
+          <Icons icon="Position" :size="18" />
         </el-link>
       </el-col>
       <el-col>

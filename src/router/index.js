@@ -49,10 +49,16 @@ export const constantRoutes = [
         meta: { title: '个人中心', hidden: true }
       },
       {
-        path: 'setting',
+        path: 'user-message',
+        component: () => import('@/views/system/user-center/component/Message.vue'),
+        name: 'UserMessage',
+        meta: { title: '我的消息', hidden: true }
+      },
+      {
+        path: 'user-setting',
         component: () => import('@/views/system/system/setting.vue'),
-        name: 'Setting',
-        meta: { title: '设置', hidden: true }
+        name: 'UserSetting',
+        meta: { title: '我的设置', hidden: true }
       },
       {
         path: '401',

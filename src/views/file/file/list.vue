@@ -145,13 +145,13 @@
             <el-col :span="4">
               <el-button-group>
                 <el-button v-if="hasPerm(['admin/file.Group/add'])" :title="$t('添加分组')" @click="groupAdd()">
-                  <Icon icon="Plus" />
+                  <Icons icon="Plus" />
                 </el-button>
                 <el-button v-if="hasPerm(['admin/file.Group/edit'])" :title="$t('修改分组')" @click="groupEdit()">
-                  <Icon icon="Edit" />
+                  <Icons icon="Edit" />
                 </el-button>
                 <el-button v-if="hasPerm(['admin/file.Group/dele'])" :title="$t('删除分组')" @click="groupDele()">
-                  <Icon icon="Delete" />
+                  <Icons icon="Delete" />
                 </el-button>
               </el-button-group>
             </el-col>
@@ -171,13 +171,13 @@
             <el-col :span="4">
               <el-button-group>
                 <el-button v-if="hasPerm(['admin/file.Tag/add'])" :title="$t('添加标签')" @click="tagAdd()">
-                  <Icon icon="Plus" />
+                  <Icons icon="Plus" />
                 </el-button>
                 <el-button v-if="hasPerm(['admin/file.Tag/edit'])" :title="$t('修改标签')" @click="tagEdit()">
-                  <Icon icon="Edit" />
+                  <Icons icon="Edit" />
                 </el-button>
                 <el-button v-if="hasPerm(['admin/file.Tag/dele'])" :title="$t('删除标签')" @click="tagDele()">
-                  <Icon icon="Delete" />
+                  <Icons icon="Delete" />
                 </el-button>
               </el-button-group>
             </el-col>
@@ -243,10 +243,10 @@
                     <embed :src="v.file_url" height="100%" />
                   </audio>
                   <div v-else-if="v.file_type === 'word'">
-                    <Icon icon="Document" size="50" />
+                    <Icons icon="Document" size="50" />
                   </div>
                   <div v-else>
-                    <Icon icon="Folder" size="50" />
+                    <Icons icon="Folder" size="50" />
                   </div>
                 </div>
                 <div :style="{ paddingTop: '5px', minHeight: '50px' }">
@@ -257,10 +257,10 @@
                   </div>
                   <div>
                     <el-link v-if="v.is_disable" class="mr-1" underline="never" :title="$t('已禁用')">
-                      <Icon icon="WarningFilled" />
+                      <Icons icon="WarningFilled" />
                     </el-link>
                     <el-link v-else class="mr-2" underline="never" :title="$t('未禁用')">
-                      <Icon icon="Warning" />
+                      <Icons icon="Warning" />
                     </el-link>
                     <el-link v-if="hasPerm([permEdit])" type="primary" underline="never" class="mr-2" @click="edit(v)">
                       {{ $t('修改') }}

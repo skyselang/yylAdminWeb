@@ -12,34 +12,34 @@
       >
         {{ tag.title }}
         <span v-if="!isAffix(tag)" class="tags-item-close" @click.prevent.stop="closeSelectedTag(tag)">
-          <Icon icon="Close" />
+          <Icons icon="Close" />
         </span>
       </router-link>
     </scroll-pane>
     <!-- tag标签操作菜单 -->
     <ul v-show="tagMenuVisible" class="tag-menu" :style="{ left: left + 'px', top: top + 'px' }">
       <li @click="refreshSelectedTag(selectedTag)">
-        <Icon icon="Refresh" />
+        <Icons icon="Refresh" />
         {{ $t('刷新') }}
       </li>
       <li v-if="!isAffix(selectedTag)" @click="closeSelectedTag(selectedTag)">
-        <Icon icon="Close" />
+        <Icons icon="Close" />
         {{ $t('关闭') }}
       </li>
       <li @click="closeOtherTags">
-        <Icon icon="Sort" />
+        <Icons icon="Sort" />
         {{ $t('关闭其它') }}
       </li>
       <li v-if="!isFirstView()" @click="closeLeftTags">
-        <Icon icon="Back" />
+        <Icons icon="Back" />
         {{ $t('关闭左侧') }}
       </li>
       <li v-if="!isLastView()" @click="closeRightTags">
-        <Icon icon="Right" />
+        <Icons icon="Right" />
         {{ $t('关闭右侧') }}
       </li>
       <li @click="closeAllTags(selectedTag)">
-        <Icon icon="Rank" />
+        <Icons icon="Rank" />
         {{ $t('关闭所有') }}
       </li>
     </ul>

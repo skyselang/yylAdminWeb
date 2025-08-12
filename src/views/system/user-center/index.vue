@@ -13,6 +13,9 @@
       <el-tab-pane v-if="hasPerm(['admin/system.UserCenter/logList'])" :label="$t('我的日志')" lazy>
         <Log />
       </el-tab-pane>
+      <el-tab-pane v-if="hasPerm(['admin/system.UserCenter/messageList'])" :label="$t('我的消息')" lazy>
+        <Msg />
+      </el-tab-pane>
       <el-tab-pane v-if="hasPerm(['admin/system.UserCenter/setting'])" :label="$t('我的设置')" lazy>
         <Setting />
       </el-tab-pane>
@@ -26,11 +29,12 @@ import Info from './component/Info.vue'
 import Edit from './component/Edit.vue'
 import Pwd from './component/Pwd.vue'
 import Log from './component/Log.vue'
+import Msg from './component/Message.vue'
 import Setting from '@/views/system/system/component/Setting.vue'
 
 export default {
   name: 'SystemUserCenter',
-  components: { Info, Edit, Pwd, Log, Setting },
+  components: { Info, Edit, Pwd, Log, Msg, Setting },
   data() {
     return {
       name: '个人中心'

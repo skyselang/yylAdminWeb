@@ -6,7 +6,7 @@
           <el-form label-width="120px">
             <el-form-item :label="$t('图标')">
               <el-col :span="8">
-                <Icon v-model="iconView" />
+                <Icons v-model="iconView" />
               </el-col>
               <el-col :span="16">
                 <Clipboard :content="iconView" />

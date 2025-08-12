@@ -20,7 +20,7 @@
             :title="$t('点击看大图')"
           >
             <template #error>
-              <Icon icon="Picture" />
+              <Icons icon="Picture" />
             </template>
           </el-image>
           <video v-else-if="item.file_type === 'video'" :style="videoStyle" controls>
@@ -34,10 +34,10 @@
             <embed :src="item.file_url" :style="audioStyle" />
           </audio>
           <div v-else-if="item.file_type === 'word'">
-            <Icon icon="Document" :size="iconSize" />
+            <Icons icon="Document" :size="iconSize" />
           </div>
           <div v-else>
-            <Icon icon="Folder" :size="iconSize" />
+            <Icons icon="Folder" :size="iconSize" />
           </div>
         </el-col>
         <el-col class="max-h-10">
@@ -51,7 +51,7 @@
             :title="$t('向左移动')"
             @click="fileMove(index, 'left')"
           >
-            <Icon icon="DArrowLeft" />
+            <Icons icon="DArrowLeft" />
           </el-link>
           <el-link
             class="mr-2.5"
@@ -60,13 +60,13 @@
             :title="$t('向左移动')"
             @click="fileMove(index, 'right')"
           >
-            <Icon icon="DArrowRight" />
+            <Icons icon="DArrowRight" />
           </el-link>
           <el-link class="mr-2.5" type="primary" underline="never" :title="$t('下载')" @click="fileDownload(item)">
-            <Icon icon="Download" />
+            <Icons icon="Download" />
           </el-link>
           <el-link class="mr-2.5" type="primary" underline="never" :title="$t('删除')" @click="fileDelete(index)">
-            <Icon icon="Delete" />
+            <Icons icon="Delete" />
           </el-link>
         </el-col>
       </el-row>

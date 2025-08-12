@@ -35,16 +35,21 @@ export function infoApi(params, is_down = false) {
 /**
  * 文件添加、上传
  * @param {array} data 请求数据
- * @param {string} method get获取数据，post提交添加
+ * @param {string} method get获取数据，post提交添加、上传
  * @param {string} add_type add添加，upload上传
  */
 export function addApi(data, method = 'post', add_type = 'upload') {
   if (add_type === 'add') {
-    return request({
+    const config = {
       url: url + 'add',
-      method: method,
-      data
-    })
+      method: method
+    }
+    if (method === 'get') {
+      config.params = data
+    } else {
+      config.data = data
+    }
+    return request(config)
   } else {
     return import.meta.env.VITE_APP_BASE_URL + url + 'add'
   }

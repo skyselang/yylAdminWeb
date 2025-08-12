@@ -5,10 +5,10 @@
         <span>{{ $t('请完成安全验证') }}</span>
         <span class="verifybox-close">
           <el-button :title="$t('刷新')" circle @click="refresh">
-            <Icon icon="Refresh" />
+            <Icons icon="Refresh" />
           </el-button>
           <el-button :title="$t('关闭')" circle @click="closeBox">
-            <Icon icon="Close" />
+            <Icons icon="Close" />
           </el-button>
         </span>
       </div>

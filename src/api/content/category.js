@@ -28,11 +28,16 @@ export function infoApi(params) {
  * @param {string} method get获取数据，post提交添加
  */
 export function addApi(data, method = 'post') {
-  return request({
+  const config = {
     url: url + 'add',
-    method: method,
-    data
-  })
+    method: method
+  }
+  if (method === 'get') {
+    config.params = data
+  } else {
+    config.data = data
+  }
+  return request(config)
 }
 
 /**

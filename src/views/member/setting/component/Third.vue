@@ -31,9 +31,9 @@
       </el-row>
     </el-scrollbar>
     <el-form-item>
-      <!-- <el-button :loading="loading" @click="dialog = true">说明</el-button> -->
       <el-button :loading="loading" @click="refresh">{{ $t('刷新') }}</el-button>
       <el-button :loading="loading" type="primary" @click="submit">{{ $t('提交') }}</el-button>
+      <!-- <el-button :loading="loading" @click="dialog = true">说明</el-button> -->
     </el-form-item>
   </el-form>
   <el-dialog v-model="dialog" :title="$t('说明')" draggable center align-center>
@@ -106,8 +106,8 @@ export default {
     }
   },
   created() {
-    this.height = screenHeight(270)
     this.info()
+    this.height = screenHeight(270)
     this.apps = {
       wx_miniapp: this.$t('微信小程序'),
       wx_offiacc: this.$t('微信公众号'),

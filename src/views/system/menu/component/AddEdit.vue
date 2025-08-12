@@ -17,20 +17,20 @@
               </el-form-item>
               <el-form-item :label="$t('菜单类型')" prop="menu_type">
                 <el-button class="mr-2" :title="$t('目录和菜单会在侧边栏菜单显示，按钮则不显示')">
-                  <Icon icon="QuestionFilled" />
+                  <Icons icon="QuestionFilled" />
                 </el-button>
                 <el-radio-group v-model="model.menu_type">
                   <el-radio v-for="v in basedata.menu_types" :key="v.value" :value="v.value" :label="v.label" />
                 </el-radio-group>
               </el-form-item>
               <el-form-item v-if="model.menu_type !== 2" :label="$t('菜单图标')" prop="meta_icon">
-                <Icon v-model="model.meta_icon" />
+                <Icons v-model="model.meta_icon" />
               </el-form-item>
               <el-form-item :label="$t('菜单名称')" prop="menu_name">
                 <el-input v-model="model.menu_name" clearable :placeholder="$t('meta.title；侧边栏菜单名称')">
                   <template #prepend>
                     <el-button :title="$t('meta.title；侧边栏菜单名称')">
-                      <Icon icon="QuestionFilled" />
+                      <Icons icon="QuestionFilled" />
                     </el-button>
                   </template>
                   <template #append><Clipboard :content="model.menu_name" /></template>
@@ -44,7 +44,7 @@
                 >
                   <template #prepend>
                     <el-button :title="$t('roles；权限标识：应用/控制器/操作，区分大小写')">
-                      <Icon icon="QuestionFilled" />
+                      <Icons icon="QuestionFilled" />
                     </el-button>
                   </template>
                   <template #append><Clipboard :content="model.menu_url" /></template>
@@ -58,7 +58,7 @@
                 >
                   <template #prepend>
                     <el-button :title="$t('path；路由地址，如：member，一级菜单需在前面加斜杠/；外链为 http 地址')">
-                      <Icon icon="QuestionFilled" />
+                      <Icons icon="QuestionFilled" />
                     </el-button>
                   </template>
                   <template #append><Clipboard :content="model.path" /></template>
@@ -72,7 +72,7 @@
                 >
                   <template #prepend>
                     <el-button :title="$t('name；组件name属性，如：Member，keep-alive 用到；外链可随意填写')">
-                      <Icon icon="QuestionFilled" />
+                      <Icons icon="QuestionFilled" />
                     </el-button>
                   </template>
                   <template #append><Clipboard :content="model.name" /></template>
@@ -90,7 +90,7 @@
                 >
                   <template #prepend>
                     <el-button :title="$t('component；组件路径，如：member/member，默认在 views 目录下')">
-                      <Icon icon="QuestionFilled" />
+                      <Icons icon="QuestionFilled" />
                     </el-button>
                   </template>
                   <template #append><Clipboard :content="model.component" /></template>
@@ -104,7 +104,7 @@
                 >
                   <template #prepend>
                     <el-button title='meta.query；路由的默认传递参数，如：{ "recycle": 0 }'>
-                      <Icon icon="QuestionFilled" />
+                      <Icons icon="QuestionFilled" />
                     </el-button>
                   </template>
                   <template #append><Clipboard :content="model.meta_query" /></template>
@@ -112,7 +112,7 @@
               </el-form-item>
               <el-form-item v-if="model.menu_type !== 2" :label="$t('是否缓存')" prop="keep_alive">
                 <el-button :title="$t('keepAlive；是否缓存组件')">
-                  <Icon icon="QuestionFilled" />
+                  <Icons icon="QuestionFilled" />
                 </el-button>
                 <el-radio-group v-model="model.keep_alive" class="ml-2">
                   <el-radio :value="0">否</el-radio>
@@ -121,7 +121,7 @@
               </el-form-item>
               <el-form-item v-if="model.menu_type === 0" :label="$t('始终显示')" prop="always_show">
                 <el-button :title="$t('alwaysShow；是否始终显示（只有一个子路由的时候）')">
-                  <Icon icon="QuestionFilled" />
+                  <Icons icon="QuestionFilled" />
                 </el-button>
                 <el-radio-group v-model="model.always_show" class="ml-2">
                   <el-radio :value="0">否</el-radio>
@@ -130,7 +130,7 @@
               </el-form-item>
               <el-form-item v-if="model.menu_type !== 2" :label="$t('是否隐藏')" prop="hidden">
                 <el-button :title="$t('hidden；隐藏后侧边栏不显示，但仍然可以访问')">
-                  <Icon icon="QuestionFilled" />
+                  <Icons icon="QuestionFilled" />
                 </el-button>
                 <el-radio-group v-model="model.hidden" class="ml-2">
                   <el-radio :value="0">否</el-radio>
@@ -139,7 +139,7 @@
               </el-form-item>
               <el-form-item v-if="model.menu_type === 1" :label="$t('激活菜单')" prop="active_menu_id">
                 <el-button :title="$t('隐藏菜单的激活菜单，如会员添加修改菜单是会员管理菜单')">
-                  <Icon icon="QuestionFilled" />
+                  <Icons icon="QuestionFilled" />
                 </el-button>
                 <el-cascader
                   v-model="model.active_menu_id"
@@ -153,7 +153,7 @@
               </el-form-item>
               <el-form-item :label="$t('日志类型')" prop="log_type">
                 <el-button class="mr-2" :title="$t('对应日志记录的日志类型')">
-                  <Icon icon="QuestionFilled" />
+                  <Icons icon="QuestionFilled" />
                 </el-button>
                 <el-radio-group v-model="model.log_type">
                   <el-radio v-for="v in basedata.log_types" :key="v.value" :value="v.value" :label="v.label" />
@@ -163,7 +163,7 @@
                 <el-input v-model="model.remark" clearable>
                   <template #prepend>
                     <el-button :title="$t('备注')">
-                      <Icon icon="QuestionFilled" />
+                      <Icons icon="QuestionFilled" />
                     </el-button>
                   </template>
                 </el-input>
@@ -172,7 +172,7 @@
                 <el-input v-model="model.sort" type="number" placeholder="250">
                   <template #prepend>
                     <el-button :title="$t('降序，数值越大越排在前面')">
-                      <Icon icon="QuestionFilled" />
+                      <Icons icon="QuestionFilled" />
                     </el-button>
                   </template>
                 </el-input>
@@ -313,7 +313,11 @@ export default {
         .catch(() => {})
     },
     edit(ismsg = false) {
-      infoApi({ [this.idkey]: this.id })
+      let api = editApi
+      if (this.type === 'info') {
+        api = infoApi
+      }
+      api({ [this.idkey]: this.id }, 'get')
         .then((res) => {
           this.data(res.data)
           if (ismsg) {

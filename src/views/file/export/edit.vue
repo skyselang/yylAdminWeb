@@ -1,5 +1,5 @@
 <template>
-  <AddEdit :id="id" />
+  <AddEdit :id="id" type="edit" />
 </template>
 
 <script>

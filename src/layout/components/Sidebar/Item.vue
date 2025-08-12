@@ -1,5 +1,5 @@
 <template>
-  <Icon v-if="icon" :icon="icon" />
+  <Icons v-if="icon" :icon="icon" />
   <span v-else class="el-icon"></span>
   <span v-if="title">{{ translateRouteTitle(title) }}</span>
 </template>

@@ -3,6 +3,7 @@
     <el-scrollbar :height="height">
       <el-row>
         <el-col :md="24" :lg="16" :xl="14">
+          <input name="username" hidden autocomplete="off" />
           <el-form-item :label="$t('旧密码')" prop="password_old">
             <el-input
               v-model="model.password_old"
@@ -10,6 +11,7 @@
               :placeholder="$t('请输入旧密码')"
               clearable
               show-password
+              autocomplete="new-password"
             />
           </el-form-item>
           <el-form-item :label="$t('新密码')" prop="password_new">
@@ -19,6 +21,7 @@
               :placeholder="$t('请输入新密码')"
               clearable
               show-password
+              autocomplete="new-password"
             />
           </el-form-item>
           <el-form-item :label="$t('确认新密码')" prop="password_confirm">
@@ -28,6 +31,7 @@
               :placeholder="$t('请再次输入新密码')"
               clearable
               show-password
+              autocomplete="new-password"
             />
           </el-form-item>
         </el-col>

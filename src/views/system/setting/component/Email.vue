@@ -39,7 +39,13 @@
           </el-form-item>
           <el-form-item :label="$t('SMTP密码')" prop="email_password">
             <el-col :span="10">
-              <el-input v-model="model.email_password" type="password" clearable show-password />
+              <el-input
+                v-model="model.email_password"
+                clearable
+                type="password"
+                show-password
+                autocomplete="new-password"
+              />
             </el-col>
             <el-col :span="14">
               <el-text size="default">{{ $t('发件邮箱密码或授权码') }}</el-text>
@@ -89,8 +95,8 @@ export default {
     }
   },
   created() {
-    this.height = screenHeight(270)
     this.info()
+    this.height = screenHeight(270)
     this.rules = {
       email_host: [{ required: true, message: this.$t('请输入SMTP服务器'), trigger: 'blur' }],
       email_secure: [{ required: true, message: this.$t('请选择SMTP协议'), trigger: 'blur' }],

@@ -469,6 +469,148 @@ const routes = {
       ]
     },
     {
+      path: 'message',
+      name: 'SystemMessage',
+      redirect: 'noRedirect',
+      meta: {
+        icon: 'BellFilled',
+        title: '消息管理',
+        roles: ['admin/system.Message/list'],
+        activeMenuTop: '/system',
+        hidden: false,
+        keepAlive: true,
+        alwaysShow: false
+      },
+      children: [
+        {
+          path: 'list',
+          name: 'SystemMessageList',
+          component: () => import('@/views/system/message/list.vue'),
+          meta: {
+            title: '消息管理',
+            roles: ['admin/system.Message/list'],
+            activeMenuTop: '/system',
+            hidden: false,
+            keepAlive: true,
+            alwaysShow: false
+          }
+        },
+        {
+          path: 'info/:id',
+          name: 'SystemMessageInfo',
+          component: () => import('@/views/system/message/info.vue'),
+          meta: {
+            title: '消息信息',
+            roles: ['admin/system.Message/info'],
+            activeMenu: '/system/message/list',
+            activeMenuTop: '/system',
+            hidden: true,
+            keepAlive: true,
+            alwaysShow: false
+          }
+        },
+        {
+          path: 'add',
+          name: 'SystemMessageAdd',
+          component: () => import('@/views/system/message/add.vue'),
+          meta: {
+            title: '消息添加',
+            roles: ['admin/system.Message/add'],
+            activeMenu: '/system/message/list',
+            activeMenuTop: '/system',
+            hidden: true,
+            keepAlive: true,
+            alwaysShow: false
+          }
+        },
+        {
+          path: 'edit/:id',
+          name: 'SystemMessageEdit',
+          component: () => import('@/views/system/message/edit.vue'),
+          meta: {
+            title: '消息修改',
+            roles: ['admin/system.Message/edit'],
+            activeMenu: '/system/message/list',
+            activeMenuTop: '/system',
+            hidden: true,
+            keepAlive: true,
+            alwaysShow: false
+          }
+        }
+      ]
+    },
+    {
+      path: 'user-message',
+      name: 'SystemUserMessage',
+      redirect: 'noRedirect',
+      meta: {
+        icon: 'Bell',
+        title: '用户消息',
+        roles: ['admin/system.UserMessage/list'],
+        activeMenuTop: '/system',
+        hidden: false,
+        keepAlive: true,
+        alwaysShow: false
+      },
+      children: [
+        {
+          path: 'list',
+          name: 'SystemUserMessageList',
+          component: () => import('@/views/system/user-message/list.vue'),
+          meta: {
+            title: '用户消息',
+            roles: ['admin/system.UserMessage/list'],
+            activeMenuTop: '/system',
+            hidden: false,
+            keepAlive: true,
+            alwaysShow: false
+          }
+        },
+        {
+          path: 'info/:id',
+          name: 'SystemUserMessageInfo',
+          component: () => import('@/views/system/user-message/info.vue'),
+          meta: {
+            title: '用户消息信息',
+            roles: ['admin/system.UserMessage/info'],
+            activeMenu: '/system/user-message/list',
+            activeMenuTop: '/system',
+            hidden: true,
+            keepAlive: true,
+            alwaysShow: false
+          }
+        },
+        {
+          path: 'add',
+          name: 'SystemUserMessageAdd',
+          component: () => import('@/views/system/user-message/add.vue'),
+          meta: {
+            title: '用户消息添加',
+            roles: ['admin/system.UserMessage/add'],
+            activeMenu: '/system/user-message/list',
+            activeMenuTop: '/system',
+            hidden: true,
+            keepAlive: true,
+            alwaysShow: false
+          }
+        },
+        {
+          path: 'edit/:id',
+          name: 'SystemUserMessageEdit',
+          component: () => import('@/views/system/user-message/edit.vue'),
+          meta: {
+            title: '用户消息修改',
+            roles: ['admin/system.UserMessage/edit'],
+            activeMenu: '/system/user-message/list',
+            activeMenuTop: '/system',
+            hidden: true,
+            keepAlive: true,
+            alwaysShow: false
+          }
+        }
+      ]
+    },
+    {
       path: 'apidoc',
       name: 'SystemApidoc',
       component: () => import('@/views/system/apidoc/apidoc.vue'),
@@ -493,7 +635,8 @@ const routes = {
           'admin/system.UserCenter/info',
           'admin/system.UserCenter/edit',
           'admin/system.UserCenter/pwd',
-          'admin/system.UserCenter/logList'
+          'admin/system.UserCenter/logList',
+          'admin/system.UserCenter/messageList'
         ],
         activeMenuTop: '/system',
         hidden: false,

@@ -18,7 +18,11 @@
                 <el-input v-model="model.time" disabled />
               </el-form-item>
               <el-form-item :label="$t('文件路径')" prop="file_path">
-                <el-input v-model="model.file_path" disabled />
+                <el-input v-model="model.file_path" disabled>
+                  <template #append>
+                    <el-button v-if="model.file_url" @click="download(id)">{{ $t('下载') }}</el-button>
+                  </template>
+                </el-input>
               </el-form-item>
               <el-form-item :label="$t('文件链接')" prop="file_url">
                 <el-input v-model="model.file_url" disabled>
@@ -155,7 +159,11 @@ export default {
         .catch(() => {})
     },
     edit(ismsg = false) {
-      infoApi({ [this.idkey]: this.id })
+      let api = editApi
+      if (this.type === 'info') {
+        api = infoApi
+      }
+      api({ [this.idkey]: this.id }, 'get')
         .then((res) => {
           this.data(res.data)
           if (ismsg) {
@@ -220,6 +228,21 @@ export default {
         const id = type === 'add' ? '' : this.id
         addEditSuccessAlert(id, this.name, this.$route)
       }
+    },
+    // 下载
+    download(id) {
+      infoApi({ [this.idkey]: id })
+        .then((res) => {
+          const data = res.data
+          if (data.status != 2) {
+            ElMessage.error(this.$t('未处理成功无法下载！'))
+          } else {
+            infoApi({ [this.idkey]: data[this.idkey], file_name: data.file_name }, true)
+          }
+        })
+        .catch(() => {
+          ElMessage.warning(this.$t('下载出错'))
+        })
     }
   }
 }

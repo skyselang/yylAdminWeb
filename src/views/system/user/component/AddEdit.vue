@@ -26,7 +26,14 @@
                 <el-input v-model="model.username" :placeholder="$t('请输入账号（用户名）')" clearable />
               </el-form-item>
               <el-form-item v-if="model[idkey] == ''" :label="$t('密码')" prop="password">
-                <el-input v-model="model.password" :placeholder="$t('请输入密码')" clearable show-password />
+                <el-input
+                  v-model="model.password"
+                  :placeholder="$t('请输入密码')"
+                  clearable
+                  type="password"
+                  show-password
+                  autocomplete="new-password"
+                />
               </el-form-item>
               <el-form-item :label="$t('手机')" prop="phone">
                 <el-input v-model="model.phone" clearable />
@@ -303,7 +310,11 @@ export default {
         .catch(() => {})
     },
     edit(ismsg = false) {
-      infoApi({ [this.idkey]: this.id })
+      let api = editApi
+      if (this.type === 'info') {
+        api = infoApi
+      }
+      api({ [this.idkey]: this.id }, 'get')
         .then((res) => {
           this.data(res.data)
           if (ismsg) {

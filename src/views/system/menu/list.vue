@@ -22,7 +22,7 @@
       <el-table-column :prop="idkey" label="ID" min-width="60" sortable="custom" />
       <el-table-column prop="meta_icon" :label="$t('图标')" min-width="60">
         <template #default="{ row }">
-          <Icon v-if="row.meta_icon" :icon="row.meta_icon" />
+          <Icons v-if="row.meta_icon" :icon="row.meta_icon" />
         </template>
       </el-table-column>
       <el-table-column prop="menu_url" :label="$t('菜单链接(权限标识)')" min-width="230" sortable="custom" />

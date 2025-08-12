@@ -171,7 +171,11 @@ export default {
         .catch(() => {})
     },
     edit(ismsg = false) {
-      infoApi({ [this.idkey]: this.id })
+      let api = editApi
+      if (this.type === 'info') {
+        api = infoApi
+      }
+      api({ [this.idkey]: this.id }, 'get')
         .then((res) => {
           this.data(res.data)
           if (ismsg) {

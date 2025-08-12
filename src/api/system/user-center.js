@@ -85,3 +85,51 @@ export function logClearApi(data) {
     data
   })
 }
+
+/**
+ * 我的消息列表
+ * @param {array} params 请求参数
+ */
+export function messageListApi(params) {
+  return request({
+    url: url + 'messageList',
+    method: 'get',
+    params: params
+  })
+}
+
+/**
+ * 我的消息详情
+ * @param {array} params 请求参数
+ */
+export function messageInfoApi(params) {
+  return request({
+    url: url + 'messageInfo',
+    method: 'get',
+    params: params
+  })
+}
+
+/**
+ * 我的消息删除
+ * @param {array} data 请求数据
+ */
+export function messageDeleApi(data) {
+  return request({
+    url: url + 'messageDele',
+    method: 'POST',
+    data
+  })
+}
+
+/**
+ * 我的消息已读
+ * @param {array} data 请求数据
+ */
+export function messageReadApi(data) {
+  return request({
+    url: url + 'messageRead',
+    method: 'post',
+    data
+  })
+}

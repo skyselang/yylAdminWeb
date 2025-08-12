@@ -3,9 +3,10 @@
     <el-scrollbar :height="height">
       <el-row>
         <el-col :md="24" :lg="16" :xl="14">
+          <input name="username" hidden autocomplete="off" />
           <el-form-item :label="$t('Token密钥')" prop="token_key">
             <el-col :span="10">
-              <el-input v-model="model.token_key">
+              <el-input v-model="model.token_key" type="password" show-password autocomplete="new-password">
                 <template #append>
                   <el-link underline="never" :title="$t('重新生成')" @click="tokenKey">{{ $t('生成') }}</el-link>
                 </template>

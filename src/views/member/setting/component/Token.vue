@@ -3,9 +3,10 @@
     <el-scrollbar :height="height">
       <el-row>
         <el-col :md="24" :lg="16" :xl="14">
+          <input name="username" hidden autocomplete="off" />
           <el-form-item :label="$t('Token密钥')" prop="token_key">
             <el-col :span="12">
-              <el-input v-model="model.token_key" clearable>
+              <el-input v-model="model.token_key" clearable type="password" show-password autocomplete="new-password">
                 <template #append>
                   <el-text size="default" :title="$t('重新生成')" class="cursor-pointer" @click="tokenKey">
                     {{ $t('生成') }}
@@ -62,8 +63,8 @@ export default {
     }
   },
   created() {
-    this.height = screenHeight(270)
     this.info()
+    this.height = screenHeight(270)
     this.rules = { token_key: [{ required: true, message: this.$t('请输入Token密钥'), trigger: 'blur' }] }
   },
   methods: {

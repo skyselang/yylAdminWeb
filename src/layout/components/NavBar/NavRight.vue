@@ -4,10 +4,14 @@
     <div :title="user.username" class="setting-item">
       <span class="font-size-3.5">{{ user.nickname }}</span>
     </div>
+    <!-- 我的消息 -->
+    <div v-if="hasPerm(['admin/system.UserCenter/messageList'])" :title="$t('消息')" class="setting-item">
+      <Messages />
+    </div>
     <!-- 系统设置 -->
     <div v-if="hasPerm(['admin/system.UserCenter/setting'])" :title="$t('设置')" class="setting-item">
-      <router-link to="/setting">
-        <Icon icon="Setting" />
+      <router-link to="/user-setting">
+        <Icons icon="Setting" />
       </router-link>
     </div>
     <!-- 清除缓存 -->
@@ -17,11 +21,11 @@
       class="setting-item"
       @click="clearCache"
     >
-      <Icon icon="Delete" />
+      <Icons icon="Delete" />
     </div>
     <!-- 全屏切换 -->
     <div :title="$t('全屏切换')" class="setting-item" @click="toggle">
-      <Icon icon="FullScreen" />
+      <Icons icon="FullScreen" />
     </div>
     <!-- 语言切换 -->
     <div :title="$t('语言切换')" class="setting-item">
@@ -37,9 +41,9 @@
     <div class="avatar-container">
       <el-avatar v-if="user.avatar_url" :size="40" :src="user.avatar_url" alt="" />
       <el-avatar v-else :size="40" alt="">
-        <Icon icon="UserFilled" :size="25" />
+        <Icons icon="UserFilled" :size="25" />
       </el-avatar>
-      <Icon icon="CaretBottom" />
+      <Icons icon="CaretBottom" />
     </div>
     <template #dropdown>
       <el-dropdown-menu>
@@ -67,6 +71,7 @@ import { useTagsViewStore } from '@/store/modules/tagsView'
 import { cacheClearApi } from '@/api/system/setting'
 import LangSelect from '@/components/LangSelect/index.vue'
 import ThemeSelect from '@/components/ThemeSelect/index.vue'
+import Messages from '@/components/Messages/index.vue'
 
 const route = useRoute()
 const router = useRouter()

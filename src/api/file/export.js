@@ -35,13 +35,19 @@ export function infoApi(params, is_down = false) {
 /**
  * 导出文件添加
  * @param {array} data 请求数据
+ * @param {string} method get获取数据，post提交添加
  */
-export function addApi(data) {
-  return request({
+export function addApi(data, method = 'post') {
+  const config = {
     url: url + 'add',
-    method: 'post',
-    data
-  })
+    method: method
+  }
+  if (method === 'get') {
+    config.params = data
+  } else {
+    config.data = data
+  }
+  return request(config)
 }
 
 /**

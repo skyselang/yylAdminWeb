@@ -13,7 +13,7 @@
           :title="$t('点击看大图')"
         >
           <template #error>
-            <Icon icon="Picture" :size="iconSize" />
+            <Icons icon="Picture" :size="iconSize" />
           </template>
         </el-image>
         <video v-else-if="fileType === 'video'" :style="videoStyle" controls>
@@ -27,15 +27,15 @@
           <embed :src="fileUrl" :style="audioStyle" />
         </audio>
         <div v-else-if="fileType === 'word'">
-          <Icon icon="Document" :size="iconSize" />
+          <Icons icon="Document" :size="iconSize" />
         </div>
         <div v-else-if="fileType === 'other'">
-          <Icon icon="Folder" :size="iconSize" />
+          <Icons icon="Folder" :size="iconSize" />
         </div>
       </div>
       <div v-else>
         <el-avatar v-if="avatar" :size="height" alt="">
-          <Icon icon="UserFilled" :size="iconSize" />
+          <Icons icon="UserFilled" :size="iconSize" />
         </el-avatar>
       </div>
     </el-col>

@@ -170,7 +170,8 @@ export default defineConfig(({ mode }) => {
         'element-plus/es/components/watermark/style/css',
         'element-plus/es/components/table-v2/style/css',
         'element-plus/es/components/button-group/style/css',
-        'element-plus/es/components/tree-v2/style/css'
+        'element-plus/es/components/tree-v2/style/css',
+        'element-plus/es/components/select-v2/style/css'
       ]
     }
   }

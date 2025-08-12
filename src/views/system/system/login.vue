@@ -14,7 +14,7 @@
     >
       <div class="login-logo">
         <el-image v-if="logo_url" :src="logo_url" class="h-108px">
-          <template #error><Icon icon="Picture" /></template>
+          <template #error><Icons icon="Picture" /></template>
         </el-image>
         <div v-else class="h-115px"></div>
       </div>
@@ -25,18 +25,25 @@
       </div>
       <el-form-item prop="username">
         <el-input v-model="model.username" :placeholder="$t('账号')" clearable>
-          <template #prefix><Icon icon="User" /></template>
+          <template #prefix><Icons icon="User" /></template>
         </el-input>
       </el-form-item>
       <el-form-item prop="password">
-        <el-input v-model="model.password" type="password" :placeholder="$t('密码')" clearable show-password>
-          <template #prefix><Icon icon="Lock" /></template>
+        <el-input
+          v-model="model.password"
+          :placeholder="$t('密码')"
+          type="password"
+          clearable
+          show-password
+          autocomplete="new-password"
+        >
+          <template #prefix><Icons icon="Lock" /></template>
         </el-input>
       </el-form-item>
       <el-form-item v-if="captcha_switch && captcha_img" prop="captcha_code">
         <el-col :span="12">
           <el-input v-model="model.captcha_code" :placeholder="$t('验证码')" clearable>
-            <template #prefix><Icon icon="Picture" /></template>
+            <template #prefix><Icons icon="Picture" /></template>
           </el-input>
         </el-col>
         <el-col :span="12">

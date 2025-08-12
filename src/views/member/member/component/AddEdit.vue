@@ -26,7 +26,13 @@
                 <el-input key="username" v-model="model.username" clearable />
               </el-form-item>
               <el-form-item v-if="!id" :label="$t('密码')" prop="password">
-                <el-input key="password" v-model="model.password" clearable show-password />
+                <el-input
+                  v-model="model.password"
+                  clearable
+                  type="password"
+                  show-password
+                  autocomplete="new-password"
+                />
               </el-form-item>
               <el-form-item :label="$t('手机')" prop="phone">
                 <el-input v-model="model.phone" clearable />

@@ -11,7 +11,7 @@
             :title="$t('点击看大图')"
           >
             <template #error>
-              <Icon icon="Picture" />
+              <Icons icon="Picture" />
             </template>
           </el-image>
         </div>
@@ -26,10 +26,10 @@
           <embed :src="file.file_url" :style="audioStyle" />
         </audio>
         <div v-else-if="file.file_type === 'word'">
-          <Icon icon="Document" :size="iconSize" />
+          <Icons icon="Document" :size="iconSize" />
         </div>
         <div v-else-if="file.file_type === 'other'">
-          <Icon icon="Folder" :size="iconSize" />
+          <Icons icon="Folder" :size="iconSize" />
         </div>
         <div v-else></div>
       </div>

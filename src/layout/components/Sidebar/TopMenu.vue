@@ -10,7 +10,7 @@
     >
       <el-menu-item v-for="route in topMenu" :key="route.path" :index="route.path">
         <template #title>
-          <Icon v-if="route.meta && route.meta.icon" :icon="route.meta.icon" />
+          <Icons v-if="route.meta && route.meta.icon" :icon="route.meta.icon" />
           <span v-if="route.path === '/'">{{ translateRouteTitle('首页') }}</span>
           <template v-else>
             <span v-if="route.meta && route.meta.title">

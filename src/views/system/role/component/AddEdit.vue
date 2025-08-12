@@ -41,7 +41,7 @@
           <el-row>
             <el-col :md="rowcol.md" :lg="rowcol.lg" :xl="rowcol.xl">
               <el-form-item :label="$t('菜单')">
-                <Menu v-model="model.menu_ids" :data="basedata.menus" :ids="basedata.menu_ids" :height="600" />
+                <Menu v-model="model.menu_ids" :data="basedata.menus" :ids="basedata.menu_ids" :height="height - 100" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -144,7 +144,11 @@ export default {
         .catch(() => {})
     },
     edit(ismsg = false) {
-      infoApi({ [this.idkey]: this.id })
+      let api = editApi
+      if (this.type === 'info') {
+        api = infoApi
+      }
+      api({ [this.idkey]: this.id }, 'get')
         .then((res) => {
           this.data(res.data)
           if (ismsg) {
