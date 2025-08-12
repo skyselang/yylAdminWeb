@@ -74,7 +74,7 @@
       align-center
       center
     >
-      <AddEdit :id="id" dialog @close="close" />
+      <AddEdit :id="id" :type="type" dialog @close="close" />
     </el-dialog>
   </div>
 </template>

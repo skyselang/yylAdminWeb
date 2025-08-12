@@ -186,7 +186,7 @@ function fileDownload() {
     .then((res) => {
       const file = res.data
       if (file.add_type === 'upload' && file.storage === 'local') {
-        infoApi({ [props.idkey]: file[props.idkey], file_name: file['file_name'] }, true)
+        infoApi({ [props.idkey]: file[props.idkey], file_name: file['file_name'], is_down: true })
       } else {
         window.open(fileUrl.value, '_blank')
       }

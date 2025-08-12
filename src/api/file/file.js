@@ -17,15 +17,14 @@ export function listApi(params) {
 /**
  * 文件信息
  * @param {array} params 请求参数
- * @param {boolean} is_down 是否下载文件
  */
-export function infoApi(params, is_down = false) {
+export function infoApi(params) {
   let config = {
     url: url + 'info',
     method: 'get',
     params: params
   }
-  if (is_down) {
+  if (params?.is_down) {
     config.params.is_down = 1
     config.responseType = 'blob'
   }

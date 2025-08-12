@@ -118,7 +118,7 @@ function fileName(file) {
 }
 function fileDown(file) {
   if (file.add_type === 'upload' && file.storage === 'local') {
-    infoApi({ [props.idkey]: file[props.idkey], file_name: file['file_name'] }, true)
+    infoApi({ [props.idkey]: file[props.idkey], file_name: file['file_name'], is_down: true })
   } else {
     clipboard(fileName(file), i18n.global.t('文件名已复制'))
     setTimeout(() => {

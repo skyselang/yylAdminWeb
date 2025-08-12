@@ -191,15 +191,15 @@ export default {
               if (data.status == 2) {
                 let file_name = data.file_name
                 if (data.import_num) {
-                  infoApi({ [this.idkey]: data[this.idkey], file_name: file_name, file_type: 'import' }, true)
+                  infoApi({ [this.idkey]: data[this.idkey], file_name: file_name, file_type: 'import', is_down: true })
                 }
                 if (data.success_num) {
                   file_name = file_name.substring(0, file_name.length - 5) + '-' + this.$t('成功') + '.xlsx'
-                  infoApi({ [this.idkey]: data[this.idkey], file_name: file_name, file_type: 'success' }, true)
+                  infoApi({ [this.idkey]: data[this.idkey], file_name: file_name, file_type: 'success', is_down: true })
                 }
                 if (data.fail_num) {
                   file_name = file_name.substring(0, file_name.length - 5) + '-' + this.$t('失败') + '.xlsx'
-                  infoApi({ [this.idkey]: data[this.idkey], file_name: file_name, file_type: 'fail' }, true)
+                  infoApi({ [this.idkey]: data[this.idkey], file_name: file_name, file_type: 'fail', is_down: true })
                 }
               }
             })

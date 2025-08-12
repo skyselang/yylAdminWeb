@@ -255,9 +255,9 @@ export default {
             .then((res) => {
               const file = res.data
               if (file['storage'] === 'local' && file['add_type'] === 'upload') {
-                infoApi({ [this.idkey]: id, file_name: file['file_name'] }, true)
+                infoApi({ [this.idkey]: id, file_name: file['file_name'], is_down: true })
               } else {
-                clipboard(file.file_name + '.' + file.file_ext, '文件名已复制')
+                clipboard(file.file_name + '.' + file.file_ext, this.$t('文件名已复制'))
                 setTimeout(() => {
                   window.open(file.file_url, '_blank')
                 }, 500)

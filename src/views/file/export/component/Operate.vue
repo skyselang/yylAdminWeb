@@ -184,7 +184,7 @@ export default {
               if (data.status != 2) {
                 ElMessage.error(this.$t('未处理成功无法下载！'))
               } else {
-                infoApi({ [this.idkey]: data[this.idkey], file_name: data.file_name }, true)
+                infoApi({ [this.idkey]: data[this.idkey], file_name: data.file_name, is_down: true })
               }
             })
             .catch(() => {

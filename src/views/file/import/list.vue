@@ -76,7 +76,7 @@
       align-center
       center
     >
-      <AddEdit :id="id" dialog @close="close" />
+      <AddEdit :id="id" :type="type" dialog @close="close" />
     </el-dialog>
     <!-- 下载 -->
     <el-dialog v-model="downDialog" :title="downTitle" draggable center align-center>
@@ -291,7 +291,7 @@ export default {
       } else if (file_type === 'fail') {
         file_name = file_name.substring(0, file_name.length - 5) + '-' + this.$t('失败') + '.xlsx'
       }
-      infoApi({ [this.idkey]: file[this.idkey], file_type: file_type, file_name: file_name }, true)
+      infoApi({ [this.idkey]: file[this.idkey], file_type: file_type, file_name: file_name, is_down: true })
     },
     // 回收站恢复
     recycleReco(row) {

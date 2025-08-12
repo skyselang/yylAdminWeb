@@ -319,7 +319,7 @@
       center
       align-center
     >
-      <AddEdit :id="id" dialog @close="close" />
+      <AddEdit :id="id" :type="type" dialog @close="close" />
     </el-dialog>
     <!-- 分组管理 -->
     <el-dialog
@@ -703,7 +703,7 @@ export default {
         .then((res) => {
           const file = res.data
           if (file['add_type'] === 'upload' && file['storage'] === 'local') {
-            infoApi({ [this.idkey]: id, file_name: file['file_name'] }, true)
+            infoApi({ [this.idkey]: id, file_name: file['file_name'], is_down: true })
           } else {
             clipboard(file.file_name + '.' + file.file_ext, this.$t('文件名已复制'))
             setTimeout(() => {
