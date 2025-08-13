@@ -171,6 +171,30 @@ export function tokenEditApi(data) {
 }
 
 /**
+ * 登录页提示信息
+ * @param {array} params 请求参数
+ */
+export function loginMsgInfoApi(params) {
+  return request({
+    url: url + 'loginMsgInfo',
+    method: 'get',
+    params: params
+  })
+}
+
+/**
+ * 登录页提示修改
+ * @param {array} data 请求数据
+ */
+export function loginMsgEditApi(data) {
+  return request({
+    url: url + 'loginMsgEdit',
+    method: 'post',
+    data
+  })
+}
+
+/**
  * 服务器信息
  * @param {array} params 请求参数
  */

@@ -190,6 +190,7 @@ export default {
           this.system_name = data.system_name
           data.watermark_content = data.system_name
           settingsStore.setSetting(data)
+          this.message(data)
         })
         .catch(() => {})
     },
@@ -277,6 +278,18 @@ export default {
     // 记住我
     rememberMeChange(value) {
       rememberMe(value)
+    },
+    // 提示
+    message(data) {
+      if (data.login_msg_switch) {
+        ElMessage({
+          message: data.login_msg_text,
+          type: data.login_msg_type,
+          duration: data.login_msg_time * 1000,
+          showClose: true,
+          grouping: true
+        })
+      }
     }
   }
 }

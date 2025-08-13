@@ -22,6 +22,9 @@
       <el-tab-pane v-if="hasPerm(['admin/system.Setting/tokenInfo'])" :label="$t('Token设置')" lazy>
         <Token />
       </el-tab-pane>
+      <el-tab-pane v-if="hasPerm(['admin/system.Setting/loginMsgInfo'])" :label="$t('登录页提示')" lazy>
+        <LoginMsg />
+      </el-tab-pane>
       <el-tab-pane v-if="hasPerm(['admin/system.Setting/serverInfo'])" :label="$t('服务器信息')" lazy>
         <Server />
       </el-tab-pane>
@@ -42,11 +45,12 @@ import Log from './component/Log.vue'
 import Server from './component/Server.vue'
 import System from './component/System.vue'
 import Token from './component/Token.vue'
+import LoginMsg from './component/LoginMsg.vue'
 import Develop from './component/Develop.vue'
 
 export default {
   name: 'SystemSetting',
-  components: { Api, Cache, Captcha, Email, Log, Server, System, Token, Develop },
+  components: { Api, Cache, Captcha, Email, Log, Server, System, Token, LoginMsg, Develop },
   data() {
     return {
       name: '系统设置',
