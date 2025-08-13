@@ -5,7 +5,7 @@
         <div v-if="file.file_type === 'image'">
           <el-image
             :src="file.file_url"
-            :preview-src-list="previewSrcList"
+            :preview-src-list="previewSrcLists"
             :preview-teleported="previewTeleported"
             :style="imageStyle"
             :lazy="lazy"
@@ -98,8 +98,8 @@ const audioStyle = computed(() => {
 const iconSize = computed(() => {
   return props.height * 0.7 + 'px'
 })
-const previewSrcList = computed(() => {
-  return props.previewSrcList ? props.previewSrcList : [props.file.file_url]
+const previewSrcLists = computed(() => {
+  return props.previewSrcList.length > 0 ? props.previewSrcList : [props.file.file_url]
 })
 
 watch(
