@@ -125,7 +125,7 @@ export default {
   data() {
     return {
       name: '',
-      idkey: 'user_id',
+      idkey: 'role_id',
       height: 680,
       loading: false,
       dialog: false,
