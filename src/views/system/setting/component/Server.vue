@@ -42,12 +42,23 @@
           <el-form-item label="post_max_size">
             <el-input v-model="model.post_max_size" />
           </el-form-item>
+          <el-form-item label="memory_limit">
+            <el-input v-model="model.memory_limit" />
+          </el-form-item>
+          <el-form-item label="timezone">
+            <el-input v-model="model.timezone" />
+          </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item :label="$t('缓存类型')" prop="type">
             <el-input v-model="model.cache_type" />
           </el-form-item>
-          <div v-if="model.cache_type === 'redis'">
+          <div v-if="model.cache_type === 'file'">
+            <el-form-item :label="$t('缓存路径')">
+              <el-input v-model="model.cache_path" />
+            </el-form-item>
+          </div>
+          <div v-else-if="model.cache_type === 'redis'">
             <el-form-item label="Redis">
               <el-input v-model="model.redis_version" />
             </el-form-item>
@@ -88,8 +99,11 @@
             <el-form-item label="memcache">
               <el-input v-model="model.version" />
             </el-form-item>
-            <el-form-item :label="$t('运行秒数')">
+            <el-form-item :label="$t('运行时长')">
               <el-input v-model="model.uptime" />
+            </el-form-item>
+            <el-form-item :label="$t('当前服务器时间')">
+              <el-input v-model="model.time" />
             </el-form-item>
             <el-form-item :label="$t('读取字节总数')">
               <el-input v-model="model.bytes_read" />
@@ -115,13 +129,52 @@
             <el-form-item :label="$t('flush_all命令总数')">
               <el-input v-model="model.cmd_flush" />
             </el-form-item>
-            <el-form-item :label="$t('当前服务器时间')">
-              <el-input v-model="model.time" />
-            </el-form-item>
           </div>
           <div v-else-if="model.cache_type === 'wincache'">
-            <el-form-item :label="$t('缓存信息')" prop="wincache_info">
-              <pre>{{ model.wincache_info }}</pre>
+            <el-form-item :label="$t('文件缓存总内存')">
+              <el-input v-model="model.fcache_memory_total" />
+            </el-form-item>
+            <el-form-item :label="$t('文件缓存可用内存')">
+              <el-input v-model="model.fcache_memory_free" />
+            </el-form-item>
+            <el-form-item :label="$t('文件缓存额外内存')">
+              <el-input v-model="model.fcache_memory_overhead" />
+            </el-form-item>
+            <el-form-item :label="$t('文件缓存已用块数')">
+              <el-input v-model="model.fcache_num_used_blks" />
+            </el-form-item>
+            <el-form-item :label="$t('文件缓存可用块数')">
+              <el-input v-model="model.fcache_num_free_blks" />
+            </el-form-item>
+            <el-form-item :label="$t('用户缓存总内存')">
+              <el-input v-model="model.ucache_memory_total" />
+            </el-form-item>
+            <el-form-item :label="$t('用户缓存可用内存')">
+              <el-input v-model="model.ucache_memory_free" />
+            </el-form-item>
+            <el-form-item :label="$t('用户缓存额外内存')">
+              <el-input v-model="model.ucache_memory_overhead" />
+            </el-form-item>
+            <el-form-item :label="$t('用户缓存已用块数')">
+              <el-input v-model="model.ucache_num_used_blks" />
+            </el-form-item>
+            <el-form-item :label="$t('用户缓存可用块数')">
+              <el-input v-model="model.ucache_num_free_blks" />
+            </el-form-item>
+            <el-form-item :label="$t('列表缓存总内存')">
+              <el-input v-model="model.rplist_memory_total" />
+            </el-form-item>
+            <el-form-item :label="$t('列表缓存可用内存')">
+              <el-input v-model="model.rplist_memory_free" />
+            </el-form-item>
+            <el-form-item :label="$t('列表缓存额外内存')">
+              <el-input v-model="model.rplist_memory_overhead" />
+            </el-form-item>
+            <el-form-item :label="$t('列表缓存已用块数')">
+              <el-input v-model="model.rplist_num_used_blks" />
+            </el-form-item>
+            <el-form-item :label="$t('列表缓存可用块数')">
+              <el-input v-model="model.rplist_num_free_blks" />
             </el-form-item>
           </div>
         </el-col>
