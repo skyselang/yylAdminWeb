@@ -6,7 +6,7 @@
           <el-row>
             <el-col :md="rowcol.md" :lg="rowcol.lg" :xl="rowcol.xl">
               <el-form-item :label="$t('会员ID')" prop="member_id">
-                <el-input v-model="model.member_id" type="number" clearable />
+                <el-input v-model="model.member_id" clearable type="number" />
               </el-form-item>
               <el-form-item :label="$t('应用')" prop="application">
                 <el-select v-model="model.application">
@@ -24,6 +24,7 @@
               </el-form-item>
               <el-form-item prop="headimgurl">
                 <FileImage
+                  v-model="model.avatar_id"
                   v-model:file-url="model.headimgurl"
                   :file-title="$t('上传头像')"
                   :height="100"
@@ -121,6 +122,7 @@ export default {
         application: 21,
         unionid: '',
         openid: '',
+        avatar_id: 0,
         headimgurl: '',
         nickname: '',
         remark: '',
