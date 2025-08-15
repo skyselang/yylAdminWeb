@@ -201,12 +201,17 @@
               </template>
             </el-table-column>
             <el-table-column prop="nickname" :label="$t('昵称')" min-width="200" />
-            <el-table-column prop="platform_name" :label="$t('平台')" min-width="82" />
             <el-table-column prop="application_name" :label="$t('应用')" min-width="110" />
             <el-table-column prop="is_disable_name" :label="$t('禁用')" min-width="85" />
             <el-table-column prop="create_time" :label="$t('添加/绑定时间')" min-width="165" />
             <el-table-column prop="login_time" :label="$t('登录时间')" width="165" />
           </el-table>
+          <el-form-item :label="$t('第三方头像')" prop="headimgurl" class="mt-3">
+            <el-input v-model="model.headimgurl" clearable />
+          </el-form-item>
+          <el-form-item prop="headimgurl">
+            <el-avatar :size="100" :src="model.headimgurl" />
+          </el-form-item>
         </el-scrollbar>
       </el-tab-pane>
     </el-tabs>
