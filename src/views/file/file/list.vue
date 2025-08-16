@@ -217,7 +217,9 @@
                 <el-row>
                   <el-col class="text-left">
                     <el-checkbox :key="v.file_id" v-model="idsed[i]" @change="selectCardOne($event, i)">
-                      <el-text size="default" truncated>{{ v.file_id }} ({{ v.file_size }}, {{ v.file_ext }}</el-text>
+                      <el-text size="default" truncated>
+                        {{ v.file_id }} ({{ v.file_size_name }}, {{ v.file_ext }})
+                      </el-text>
                     </el-checkbox>
                   </el-col>
                 </el-row>
