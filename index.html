@@ -11,16 +11,7 @@
 
   <body>
     <div id="app" class="app">
-      <div class="mesh-loader">
-        <div class="set-one">
-          <div class="circle"></div>
-          <div class="circle"></div>
-        </div>
-        <div class="set-two">
-          <div class="circle"></div>
-          <div class="circle"></div>
-        </div>
-      </div>
+      <div class="loader"></div>
     </div>
 
     <script type="module" src="/src/main.js"></script>
@@ -40,96 +31,61 @@
         justify-content: center;
       }
 
-      .mesh-loader {
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-      }
-
-      .mesh-loader .circle {
-        position: absolute;
-        width: 25px;
-        height: 25px;
-        margin: -12.5px;
+      .loader {
+        width: 50px;
+        aspect-ratio: 1;
         border-radius: 50%;
-        background: #409eff;
-        animation: mesh 3s ease-in-out infinite;
-        animation: mesh 3s ease-in-out infinite -1.5s;
+        border: 2px solid #409eff;
+        animation:
+          l20-1 1s infinite linear alternate,
+          l20-2 2s infinite linear;
       }
 
-      .mesh-loader > div .circle:last-child {
-        animation-delay: 0s;
-        animation-delay: 0s;
-      }
-
-      .mesh-loader > div {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-      }
-
-      .mesh-loader > div:last-child {
-        transform: rotate(90deg);
-        transform: rotate(90deg);
-      }
-
-      @keyframes mesh {
+      @keyframes l20-1 {
         0% {
-          transform: rotate(0);
-          transform: rotate(0);
-          transform-origin: 50% -100%;
-          transform-origin: 50% -100%;
+          clip-path: polygon(50% 50%, 0 0, 50% 0%, 50% 0%, 50% 0%, 50% 0%, 50% 0%);
+        }
+
+        12.5% {
+          clip-path: polygon(50% 50%, 0 0, 50% 0%, 100% 0%, 100% 0%, 100% 0%, 100% 0%);
+        }
+
+        25% {
+          clip-path: polygon(50% 50%, 0 0, 50% 0%, 100% 0%, 100% 100%, 100% 100%, 100% 100%);
         }
 
         50% {
-          transform: rotate(360deg);
-          transform: rotate(360deg);
-          transform-origin: 50% -100%;
-          transform-origin: 50% -100%;
+          clip-path: polygon(50% 50%, 0 0, 50% 0%, 100% 0%, 100% 100%, 50% 100%, 0% 100%);
         }
 
-        50.00001% {
-          transform: rotate(0deg);
-          transform: rotate(0deg);
-          transform-origin: 50% 200%;
-          transform-origin: 50% 200%;
+        62.5% {
+          clip-path: polygon(50% 50%, 100% 0, 100% 0%, 100% 0%, 100% 100%, 50% 100%, 0% 100%);
+        }
+
+        75% {
+          clip-path: polygon(50% 50%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 50% 100%, 0% 100%);
         }
 
         100% {
-          transform: rotate(360deg);
-          transform: rotate(360deg);
-          transform-origin: 50% 200%;
-          transform-origin: 50% 200%;
+          clip-path: polygon(50% 50%, 50% 100%, 50% 100%, 50% 100%, 50% 100%, 50% 100%, 0% 100%);
         }
       }
 
-      @keyframes mesh {
+      @keyframes l20-2 {
         0% {
-          transform: rotate(0);
-          transform: rotate(0);
-          transform-origin: 50% -100%;
-          transform-origin: 50% -100%;
+          transform: scaleY(1) rotate(0deg);
+        }
+
+        49.99% {
+          transform: scaleY(1) rotate(135deg);
         }
 
         50% {
-          transform: rotate(360deg);
-          transform: rotate(360deg);
-          transform-origin: 50% -100%;
-          transform-origin: 50% -100%;
-        }
-
-        50.00001% {
-          transform: rotate(0deg);
-          transform: rotate(0deg);
-          transform-origin: 50% 200%;
-          transform-origin: 50% 200%;
+          transform: scaleY(-1) rotate(0deg);
         }
 
         100% {
-          transform: rotate(360deg);
-          transform: rotate(360deg);
-          transform-origin: 50% 200%;
-          transform-origin: 50% 200%;
+          transform: scaleY(-1) rotate(-135deg);
         }
       }
     </style>
