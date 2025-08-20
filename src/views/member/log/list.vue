@@ -17,8 +17,8 @@
       <el-table-column type="selection" width="42" :title="$t('全选/反选')" />
       <el-table-column :prop="idkey" label="ID" width="80" sortable="custom" />
       <el-table-column prop="member_id" :label="$t('会员ID')" min-width="75" />
-      <el-table-column prop="nickname" :label="$t('会员昵称')" min-width="90" />
-      <el-table-column prop="username" :label="$t('会员用户名')" min-width="100" />
+      <el-table-column prop="member_nickname" :label="$t('会员昵称')" min-width="90" />
+      <el-table-column prop="member_username" :label="$t('会员用户名')" min-width="100" />
       <el-table-column prop="api_id" :label="$t('接口ID')" min-width="70" />
       <el-table-column prop="api_name" :label="$t('接口名称')" min-width="120" />
       <el-table-column prop="api_url" :label="$t('接口链接')" min-width="170" />

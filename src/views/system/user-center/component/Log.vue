@@ -166,19 +166,7 @@
     align-center
   >
     <el-scrollbar :height="height - 50">
-      <el-form ref="ref" :rules="rules" :model="model" label-width="110px">
-        <el-form-item :label="$t('用户ID')" prop="user_id">
-          <el-input v-model="model.user_id" />
-        </el-form-item>
-        <el-form-item :label="$t('用户昵称')" prop="nickname">
-          <el-input v-model="model.nickname" />
-        </el-form-item>
-        <el-form-item :label="$t('用户账号')" prop="username">
-          <el-input v-model="model.username" />
-        </el-form-item>
-        <el-form-item :label="$t('菜单ID')" prop="menu_id">
-          <el-input v-model="model.menu_id" />
-        </el-form-item>
+      <el-form ref="ref" :rules="rules" :model="model" label-width="120px">
         <el-form-item :label="$t('菜单名称')" prop="menu_name">
           <el-input v-model="model.menu_name" />
         </el-form-item>

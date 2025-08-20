@@ -11,9 +11,17 @@
                 </el-select>
               </el-form-item>
               <el-form-item :label="$t('用户')" prop="user_id">
-                <el-select v-model="model.user_id" clearable filterable>
-                  <el-option v-for="v in basedata.users" :key="v.user_id" :value="v.user_id" :label="v.nickname" />
-                </el-select>
+                <el-select-v2
+                  v-model="model.user_id"
+                  :options="basedata.users"
+                  :props="{ value: 'user_id', label: 'nickname' }"
+                  clearable
+                  filterable
+                >
+                  <template #default="{ item }">
+                    <span>[{{ item.user_id }}] {{ item.nickname }} ({{ item.username }})</span>
+                  </template>
+                </el-select-v2>
               </el-form-item>
               <el-form-item :label="$t('菜单')" prop="menu_id">
                 <el-cascader
@@ -36,7 +44,7 @@
               </el-form-item>
               <el-form-item :label="$t('请求方法')" prop="request_method">
                 <el-select v-model="model.request_method">
-                  <el-option v-for="(v, k) in basedata.methods" :key="k" :value="k" :label="v" />
+                  <el-option v-for="v in basedata.methods" :key="v.value" :value="v.value" :label="v.label" />
                 </el-select>
               </el-form-item>
               <el-form-item :label="$t('请求IP')" prop="request_ip">
@@ -138,8 +146,8 @@ export default {
         log_id: '',
         log_type: 1,
         user_id: '',
-        nickname: '',
-        username: '',
+        user_nickname: '',
+        user_username: '',
         menu_id: '',
         menu_name: '',
         menu_url: '',

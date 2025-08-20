@@ -11,13 +11,11 @@
                 </el-select>
               </el-form-item>
               <el-form-item :label="$t('会员ID')" prop="member_id">
-                <el-input v-model="model.member_id" type="number" />
-              </el-form-item>
-              <el-form-item v-if="id" :label="$t('会员昵称')" prop="nickname">
-                <el-input v-model="model.nickname" />
-              </el-form-item>
-              <el-form-item v-if="id" :label="$t('会员用户名')" prop="username">
-                <el-input v-model="model.username" />
+                <MemberSelector
+                  v-model:member-id="model.member_id"
+                  v-model:nickname="model.member_nickname"
+                  v-model:username="model.member_username"
+                />
               </el-form-item>
               <el-form-item :label="$t('接口')" prop="api_id">
                 <el-cascader
@@ -40,7 +38,7 @@
               </el-form-item>
               <el-form-item :label="$t('请求方法')" prop="request_method">
                 <el-select v-model="model.request_method">
-                  <el-option v-for="(v, k) in basedata.methods" :key="k" :value="k" :label="v" />
+                  <el-option v-for="v in basedata.methods" :key="v.value" :value="v.value" :label="v.label" />
                 </el-select>
               </el-form-item>
               <el-form-item :label="$t('请求IP')" prop="request_ip">
@@ -53,7 +51,7 @@
                 <el-input v-model="model.request_isp" />
               </el-form-item>
               <el-form-item v-if="id" :label="$t('平台')" prop="platform">
-                <el-select v-model="model.platform">
+                <el-select v-model="model.platform" disabled>
                   <el-option v-for="v in basedata.platforms" :key="v.value" :value="v.value" :label="v.label" />
                 </el-select>
               </el-form-item>
@@ -123,8 +121,10 @@
 <script>
 import { screenHeight, addEditSuccessAlert, datetime, hasPerm } from '@/utils/index'
 import { infoApi, addApi, editApi } from '@/api/member/log'
+import MemberSelector from '@/views/member/member/component/Selector.vue'
 
 export default {
+  components: { MemberSelector },
   props: {
     id: {
       type: [String, Number],
@@ -151,8 +151,8 @@ export default {
         log_id: '',
         log_type: '',
         member_id: '',
-        nickname: '',
-        username: '',
+        member_nickname: '',
+        member_username: '',
         api_id: '',
         api_name: '',
         api_url: '',
@@ -184,7 +184,7 @@ export default {
         platforms: [],
         applications: [],
         apis: [],
-        apiProps: { value: 'api_id', label: 'api_name', checkStrictly: true }
+        apiProps: { value: 'api_id', label: 'api_name', checkStrictly: true, emitPath: false }
       }
     }
   },

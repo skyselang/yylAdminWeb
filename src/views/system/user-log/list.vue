@@ -17,8 +17,8 @@
       <el-table-column type="selection" width="42" :title="$t('全选/反选')" />
       <el-table-column :prop="idkey" label="ID" width="80" sortable="custom" />
       <el-table-column prop="user_id" :label="$t('用户ID')" min-width="75" />
-      <el-table-column prop="nickname" :label="$t('用户昵称')" min-width="100" />
-      <el-table-column prop="username" :label="$t('用户账号')" min-width="100" />
+      <el-table-column prop="user_nickname" :label="$t('用户昵称')" min-width="100" />
+      <el-table-column prop="user_username" :label="$t('用户账号')" min-width="100" />
       <el-table-column prop="menu_id" :label="$t('菜单ID')" min-width="75" />
       <el-table-column prop="menu_name" :label="$t('菜单名称')" min-width="130" />
       <el-table-column prop="menu_url" :label="$t('菜单链接')" min-width="180" />

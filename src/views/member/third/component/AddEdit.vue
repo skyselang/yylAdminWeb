@@ -6,7 +6,11 @@
           <el-row>
             <el-col :md="rowcol.md" :lg="rowcol.lg" :xl="rowcol.xl">
               <el-form-item :label="$t('会员ID')" prop="member_id">
-                <el-input v-model="model.member_id" clearable type="number" />
+                <MemberSelector
+                  v-model:member-id="model.member_id"
+                  v-model:nickname="model.member_nickname"
+                  v-model:username="model.member_username"
+                />
               </el-form-item>
               <el-form-item :label="$t('应用')" prop="application">
                 <el-select v-model="model.application">
@@ -91,9 +95,10 @@
 <script>
 import { screenHeight, addEditSuccessAlert, hasPerm } from '@/utils/index'
 import { infoApi, addApi, editApi } from '@/api/member/third'
+import MemberSelector from '@/views/member/member/component/Selector.vue'
 
 export default {
-  components: {},
+  components: { MemberSelector },
   props: {
     id: {
       type: [String, Number],
@@ -119,6 +124,8 @@ export default {
       model: {
         third_id: '',
         member_id: '',
+        member_nickanme: '',
+        member_username: '',
         application: 21,
         unionid: '',
         openid: '',

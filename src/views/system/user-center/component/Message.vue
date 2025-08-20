@@ -174,7 +174,7 @@
       align-center
     >
       <el-scrollbar :height="height - 50">
-        <el-form ref="ref" :rules="rules" :model="model" label-width="110px">
+        <el-form ref="ref" :rules="rules" :model="model" label-width="120px">
           <el-form-item :label="$t('标题')" prop="message_title">
             <span>{{ model.message_title }}</span>
           </el-form-item>
