@@ -609,3 +609,31 @@ export function langWidth(zhcnWidth, enWidth) {
     return zhcnWidth
   }
 }
+
+/**
+ * 获取所有子节点ID
+ * @param {Object} node 节点
+ * @param {string} pk 主键
+ * @param {string} children 子节点
+ * @param {boolean} self 是否包含自身
+ * @returns {Array} 返回所有子节点ID的数组
+ */
+export function getChildIds(node, pk = 'id', children = 'children', self = true) {
+  const ids = []
+  const stack = [...(node[children] || [])]
+
+  while (stack.length > 0) {
+    const currentNode = stack.pop()
+    ids.push(currentNode[pk])
+
+    if (currentNode[children] && currentNode[children].length > 0) {
+      stack.push(...currentNode[children].reverse())
+    }
+  }
+
+  if (self && node[pk]) {
+    ids.push(node[pk])
+  }
+
+  return ids
+}

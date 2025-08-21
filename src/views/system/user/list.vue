@@ -5,63 +5,122 @@
     <!-- 操作 -->
     <Operate :name="name" :ids="ids" :basedata="basedata" :query="query" @list="list" @add="add" @edit="edit" />
     <!-- 列表 -->
-    <el-table
-      ref="table"
-      v-loading="loading"
-      :data="data"
-      :height="height"
-      show-overflow-tooltip
-      @sort-change="sort"
-      @selection-change="select"
-    >
-      <el-table-column type="selection" width="42" :title="$t('全选/反选')" />
-      <el-table-column :prop="idkey" label="ID" width="80" sortable="custom" />
-      <el-table-column prop="avatar_id" :label="$t('头像')" min-width="68">
-        <template #default="{ row }">
-          <FileImage :file-url="row.avatar_url" avatar lazy />
-        </template>
-      </el-table-column>
-      <el-table-column prop="unique" :label="$t('编号')" min-width="100" sortable="custom" />
-      <el-table-column prop="nickname" :label="$t('昵称')" min-width="100" sortable="custom" />
-      <el-table-column prop="username" :label="$t('账号')" min-width="100" sortable="custom" />
-      <el-table-column prop="dept_names" :label="$t('部门')" min-width="120" />
-      <el-table-column prop="post_names" :label="$t('职位')" min-width="120" />
-      <el-table-column prop="role_names" :label="$t('角色')" min-width="120" />
-      <el-table-column
-        prop="is_super_name"
-        :label="$t('超管')"
-        min-width="80"
-        sortable="custom"
-        column-key="is_super"
-      />
-      <el-table-column prop="remark" :label="$t('备注')" min-width="130" />
-      <el-table-column
-        prop="is_disable_name"
-        :label="$t('禁用')"
-        min-width="80"
-        sortable="custom"
-        column-key="is_disable"
-      />
-      <el-table-column prop="sort" :label="$t('排序')" min-width="80" sortable="custom" />
-      <el-table-column prop="create_time" :label="$t('添加时间')" width="162" sortable="custom" />
-      <el-table-column prop="update_time" :label="$t('修改时间')" width="162" sortable="custom" />
-      <el-table-column :label="$t('操作')" width="110">
-        <template #default="{ row }">
-          <ElLinkOperate v-if="hasPerm([permEdit])" :text="$t('修改')" @click="edit(row)" />
-          <ElLinkOperate v-else-if="hasPerm([permInfo])" :text="$t('信息')" @click="edit(row)" />
-          <ElLinkOperate v-if="hasPerm([permDele])" :text="$t('删除')" @click="dele(row)" />
-        </template>
-      </el-table-column>
-    </el-table>
-    <!-- 分页 -->
-    <el-row class="mt-5 ml-3">
-      <el-col :span="3">
-        <el-checkbox v-model="addEditDialog" class="pr-6" :title="$t('添加修改时是弹窗还是新标签页')">
-          <el-text size="default">{{ $t('弹窗') }}</el-text>
-        </el-checkbox>
+    <el-row class="mt-2">
+      <el-col :span="4">
+        <el-row>
+          <el-col>
+            <el-text size="default" class="cursor-pointer" @click="deptSelect(null)">
+              {{ $t('部门') }}：
+              <Icons icon="RefreshLeft" />
+            </el-text>
+          </el-col>
+          <el-col>
+            <el-tree-v2
+              ref="deptRef"
+              :data="basedata.depts"
+              :props="basedata.deptProps"
+              :current-node-key="query.dept_id"
+              highlight-current
+              @node-click="deptSelect"
+            />
+          </el-col>
+          <el-col class="pt-4">
+            <el-text size="default" class="cursor-pointer" @click="postSelect(null)">
+              {{ $t('职位') }}：
+              <Icons icon="RefreshLeft" />
+            </el-text>
+          </el-col>
+          <el-col>
+            <el-tree-v2
+              ref="postRef"
+              :data="basedata.posts"
+              :props="basedata.postProps"
+              :current-node-key="query.post_id"
+              highlight-current
+              @node-click="postSelect"
+            />
+          </el-col>
+          <el-col class="pt-4">
+            <el-text size="default" class="cursor-pointer" @click="roleSelect(null)">
+              {{ $t('角色') }}：
+              <Icons icon="RefreshLeft" />
+            </el-text>
+          </el-col>
+          <el-col>
+            <el-tree-v2
+              ref="roleRef"
+              :data="basedata.roles"
+              :props="basedata.roleProps"
+              :current-node-key="query.role_id"
+              highlight-current
+              @node-click="roleSelect"
+            />
+          </el-col>
+        </el-row>
       </el-col>
-      <el-col :span="21">
-        <Pagination v-model:total="count" v-model:page="query.page" v-model:limit="query.limit" @pagination="list" />
+      <el-col :span="20">
+        <el-table
+          ref="table"
+          v-loading="loading"
+          :data="data"
+          :height="height"
+          show-overflow-tooltip
+          @sort-change="sort"
+          @selection-change="select"
+        >
+          <el-table-column type="selection" width="42" :title="$t('全选/反选')" />
+          <el-table-column :prop="idkey" label="ID" width="80" sortable="custom" />
+          <el-table-column prop="avatar_id" :label="$t('头像')" min-width="68">
+            <template #default="{ row }">
+              <FileImage :file-url="row.avatar_url" avatar lazy />
+            </template>
+          </el-table-column>
+          <el-table-column prop="unique" :label="$t('编号')" min-width="100" sortable="custom" />
+          <el-table-column prop="nickname" :label="$t('昵称')" min-width="100" sortable="custom" />
+          <el-table-column prop="username" :label="$t('账号')" min-width="100" sortable="custom" />
+          <el-table-column prop="dept_names" :label="$t('部门')" min-width="120" />
+          <el-table-column prop="post_names" :label="$t('职位')" min-width="120" />
+          <el-table-column prop="role_names" :label="$t('角色')" min-width="120" />
+          <el-table-column
+            prop="is_super_name"
+            :label="$t('超管')"
+            min-width="80"
+            sortable="custom"
+            column-key="is_super"
+          />
+          <el-table-column prop="remark" :label="$t('备注')" min-width="130" />
+          <el-table-column
+            prop="is_disable_name"
+            :label="$t('禁用')"
+            min-width="80"
+            sortable="custom"
+            column-key="is_disable"
+          />
+          <el-table-column prop="sort" :label="$t('排序')" min-width="80" sortable="custom" />
+          <el-table-column :label="$t('操作')" width="110">
+            <template #default="{ row }">
+              <ElLinkOperate v-if="hasPerm([permEdit])" :text="$t('修改')" @click="edit(row)" />
+              <ElLinkOperate v-else-if="hasPerm([permInfo])" :text="$t('信息')" @click="edit(row)" />
+              <ElLinkOperate v-if="hasPerm([permDele])" :text="$t('删除')" @click="dele(row)" />
+            </template>
+          </el-table-column>
+        </el-table>
+        <!-- 分页 -->
+        <el-row class="mt-5 ml-3">
+          <el-col :span="3">
+            <el-checkbox v-model="addEditDialog" class="pr-6" :title="$t('添加修改时是弹窗还是新标签页')">
+              <el-text size="default">{{ $t('弹窗') }}</el-text>
+            </el-checkbox>
+          </el-col>
+          <el-col :span="21">
+            <Pagination
+              v-model:total="count"
+              v-model:page="query.page"
+              v-model:limit="query.limit"
+              @pagination="list"
+            />
+          </el-col>
+        </el-row>
       </el-col>
     </el-row>
     <!-- 添加修改 -->
@@ -86,7 +145,7 @@
 import Search from './component/Search.vue'
 import Operate from './component/Operate.vue'
 import AddEdit from './component/AddEdit.vue'
-import { hasPerm, screenHeight, arrayColumn, getAddEditDialog } from '@/utils/index'
+import { hasPerm, screenHeight, arrayColumn, getAddEditDialog, getChildIds } from '@/utils/index'
 import { listApi, deleApi } from '@/api/system/user'
 
 export default {
@@ -122,6 +181,13 @@ export default {
         postProps: {
           value: 'post_id',
           label: 'post_name',
+          checkStrictly: true,
+          emitPath: false,
+          multiple: true
+        },
+        roleProps: {
+          value: 'role_id',
+          label: 'role_name',
           checkStrictly: true,
           emitPath: false,
           multiple: true
@@ -258,6 +324,24 @@ export default {
             .catch(() => {})
         })
         .catch(() => {})
+    },
+    deptSelect(node) {
+      this.query.dept_id = node ? node.dept_id : null
+      const dept_ids = node ? getChildIds(node, 'dept_id') : []
+      this.query.dept_ids = dept_ids
+      this.list()
+    },
+    postSelect(node) {
+      this.query.post_id = node ? node.post_id : null
+      const post_ids = node ? getChildIds(node, 'post_id') : []
+      this.query.post_ids = post_ids
+      this.list()
+    },
+    roleSelect(node) {
+      this.query.role_id = node ? node.role_id : null
+      const role_ids = node ? getChildIds(node, 'role_id') : []
+      this.query.role_ids = role_ids
+      this.list()
     }
   }
 }
