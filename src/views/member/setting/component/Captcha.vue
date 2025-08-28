@@ -23,6 +23,14 @@
               </el-select>
             </el-col>
           </el-form-item>
+          <el-form-item v-if="model.captcha_mode == 1" :label="$t('验证码透明')" prop="captcha_transparent">
+            <el-col :span="10">
+              <ElSwitchOnoff v-model="model.captcha_transparent" />
+            </el-col>
+            <el-col :span="14">
+              <el-text size="default">{{ $t('开启后，验证码图片是透明的') }}</el-text>
+            </el-col>
+          </el-form-item>
         </el-col>
       </el-row>
     </el-scrollbar>
@@ -45,7 +53,8 @@ export default {
       loading: false,
       model: {
         captcha_mode: 1,
-        captcha_type: 1
+        captcha_type: 1,
+        captcha_transparent: 1
       },
       rules: {},
       captcha_modes: [],
