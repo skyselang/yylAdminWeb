@@ -39,7 +39,7 @@
     "path-to-regexp": "^8.2.0",
     "pinia": "^3.0.3",
     "terser": "^5.43.1",
-    "vue": "^3.5.19",
+    "vue": "^3.5.20",
     "vue-i18n": "^11.1.11",
     "vue-router": "^4.5.1"
   },
@@ -54,7 +54,7 @@
     "fast-glob": "^3.3.3",
     "globals": "^16.3.0",
     "prettier": "^3.6.2",
-    "sass": "^1.90.0",
+    "sass": "^1.91.0",
     "unocss": "^66.4.2",
     "unplugin-auto-import": "^19.3.0",
     "unplugin-vue-components": "^28.8.0",
