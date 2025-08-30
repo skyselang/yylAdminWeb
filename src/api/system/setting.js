@@ -205,3 +205,15 @@ export function serverInfoApi(params) {
     params: params
   })
 }
+
+/**
+ * 开发工具
+ * @param {array} data 请求数据
+ */
+export function developApi(data) {
+  return request({
+    url: url + 'develop',
+    method: 'post',
+    data
+  })
+}

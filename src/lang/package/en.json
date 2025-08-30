@@ -949,5 +949,9 @@
   "验证码类型": "Verification Code Type",
   "验证码设置": "Captcha Settings",
   "默认": "Default",
-  "默认头像": "Default Avatar"
+  "默认头像": "Default Avatar",
+  "清除所有缓存": "Clear All Cache",
+  "删除runtime目录": "Delete Runtime Directory",
+  "验证码透明": "Captcha Transparency",
+  "开启后，验证码图片是透明的": "After enabling, the captcha image is transparent"
 }
