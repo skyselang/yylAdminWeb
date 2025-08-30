@@ -22,6 +22,11 @@ coverage
 .idea
 .cursor
 .trae
+/.cursor
+/.trae
+/.codebuddy
+/.qoder
+/.comate
 *.suo
 *.ntvs*
 *.njsproj
