@@ -7,18 +7,6 @@
     <meta name="description" content="yyladmin" />
     <link rel="icon" href="/favicon.ico" />
     <title>yylAdmin</title>
-  </head>
-
-  <body>
-    <div id="app" class="app">
-      <div class="loader"></div>
-    </div>
-
-    <script type="module" src="/src/main.js"></script>
-    <script>
-      global = globalThis
-    </script>
-
     <style>
       html,
       body,
@@ -30,7 +18,6 @@
         align-items: center;
         justify-content: center;
       }
-
       .loader {
         width: 50px;
         aspect-ratio: 1;
@@ -40,54 +27,52 @@
           l20-1 1s infinite linear alternate,
           l20-2 2s infinite linear;
       }
-
       @keyframes l20-1 {
         0% {
           clip-path: polygon(50% 50%, 0 0, 50% 0%, 50% 0%, 50% 0%, 50% 0%, 50% 0%);
         }
-
         12.5% {
           clip-path: polygon(50% 50%, 0 0, 50% 0%, 100% 0%, 100% 0%, 100% 0%, 100% 0%);
         }
-
         25% {
           clip-path: polygon(50% 50%, 0 0, 50% 0%, 100% 0%, 100% 100%, 100% 100%, 100% 100%);
         }
-
         50% {
           clip-path: polygon(50% 50%, 0 0, 50% 0%, 100% 0%, 100% 100%, 50% 100%, 0% 100%);
         }
-
         62.5% {
           clip-path: polygon(50% 50%, 100% 0, 100% 0%, 100% 0%, 100% 100%, 50% 100%, 0% 100%);
         }
-
         75% {
           clip-path: polygon(50% 50%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 50% 100%, 0% 100%);
         }
-
         100% {
           clip-path: polygon(50% 50%, 50% 100%, 50% 100%, 50% 100%, 50% 100%, 50% 100%, 0% 100%);
         }
       }
-
       @keyframes l20-2 {
         0% {
           transform: scaleY(1) rotate(0deg);
         }
-
         49.99% {
           transform: scaleY(1) rotate(135deg);
         }
-
         50% {
           transform: scaleY(-1) rotate(0deg);
         }
-
         100% {
           transform: scaleY(-1) rotate(-135deg);
         }
       }
     </style>
+  </head>
+  <body>
+    <div id="app" class="app">
+      <div class="loader" aria-label="页面加载中"></div>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+    <script>
+      global = globalThis
+    </script>
   </body>
 </html>
