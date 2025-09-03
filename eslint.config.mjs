@@ -17,19 +17,30 @@ const compat = new FlatCompat({
 
 export default defineConfig([
   globalIgnores([
+    '**/.buildpath',
+    '**/.codebuddy',
+    '**/.comate',
+    '**/.cursor',
+    '**/.eslintrc.cjs',
+    '**/.husky',
+    '**/.idea',
+    '**/.prettierrc.cjs',
+    '**/.project',
+    '**/.qoder',
+    '**/.settings',
+    '**/.stylelintrc.cjs',
+    '**/.trae',
+    '**/.vscode',
+    '**/.workflow',
     '**/admin',
     '**/dist',
+    '**/md',
     '**/node_modules',
+    '**/pnpm-lock.yaml',
     '**/public',
-    '**/.husky',
-    '**/.vscode',
-    '**/.idea',
-    '**/*.sh',
+    '**/src/assets',
     '**/*.md',
-    'src/assets',
-    '**/.eslintrc.cjs',
-    '**/.prettierrc.cjs',
-    '**/.stylelintrc.cjs'
+    '**/*.sh'
   ]),
   {
     extends: compat.extends('plugin:vue/vue3-recommended', 'prettier', 'plugin:prettier/recommended'),
