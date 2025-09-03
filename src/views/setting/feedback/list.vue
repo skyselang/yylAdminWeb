@@ -18,10 +18,9 @@
       <el-table-column :prop="idkey" label="ID" width="80" sortable="custom" />
       <el-table-column prop="unique" :label="$t('编号')" min-width="120" sortable="custom" />
       <el-table-column prop="type_name" :label="$t('类型')" min-width="80" sortable="custom" column-key="type" />
-      <el-table-column prop="member_username" :label="$t('会员')" min-width="80" />
+      <el-table-column prop="member_nickname" :label="$t('会员昵称')" min-width="90" />
+      <el-table-column prop="member_username" :label="$t('会员用户名')" min-width="100" />
       <el-table-column prop="title" :label="$t('标题')" min-width="200" />
-      <el-table-column prop="phone" :label="$t('手机')" min-width="120" />
-      <el-table-column prop="email" :label="$t('邮箱')" min-width="130" />
       <el-table-column prop="status_name" :label="$t('状态')" min-width="85" sortable="custom" column-key="status" />
       <el-table-column prop="remark" :label="$t('备注')" min-width="100" />
       <el-table-column

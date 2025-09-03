@@ -9,10 +9,11 @@
                 <el-input v-model="model.unique" clearable />
               </el-form-item>
               <el-form-item :label="$t('会员ID')" prop="member_id">
-                <el-input v-model="model.member_id" clearable />
-              </el-form-item>
-              <el-form-item v-if="id" :label="$t('会员用户名')" prop="member_username">
-                <el-input v-model="model.member_username" disabled />
+                <MemberSelector
+                  v-model:member-id="model.member_id"
+                  v-model:nickname="model.member_nickname"
+                  v-model:username="model.member_username"
+                />
               </el-form-item>
               <el-form-item :label="$t('类型')" prop="type">
                 <el-select v-model="model.type">
@@ -88,9 +89,10 @@
 <script>
 import { screenHeight, addEditSuccessAlert, hasPerm } from '@/utils/index'
 import { infoApi, addApi, editApi } from '@/api/setting/feedback'
+import MemberSelector from '@/views/member/member/component/Selector.vue'
 
 export default {
-  components: {},
+  components: { MemberSelector },
   props: {
     id: {
       type: [String, Number],
@@ -117,6 +119,7 @@ export default {
         feedback_id: '',
         unique: '',
         member_id: 0,
+        member_nickname: '',
         member_username: '',
         type: 0,
         title: '',
