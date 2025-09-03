@@ -59,7 +59,7 @@
         </el-col>
       </el-form-item>
       <el-form-item prop="rememberMe">
-        <el-checkbox v-model="rememberMe" :label="$t('记住我')" @change="rememberMeChange" />
+        <el-checkbox v-model="rememberMe" :label="$t('记住我')" name="rememberMe" @change="rememberMeChange" />
       </el-form-item>
       <aj-captcha
         v-if="captcha_switch && captcha_mode === 2"
