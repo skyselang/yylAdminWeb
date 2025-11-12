@@ -13,12 +13,12 @@
         <el-row v-for="item in data" :key="item[idkey]" class="cursor-pointer" @click="info(item)">
           <el-col :span="17">
             <el-text size="default" truncated>
-              <el-link :underline="false" :type="item.is_read ? 'info' : 'default'">{{ item.message_title }}</el-link>
+              <el-link underline="never" :type="item.is_read ? 'info' : 'default'">{{ item.message_title }}</el-link>
             </el-text>
           </el-col>
           <el-col :span="6" :offset="1">
             <el-text size="default" truncated>
-              <el-link :underline="false" :type="item.is_read ? 'info' : 'default'">{{ item.create_time }}</el-link>
+              <el-link underline="never" :type="item.is_read ? 'info' : 'default'">{{ item.create_time }}</el-link>
             </el-text>
           </el-col>
         </el-row>
