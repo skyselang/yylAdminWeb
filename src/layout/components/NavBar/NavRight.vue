@@ -4,6 +4,10 @@
     <div :title="user.username" class="setting-item">
       <span class="font-size-3.5">{{ user.nickname }}</span>
     </div>
+    <!-- 公告 -->
+    <div :title="$t('公告')" class="setting-item">
+      <Notices />
+    </div>
     <!-- 我的消息 -->
     <div v-if="hasPerm(['admin/system.UserCenter/messageList'])" :title="$t('消息')" class="setting-item">
       <Messages />
@@ -71,6 +75,7 @@ import { useTagsViewStore } from '@/store/modules/tagsView'
 import { cacheClearApi } from '@/api/system/setting'
 import LangSelect from '@/components/LangSelect/index.vue'
 import ThemeSelect from '@/components/ThemeSelect/index.vue'
+import Notices from '@/components/Notices/index.vue'
 import Messages from '@/components/Messages/index.vue'
 
 const route = useRoute()

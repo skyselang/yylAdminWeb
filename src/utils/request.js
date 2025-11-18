@@ -126,9 +126,9 @@ function responseHandle(res) {
     ElMessage({
       message: res.msg || 'Server error',
       type: 'error',
-      center: true,
       showClose: true,
-      duration: 5000
+      duration: 5000,
+      grouping: true
     })
   }
 }

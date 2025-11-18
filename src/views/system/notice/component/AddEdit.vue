@@ -28,9 +28,6 @@
               <el-form-item :label="$t('结束时间')" prop="end_time">
                 <ElDatePickerDatetime v-model="model.end_time" />
               </el-form-item>
-              <el-form-item :label="$t('描述')" prop="desc">
-                <el-input v-model="model.desc" type="textarea" />
-              </el-form-item>
               <el-form-item :label="$t('备注')" prop="remark">
                 <el-input v-model="model.remark" clearable />
               </el-form-item>
@@ -48,6 +45,17 @@
               </el-form-item>
               <el-form-item v-if="model.delete_time" :label="$t('删除时间')" prop="delete_time">
                 <el-input v-model="model.delete_time" disabled />
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-scrollbar>
+      </el-tab-pane>
+      <el-tab-pane :label="$t('描述信息')" lazy>
+        <el-scrollbar :height="height">
+          <el-row>
+            <el-col :md="rowcol.md" :lg="rowcol.lg" :xl="rowcol.xl">
+              <el-form-item :label="$t('描述')" prop="desc">
+                <AiEditor v-model="model.desc" :height="height - 30" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -87,9 +95,10 @@
 import { screenHeight, addEditSuccessAlert, datetime, dateBeforeAfter, hasPerm } from '@/utils/index'
 import { infoApi, addApi, editApi } from '@/api/system/notice'
 import RichEditor from '@/components/RichEditor/index.vue'
+import AiEditor from '@/components/AiEditor/index.vue'
 
 export default {
-  components: { RichEditor },
+  components: { RichEditor, AiEditor },
   props: {
     id: {
       type: [String, Number],

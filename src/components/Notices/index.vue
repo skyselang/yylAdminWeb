@@ -1,4 +1,7 @@
 <template>
+  <el-badge :value="count" :hidden="count == 0" type="warning">
+    <div @click="list(1)"><Icons icon="ChatLineRound" :size="20" /></div>
+  </el-badge>
   <!-- 公告列表 -->
   <el-dialog
     v-model="dialog"
@@ -9,9 +12,10 @@
     draggable
     center
     align-center
+    append-to-body
   >
     <el-table ref="table" v-loading="loading" :data="data" :height="height - 100" :show-header="false">
-      <el-table-column prop="image_id" min-width="80">
+      <el-table-column prop="image_id" min-width="70">
         <template #default="{ row }">
           <FileImage :file-url="row.image_url" lazy />
         </template>
@@ -50,6 +54,7 @@
     draggable
     center
     align-center
+    append-to-body
   >
     <template #header>
       <el-text size="default" :style="{ color: oneModel.title_color }">{{ oneModel.title }}</el-text>
@@ -64,9 +69,7 @@
         </el-form-item>
         <el-form-item prop="desc">
           <el-col class="text-center">
-            <el-card shadow="never">
-              {{ oneModel.desc }}
-            </el-card>
+            <div v-html="oneModel.desc"></div>
           </el-col>
         </el-form-item>
       </el-form>
@@ -85,6 +88,7 @@
     draggable
     center
     align-center
+    append-to-body
   >
     <template #header>
       <el-text size="default" :style="{ color: infoModel.title_color }">{{ infoModel.title }}</el-text>
@@ -93,16 +97,6 @@
       <el-form ref="ref" :model="infoModel" label-width="0" class="text-center">
         <el-form-item prop="start_time">
           <el-col class="text-center">{{ infoModel.start_time }}</el-col>
-        </el-form-item>
-        <el-form-item v-if="infoModel.image_url" prop="image_url">
-          <FileImage :file-url="infoModel.image_url" :height="150" />
-        </el-form-item>
-        <el-form-item prop="desc">
-          <el-col class="text-center">
-            <el-card shadow="never">
-              {{ infoModel.desc }}
-            </el-card>
-          </el-col>
         </el-form-item>
         <el-form-item prop="content">
           <el-col class="text-center"><div v-html="infoModel.content"></div></el-col>
@@ -142,27 +136,36 @@ export default {
     this.list()
   },
   methods: {
-    list() {
-      if (!getNotice()) {
-        this.loading = true
-        noticeApi(this.query)
-          .then((res) => {
-            this.data = res.data.list
-            this.count = res.data.count
-            this.loading = false
-            if (this.count > 0) {
-              if (this.count === 1) {
+    list(hand = 0) {
+      this.loading = true
+      noticeApi(this.query)
+        .then((res) => {
+          this.data = res.data.list
+          this.count = res.data.count
+          this.loading = false
+          if (this.count > 0) {
+            if (getNotice() == 0 || hand == 1) {
+              if (this.count == 1) {
                 const row = this.data[0]
                 this.oneInfo(row)
               } else {
                 this.dialog = true
               }
             }
-          })
-          .catch(() => {
-            this.loading = false
-          })
-      }
+          } else {
+            if (hand == 1) {
+              ElMessage({
+                message: this.$t('暂无公告'),
+                type: 'warning',
+                showClose: true,
+                grouping: true
+              })
+            }
+          }
+        })
+        .catch(() => {
+          this.loading = false
+        })
     },
     info(row) {
       this.infoDialog = true

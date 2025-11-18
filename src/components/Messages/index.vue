@@ -1,7 +1,7 @@
 <template>
   <el-dropdown ref="dropdown" trigger="click" @visible-change="change">
     <div>
-      <el-badge :value="badge" :max="99" :hidden="count === 0">
+      <el-badge :value="badge" :hidden="count === 0" type="danger">
         <Icons icon="Bell" :size="20" />
       </el-badge>
     </div>

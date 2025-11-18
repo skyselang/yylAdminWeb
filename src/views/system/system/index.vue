@@ -16,7 +16,6 @@
         </el-col>
       </el-row>
     </div>
-    <notice />
   </el-scrollbar>
 </template>
 
@@ -26,11 +25,10 @@ import Content from './component/Content.vue'
 import Count from './component/Count.vue'
 import File from './component/File.vue'
 import Member from './component/Member.vue'
-import Notice from './component/Notice.vue'
 
 export default {
   name: 'Dashboard',
-  components: { Content, Count, File, Member, Notice },
+  components: { Content, Count, File, Member },
   data() {
     return {
       name: '首页',
