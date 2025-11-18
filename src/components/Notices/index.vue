@@ -151,7 +151,7 @@ export default {
   },
   created() {
     this.name = this.$t('公告')
-    this.height = screenHeight()
+    this.height = screenHeight(280)
     this.title = this.$t('公告')
     this.list()
   },
