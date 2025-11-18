@@ -57,15 +57,19 @@
     append-to-body
   >
     <template #header>
-      <el-text size="default" :style="{ color: oneModel.title_color }">{{ oneModel.title }}</el-text>
+      <el-row>
+        <el-col :span="3">
+          <FileImage v-if="oneModel.image_url" :file-url="oneModel.image_url" :height="25" />
+        </el-col>
+        <el-col :span="21" style="margin-left: -6.25%">
+          <el-text size="large" :style="{ color: oneModel.title_color }">{{ oneModel.title }}</el-text>
+        </el-col>
+      </el-row>
     </template>
     <el-scrollbar :height="height - 200">
       <el-form ref="ref" :model="oneModel" label-width="0" class="text-center">
         <el-form-item prop="start_time">
           <el-col class="text-center">{{ oneModel.start_time }}</el-col>
-        </el-form-item>
-        <el-form-item v-if="oneModel.image_url" prop="image_url">
-          <FileImage :file-url="oneModel.image_url" :height="150" />
         </el-form-item>
         <el-form-item prop="desc">
           <el-col class="text-center">
@@ -91,12 +95,28 @@
     append-to-body
   >
     <template #header>
-      <el-text size="default" :style="{ color: infoModel.title_color }">{{ infoModel.title }}</el-text>
+      <el-row>
+        <el-col :span="3">
+          <FileImage v-if="infoModel.image_url" :file-url="infoModel.image_url" :height="25" />
+        </el-col>
+        <el-col :span="21" style="margin-left: -6.25%">
+          <el-text size="large" :style="{ color: infoModel.title_color }">{{ infoModel.title }}</el-text>
+        </el-col>
+      </el-row>
     </template>
     <el-scrollbar :height="height">
       <el-form ref="ref" :model="infoModel" label-width="0" class="text-center">
         <el-form-item prop="start_time">
           <el-col class="text-center">{{ infoModel.start_time }}</el-col>
+        </el-form-item>
+        <el-form-item v-if="infoModel.desc" prop="desc">
+          <el-col class="text-center">
+            <el-collapse>
+              <el-collapse-item>
+                <div v-html="infoModel.desc"></div>
+              </el-collapse-item>
+            </el-collapse>
+          </el-col>
         </el-form-item>
         <el-form-item prop="content">
           <el-col class="text-center"><div v-html="infoModel.content"></div></el-col>
