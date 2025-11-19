@@ -56,7 +56,7 @@
     <el-scrollbar :height="height">
       <el-row v-for="(item, index) in query.search" :key="index" class="mb-2">
         <el-col :span="2">
-          <el-button text>{{ index + 1 }}：</el-button>
+          <el-button text>#{{ index + 1 }}</el-button>
         </el-col>
         <el-col :span="5">
           <el-select v-model="item.field" :placeholder="$t('查询字段')">
