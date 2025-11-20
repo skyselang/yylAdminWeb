@@ -1,5 +1,13 @@
 # yylAdmin
 
+## 🎉 正在参加 Gitee 2025 年度开源项目评选
+
+[![🗳️ 立即投票 - 支持本项目](https://img.shields.io/badge/%F0%9F%97%B3%EF%B8%8F_%E7%AB%8B%E5%8D%B3%E6%8A%95%E7%A5%A8-%E6%94%AF%E6%8C%81%E6%9C%AC%E9%A1%B9%E7%9B%AE-ff6b35?style=for-the-badge&logo=gitee)](https://gitee.com/activity/2025opensource?ident=IZQ0KG)
+
+**一票就够，不用每天投 🙏 您的支持是我们持续更新的最大动力！**
+
+**👉 [点击徽章或这里投票](https://gitee.com/activity/2025opensource?ident=IZQ0KG)**
+
 - [码云](https://gitee.com/skyselang/yylAdmin) | [Github](https://github.com/skyselang/yylAdmin)
 
 ## 文档
@@ -58,19 +66,19 @@ yylAdmin 是一个基于 ThinkPHP 和 Vue 极简后台管理系统，只有登�
 
 ### 安装后端
 
-##### 克隆项目
+#### 克隆后端项目
 
 ```bash
 git clone https://gitee.com/skyselang/yylAdmin.git
 ```
 
-##### 进入项目目录
+##### 进入后端目录
 
 ```bash
 cd yylAdmin
 ```
 
-##### 安装依赖
+##### 安装后端依赖
 
 ```bash
 composer install
@@ -84,13 +92,13 @@ composer install
 数据库排序规则：utf8mb4_general_ci
 ```
 
-##### 修改配置
+##### 修改后端配置
 
 ```bash
 复制.env.example后重命名成.env环境变量文件修改里面配置
 ```
 
-##### 环境配置（phpStudy）
+##### 后端环境配置（phpStudy）
 
 ```bash
 根据你的实际环境软件配置
@@ -132,19 +140,19 @@ location / {
 
 ### 安装前端
 
-#### 克隆项目
+#### 克隆前端项目
 
 ```bash
 git clone https://gitee.com/skyselang/yylAdminWeb.git
 ```
 
-#### 进入项目目录
+#### 进入前端目录
 
 ```bash
 cd yylAdminWeb
 ```
 
-#### 安装依赖
+#### 安装前端依赖
 
 ```bash
 pnpm install
@@ -152,7 +160,7 @@ pnpm install
 
 > 也可以使用 npm、cnpm、yarn
 
-#### 修改配置
+#### 修改前端配置
 
 ```bash
 复制.env.xxx后重命名成.env.xxx.local环境变量文件修改里面配置
@@ -198,7 +206,7 @@ pnpm run build:stage
 ## 协议
 
 - Apache-2.0 许可协议，免费开源
-- Copyright skyselang https://gitee.com/skyselang
+- Copyright skyselang <https://gitee.com/skyselang>
 
 ## 提示
 
