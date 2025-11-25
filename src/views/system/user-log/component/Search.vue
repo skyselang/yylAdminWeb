@@ -153,6 +153,7 @@ export default {
         { field: 'request_ip', name: this.$t('请求IP'), exp: 'like' },
         { field: 'request_region', name: this.$t('请求地区'), exp: 'like' },
         { field: 'request_isp', name: this.$t('请求ISP'), exp: 'like' },
+        { field: 'user_agent', name: this.$t('用户代理'), exp: 'like' },
         { field: 'response_code', name: this.$t('返回码'), exp: 'like' },
         { field: 'response_msg', name: this.$t('返回描述'), exp: 'like' },
         { field: 'is_disable', name: this.$t('禁用'), exp: '=' },
