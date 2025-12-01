@@ -21,13 +21,19 @@
       <el-table-column prop="category_name" :label="$t('名称')" min-width="250" />
       <el-table-column :prop="idkey" label="ID" min-width="80" />
       <el-table-column prop="category_unique" :label="$t('编号')" min-width="100" />
-      <el-table-column prop="image_url" :label="$t('图片')" min-width="62">
+      <el-table-column prop="image_url" :label="$t('图片')" min-width="66">
         <template #default="{ row }">
           <FileImage :file-url="row.image_url" lazy />
         </template>
       </el-table-column>
       <el-table-column prop="remark" :label="$t('备注')" min-width="100" />
-      <el-table-column prop="is_disable_name" :label="$t('禁用')" min-width="80" column-key="is_disable" />
+      <el-table-column
+        prop="is_disable_name"
+        :label="$t('禁用')"
+        min-width="98"
+        sortable="custom"
+        column-key="is_disable"
+      />
       <el-table-column prop="sort" :label="$t('排序')" min-width="80" />
       <el-table-column prop="create_time" :label="$t('添加时间')" width="165" />
       <el-table-column prop="update_time" :label="$t('修改时间')" width="165" />

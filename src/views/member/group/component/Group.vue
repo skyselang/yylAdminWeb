@@ -123,7 +123,7 @@ export default {
   data() {
     return {
       name: '',
-      idkey: 'member_id',
+      idkey: 'group_id',
       height: 680,
       loading: false,
       dialog: false,

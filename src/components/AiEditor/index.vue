@@ -43,7 +43,7 @@ const settingsStore = useSettingsStore()
 const appStore = useAppStore()
 const placeholder = t('请输入内容')
 const theme = settingsStore.theme == 'dark' ? 'dark' : 'light'
-const lang = appStore.language == 'zh-cn' ? 'zh' : 'en'
+const lang = appStore.getLang('aieditor')
 
 const divRef = ref()
 let aiEditor = null

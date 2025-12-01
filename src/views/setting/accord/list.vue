@@ -23,7 +23,7 @@
       <el-table-column
         prop="is_disable_name"
         :label="$t('禁用')"
-        min-width="90"
+        min-width="98"
         sortable="custom"
         column-key="is_disable"
       />

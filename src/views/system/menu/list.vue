@@ -19,7 +19,7 @@
     >
       <el-table-column type="selection" width="42" :title="$t('全选/反选')" />
       <el-table-column prop="menu_name" :label="$t('菜单名称')" min-width="210" sortable="custom" />
-      <el-table-column :prop="idkey" label="ID" min-width="60" sortable="custom" />
+      <el-table-column :prop="idkey" label="ID" min-width="70" sortable="custom" />
       <el-table-column prop="meta_icon" :label="$t('图标')" min-width="60">
         <template #default="{ row }">
           <Icons v-if="row.meta_icon" :icon="row.meta_icon" />
@@ -30,10 +30,10 @@
       <el-table-column prop="name" :label="$t('路由名称')" min-width="150" sortable="custom" />
       <el-table-column prop="component" :label="$t('组件路径')" min-width="150" sortable="custom" />
       <el-table-column prop="menu_type_name" :label="$t('类型')" min-width="55" />
-      <el-table-column prop="is_unlogin_name" :label="$t('免登')" min-width="55" />
-      <el-table-column prop="is_unauth_name" :label="$t('免权')" min-width="55" />
-      <el-table-column prop="is_unrate_name" :label="$t('免限')" min-width="55" />
-      <el-table-column prop="hidden_name" :label="$t('隐藏')" min-width="55" />
+      <el-table-column prop="is_unlogin_name" :label="$t('免登')" min-width="64" />
+      <el-table-column prop="is_unauth_name" :label="$t('免权')" min-width="64" />
+      <el-table-column prop="is_unrate_name" :label="$t('免限')" min-width="64" />
+      <el-table-column prop="hidden_name" :label="$t('隐藏')" min-width="64" />
       <el-table-column prop="is_disable_name" :label="$t('禁用')" min-width="55" />
       <el-table-column prop="sort" :label="$t('排序')" min-width="55" />
       <el-table-column :label="$t('操作')" width="180">

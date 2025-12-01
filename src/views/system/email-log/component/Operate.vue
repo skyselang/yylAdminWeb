@@ -1,34 +1,40 @@
 <template>
   <el-row>
     <el-col :span="6">
-      <el-button v-if="hasPerm(['admin/system.EmailLog/add'])" type="primary" @click="add()">
-        {{ $t('添加') }}
-      </el-button>
-      <el-button v-if="hasPerm(['admin/system.EmailLog/edit'])" @click="edit()">{{ $t('修改') }}</el-button>
-      <el-button v-else-if="hasPerm(['admin/system.EmailLog/info'])" @click="edit()">{{ $t('信息') }}</el-button>
-      <el-button v-if="hasPerm(['admin/system.EmailLog/dele'])" @click="update('is_delete')">
-        {{ $t('删除') }}
-      </el-button>
-      <el-button v-if="hasPerm(['admin/system.EmailLog/clear'])" @click="clear()">{{ $t('清空') }}</el-button>
+      <el-scrollbar-height>
+        <el-button v-if="hasPerm(['admin/system.EmailLog/add'])" type="primary" @click="add()">
+          {{ $t('添加') }}
+        </el-button>
+        <el-button v-if="hasPerm(['admin/system.EmailLog/edit'])" @click="edit()">{{ $t('修改') }}</el-button>
+        <el-button v-else-if="hasPerm(['admin/system.EmailLog/info'])" @click="edit()">{{ $t('信息') }}</el-button>
+        <el-button v-if="hasPerm(['admin/system.EmailLog/dele'])" @click="update('is_delete')">
+          {{ $t('删除') }}
+        </el-button>
+        <el-button v-if="hasPerm(['admin/system.EmailLog/clear'])" @click="clear()">{{ $t('清空') }}</el-button>
+      </el-scrollbar-height>
     </el-col>
     <el-col :span="14">
-      <template v-if="hasPerm(['admin/system.EmailLog/update'])">
-        <el-button :title="$t('修改发件人')" @click="update('sender')">{{ $t('发件人') }}</el-button>
-        <el-button :title="$t('修改收件人')" @click="update('recipient')">{{ $t('收件人') }}</el-button>
-        <el-button :title="$t('修改主题')" @click="update('theme')">{{ $t('主题') }}</el-button>
-        <el-button :title="$t('修改内容')" @click="update('content')">{{ $t('内容') }}</el-button>
-        <el-button :title="$t('修改错误')" @click="update('error')">{{ $t('错误') }}</el-button>
-      </template>
+      <el-scrollbar-height>
+        <template v-if="hasPerm(['admin/system.EmailLog/update'])">
+          <el-button :title="$t('修改发件人')" @click="update('sender')">{{ $t('发件人') }}</el-button>
+          <el-button :title="$t('修改收件人')" @click="update('recipient')">{{ $t('收件人') }}</el-button>
+          <el-button :title="$t('修改主题')" @click="update('theme')">{{ $t('主题') }}</el-button>
+          <el-button :title="$t('修改内容')" @click="update('content')">{{ $t('内容') }}</el-button>
+          <el-button :title="$t('修改错误')" @click="update('error')">{{ $t('错误') }}</el-button>
+        </template>
+      </el-scrollbar-height>
     </el-col>
     <el-col :span="4">
-      <Exports
-        v-if="hasPerm(['admin/system.EmailLog/export'])"
-        :name="name"
-        :api="exportApi"
-        :query="query"
-        :ids="ids"
-      />
-      <Imports v-if="hasPerm(['admin/system.EmailLog/import'])" :name="name" :api="importApi" />
+      <el-scrollbar-height>
+        <Exports
+          v-if="hasPerm(['admin/system.EmailLog/export'])"
+          :name="name"
+          :api="exportApi"
+          :query="query"
+          :ids="ids"
+        />
+        <Imports v-if="hasPerm(['admin/system.EmailLog/import'])" :name="name" :api="importApi" />
+      </el-scrollbar-height>
     </el-col>
   </el-row>
   <el-dialog

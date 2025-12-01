@@ -3,6 +3,7 @@ import { useAppStoreHook } from '@/store/modules/app'
 import { useLangStoreHook } from '@/store/modules/lang'
 import zhCnLocale from './package/zh-cn.json'
 import enLocale from './package/en.json'
+import esLocale from './package/es.json'
 
 const appStore = useAppStoreHook()
 
@@ -12,6 +13,9 @@ const messages = {
   },
   en: {
     ...enLocale
+  },
+  es: {
+    ...esLocale
   }
 }
 

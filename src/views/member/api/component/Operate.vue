@@ -1,36 +1,48 @@
 <template>
   <el-row>
     <el-col :span="6">
-      <el-button v-if="hasPerm(['admin/member.Api/add'])" type="primary" @click="add()">{{ $t('添加') }}</el-button>
-      <el-button v-if="hasPerm(['admin/member.Api/edit'])" @click="edit()">{{ $t('修改') }}</el-button>
-      <el-button v-else-if="hasPerm(['admin/member.Api/info'])" @click="edit()">{{ $t('信息') }}</el-button>
-      <el-button v-if="hasPerm(['admin/member.Api/dele'])" @click="update('is_delete')">{{ $t('删除') }}</el-button>
-      <el-button v-if="hasPerm(['admin/member.Api/disable'])" @click="update('is_disable')">{{ $t('禁用') }}</el-button>
+      <el-scrollbar-height>
+        <el-button v-if="hasPerm(['admin/member.Api/add'])" type="primary" @click="add()">{{ $t('添加') }}</el-button>
+        <el-button v-if="hasPerm(['admin/member.Api/edit'])" @click="edit()">{{ $t('修改') }}</el-button>
+        <el-button v-else-if="hasPerm(['admin/member.Api/info'])" @click="edit()">{{ $t('信息') }}</el-button>
+        <el-button v-if="hasPerm(['admin/member.Api/dele'])" @click="update('is_delete')">{{ $t('删除') }}</el-button>
+        <el-button v-if="hasPerm(['admin/member.Api/disable'])" @click="update('is_disable')">
+          {{ $t('禁用') }}
+        </el-button>
+      </el-scrollbar-height>
     </el-col>
     <el-col :span="14">
-      <template v-if="hasPerm(['admin/member.Api/update'])">
-        <el-button :title="$t('修改备注')" @click="update('remark')">{{ $t('备注') }}</el-button>
-        <el-button :title="$t('修改排序')" @click="update('sort')">{{ $t('排序') }}</el-button>
-      </template>
-      <el-button v-if="hasPerm(['admin/member.Api/editPid'])" :title="$t('修改上级')" @click="update('api_pid')">
-        {{ $t('上级') }}
-      </el-button>
-      <el-button v-if="hasPerm(['admin/member.Api/editUnlogin'])" :title="$t('修改免登')" @click="update('is_unlogin')">
-        {{ $t('免登') }}
-      </el-button>
-      <el-button v-if="hasPerm(['admin/member.Api/editUnauth'])" :title="$t('修改免权')" @click="update('is_unauth')">
-        {{ $t('免权') }}
-      </el-button>
-      <el-button v-if="hasPerm(['admin/member.Api/editUnrate'])" :title="$t('修改免限')" @click="update('is_unrate')">
-        {{ $t('免限') }}
-      </el-button>
-      <el-button v-if="hasPerm(['admin/member.Api/groupLift'])" :title="$t('解除分组')" @click="update('lift_group')">
-        {{ $t('解除分组') }}
-      </el-button>
+      <el-scrollbar-height>
+        <template v-if="hasPerm(['admin/member.Api/update'])">
+          <el-button :title="$t('修改备注')" @click="update('remark')">{{ $t('备注') }}</el-button>
+          <el-button :title="$t('修改排序')" @click="update('sort')">{{ $t('排序') }}</el-button>
+        </template>
+        <el-button v-if="hasPerm(['admin/member.Api/editPid'])" :title="$t('修改上级')" @click="update('api_pid')">
+          {{ $t('上级') }}
+        </el-button>
+        <el-button
+          v-if="hasPerm(['admin/member.Api/editUnlogin'])"
+          :title="$t('修改免登')"
+          @click="update('is_unlogin')"
+        >
+          {{ $t('免登') }}
+        </el-button>
+        <el-button v-if="hasPerm(['admin/member.Api/editUnauth'])" :title="$t('修改免权')" @click="update('is_unauth')">
+          {{ $t('免权') }}
+        </el-button>
+        <el-button v-if="hasPerm(['admin/member.Api/editUnrate'])" :title="$t('修改免限')" @click="update('is_unrate')">
+          {{ $t('免限') }}
+        </el-button>
+        <el-button v-if="hasPerm(['admin/member.Api/groupLift'])" :title="$t('解除分组')" @click="update('lift_group')">
+          {{ $t('解除分组') }}
+        </el-button>
+      </el-scrollbar-height>
     </el-col>
     <el-col :span="4">
-      <Exports v-if="hasPerm(['admin/member.Api/export'])" :name="name" :api="exportApi" :query="query" :ids="ids" />
-      <Imports v-if="hasPerm(['admin/member.Api/import'])" :name="name" :api="importApi" />
+      <el-scrollbar-height>
+        <Exports v-if="hasPerm(['admin/member.Api/export'])" :name="name" :api="exportApi" :query="query" :ids="ids" />
+        <Imports v-if="hasPerm(['admin/member.Api/import'])" :name="name" :api="importApi" />
+      </el-scrollbar-height>
     </el-col>
   </el-row>
   <el-dialog

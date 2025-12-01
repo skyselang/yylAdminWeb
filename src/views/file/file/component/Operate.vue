@@ -1,54 +1,62 @@
 <template>
   <el-row>
-    <el-col :span="9">
-      <el-upload
-        v-if="hasPerm(['admin/file.File/add'])"
-        v-model:file-list="uploadFilelist"
-        :multiple="true"
-        :auto-upload="true"
-        :show-file-list="false"
-        :action="uploadAction"
-        :headers="uploadHeaders"
-        :data="uploadData"
-        :accept="uploadAccept"
-        :limit="uploadLimit"
-        :before-upload="uploadBefore"
-        :on-success="uploadSuccess"
-        :on-error="uploadError"
-        :on-change="uploadChange"
-        :on-exceed="uploadExceed"
-        class="inline-block mr-3"
-      >
-        <el-button type="primary" :title="$t('上传文件')" @click="uploadClear">{{ $t('上传') }}</el-button>
-      </el-upload>
-      <el-button v-if="hasPerm(['admin/file.File/add'])" @click="add()">{{ $t('添加') }}</el-button>
-      <el-button v-if="hasPerm(['admin/file.File/edit'])" @click="edit()">{{ $t('修改') }}</el-button>
-      <el-button v-else-if="hasPerm(['admin/file.File/info'])" @click="edit()">{{ $t('信息') }}</el-button>
-      <el-button v-if="hasPerm(['admin/file.File/dele']) && !query.recycle" @click="update('is_delete')">
-        {{ $t('删除') }}
-      </el-button>
-      <el-button v-if="hasPerm(['admin/file.File/dele']) && query.recycle" @click="update('is_delete')">
-        {{ $t('删除') }}
-      </el-button>
-      <el-button v-if="hasPerm(['admin/file.File/disable'])" @click="update('is_disable')">{{ $t('禁用') }}</el-button>
+    <el-col :span="6">
+      <el-scrollbar-height>
+        <el-upload
+          v-if="hasPerm(['admin/file.File/add'])"
+          v-model:file-list="uploadFilelist"
+          :multiple="true"
+          :auto-upload="true"
+          :show-file-list="false"
+          :action="uploadAction"
+          :headers="uploadHeaders"
+          :data="uploadData"
+          :accept="uploadAccept"
+          :limit="uploadLimit"
+          :before-upload="uploadBefore"
+          :on-success="uploadSuccess"
+          :on-error="uploadError"
+          :on-change="uploadChange"
+          :on-exceed="uploadExceed"
+          class="inline-block mr-3"
+        >
+          <el-button type="primary" :title="$t('上传文件')" @click="uploadClear">{{ $t('上传') }}</el-button>
+        </el-upload>
+        <el-button v-if="hasPerm(['admin/file.File/add'])" @click="add()">{{ $t('添加') }}</el-button>
+        <el-button v-if="hasPerm(['admin/file.File/edit'])" @click="edit()">{{ $t('修改') }}</el-button>
+        <el-button v-else-if="hasPerm(['admin/file.File/info'])" @click="edit()">{{ $t('信息') }}</el-button>
+        <el-button v-if="hasPerm(['admin/file.File/dele']) && !query.recycle" @click="update('is_delete')">
+          {{ $t('删除') }}
+        </el-button>
+        <el-button v-if="hasPerm(['admin/file.File/recycleDele']) && query.recycle" @click="update('is_delete')">
+          {{ $t('删除') }}
+        </el-button>
+        <el-button v-if="hasPerm(['admin/file.File/disable'])" @click="update('is_disable')">
+          {{ $t('禁用') }}
+        </el-button>
+      </el-scrollbar-height>
     </el-col>
-    <el-col :span="12">
-      <template v-if="hasPerm(['admin/file.File/update'])">
-        <el-button :title="$t('修改编号')" @click="update('unique')">{{ $t('编号') }}</el-button>
-        <el-button :title="$t('修改备注')" @click="update('remark')">{{ $t('备注') }}</el-button>
-        <el-button :title="$t('修改排序')" @click="update('sort')">{{ $t('排序') }}</el-button>
-        <el-button :title="$t('修改分组')" @click="update('group_id')">{{ $t('分组') }}</el-button>
-        <el-button :title="$t('修改标签')" @click="update('tag_ids')">{{ $t('标签') }}</el-button>
-        <el-button :title="$t('修改域名')" @click="update('domain')">{{ $t('域名') }}</el-button>
-        <el-button :title="$t('下载文件')" @click="download">{{ $t('下载') }}</el-button>
-      </template>
-      <template v-if="hasPerm(['admin/file.File/recycleReco'])">
-        <el-button v-if="query.recycle" @click="update('restore')">{{ $t('恢复') }}</el-button>
-      </template>
+    <el-col :span="14">
+      <el-scrollbar-height>
+        <template v-if="hasPerm(['admin/file.File/update'])">
+          <el-button :title="$t('修改编号')" @click="update('unique')">{{ $t('编号') }}</el-button>
+          <el-button :title="$t('修改备注')" @click="update('remark')">{{ $t('备注') }}</el-button>
+          <el-button :title="$t('修改排序')" @click="update('sort')">{{ $t('排序') }}</el-button>
+          <el-button :title="$t('修改分组')" @click="update('group_id')">{{ $t('分组') }}</el-button>
+          <el-button :title="$t('修改标签')" @click="update('tag_ids')">{{ $t('标签') }}</el-button>
+          <el-button :title="$t('修改域名')" @click="update('domain')">{{ $t('域名') }}</el-button>
+          <el-button :title="$t('下载文件')" @click="download">{{ $t('下载') }}</el-button>
+        </template>
+        <template v-if="hasPerm(['admin/file.File/recycleReco'])">
+          <el-button v-if="query.recycle" @click="update('restore')">{{ $t('恢复') }}</el-button>
+        </template>
+      </el-scrollbar-height>
     </el-col>
-    <el-col :span="3">
-      <Exports v-if="hasPerm(['admin/file.File/export'])" :name="name" :api="exportApi" :query="query" :ids="ids" />
-      <Imports v-if="hasPerm(['admin/file.File/import'])" :name="name" :api="importApi" />
+    <el-col :span="4">
+      <el-scrollbar-height>
+        <Exports v-if="hasPerm(['admin/file.File/export'])" :name="name" :api="exportApi" :query="query" :ids="ids" />
+        <Imports v-if="hasPerm(['admin/file.File/import'])" :name="name" :api="importApi" />
+      </el-scrollbar-height>
     </el-col>
   </el-row>
   <el-dialog

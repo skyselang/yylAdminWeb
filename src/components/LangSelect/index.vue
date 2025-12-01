@@ -5,6 +5,7 @@
       <el-dropdown-menu>
         <el-dropdown-item :disabled="appStore.language === 'zh-cn'" command="zh-cn">简体中文</el-dropdown-item>
         <el-dropdown-item :disabled="appStore.language === 'en'" command="en">English</el-dropdown-item>
+        <el-dropdown-item :disabled="appStore.language === 'es'" command="es">Español</el-dropdown-item>
       </el-dropdown-menu>
     </template>
   </el-dropdown>
@@ -21,8 +22,12 @@ const appStore = useAppStore()
 function languageChange(lang) {
   locale.value = lang
   appStore.changeLanguage(lang)
-  if (lang == 'en') {
+  if (lang == 'zh-cn') {
+    ElMessage.success('语言切换成功！')
+  } else if (lang == 'en') {
     ElMessage.success('Language Switch Successful!')
+  } else if (lang == 'es') {
+    ElMessage.success('¡Cambio de idioma exitoso!')
   } else {
     ElMessage.success('语言切换成功！')
   }

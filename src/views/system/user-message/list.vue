@@ -19,12 +19,12 @@
       <el-table-column prop="user_nickname" :label="$t('用户昵称')" min-width="100" />
       <el-table-column prop="user_username" :label="$t('用户账号')" min-width="100" />
       <el-table-column prop="message_title" :label="$t('消息标题')" min-width="200" />
-      <el-table-column prop="is_read_name" :label="$t('已读')" min-width="65" sortable="custom" column-key="is_read" />
+      <el-table-column prop="is_read_name" :label="$t('已读')" min-width="76" sortable="custom" column-key="is_read" />
       <el-table-column prop="read_time" :label="$t('已读时间')" min-width="162" sortable="custom" />
       <el-table-column
         prop="is_disable_name"
         :label="$t('禁用')"
-        min-width="65"
+        min-width="80"
         sortable="custom"
         column-key="is_disable"
       />

@@ -65,11 +65,21 @@
                   '#E10E2D',
                   '#9a091f'
                 ]"
-                @change="loginBgColorChange"
               />
             </el-col>
             <el-col :span="14">
               <el-text size="default">{{ $t('登录页面背景颜色') }}</el-text>
+            </el-col>
+          </el-form-item>
+          <el-form-item :label="$t('登录简称色')">
+            <el-col :span="10">
+              <el-color-picker
+                v-model="model.login_sn_color"
+                :predefine="['#FFFFFF', '#000000', '#909399', '#F56C6C', '#E6A23C', '#67C23A', '#409EFF']"
+              />
+            </el-col>
+            <el-col :span="14">
+              <el-text size="default">{{ $t('登录页面系统简称颜色') }}</el-text>
             </el-col>
           </el-form-item>
           <el-form-item :label="$t('页面水印')" prop="is_watermark">
@@ -93,7 +103,7 @@
 <script>
 import { screenHeight } from '@/utils/index'
 import { systemInfoApi as infoApi, systemEditApi as editApi } from '@/api/system/setting'
-import { useSettingsStore } from '@/store/modules/settings'
+import { useSettingsStoreHook } from '@/store/modules/settings'
 
 export default {
   data() {
@@ -111,6 +121,7 @@ export default {
         login_bg_id: 0,
         login_bg_url: '',
         login_bg_color: '',
+        login_sn_color: '',
         is_watermark: 0
       },
       rules: {}
@@ -164,7 +175,7 @@ export default {
     },
     // 设置
     setting(setting) {
-      const settingsStore = useSettingsStore()
+      const settingsStore = useSettingsStoreHook()
       settingsStore.changeSetting({ key: 'loginBgUrl', value: setting.login_bg_url })
       settingsStore.changeSetting({ key: 'loginBgColor', value: setting.login_bg_color })
       settingsStore.changeSetting({ key: 'systemName', value: setting.system_name })
@@ -172,6 +183,7 @@ export default {
       settingsStore.changeSetting({ key: 'faviconUrl', value: setting.favicon_url })
       settingsStore.changeSetting({ key: 'logoUrl', value: setting.logo_url })
       settingsStore.changeSetting({ key: 'watermarkEnabled', value: setting.is_watermark })
+      settingsStore.changeSetting({ key: 'loginSnColor', value: setting.login_sn_color })
     },
     // 上传图片
     fileUpload(field, title = '') {
@@ -211,11 +223,6 @@ export default {
         this.model.login_bg_id = 0
         this.model.login_bg_url = ''
       }
-    },
-    // 登录背景色
-    loginBgColorChange(val) {
-      const settingsStore = useSettingsStore()
-      settingsStore.changeSetting({ key: 'loginBgColor', value: val })
     }
   }
 }

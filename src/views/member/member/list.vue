@@ -30,19 +30,19 @@
       <el-table-column
         prop="is_super_name"
         :label="$t('超会')"
-        min-width="80"
+        min-width="90"
         sortable="custom"
         column-key="is_super"
       />
       <el-table-column
         prop="is_disable_name"
         :label="$t('禁用')"
-        min-width="80"
+        min-width="100"
         sortable="custom"
         column-key="is_disable"
       />
       <el-table-column prop="sort" :label="$t('排序')" width="80" sortable="custom" />
-      <el-table-column prop="create_time" :label="$t('注册时间')" width="165" sortable="custom" />
+      <el-table-column prop="create_time" :label="$t('添加时间')" width="165" sortable="custom" />
       <el-table-column :label="$t('操作')" width="110">
         <template #default="{ row }">
           <ElLinkOperate v-if="hasPerm([permEdit])" :text="$t('修改')" @click="edit(row)" />

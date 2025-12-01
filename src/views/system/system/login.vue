@@ -20,7 +20,7 @@
       </div>
       <div class="login-title">
         <el-text>
-          <h2 class="login-title-name">{{ system_name }}</h2>
+          <h2 class="login-title-name" :style="login_sn_style">{{ system_name }}</h2>
         </el-text>
       </div>
       <el-form-item prop="username">
@@ -105,6 +105,7 @@ export default {
       otherQuery: {},
       logo_url: '',
       system_name: 'yylAdmin',
+      login_sn_style: {},
       login_bg_url: '',
       login_bg_color: '',
       captcha_switch: 0,
@@ -124,12 +125,7 @@ export default {
   computed: {
     captchaHeight() {
       const appStore = useAppStoreHook()
-      if (appStore.size === 'large') {
-        return '40px'
-      } else if (appStore.size === 'small') {
-        return '24px'
-      }
-      return '32px'
+      return appStore.getSizeHeight()
     },
     rules() {
       return {
@@ -174,6 +170,7 @@ export default {
       this.captcha_mode = localStorage.getItem(storePrefix + 'captchaMode')
       this.captcha_type = localStorage.getItem(storePrefix + 'captchaType')
       this.captcha_img = localStorage.getItem(storePrefix + 'captchaImg')
+      this.login_sn_style.color = localStorage.getItem(storePrefix + 'loginSnColor')
       this.model.captcha_id = ''
       this.model.captcha_code = ''
       this.rememberMeChange(this.rememberMe)
@@ -188,6 +185,7 @@ export default {
           this.login_bg_color = data.login_bg_color
           this.logo_url = data.logo_url
           this.system_name = data.system_name
+          this.login_sn_style.color = data.login_sn_color
           data.watermark_content = data.system_name
           settingsStore.setSetting(data)
           this.message(data)

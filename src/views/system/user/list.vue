@@ -7,56 +7,58 @@
     <!-- 列表 -->
     <el-row class="mt-2">
       <el-col :span="4">
-        <el-row>
-          <el-col>
-            <el-text size="default" class="cursor-pointer" @click="deptSelect(null)">
-              {{ $t('部门') }}：
-              <Icons icon="RefreshLeft" />
-            </el-text>
-          </el-col>
-          <el-col>
-            <el-tree-v2
-              ref="deptRef"
-              :data="basedata.depts"
-              :props="basedata.deptProps"
-              :current-node-key="query.dept_id"
-              highlight-current
-              @node-click="deptSelect"
-            />
-          </el-col>
-          <el-col class="pt-4">
-            <el-text size="default" class="cursor-pointer" @click="postSelect(null)">
-              {{ $t('职位') }}：
-              <Icons icon="RefreshLeft" />
-            </el-text>
-          </el-col>
-          <el-col>
-            <el-tree-v2
-              ref="postRef"
-              :data="basedata.posts"
-              :props="basedata.postProps"
-              :current-node-key="query.post_id"
-              highlight-current
-              @node-click="postSelect"
-            />
-          </el-col>
-          <el-col class="pt-4">
-            <el-text size="default" class="cursor-pointer" @click="roleSelect(null)">
-              {{ $t('角色') }}：
-              <Icons icon="RefreshLeft" />
-            </el-text>
-          </el-col>
-          <el-col>
-            <el-tree-v2
-              ref="roleRef"
-              :data="basedata.roles"
-              :props="basedata.roleProps"
-              :current-node-key="query.role_id"
-              highlight-current
-              @node-click="roleSelect"
-            />
-          </el-col>
-        </el-row>
+        <el-scrollbar :height="height">
+          <el-row>
+            <el-col>
+              <el-text size="default" class="cursor-pointer" @click="deptSelect(null)">
+                {{ $t('部门') }}：
+                <Icons icon="RefreshLeft" />
+              </el-text>
+            </el-col>
+            <el-col>
+              <el-tree-v2
+                ref="deptRef"
+                :data="basedata.depts"
+                :props="basedata.deptProps"
+                :current-node-key="query.dept_id"
+                highlight-current
+                @node-click="deptSelect"
+              />
+            </el-col>
+            <el-col class="pt-4">
+              <el-text size="default" class="cursor-pointer" @click="postSelect(null)">
+                {{ $t('职位') }}：
+                <Icons icon="RefreshLeft" />
+              </el-text>
+            </el-col>
+            <el-col>
+              <el-tree-v2
+                ref="postRef"
+                :data="basedata.posts"
+                :props="basedata.postProps"
+                :current-node-key="query.post_id"
+                highlight-current
+                @node-click="postSelect"
+              />
+            </el-col>
+            <el-col class="pt-4">
+              <el-text size="default" class="cursor-pointer" @click="roleSelect(null)">
+                {{ $t('角色') }}：
+                <Icons icon="RefreshLeft" />
+              </el-text>
+            </el-col>
+            <el-col>
+              <el-tree-v2
+                ref="roleRef"
+                :data="basedata.roles"
+                :props="basedata.roleProps"
+                :current-node-key="query.role_id"
+                highlight-current
+                @node-click="roleSelect"
+              />
+            </el-col>
+          </el-row>
+        </el-scrollbar>
       </el-col>
       <el-col :span="20">
         <el-table
@@ -84,7 +86,7 @@
           <el-table-column
             prop="is_super_name"
             :label="$t('超管')"
-            min-width="80"
+            min-width="92"
             sortable="custom"
             column-key="is_super"
           />

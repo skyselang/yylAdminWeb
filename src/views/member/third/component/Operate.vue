@@ -1,24 +1,36 @@
 <template>
   <el-row>
     <el-col :span="6">
-      <el-button v-if="hasPerm(['admin/member.Third/add'])" type="primary" @click="add()">{{ $t('添加') }}</el-button>
-      <el-button v-if="hasPerm(['admin/member.Third/edit'])" @click="edit()">{{ $t('修改') }}</el-button>
-      <el-button v-else-if="hasPerm(['admin/member.Third/info'])" @click="edit()">{{ $t('信息') }}</el-button>
-      <el-button v-if="hasPerm(['admin/member.Third/dele'])" @click="update('is_delete')">{{ $t('删除') }}</el-button>
-      <el-button v-if="hasPerm(['admin/member.Third/disable'])" @click="update('is_disable')">
-        {{ $t('禁用') }}
-      </el-button>
+      <el-scrollbar-height>
+        <el-button v-if="hasPerm(['admin/member.Third/add'])" type="primary" @click="add()">{{ $t('添加') }}</el-button>
+        <el-button v-if="hasPerm(['admin/member.Third/edit'])" @click="edit()">{{ $t('修改') }}</el-button>
+        <el-button v-else-if="hasPerm(['admin/member.Third/info'])" @click="edit()">{{ $t('信息') }}</el-button>
+        <el-button v-if="hasPerm(['admin/member.Third/dele'])" @click="update('is_delete')">{{ $t('删除') }}</el-button>
+        <el-button v-if="hasPerm(['admin/member.Third/disable'])" @click="update('is_disable')">
+          {{ $t('禁用') }}
+        </el-button>
+      </el-scrollbar-height>
     </el-col>
     <el-col :span="14">
-      <template v-if="hasPerm(['admin/member.Third/update'])">
-        <el-button :title="$t('修改编号')" @click="update('group_unique')">{{ $t('编号') }}</el-button>
-        <el-button :title="$t('修改备注')" @click="update('remark')">{{ $t('备注') }}</el-button>
-        <el-button :title="$t('修改排序')" @click="update('sort')">{{ $t('排序') }}</el-button>
-      </template>
+      <el-scrollbar-height>
+        <template v-if="hasPerm(['admin/member.Third/update'])">
+          <el-button :title="$t('修改编号')" @click="update('group_unique')">{{ $t('编号') }}</el-button>
+          <el-button :title="$t('修改备注')" @click="update('remark')">{{ $t('备注') }}</el-button>
+          <el-button :title="$t('修改排序')" @click="update('sort')">{{ $t('排序') }}</el-button>
+        </template>
+      </el-scrollbar-height>
     </el-col>
     <el-col :span="4">
-      <Exports v-if="hasPerm(['admin/member.Third/export'])" :name="name" :api="exportApi" :query="query" :ids="ids" />
-      <Imports v-if="hasPerm(['admin/member.Third/import'])" :name="name" :api="importApi" />
+      <el-scrollbar-height>
+        <Exports
+          v-if="hasPerm(['admin/member.Third/export'])"
+          :name="name"
+          :api="exportApi"
+          :query="query"
+          :ids="ids"
+        />
+        <Imports v-if="hasPerm(['admin/member.Third/import'])" :name="name" :api="importApi" />
+      </el-scrollbar-height>
     </el-col>
   </el-row>
   <el-dialog

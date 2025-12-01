@@ -74,7 +74,7 @@
               :data="resultSuccess"
               :width="scope.width"
               :height="scope.height"
-              :fixed="false"
+              :fixed="true"
             />
           </template>
         </el-auto-resizer>
@@ -87,7 +87,7 @@
               :data="resultFail"
               :width="scope.width"
               :height="scope.height"
-              :fixed="false"
+              :fixed="true"
             />
           </template>
         </el-auto-resizer>

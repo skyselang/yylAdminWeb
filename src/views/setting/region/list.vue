@@ -30,7 +30,7 @@
           <el-text size="default">{{ $t('经度') }},{{ $t('纬度') }}</el-text>
         </el-col>
         <el-col :span="1">
-          <el-text size="default">{{ $t('禁用') }}</el-text>
+          <el-text size="default" truncated>{{ $t('禁用') }}</el-text>
         </el-col>
         <el-col :span="2">
           <el-text size="default">{{ $t('排序') }}</el-text>
@@ -56,7 +56,7 @@
         <template #default="scope">
           <el-row class="w-full">
             <el-col :span="4">
-              <el-text size="default">{{ scope.data.region_name }}</el-text>
+              <el-text size="default" truncated>{{ scope.data.region_name }}</el-text>
             </el-col>
             <el-col :span="2">
               <el-text size="default">{{ scope.data.region_id }}</el-text>
@@ -65,7 +65,7 @@
               <el-text size="default">{{ scope.data.level }}</el-text>
             </el-col>
             <el-col :span="4">
-              <el-text size="default">{{ scope.data.pinyin }}</el-text>
+              <el-text size="default" truncated>{{ scope.data.pinyin }}</el-text>
             </el-col>
             <el-col :span="2">
               <el-text size="default">{{ scope.data.citycode }}</el-text>
@@ -74,7 +74,7 @@
               <el-text size="default">{{ scope.data.zipcode }}</el-text>
             </el-col>
             <el-col :span="3">
-              <el-text size="default">{{ scope.data.longitude }},{{ scope.data.latitude }}</el-text>
+              <el-text size="default" truncated>{{ scope.data.longitude }},{{ scope.data.latitude }}</el-text>
             </el-col>
             <el-col :span="1">
               <el-text size="default">{{ scope.data.is_disable_name }}</el-text>

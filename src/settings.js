@@ -4,7 +4,7 @@ const defaultSettings = {
   faviconUrl: '',
   logoUrl: '',
   loginBgUrl: '',
-  loginBgColor: '#f0f2f5',
+  loginBgColor: '',
   tokenType: 'header',
   tokenName: 'AdminToken',
   timeout: 60,

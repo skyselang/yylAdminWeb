@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { store } from '@/store'
 import defaultSettings from '@/settings'
+import { useStorage } from '@vueuse/core'
 
 export const useSettingsStore = defineStore('setting', () => {
   const storePrefix = defaultSettings.storePrefix
@@ -28,6 +29,9 @@ export const useSettingsStore = defineStore('setting', () => {
   const pageLimits = useStorage(storePrefix + 'pageLimits', defaultSettings.pageLimits)
   const addEditDialog = useStorage(storePrefix + 'addEditDialog', defaultSettings.addEditDialog)
   const rememberMe = useStorage(storePrefix + 'rememberMe', defaultSettings.rememberMe)
+  const loginSnColor = useStorage(storePrefix + 'loginSnColor', '')
+  const noticeReminder = useStorage(storePrefix + 'noticeReminder', true)
+  const messageReminder = useStorage(storePrefix + 'messageReminder', true)
 
   const settingsMap = {
     notice,
@@ -53,7 +57,10 @@ export const useSettingsStore = defineStore('setting', () => {
     pageLimit,
     pageLimits,
     addEditDialog,
-    rememberMe
+    rememberMe,
+    loginSnColor,
+    noticeReminder,
+    messageReminder
   }
 
   // 监听器 - 侧边栏颜色变化
@@ -77,6 +84,7 @@ export const useSettingsStore = defineStore('setting', () => {
     timeout.value = data.api_timeout
     tokenType.value = data.token_type
     tokenName.value = data.token_name
+    loginSnColor.value = data.login_sn_color
   }
 
   function changeSetting({ key, value }) {
@@ -214,6 +222,9 @@ export const useSettingsStore = defineStore('setting', () => {
     pageLimits,
     addEditDialog,
     rememberMe,
+    loginSnColor,
+    noticeReminder,
+    messageReminder,
     setSetting,
     changeSetting
   }

@@ -1,36 +1,46 @@
 <template>
   <el-row>
     <el-col :span="6">
-      <el-button v-if="hasPerm(['admin/setting.Region/add'])" type="primary" @click="add()">{{ $t('添加') }}</el-button>
-      <el-button v-if="hasPerm(['admin/setting.Region/edit'])" @click="edit()">{{ $t('修改') }}</el-button>
-      <el-button v-else-if="hasPerm(['admin/setting.Region/info'])" @click="edit()">{{ $t('信息') }}</el-button>
-      <el-button v-if="hasPerm(['admin/setting.Region/dele'])" @click="update('is_delete')">{{ $t('删除') }}</el-button>
-      <el-button v-if="hasPerm(['admin/setting.Region/disable'])" @click="update('is_disable')">
-        {{ $t('禁用') }}
-      </el-button>
+      <el-scrollbar-height>
+        <el-button v-if="hasPerm(['admin/setting.Region/add'])" type="primary" @click="add()">
+          {{ $t('添加') }}
+        </el-button>
+        <el-button v-if="hasPerm(['admin/setting.Region/edit'])" @click="edit()">{{ $t('修改') }}</el-button>
+        <el-button v-else-if="hasPerm(['admin/setting.Region/info'])" @click="edit()">{{ $t('信息') }}</el-button>
+        <el-button v-if="hasPerm(['admin/setting.Region/dele'])" @click="update('is_delete')">
+          {{ $t('删除') }}
+        </el-button>
+        <el-button v-if="hasPerm(['admin/setting.Region/disable'])" @click="update('is_disable')">
+          {{ $t('禁用') }}
+        </el-button>
+      </el-scrollbar-height>
     </el-col>
     <el-col :span="14">
-      <template v-if="hasPerm(['admin/setting.Region/update'])">
-        <el-button :title="$t('修改编号')" @click="update('region_unique')">{{ $t('编号') }}</el-button>
-        <el-button :title="$t('修改备注')" @click="update('remark')">{{ $t('备注') }}</el-button>
-        <el-button :title="$t('修改排序')" @click="update('sort')">{{ $t('排序') }}</el-button>
-        <el-button :title="$t('修改上级')" @click="update('region_pid')">{{ $t('上级') }}</el-button>
-        <el-button :title="$t('修改级别')" @click="update('level')">{{ $t('级别') }}</el-button>
-        <el-button :title="$t('修改区号')" @click="update('citycode')">{{ $t('区号') }}</el-button>
-        <el-button :title="$t('修改邮编')" @click="update('zipcode')">{{ $t('邮编') }}</el-button>
-        <el-button :title="$t('修改经度')" @click="update('longitude')">{{ $t('经度') }}</el-button>
-        <el-button :title="$t('修改纬度')" @click="update('latitude')">{{ $t('纬度') }}</el-button>
-      </template>
+      <el-scrollbar-height>
+        <template v-if="hasPerm(['admin/setting.Region/update'])">
+          <el-button :title="$t('修改编号')" @click="update('region_unique')">{{ $t('编号') }}</el-button>
+          <el-button :title="$t('修改备注')" @click="update('remark')">{{ $t('备注') }}</el-button>
+          <el-button :title="$t('修改排序')" @click="update('sort')">{{ $t('排序') }}</el-button>
+          <el-button :title="$t('修改上级')" @click="update('region_pid')">{{ $t('上级') }}</el-button>
+          <el-button :title="$t('修改级别')" @click="update('level')">{{ $t('级别') }}</el-button>
+          <el-button :title="$t('修改区号')" @click="update('citycode')">{{ $t('区号') }}</el-button>
+          <el-button :title="$t('修改邮编')" @click="update('zipcode')">{{ $t('邮编') }}</el-button>
+          <el-button :title="$t('修改经度')" @click="update('longitude')">{{ $t('经度') }}</el-button>
+          <el-button :title="$t('修改纬度')" @click="update('latitude')">{{ $t('纬度') }}</el-button>
+        </template>
+      </el-scrollbar-height>
     </el-col>
     <el-col :span="4">
-      <Exports
-        v-if="hasPerm(['admin/setting.Region/export'])"
-        :name="name"
-        :api="exportApi"
-        :query="query"
-        :ids="ids"
-      />
-      <Imports v-if="hasPerm(['admin/setting.Region/import'])" :name="name" :api="importApi" />
+      <el-scrollbar-height>
+        <Exports
+          v-if="hasPerm(['admin/setting.Region/export'])"
+          :name="name"
+          :api="exportApi"
+          :query="query"
+          :ids="ids"
+        />
+        <Imports v-if="hasPerm(['admin/setting.Region/import'])" :name="name" :api="importApi" />
+      </el-scrollbar-height>
     </el-col>
   </el-row>
   <el-dialog

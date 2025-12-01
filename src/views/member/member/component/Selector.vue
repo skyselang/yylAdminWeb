@@ -2,10 +2,10 @@
   <el-col :span="4">
     <el-input v-model="memberId" />
   </el-col>
-  <el-col :span="15">
-    <span v-if="memberId" class="truncate">昵称：{{ nickname }}，用户名: {{ username }}</span>
+  <el-col :span="13">
+    <span v-if="memberId" class="truncate">{{ nickname }}（{{ username }}）</span>
   </el-col>
-  <el-col :span="5">
+  <el-col :span="7">
     <el-button @click="show">{{ $t('选择') }}</el-button>
     <el-button @click="dele">{{ $t('删除') }}</el-button>
   </el-col>

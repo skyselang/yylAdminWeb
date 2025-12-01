@@ -34,8 +34,8 @@
         sortable="custom"
         column-key="file_size"
       />
-      <el-table-column prop="status_name" :label="$t('状态')" min-width="90" sortable="custom" column-key="status" />
-      <el-table-column prop="time" :label="$t('耗时(秒)')" min-width="100" sortable="custom" />
+      <el-table-column prop="status_name" :label="$t('状态')" min-width="92" sortable="custom" column-key="status" />
+      <el-table-column prop="time" :label="$t('耗时(秒)')" min-width="106" sortable="custom" />
       <el-table-column prop="import_num" :label="$t('导入数')" min-width="92" sortable="custom" />
       <el-table-column prop="success_num" :label="$t('成功数')" min-width="92" sortable="custom" />
       <el-table-column prop="fail_num" :label="$t('失败数')" min-width="92" sortable="custom" />
@@ -47,7 +47,8 @@
         <template #default="{ row }">
           <ElLinkOperate v-if="hasPerm([permEdit])" :text="$t('修改')" @click="edit(row)" />
           <ElLinkOperate v-else-if="hasPerm([permInfo])" :text="$t('信息')" @click="edit(row)" />
-          <ElLinkOperate v-if="hasPerm([permDele])" :text="$t('删除')" @click="dele(row)" />
+          <ElLinkOperate v-if="hasPerm([permDele]) && !query.recycle" :text="$t('删除')" @click="dele(row)" />
+          <ElLinkOperate v-if="hasPerm([permRecycleDele]) && query.recycle" :text="$t('删除')" @click="dele(row)" />
           <ElLinkOperate v-if="hasPerm([permInfo])" :text="$t('下载')" @click="down(row)" />
         </template>
       </el-table-column>
@@ -139,6 +140,7 @@ export default {
       permInfo: 'admin/file.Import/info',
       permEdit: 'admin/file.Import/edit',
       permDele: 'admin/file.Import/dele',
+      permRecycleDele: 'admin/file.Import/recycleDele',
       routeInfo: 'FileImportInfo',
       routeAdd: 'FileImportAdd',
       routeEdit: 'FileImportEdit',

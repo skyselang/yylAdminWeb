@@ -24,13 +24,15 @@
     </el-col>
     <el-col :span="6">
       <el-button
-        v-if="hasPerm(['admin/file.File/recycleList'])"
+        v-if="basedata.recycle && hasPerm(['admin/file.File/recycleList'])"
         :type="query.recycle ? 'primary' : 'default'"
         @click="recycle"
       >
         {{ $t('回收站') }}
       </el-button>
-      <el-button :type="query.table ? 'primary' : 'default'" @click="table">{{ $t('表格') }}</el-button>
+      <el-button v-if="basedata.table" :type="query.table ? 'primary' : 'default'" @click="table">
+        {{ $t('表格') }}
+      </el-button>
     </el-col>
   </el-row>
 
@@ -111,7 +113,7 @@ export default {
     basedata: {
       type: Object,
       default() {
-        return { add_types: [], groups: [], tags: [] }
+        return { add_types: [], groups: [], tags: [], recycle: true, table: true }
       }
     }
   },

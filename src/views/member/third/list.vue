@@ -16,20 +16,20 @@
     >
       <el-table-column type="selection" width="42" :title="$t('全选/反选')" />
       <el-table-column :prop="idkey" label="ID" width="80" sortable="custom" />
-      <el-table-column prop="member_id" :label="$t('会员ID')" width="100" sortable="custom" />
-      <el-table-column prop="member_nickname" :label="$t('会员昵称')" min-width="135" />
+      <el-table-column prop="member_id" :label="$t('会员ID')" width="80" />
+      <el-table-column prop="member_nickname" :label="$t('会员昵称')" min-width="140" />
       <el-table-column prop="member_username" :label="$t('会员用户名')" min-width="135" />
       <el-table-column
         prop="platform_name"
         :label="$t('平台')"
-        min-width="80"
+        min-width="106"
         sortable="custom"
         column-key="platform"
       />
       <el-table-column
         prop="application_name"
         :label="$t('应用')"
-        min-width="120"
+        min-width="126"
         sortable="custom"
         column-key="application"
       />
@@ -42,13 +42,12 @@
       <el-table-column
         prop="is_disable_name"
         :label="$t('禁用')"
-        min-width="80"
+        min-width="98"
         sortable="custom"
         column-key="is_disable"
       />
       <el-table-column prop="login_time" :label="$t('登录时间')" width="165" sortable="custom" />
       <el-table-column prop="create_time" :label="$t('添加时间')" min-width="165" sortable="custom" />
-      <el-table-column prop="update_time" :label="$t('修改时间')" min-width="165" sortable="custom" />
       <el-table-column :label="$t('操作')" width="110">
         <template #default="{ row }">
           <ElLinkOperate v-if="hasPerm([permEdit])" :text="$t('修改')" @click="edit(row)" />

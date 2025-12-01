@@ -141,7 +141,7 @@
     <el-table-column prop="response_code" :label="$t('返回码')" min-width="80" />
     <el-table-column prop="response_msg" :label="$t('返回描述')" min-width="115" />
     <el-table-column prop="create_time" :label="$t('请求时间')" min-width="165" sortable="custom" />
-    <el-table-column :label="$t('操作')" width="100">
+    <el-table-column :label="$t('操作')" width="130">
       <template #default="{ row }">
         <ElLinkOperate v-if="hasPerm(['admin/system.UserCenter/logInfo'])" :text="$t('详情')" @click="info(row)" />
         <ElLinkOperate

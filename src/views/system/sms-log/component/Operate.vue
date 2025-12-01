@@ -1,24 +1,40 @@
 <template>
   <el-row>
     <el-col :span="6">
-      <el-button v-if="hasPerm(['admin/system.SmsLog/add'])" type="primary" @click="add()">{{ $t('添加') }}</el-button>
-      <el-button v-if="hasPerm(['admin/system.SmsLog/edit'])" @click="edit()">{{ $t('修改') }}</el-button>
-      <el-button v-else-if="hasPerm(['admin/system.SmsLog/info'])" @click="edit()">{{ $t('信息') }}</el-button>
-      <el-button v-if="hasPerm(['admin/system.SmsLog/dele'])" @click="update('is_delete')">{{ $t('删除') }}</el-button>
-      <el-button v-if="hasPerm(['admin/system.SmsLog/clear'])" @click="clear()">{{ $t('清空') }}</el-button>
+      <el-scrollbar-height>
+        <el-button v-if="hasPerm(['admin/system.SmsLog/add'])" type="primary" @click="add()">
+          {{ $t('添加') }}
+        </el-button>
+        <el-button v-if="hasPerm(['admin/system.SmsLog/edit'])" @click="edit()">{{ $t('修改') }}</el-button>
+        <el-button v-else-if="hasPerm(['admin/system.SmsLog/info'])" @click="edit()">{{ $t('信息') }}</el-button>
+        <el-button v-if="hasPerm(['admin/system.SmsLog/dele'])" @click="update('is_delete')">
+          {{ $t('删除') }}
+        </el-button>
+        <el-button v-if="hasPerm(['admin/system.SmsLog/clear'])" @click="clear()">{{ $t('清空') }}</el-button>
+      </el-scrollbar-height>
     </el-col>
     <el-col :span="14">
-      <template v-if="hasPerm(['admin/system.SmsLog/update'])">
-        <el-button :title="$t('修改国际码')" @click="update('intcode')">{{ $t('国际码') }}</el-button>
-        <el-button :title="$t('修改手机')" @click="update('phone')">{{ $t('手机') }}</el-button>
-        <el-button :title="$t('修改模板ID')" @click="update('template')">{{ $t('模板ID') }}</el-button>
-        <el-button :title="$t('修改内容')" @click="update('content')">{{ $t('内容') }}</el-button>
-        <el-button :title="$t('修改错误')" @click="update('error')">{{ $t('错误') }}</el-button>
-      </template>
+      <el-scrollbar-height>
+        <template v-if="hasPerm(['admin/system.SmsLog/update'])">
+          <el-button :title="$t('修改国际码')" @click="update('intcode')">{{ $t('国际码') }}</el-button>
+          <el-button :title="$t('修改手机')" @click="update('phone')">{{ $t('手机') }}</el-button>
+          <el-button :title="$t('修改模板ID')" @click="update('template')">{{ $t('模板ID') }}</el-button>
+          <el-button :title="$t('修改内容')" @click="update('content')">{{ $t('内容') }}</el-button>
+          <el-button :title="$t('修改错误')" @click="update('error')">{{ $t('错误') }}</el-button>
+        </template>
+      </el-scrollbar-height>
     </el-col>
     <el-col :span="4">
-      <Exports v-if="hasPerm(['admin/system.SmsLog/export'])" :name="name" :api="exportApi" :query="query" :ids="ids" />
-      <Imports v-if="hasPerm(['admin/system.SmsLog/import'])" :name="name" :api="importApi" />
+      <el-scrollbar-height>
+        <Exports
+          v-if="hasPerm(['admin/system.SmsLog/export'])"
+          :name="name"
+          :api="exportApi"
+          :query="query"
+          :ids="ids"
+        />
+        <Imports v-if="hasPerm(['admin/system.SmsLog/import'])" :name="name" :api="importApi" />
+      </el-scrollbar-height>
     </el-col>
   </el-row>
   <el-dialog

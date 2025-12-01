@@ -1,34 +1,40 @@
 <template>
   <el-row>
     <el-col :span="6">
-      <el-button v-if="hasPerm(['admin/system.UserMessage/add'])" type="primary" @click="add()">
-        {{ $t('添加') }}
-      </el-button>
-      <el-button v-if="hasPerm(['admin/system.UserMessage/edit'])" @click="edit()">{{ $t('修改') }}</el-button>
-      <el-button v-else-if="hasPerm(['admin/system.UserMessage/info'])" @click="edit()">{{ $t('信息') }}</el-button>
-      <el-button v-if="hasPerm(['admin/system.UserMessage/dele'])" @click="update('is_delete')">
-        {{ $t('删除') }}
-      </el-button>
-      <el-button v-if="hasPerm(['admin/system.UserMessage/disable'])" @click="update('is_disable')">
-        {{ $t('禁用') }}
-      </el-button>
+      <el-scrollbar-height>
+        <el-button v-if="hasPerm(['admin/system.UserMessage/add'])" type="primary" @click="add()">
+          {{ $t('添加') }}
+        </el-button>
+        <el-button v-if="hasPerm(['admin/system.UserMessage/edit'])" @click="edit()">{{ $t('修改') }}</el-button>
+        <el-button v-else-if="hasPerm(['admin/system.UserMessage/info'])" @click="edit()">{{ $t('信息') }}</el-button>
+        <el-button v-if="hasPerm(['admin/system.UserMessage/dele'])" @click="update('is_delete')">
+          {{ $t('删除') }}
+        </el-button>
+        <el-button v-if="hasPerm(['admin/system.UserMessage/disable'])" @click="update('is_disable')">
+          {{ $t('禁用') }}
+        </el-button>
+      </el-scrollbar-height>
     </el-col>
     <el-col :span="14">
-      <template v-if="hasPerm(['admin/system.UserMessage/update'])">
-        <el-button :title="$t('修改用户')" @click="update('user_id')">{{ $t('用户') }}</el-button>
-        <el-button :title="$t('修改消息')" @click="update('message_id')">{{ $t('消息') }}</el-button>
-        <el-button :title="$t('修改已读')" @click="update('is_read')">{{ $t('已读') }}</el-button>
-      </template>
+      <el-scrollbar-height>
+        <template v-if="hasPerm(['admin/system.UserMessage/update'])">
+          <el-button :title="$t('修改用户')" @click="update('user_id')">{{ $t('用户') }}</el-button>
+          <el-button :title="$t('修改消息')" @click="update('message_id')">{{ $t('消息') }}</el-button>
+          <el-button :title="$t('修改已读')" @click="update('is_read')">{{ $t('已读') }}</el-button>
+        </template>
+      </el-scrollbar-height>
     </el-col>
     <el-col :span="4">
-      <Exports
-        v-if="hasPerm(['admin/system.UserMessage/export'])"
-        :name="name"
-        :api="exportApi"
-        :query="query"
-        :ids="ids"
-      />
-      <Imports v-if="hasPerm(['admin/system.UserMessage/import'])" :name="name" :api="importApi" />
+      <el-scrollbar-height>
+        <Exports
+          v-if="hasPerm(['admin/system.UserMessage/export'])"
+          :name="name"
+          :api="exportApi"
+          :query="query"
+          :ids="ids"
+        />
+        <Imports v-if="hasPerm(['admin/system.UserMessage/import'])" :name="name" :api="importApi" />
+      </el-scrollbar-height>
     </el-col>
   </el-row>
   <el-dialog

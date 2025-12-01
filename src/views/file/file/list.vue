@@ -276,7 +276,22 @@
                     >
                       {{ $t('信息') }}
                     </el-link>
-                    <el-link v-if="hasPerm([permDele])" type="primary" underline="never" class="mr-2" @click="dele(v)">
+                    <el-link
+                      v-if="hasPerm([permDele]) && !query.recycle"
+                      type="primary"
+                      underline="never"
+                      class="mr-2"
+                      @click="dele(v)"
+                    >
+                      {{ $t('删除') }}
+                    </el-link>
+                    <el-link
+                      v-if="hasPerm([permRecycleDele]) && query.recycle"
+                      type="primary"
+                      underline="never"
+                      class="mr-2"
+                      @click="dele(v)"
+                    >
                       {{ $t('删除') }}
                     </el-link>
                     <el-link v-if="hasPerm([permInfo])" type="primary" underline="never" @click="down(v)">
@@ -437,11 +452,14 @@ export default {
         disables: [],
         is_fronts: [],
         storages: [],
-        settings: []
+        settings: [],
+        recycle: true,
+        table: true
       },
       permInfo: 'admin/file.File/info',
       permEdit: 'admin/file.File/edit',
       permDele: 'admin/file.File/dele',
+      permRecycleDele: 'admin/file.File/recycleDele',
       routeInfo: 'FileInfo',
       routeAdd: 'FileAdd',
       routeEdit: 'FileEdit',

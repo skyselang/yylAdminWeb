@@ -1,5 +1,5 @@
 <template>
-  <el-form label-width="130px">
+  <el-form label-width="150px">
     <el-scrollbar :height="height">
       <el-row>
         <el-col :md="24" :lg="16" :xl="14">
@@ -51,6 +51,14 @@
               <el-radio value="top">{{ $t('顶部模式') }}</el-radio>
               <el-radio value="mix">{{ $t('混合模式') }}</el-radio>
             </el-radio-group>
+          </el-form-item>
+          <el-form-item :label="$t('公告提醒')">
+            <el-switch v-model="settingsStore.noticeReminder" />
+            <el-text size="default">{{ $t('是否在右上角显示公告提醒') }}</el-text>
+          </el-form-item>
+          <el-form-item :label="$t('消息提醒')">
+            <el-switch v-model="settingsStore.messageReminder" />
+            <el-text size="default">{{ $t('是否在右上角显示消息提醒') }}</el-text>
           </el-form-item>
         </el-col>
       </el-row>

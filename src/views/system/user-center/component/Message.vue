@@ -145,7 +145,7 @@
       <el-table-column prop="message_title" :label="$t('标题')" min-width="200" />
       <el-table-column prop="is_read_name" :label="$t('已读')" min-width="100" column-key="is_read" />
       <el-table-column prop="create_time" :label="$t('时间')" min-width="165" sortable="custom" />
-      <el-table-column :label="$t('操作')" width="100">
+      <el-table-column :label="$t('操作')" width="130">
         <template #default="{ row }">
           <ElLinkOperate
             v-if="hasPerm(['admin/system.UserCenter/messageInfo'])"

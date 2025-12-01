@@ -5,7 +5,9 @@
     :close-on-click-modal="false"
     :close-on-press-escape="false"
     width="73%"
-    top="9vh"
+    draggable
+    center
+    align-center
     @close="close"
   >
     <!-- 查询 -->
@@ -73,7 +75,7 @@
         column-key="file_type"
       />
       <el-table-column prop="file_name" :label="$t('名称')" min-width="120" sortable="custom" />
-      <el-table-column prop="file_ext" :label="$t('后缀')" min-width="85" sortable="custom" />
+      <el-table-column prop="file_ext" :label="$t('后缀')" min-width="88" sortable="custom" />
       <el-table-column
         prop="file_size_name"
         :label="$t('大小')"
@@ -87,7 +89,7 @@
       <el-table-column
         prop="is_disable_name"
         :label="$t('禁用')"
-        min-width="80"
+        min-width="98"
         sortable="custom"
         column-key="is_disable"
       />
@@ -108,7 +110,7 @@
 
 <script>
 import Search from './Search.vue'
-import { hasPerm, screenHeight, arrayColumn, getAddEditDialog, getPageLimit } from '@/utils/index'
+import { hasPerm, screenHeight, arrayColumn, getPageLimit } from '@/utils/index'
 
 export default {
   components: { Search },
@@ -163,7 +165,9 @@ export default {
       basedata: {
         exps: [],
         groups: [],
-        tags: []
+        tags: [],
+        recycle: false,
+        table: false
       }
     }
   },

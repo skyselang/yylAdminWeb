@@ -1,13 +1,13 @@
 <template>
   <Icons v-if="icon" :icon="icon" />
   <span v-else class="el-icon"></span>
-  <span v-if="title">{{ translateRouteTitle(title) }}</span>
+  <span v-if="title" :title="title">{{ title }}</span>
 </template>
 
 <script setup>
 import { translateRouteTitle } from '@/utils/index'
 
-defineProps({
+const props = defineProps({
   icon: {
     type: String,
     default: ''
@@ -17,4 +17,6 @@ defineProps({
     default: ''
   }
 })
+
+const title = translateRouteTitle(props.title)
 </script>

@@ -14,7 +14,7 @@
     <el-row>
       <el-col :span="2">
         <el-button
-          v-if="hasPerm(['admin/member.Tag/memberLift', 'admin/member.Group/memberLift'])"
+          v-if="hasPerm(['admin/member.Group/memberLift', 'admin/member.Tag/memberLift'])"
           type="primary"
           @click="lift()"
         >
@@ -62,7 +62,7 @@
     >
       <el-table-column type="selection" width="42" :title="$t('全选/反选')" />
       <el-table-column :prop="idkey" label="ID" width="80" sortable="custom" />
-      <el-table-column prop="avatar_id" :label="$t('头像')" min-width="62">
+      <el-table-column prop="avatar_id" :label="$t('头像')" min-width="68">
         <template #default="{ row }">
           <FileImage :file-url="row.avatar_url" avatar lazy />
         </template>
@@ -76,7 +76,7 @@
       <el-table-column
         prop="is_super_name"
         :label="$t('超会')"
-        min-width="80"
+        min-width="88"
         sortable="custom"
         column-key="is_super"
       />
@@ -85,7 +85,7 @@
       <el-table-column
         prop="is_disable_name"
         :label="$t('禁用')"
-        min-width="80"
+        min-width="98"
         sortable="custom"
         column-key="is_disable"
       />

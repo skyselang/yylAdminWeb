@@ -16,8 +16,8 @@
     >
       <el-table-column type="selection" width="42" :title="$t('全选/反选')" />
       <el-table-column :prop="idkey" label="ID" width="80" sortable="custom" />
-      <el-table-column prop="member_id" :label="$t('会员ID')" min-width="75" />
-      <el-table-column prop="member_nickname" :label="$t('会员昵称')" min-width="90" />
+      <el-table-column prop="member_id" :label="$t('会员ID')" min-width="80" />
+      <el-table-column prop="member_nickname" :label="$t('会员昵称')" min-width="92" />
       <el-table-column prop="member_username" :label="$t('会员用户名')" min-width="100" />
       <el-table-column prop="api_id" :label="$t('接口ID')" min-width="70" />
       <el-table-column prop="api_name" :label="$t('接口名称')" min-width="120" />
@@ -25,8 +25,8 @@
       <el-table-column prop="request_ip" :label="$t('请求IP')" min-width="130" />
       <el-table-column prop="request_region" :label="$t('请求地区')" min-width="140" />
       <el-table-column prop="request_isp" :label="$t('请求ISP')" min-width="90" />
-      <el-table-column prop="response_code" :label="$t('返回码')" min-width="70" />
-      <el-table-column prop="response_msg" :label="$t('返回描述')" min-width="100" />
+      <el-table-column prop="response_code" :label="$t('返回码')" min-width="80" />
+      <el-table-column prop="response_msg" :label="$t('返回描述')" min-width="102" />
       <el-table-column prop="application_name" :label="$t('应用')" min-width="110" />
       <el-table-column prop="create_time" :label="$t('请求时间')" width="162" sortable="custom" />
       <el-table-column :label="$t('操作')" width="110">

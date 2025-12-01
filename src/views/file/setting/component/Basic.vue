@@ -124,7 +124,7 @@
                 </el-text>
               </el-col>
             </el-form-item>
-            <el-form-item :label="$t('Bucket名称')" prop="aliyun_bucket">
+            <el-form-item :label="$t('Bucket 名称')" prop="aliyun_bucket">
               <el-col :span="24">
                 <el-input v-model="model.aliyun_bucket" clearable>
                   <template #append><Clipboard :content="model.aliyun_bucket" /></template>
@@ -146,7 +146,7 @@
                 </el-text>
               </el-col>
             </el-form-item>
-            <el-form-item :label="$t('Bucket域名')" prop="aliyun_domain">
+            <el-form-item :label="$t('Bucket 域名')" prop="aliyun_domain">
               <el-col :span="24">
                 <el-input v-model="model.aliyun_domain" clearable>
                   <template #append><Clipboard :content="model.aliyun_domain" /></template>
@@ -260,7 +260,7 @@
                 </el-text>
               </el-col>
             </el-form-item>
-            <el-form-item :label="$t('Bucket名称')" prop="baidu_bucket">
+            <el-form-item :label="$t('Bucket 名称')" prop="baidu_bucket">
               <el-col :span="24">
                 <el-input v-model="model.baidu_bucket" clearable>
                   <template #append><Clipboard :content="model.baidu_bucket" /></template>

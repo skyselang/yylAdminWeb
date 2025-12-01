@@ -1,37 +1,61 @@
 <template>
   <el-row>
     <el-col :span="6">
-      <el-button v-if="hasPerm(['admin/member.Member/add'])" type="primary" @click="add()">{{ $t('添加') }}</el-button>
-      <el-button v-if="hasPerm(['admin/member.Member/edit'])" @click="edit()">{{ $t('修改') }}</el-button>
-      <el-button v-else-if="hasPerm(['admin/member.Member/info'])" @click="edit()">{{ $t('信息') }}</el-button>
-      <el-button v-if="hasPerm(['admin/member.Member/dele'])" @click="update('is_delete')">{{ $t('删除') }}</el-button>
-      <el-button v-if="hasPerm(['admin/member.Member/disable'])" @click="update('is_disable')">
-        {{ $t('禁用') }}
-      </el-button>
+      <el-scrollbar-height>
+        <el-button v-if="hasPerm(['admin/member.Member/add'])" type="primary" @click="add()">
+          {{ $t('添加') }}
+        </el-button>
+        <el-button v-if="hasPerm(['admin/member.Member/edit'])" @click="edit()">{{ $t('修改') }}</el-button>
+        <el-button v-else-if="hasPerm(['admin/member.Member/info'])" @click="edit()">{{ $t('信息') }}</el-button>
+        <el-button v-if="hasPerm(['admin/member.Member/dele'])" @click="update('is_delete')">
+          {{ $t('删除') }}
+        </el-button>
+        <el-button v-if="hasPerm(['admin/member.Member/disable'])" @click="update('is_disable')">
+          {{ $t('禁用') }}
+        </el-button>
+      </el-scrollbar-height>
     </el-col>
     <el-col :span="14">
-      <template v-if="hasPerm(['admin/member.Member/update'])">
-        <el-button :title="$t('修改编号')" @click="update('unique')">{{ $t('编号') }}</el-button>
-        <el-button :title="$t('修改备注')" @click="update('remark')">{{ $t('备注') }}</el-button>
-        <el-button :title="$t('修改排序')" @click="update('sort')">{{ $t('排序') }}</el-button>
-        <el-button :title="$t('修改头像')" @click="update('avatar_id')">{{ $t('头像') }}</el-button>
-        <el-button :title="$t('修改性别')" @click="update('gender')">{{ $t('性别') }}</el-button>
-        <el-button :title="$t('修改所在地')" @click="update('region_id')">{{ $t('所在地') }}</el-button>
-        <el-button :title="$t('修改标签')" @click="update('tag_ids')">{{ $t('标签') }}</el-button>
-      </template>
-      <el-button v-if="hasPerm(['admin/member.Member/editGroup'])" :title="$t('修改分组')" @click="update('group_ids')">
-        {{ $t('分组') }}
-      </el-button>
-      <el-button v-if="hasPerm(['admin/member.Member/editSuper'])" :title="$t('修改超会')" @click="update('is_super')">
-        {{ $t('超会') }}
-      </el-button>
-      <el-button v-if="hasPerm(['admin/member.Member/editPwd'])" :title="$t('修改密码')" @click="update('password')">
-        {{ $t('密码') }}
-      </el-button>
+      <el-scrollbar-height>
+        <template v-if="hasPerm(['admin/member.Member/update'])">
+          <el-button :title="$t('修改编号')" @click="update('unique')">{{ $t('编号') }}</el-button>
+          <el-button :title="$t('修改备注')" @click="update('remark')">{{ $t('备注') }}</el-button>
+          <el-button :title="$t('修改排序')" @click="update('sort')">{{ $t('排序') }}</el-button>
+          <el-button :title="$t('修改头像')" @click="update('avatar_id')">{{ $t('头像') }}</el-button>
+          <el-button :title="$t('修改性别')" @click="update('gender')">{{ $t('性别') }}</el-button>
+          <el-button :title="$t('修改所在地')" @click="update('region_id')">{{ $t('所在地') }}</el-button>
+          <el-button :title="$t('修改标签')" @click="update('tag_ids')">{{ $t('标签') }}</el-button>
+        </template>
+        <el-button
+          v-if="hasPerm(['admin/member.Member/editGroup'])"
+          :title="$t('修改分组')"
+          @click="update('group_ids')"
+        >
+          {{ $t('分组') }}
+        </el-button>
+        <el-button
+          v-if="hasPerm(['admin/member.Member/editSuper'])"
+          :title="$t('修改超会')"
+          @click="update('is_super')"
+        >
+          {{ $t('超会') }}
+        </el-button>
+        <el-button v-if="hasPerm(['admin/member.Member/editPwd'])" :title="$t('修改密码')" @click="update('password')">
+          {{ $t('密码') }}
+        </el-button>
+      </el-scrollbar-height>
     </el-col>
     <el-col :span="4">
-      <Exports v-if="hasPerm(['admin/member.Member/export'])" :name="name" :api="exportApi" :query="query" :ids="ids" />
-      <Imports v-if="hasPerm(['admin/member.Member/import'])" :name="name" :api="importApi" />
+      <el-scrollbar-height>
+        <Exports
+          v-if="hasPerm(['admin/member.Member/export'])"
+          :name="name"
+          :api="exportApi"
+          :query="query"
+          :ids="ids"
+        />
+        <Imports v-if="hasPerm(['admin/member.Member/import'])" :name="name" :api="importApi" />
+      </el-scrollbar-height>
     </el-col>
   </el-row>
   <el-dialog

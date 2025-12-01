@@ -17,6 +17,9 @@
               <el-form-item :label="$t('耗时(秒)')" prop="time">
                 <el-input v-model="model.time" disabled />
               </el-form-item>
+              <el-form-item :label="$t('导出数')" prop="export_num">
+                <el-input v-model="model.export_num" disabled />
+              </el-form-item>
               <el-form-item :label="$t('文件路径')" prop="file_path">
                 <el-input v-model="model.file_path" disabled>
                   <template #append>

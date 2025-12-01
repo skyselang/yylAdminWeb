@@ -33,8 +33,8 @@
       :close-on-press-escape="false"
       append-to-body
       draggable
-      align-center
       center
+      align-center
     >
       <el-scrollbar :height="height - 200">
         <el-form label-width="120px">
@@ -62,7 +62,7 @@
     >
       <el-table-column type="selection" width="42" :title="$t('全选/反选')" />
       <el-table-column :prop="idkey" label="ID" width="80" sortable="custom" />
-      <el-table-column prop="avatar_id" :label="$t('头像')" min-width="62">
+      <el-table-column prop="avatar_id" :label="$t('头像')" min-width="68">
         <template #default="{ row }">
           <FileImage :file-url="row.avatar_url" avatar lazy />
         </template>
@@ -76,7 +76,7 @@
       <el-table-column
         prop="is_super_name"
         :label="$t('超管')"
-        min-width="80"
+        min-width="92"
         sortable="custom"
         column-key="is_super"
       />

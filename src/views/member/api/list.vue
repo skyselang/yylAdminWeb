@@ -21,12 +21,12 @@
       <el-table-column prop="api_name" :label="$t('接口名称')" min-width="250" sortable="custom" />
       <el-table-column :prop="idkey" label="ID" width="80" sortable="custom" />
       <el-table-column prop="api_url" :label="$t('接口链接')" min-width="300" sortable="custom" />
-      <el-table-column prop="is_unlogin_name" :label="$t('免登')" min-width="70" />
-      <el-table-column prop="is_unauth_name" :label="$t('免权')" min-width="70" />
-      <el-table-column prop="is_unrate_name" :label="$t('免限')" min-width="70" />
-      <el-table-column prop="is_disable_name" :label="$t('禁用')" min-width="70" column-key="is_disable" />
+      <el-table-column prop="is_unlogin_name" :label="$t('免登')" min-width="98" />
+      <el-table-column prop="is_unauth_name" :label="$t('免权')" min-width="96" />
+      <el-table-column prop="is_unrate_name" :label="$t('免限')" min-width="80" />
+      <el-table-column prop="is_disable_name" :label="$t('禁用')" min-width="80" column-key="is_disable" />
       <el-table-column prop="sort" :label="$t('排序')" min-width="80" />
-      <el-table-column :label="$t('操作')" width="175">
+      <el-table-column :label="$t('操作')" width="190">
         <template #default="{ row }">
           <ElLinkOperate v-if="hasPerm([permAdd])" :text="$t('添加')" @click="add(row)" />
           <ElLinkOperate v-if="hasPerm([permEdit])" :text="$t('修改')" @click="edit(row)" />

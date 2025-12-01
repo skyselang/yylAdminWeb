@@ -1,7 +1,7 @@
 <template>
   <el-dropdown ref="dropdown" trigger="click" @visible-change="change">
     <div>
-      <el-badge :value="badge" :hidden="count === 0" type="danger">
+      <el-badge :value="badge" :hidden="settingsStore.messageReminder == false || count == 0" type="danger">
         <Icons icon="Bell" :size="20" />
       </el-badge>
     </div>
@@ -61,6 +61,7 @@
 <script setup>
 import { messageListApi as listApi, messageInfoApi as infoApi } from '@/api/system/user-center'
 import { screenHeight } from '@/utils/index'
+import { useSettingsStore } from '@/store/modules/settings'
 
 const { t } = useI18n()
 const router = useRouter()
@@ -76,6 +77,7 @@ const height = screenHeight()
 const model = ref({})
 let pollTimer = null
 const POLL_INTERVAL = 60000
+const settingsStore = useSettingsStore()
 
 function change(visible) {
   if (visible) {

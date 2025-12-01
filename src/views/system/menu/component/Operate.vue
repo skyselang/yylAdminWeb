@@ -1,48 +1,66 @@
 <template>
   <el-row>
     <el-col :span="6">
-      <el-button v-if="hasPerm(['admin/system.Menu/add'])" type="primary" @click="add()">{{ $t('添加') }}</el-button>
-      <el-button v-if="hasPerm(['admin/system.Menu/edit'])" @click="edit()">{{ $t('修改') }}</el-button>
-      <el-button v-else-if="hasPerm(['admin/system.Menu/info'])" @click="edit()">{{ $t('信息') }}</el-button>
-      <el-button v-if="hasPerm(['admin/system.Menu/dele'])" @click="update('is_delete')">{{ $t('删除') }}</el-button>
-      <el-button v-if="hasPerm(['admin/system.Menu/disable'])" @click="update('is_disable')">
-        {{ $t('禁用') }}
-      </el-button>
+      <el-scrollbar-height>
+        <el-button v-if="hasPerm(['admin/system.Menu/add'])" type="primary" @click="add()">{{ $t('添加') }}</el-button>
+        <el-button v-if="hasPerm(['admin/system.Menu/edit'])" @click="edit()">{{ $t('修改') }}</el-button>
+        <el-button v-else-if="hasPerm(['admin/system.Menu/info'])" @click="edit()">{{ $t('信息') }}</el-button>
+        <el-button v-if="hasPerm(['admin/system.Menu/dele'])" @click="update('is_delete')">{{ $t('删除') }}</el-button>
+        <el-button v-if="hasPerm(['admin/system.Menu/disable'])" @click="update('is_disable')">
+          {{ $t('禁用') }}
+        </el-button>
+      </el-scrollbar-height>
     </el-col>
     <el-col :span="14">
-      <template v-if="hasPerm(['admin/system.Menu/update'])">
-        <el-button :title="$t('修改备注')" @click="update('remark')">{{ $t('备注') }}</el-button>
-        <el-button :title="$t('修改排序')" @click="update('sort')">{{ $t('排序') }}</el-button>
-      </template>
-      <el-button v-if="hasPerm(['admin/system.Menu/editPid'])" :title="$t('修改上级')" @click="update('menu_pid')">
-        {{ $t('上级') }}
-      </el-button>
-      <el-button
-        v-if="hasPerm(['admin/system.Menu/editUnlogin'])"
-        :title="$t('修改免登')"
-        @click="update('is_unlogin')"
-      >
-        {{ $t('免登') }}
-      </el-button>
-      <el-button v-if="hasPerm(['admin/system.Menu/editUnauth'])" :title="$t('修改免权')" @click="update('is_unauth')">
-        {{ $t('免权') }}
-      </el-button>
-      <el-button v-if="hasPerm(['admin/system.Menu/editUnrate'])" :title="$t('修改免限')" @click="update('is_unrate')">
-        {{ $t('免限') }}
-      </el-button>
-      <el-button v-if="hasPerm(['admin/system.Menu/update'])" :title="$t('修改隐藏')" @click="update('hidden')">
-        {{ $t('隐藏') }}
-      </el-button>
-      <el-button v-if="hasPerm(['admin/system.Menu/update'])" :title="$t('激活菜单')" @click="update('active_menu_id')">
-        {{ $t('激活菜单') }}
-      </el-button>
-      <el-button v-if="hasPerm(['admin/system.Menu/roleLift'])" :title="$t('解除角色')" @click="update('lift_role')">
-        {{ $t('解除角色') }}
-      </el-button>
+      <el-scrollbar-height>
+        <template v-if="hasPerm(['admin/system.Menu/update'])">
+          <el-button :title="$t('修改备注')" @click="update('remark')">{{ $t('备注') }}</el-button>
+          <el-button :title="$t('修改排序')" @click="update('sort')">{{ $t('排序') }}</el-button>
+        </template>
+        <el-button v-if="hasPerm(['admin/system.Menu/editPid'])" :title="$t('修改上级')" @click="update('menu_pid')">
+          {{ $t('上级') }}
+        </el-button>
+        <el-button
+          v-if="hasPerm(['admin/system.Menu/editUnlogin'])"
+          :title="$t('修改免登')"
+          @click="update('is_unlogin')"
+        >
+          {{ $t('免登') }}
+        </el-button>
+        <el-button
+          v-if="hasPerm(['admin/system.Menu/editUnauth'])"
+          :title="$t('修改免权')"
+          @click="update('is_unauth')"
+        >
+          {{ $t('免权') }}
+        </el-button>
+        <el-button
+          v-if="hasPerm(['admin/system.Menu/editUnrate'])"
+          :title="$t('修改免限')"
+          @click="update('is_unrate')"
+        >
+          {{ $t('免限') }}
+        </el-button>
+        <el-button v-if="hasPerm(['admin/system.Menu/update'])" :title="$t('修改隐藏')" @click="update('hidden')">
+          {{ $t('隐藏') }}
+        </el-button>
+        <el-button
+          v-if="hasPerm(['admin/system.Menu/update'])"
+          :title="$t('激活菜单')"
+          @click="update('active_menu_id')"
+        >
+          {{ $t('激活菜单') }}
+        </el-button>
+        <el-button v-if="hasPerm(['admin/system.Menu/roleLift'])" :title="$t('解除角色')" @click="update('lift_role')">
+          {{ $t('解除角色') }}
+        </el-button>
+      </el-scrollbar-height>
     </el-col>
     <el-col :span="4">
-      <Exports v-if="hasPerm(['admin/system.Menu/export'])" :name="name" :api="exportApi" :query="query" :ids="ids" />
-      <Imports v-if="hasPerm(['admin/system.Menu/import'])" :name="name" :api="importApi" />
+      <el-scrollbar-height>
+        <Exports v-if="hasPerm(['admin/system.Menu/export'])" :name="name" :api="exportApi" :query="query" :ids="ids" />
+        <Imports v-if="hasPerm(['admin/system.Menu/import'])" :name="name" :api="importApi" />
+      </el-scrollbar-height>
     </el-col>
   </el-row>
   <el-dialog

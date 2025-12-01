@@ -1,26 +1,32 @@
 <template>
   <el-row>
     <el-col :span="6">
-      <el-button v-if="hasPerm(['admin/system.Dept/add'])" type="primary" @click="add()">{{ $t('添加') }}</el-button>
-      <el-button v-if="hasPerm(['admin/system.Dept/edit'])" @click="edit()">{{ $t('修改') }}</el-button>
-      <el-button v-else-if="hasPerm(['admin/system.Dept/info'])" @click="edit()">{{ $t('信息') }}</el-button>
-      <el-button v-if="hasPerm(['admin/system.Dept/dele'])" @click="update('is_delete')">{{ $t('删除') }}</el-button>
-      <el-button v-if="hasPerm(['admin/system.Dept/disable'])" @click="update('is_disable')">
-        {{ $t('禁用') }}
-      </el-button>
+      <el-scrollbar-height>
+        <el-button v-if="hasPerm(['admin/system.Dept/add'])" type="primary" @click="add()">{{ $t('添加') }}</el-button>
+        <el-button v-if="hasPerm(['admin/system.Dept/edit'])" @click="edit()">{{ $t('修改') }}</el-button>
+        <el-button v-else-if="hasPerm(['admin/system.Dept/info'])" @click="edit()">{{ $t('信息') }}</el-button>
+        <el-button v-if="hasPerm(['admin/system.Dept/dele'])" @click="update('is_delete')">{{ $t('删除') }}</el-button>
+        <el-button v-if="hasPerm(['admin/system.Dept/disable'])" @click="update('is_disable')">
+          {{ $t('禁用') }}
+        </el-button>
+      </el-scrollbar-height>
     </el-col>
     <el-col :span="14">
-      <template v-if="hasPerm(['admin/system.Dept/update'])">
-        <el-button :title="$t('修改编号')" @click="update('dept_unique')">{{ $t('编号') }}</el-button>
-        <el-button :title="$t('修改备注')" @click="update('remark')">{{ $t('备注') }}</el-button>
-        <el-button :title="$t('修改排序')" @click="update('sort')">{{ $t('排序') }}</el-button>
-        <el-button :title="$t('修改上级')" @click="update('dept_pid')">{{ $t('上级') }}</el-button>
-        <el-button :title="$t('修改简称')" @click="update('abbr')">{{ $t('简称') }}</el-button>
-      </template>
+      <el-scrollbar-height>
+        <template v-if="hasPerm(['admin/system.Dept/update'])">
+          <el-button :title="$t('修改编号')" @click="update('dept_unique')">{{ $t('编号') }}</el-button>
+          <el-button :title="$t('修改备注')" @click="update('remark')">{{ $t('备注') }}</el-button>
+          <el-button :title="$t('修改排序')" @click="update('sort')">{{ $t('排序') }}</el-button>
+          <el-button :title="$t('修改上级')" @click="update('dept_pid')">{{ $t('上级') }}</el-button>
+          <el-button :title="$t('修改简称')" @click="update('abbr')">{{ $t('简称') }}</el-button>
+        </template>
+      </el-scrollbar-height>
     </el-col>
     <el-col :span="4">
-      <Exports v-if="hasPerm(['admin/system.Dept/export'])" :name="name" :api="exportApi" :query="query" :ids="ids" />
-      <Imports v-if="hasPerm(['admin/system.Dept/import'])" :name="name" :api="importApi" />
+      <el-scrollbar-height>
+        <Exports v-if="hasPerm(['admin/system.Dept/export'])" :name="name" :api="exportApi" :query="query" :ids="ids" />
+        <Imports v-if="hasPerm(['admin/system.Dept/import'])" :name="name" :api="importApi" />
+      </el-scrollbar-height>
     </el-col>
   </el-row>
   <el-dialog

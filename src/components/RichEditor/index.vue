@@ -34,7 +34,7 @@
 <script setup>
 import { useI18n } from 'vue-i18n'
 import { useAppStore } from '@/store/modules/app'
-import { i18nChangeLanguage } from '@wangeditor/editor'
+import { i18nAddResources, i18nChangeLanguage } from '@wangeditor/editor'
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
 import FileManage from '@/components/FileManage/index.vue'
 
@@ -53,8 +53,102 @@ const { t } = useI18n()
 const placeholder = t('请输入内容')
 const appStore = useAppStore()
 const emit = defineEmits(['update:modelValue'])
-// 切换语言 - 'en' 或者 'zh-CN'
-i18nChangeLanguage(appStore.language == 'zh-cn' ? 'zh-CN' : 'en')
+// 添加新语言
+i18nAddResources('es', {
+  editor: {
+    more: 'Más',
+    justify: 'Justificar',
+    indent: 'Sangría',
+    image: 'Imagen',
+    video: 'Video'
+  },
+  common: { ok: 'Aceptar', delete: 'Eliminar', enter: 'Ingresar' },
+  blockQuote: { title: 'Cita' },
+  codeBlock: { title: 'Bloque de código' },
+  color: {
+    color: 'Color de fuente',
+    bgColor: 'Color de fondo',
+    default: 'Color predeterminado',
+    clear: 'Limpiar color de fondo'
+  },
+  divider: { title: 'Divisor' },
+  emotion: { title: 'Emoji' },
+  fontSize: { title: 'Tamaño de fuente', default: 'Predeterminado' },
+  fontFamily: { title: 'Familia de fuente', default: 'Predeterminado' },
+  fullScreen: { title: 'Pantalla completa' },
+  header: { title: 'Encabezado', text: 'Texto' },
+  image: {
+    netImage: 'Imagen de red',
+    delete: 'Eliminar imagen',
+    edit: 'Editar imagen',
+    viewLink: 'Ver enlace',
+    src: 'Origen de imagen',
+    desc: 'Descripción',
+    link: 'Enlace de imagen'
+  },
+  indent: { decrease: 'Disminuir', increase: 'Aumentar' },
+  justify: {
+    left: 'Izquierda',
+    right: 'Derecha',
+    center: 'Centro',
+    justify: 'Justificar'
+  },
+  lineHeight: { title: 'Altura de línea', default: 'Predeterminado' },
+  link: {
+    insert: 'Insertar enlace',
+    text: 'Texto del enlace',
+    url: 'URL del enlace',
+    unLink: 'Quitar enlace',
+    edit: 'Editar enlace',
+    view: 'Ver enlace'
+  },
+  textStyle: {
+    bold: 'Negrita',
+    clear: 'Limpiar estilos',
+    code: 'Código en línea',
+    italic: 'Cursiva',
+    sub: 'Subíndice',
+    sup: 'Superíndice',
+    through: 'Tachado',
+    underline: 'Subrayado'
+  },
+  undo: { undo: 'Deshacer', redo: 'Rehacer' },
+  todo: { todo: 'Lista de tareas' },
+  listModule: {
+    unOrderedList: 'Lista desordenada',
+    orderedList: 'Lista ordenada'
+  },
+  tableModule: {
+    deleteCol: 'Eliminar columna',
+    deleteRow: 'Eliminar fila',
+    deleteTable: 'Eliminar tabla',
+    widthAuto: 'Ancho automático',
+    insertCol: 'Insertar columna',
+    insertRow: 'Insertar fila',
+    insertTable: 'Insertar tabla',
+    header: 'Encabezado'
+  },
+  videoModule: {
+    delete: 'Eliminar',
+    uploadVideo: 'Subir video',
+    insertVideo: 'Insertar video',
+    videoSrc: 'Origen del video',
+    videoSrcPlaceHolder: 'URL del archivo de video o <iframe> de terceros',
+    videoPoster: 'Póster del video',
+    videoPosterPlaceHolder: 'URL de la imagen del póster',
+    ok: 'Aceptar',
+    editSize: 'Editar tamaño',
+    width: 'Ancho',
+    height: 'Alto'
+  },
+  uploadImgModule: {
+    uploadImage: 'Subir imagen',
+    uploadError: 'Error al subir {{fileName}}'
+  },
+  highLightModule: { selectLang: 'Idioma' }
+})
+// 切换语言
+i18nChangeLanguage(appStore.getLang('wangeditor'))
 const modelValue = useVModel(props, 'modelValue', emit)
 // 编辑器实例，必须用 shallowRef
 const editorRef = shallowRef()

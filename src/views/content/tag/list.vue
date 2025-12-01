@@ -16,8 +16,8 @@
     >
       <el-table-column type="selection" width="42" :title="$t('全选/反选')" />
       <el-table-column :prop="idkey" label="ID" width="80" sortable="custom" />
-      <el-table-column prop="tag_unique" :label="$t('编号')" min-width="100" sortable="custom" />
-      <el-table-column prop="image_url" :label="$t('图片')" min-width="62">
+      <el-table-column prop="tag_unique" :label="$t('编号')" min-width="106" sortable="custom" />
+      <el-table-column prop="image_url" :label="$t('图片')" min-width="66">
         <template #default="{ row }">
           <FileImage :file-url="row.image_url" lazy />
         </template>
@@ -28,7 +28,7 @@
       <el-table-column
         prop="is_disable_name"
         :label="$t('禁用')"
-        min-width="85"
+        min-width="98"
         sortable="custom"
         column-key="is_disable"
       />

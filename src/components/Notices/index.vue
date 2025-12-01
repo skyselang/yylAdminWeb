@@ -1,5 +1,5 @@
 <template>
-  <el-badge :value="count" :hidden="count == 0" type="warning">
+  <el-badge :value="count" :hidden="settingsStore.noticeReminder == false || count == 0" type="warning">
     <div @click="list(1)"><Icons icon="ChatLineRound" :size="20" /></div>
   </el-badge>
   <!-- 公告列表 -->
@@ -129,6 +129,7 @@
 import { screenHeight, getPageLimit, setNotice, getNotice } from '@/utils/index'
 import { noticeApi } from '@/api/system/index'
 import { infoApi } from '@/api/system/notice'
+import { useSettingsStoreHook } from '@/store/modules/settings'
 
 export default {
   components: {},
@@ -146,7 +147,8 @@ export default {
       infoDialog: false,
       infoModel: {},
       oneDialog: false,
-      oneModel: {}
+      oneModel: {},
+      settingsStore: useSettingsStoreHook()
     }
   },
   created() {

@@ -34,10 +34,10 @@
         sortable="custom"
         column-key="file_size"
       />
-      <el-table-column prop="status_name" :label="$t('状态')" min-width="90" sortable="custom" column-key="status" />
-      <el-table-column prop="time" :label="$t('耗时(秒)')" min-width="100" sortable="custom" />
-      <el-table-column prop="export_num" :label="$t('导出数')" min-width="92" sortable="custom" />
-      <el-table-column prop="remark" :label="$t('备注')" min-width="90" sortable="custom" />
+      <el-table-column prop="status_name" :label="$t('状态')" min-width="92" sortable="custom" column-key="status" />
+      <el-table-column prop="time" :label="$t('耗时(秒)')" min-width="106" sortable="custom" />
+      <el-table-column prop="export_num" :label="$t('导出数')" min-width="102" sortable="custom" />
+      <el-table-column prop="remark" :label="$t('备注')" min-width="108" sortable="custom" />
       <el-table-column prop="create_time" :label="$t('添加时间')" width="165" sortable="custom" />
       <el-table-column v-if="query.recycle" prop="delete_time" :label="$t('删除时间')" width="165" sortable="custom" />
       <el-table-column v-else prop="update_time" :label="$t('修改时间')" width="165" sortable="custom" />

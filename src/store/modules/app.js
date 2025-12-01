@@ -3,6 +3,7 @@ import { store } from '@/store'
 import defaultSettings from '@/settings'
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
 import en from 'element-plus/es/locale/lang/en'
+import es from 'element-plus/es/locale/lang/es'
 
 // setup
 export const useAppStore = defineStore('app', () => {
@@ -16,14 +17,36 @@ export const useAppStore = defineStore('app', () => {
   const sidebar = reactive({ opened: sidebarStatus.value != 'closed', withoutAnimation: false })
   // 语言包
   const locale = computed(() => {
-    if (language?.value == 'en') {
-      return en
-    } else {
-      return zhCn
+    if (language?.value) {
+      return getLang('element-plus')
     }
   })
 
   // actions
+  // 获取语言、包
+  function getLang(component = '') {
+    let lang = language.value
+    // 第三方组件处理
+    if (component === 'element-plus') {
+      if (lang === 'zh-cn') {
+        return zhCn
+      } else if (lang === 'en') {
+        return en
+      } else if (lang === 'es') {
+        return es
+      }
+    } else if (component === 'wangeditor') {
+      if (lang === 'zh-cn') {
+        return 'zh-CN'
+      }
+    } else if (component === 'aieditor') {
+      if (lang === 'zh-cn') {
+        return 'zh'
+      }
+    }
+    return lang
+  }
+
   function toggleSidebar() {
     sidebar.opened = !sidebar.opened
     sidebar.withoutAnimation = false
@@ -61,6 +84,20 @@ export const useAppStore = defineStore('app', () => {
   function changeTopActive(val) {
     activeTopMenu.value = val
   }
+  // 获取组件大小的高度
+  function getSizeHeight(unit = true) {
+    const sizeMap = {
+      large: 40,
+      default: 32,
+      small: 24
+    }
+    let height = sizeMap[size.value] || 32
+    if (unit) {
+      height = height + 'px'
+    }
+    return height
+  }
+
   return {
     device,
     sidebar,
@@ -71,10 +108,12 @@ export const useAppStore = defineStore('app', () => {
     toggleDevice,
     changeSize,
     changeLanguage,
+    getLang,
     toggleSidebar,
     closeSideBar,
     openSideBar,
-    changeTopActive
+    changeTopActive,
+    getSizeHeight
   }
 })
 

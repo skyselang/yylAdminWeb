@@ -1,29 +1,41 @@
 <template>
   <el-row>
     <el-col :span="6">
-      <el-button v-if="hasPerm(['admin/setting.Link/add'])" type="primary" @click="add()">{{ $t('添加') }}</el-button>
-      <el-button v-if="hasPerm(['admin/setting.Link/edit'])" @click="edit()">{{ $t('修改') }}</el-button>
-      <el-button v-else-if="hasPerm(['admin/setting.Link/info'])" @click="edit()">{{ $t('信息') }}</el-button>
-      <el-button v-if="hasPerm(['admin/setting.Link/dele'])" @click="update('is_delete')">{{ $t('删除') }}</el-button>
-      <el-button v-if="hasPerm(['admin/setting.Link/disable'])" @click="update('is_disable')">
-        {{ $t('禁用') }}
-      </el-button>
+      <el-scrollbar-height>
+        <el-button v-if="hasPerm(['admin/setting.Link/add'])" type="primary" @click="add()">{{ $t('添加') }}</el-button>
+        <el-button v-if="hasPerm(['admin/setting.Link/edit'])" @click="edit()">{{ $t('修改') }}</el-button>
+        <el-button v-else-if="hasPerm(['admin/setting.Link/info'])" @click="edit()">{{ $t('信息') }}</el-button>
+        <el-button v-if="hasPerm(['admin/setting.Link/dele'])" @click="update('is_delete')">{{ $t('删除') }}</el-button>
+        <el-button v-if="hasPerm(['admin/setting.Link/disable'])" @click="update('is_disable')">
+          {{ $t('禁用') }}
+        </el-button>
+      </el-scrollbar-height>
     </el-col>
     <el-col :span="14">
-      <template v-if="hasPerm(['admin/setting.Link/update'])">
-        <el-button :title="$t('修改编号')" @click="update('unique')">{{ $t('编号') }}</el-button>
-        <el-button :title="$t('修改备注')" @click="update('remark')">{{ $t('备注') }}</el-button>
-        <el-button :title="$t('修改排序')" @click="update('sort')">{{ $t('排序') }}</el-button>
-        <el-button :title="$t('修改图片')" @click="update('image_id')">{{ $t('图片') }}</el-button>
-        <el-button :title="$t('修改名称颜色')" @click="update('name_color')">{{ $t('名称颜色') }}</el-button>
-        <el-button :title="$t('修改下划线')" @click="update('underline')">{{ $t('下划线') }}</el-button>
-        <el-button :title="$t('修改开始时间')" @click="update('start_time')">{{ $t('开始时间') }}</el-button>
-        <el-button :title="$t('修改结束时间')" @click="update('end_time')">{{ $t('结束时间') }}</el-button>
-      </template>
+      <el-scrollbar-height>
+        <template v-if="hasPerm(['admin/setting.Link/update'])">
+          <el-button :title="$t('修改编号')" @click="update('unique')">{{ $t('编号') }}</el-button>
+          <el-button :title="$t('修改备注')" @click="update('remark')">{{ $t('备注') }}</el-button>
+          <el-button :title="$t('修改排序')" @click="update('sort')">{{ $t('排序') }}</el-button>
+          <el-button :title="$t('修改图片')" @click="update('image_id')">{{ $t('图片') }}</el-button>
+          <el-button :title="$t('修改名称颜色')" @click="update('name_color')">{{ $t('名称颜色') }}</el-button>
+          <el-button :title="$t('修改下划线')" @click="update('underline')">{{ $t('下划线') }}</el-button>
+          <el-button :title="$t('修改开始时间')" @click="update('start_time')">{{ $t('开始时间') }}</el-button>
+          <el-button :title="$t('修改结束时间')" @click="update('end_time')">{{ $t('结束时间') }}</el-button>
+        </template>
+      </el-scrollbar-height>
     </el-col>
     <el-col :span="4">
-      <Exports v-if="hasPerm(['admin/setting.Link/export'])" :name="name" :api="exportApi" :query="query" :ids="ids" />
-      <Imports v-if="hasPerm(['admin/setting.Link/import'])" :name="name" :api="importApi" />
+      <el-scrollbar-height>
+        <Exports
+          v-if="hasPerm(['admin/setting.Link/export'])"
+          :name="name"
+          :api="exportApi"
+          :query="query"
+          :ids="ids"
+        />
+        <Imports v-if="hasPerm(['admin/setting.Link/import'])" :name="name" :api="importApi" />
+      </el-scrollbar-height>
     </el-col>
   </el-row>
   <el-dialog

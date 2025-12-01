@@ -13,7 +13,7 @@
     <el-col :span="6">
       <SearchValue v-model="query.search[0]" :basedata="basedata" />
     </el-col>
-    <el-col :span="5">
+    <el-col :span="6">
       <el-button :title="$t('更多条件')" :type="query.search.length > 1 ? 'primary' : ''" text @click="searchMore()">
         {{ $t('更多') }}
       </el-button>
